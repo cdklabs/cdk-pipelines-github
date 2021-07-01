@@ -1,15 +1,17 @@
-## My Project
+# GitHub Workflows Support for CDK Pipelines
 
-TODO: Fill this README out!
+> Experimental: this is currently a prototype, not recommended for use.
 
-Be sure to:
+TODO:
 
-* Change the title in this README
-* Edit your repository description on GitHub
+- [ ] Consider if we want to move some code from `renderDependencies` to the pipelines library.
+- [ ] Test with docker image asset(s)
+- [ ] Test pre/post steps
+- [ ] Consider what we want to do with support for CFN output bindings
 
-## Security
+## Contributing
 
-See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more information.
+See [CONTRIBUTING](CONTRIBUTING.md) for more information.
 
 ## License
 

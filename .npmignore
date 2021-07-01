@@ -8,11 +8,11 @@
 /.projenrc.js
 /.vscode
 /coverage
+/lib/__tests__
 /src
-/test
+/src/__tests__
 /test-reports/
 /tsconfig.eslint.json
-/tsconfig.jest.json
 /tsconfig.json
 dist
 junit.xml

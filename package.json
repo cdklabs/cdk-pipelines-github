@@ -1,8 +1,9 @@
 {
   "name": "cdk-pipelines-github",
+  "description": "GitHub Workflows support for CDK Pipelines",
   "repository": {
     "type": "git",
-    "url": "git@github.com:cdklabs/cdk-pipelines-github"
+    "url": "https://github.com/cdklabs/cdk-pipelines-github.git"
   },
   "scripts": {
     "clobber": "npx projen clobber",
@@ -26,12 +27,14 @@
     "start": "npx projen start"
   },
   "author": {
-    "name": "Elad Ben-Israel",
-    "email": "benisrae@amazon.com",
+    "name": "Amazon Web Services",
+    "url": "https://aws.amazon.com",
     "organization": false
   },
   "devDependencies": {
-    "@aws-cdk/assert": "^1.95.2",
+    "@aws-cdk/assert": "^1.109.0",
+    "@aws-cdk/aws-lambda": "^1.109.0",
+    "@aws-cdk/aws-s3": "^1.109.0",
     "@types/jest": "^26.0.23",
     "@types/node": "^10.17.0",
     "@typescript-eslint/eslint-plugin": "^4.28.0",
@@ -50,13 +53,24 @@
     "npm-check-updates": "^11",
     "projen": "^0.24.11",
     "standard-version": "^9",
-    "ts-jest": "^27.0.3",
     "typescript": "^4.3.4"
   },
   "peerDependencies": {
+    "@aws-cdk/core": "^1.109.0",
+    "@aws-cdk/cx-api": "^1.109.0",
+    "@aws-cdk/pipelines": "^0.0.0",
     "constructs": "^3.2.27"
   },
-  "bundledDependencies": [],
+  "dependencies": {
+    "@aws-cdk/core": "^1.109.0",
+    "@aws-cdk/cx-api": "^1.109.0",
+    "decamelize": "^5.0.0",
+    "yaml": "^1.10.2"
+  },
+  "bundledDependencies": [
+    "decamelize",
+    "yaml"
+  ],
   "keywords": [
     "cdk"
   ],
@@ -65,8 +79,7 @@
   "version": "0.0.0",
   "jest": {
     "testMatch": [
-      "**/__tests__/**/*.ts?(x)",
-      "**/?(*.)+(spec|test).ts?(x)"
+      "**/lib/__tests__/**/?(*.)+(spec|test).js?(x)"
     ],
     "clearMocks": true,
     "collectCoverage": true,
@@ -84,7 +97,8 @@
       "/node_modules/"
     ],
     "watchPathIgnorePatterns": [
-      "/node_modules/"
+      "/node_modules/",
+      "/src/"
     ],
     "reporters": [
       "default",
@@ -95,12 +109,7 @@
         }
       ]
     ],
-    "preset": "ts-jest",
-    "globals": {
-      "ts-jest": {
-        "tsconfig": "tsconfig.jest.json"
-      }
-    }
+    "snapshotResolver": "./.projen/jest-snapshot-resolver.js"
   },
   "types": "lib/index.d.ts",
   "stability": "stable",

@@ -1,19 +1,21 @@
 const { AwsCdkConstructLibrary } = require('projen');
-const project = new AwsCdkConstructLibrary({
-  author: 'Elad Ben-Israel',
-  authorAddress: 'benisrae@amazon.com',
-  cdkVersion: '1.95.2',
-  defaultReleaseBranch: 'main',
-  name: 'cdk-pipelines-github',
-  repositoryUrl: 'git@github.com:cdklabs/cdk-pipelines-github',
 
-  // cdkDependencies: undefined,        /* Which AWS CDK modules (those that start with "@aws-cdk/") does this library require when consumed? */
-  // cdkTestDependencies: undefined,    /* AWS CDK modules required for testing. */
-  // deps: [],                          /* Runtime dependencies of this module. */
-  // description: undefined,            /* The description is just a string that helps people understand the purpose of the package. */
-  // devDeps: [],                       /* Build dependencies for this module. */
-  // packageName: undefined,            /* The "name" in package.json. */
-  // projectType: ProjectType.UNKNOWN,  /* Which type of project this is (library/app). */
-  // release: undefined,                /* Add release management to this project. */
+const project = new AwsCdkConstructLibrary({
+  name: 'cdk-pipelines-github',
+  description: 'GitHub Workflows support for CDK Pipelines',
+  author: 'Amazon Web Services',
+  authorAddress: 'https://aws.amazon.com',
+  cdkVersion: '1.109.0',
+  defaultReleaseBranch: 'main',
+  repositoryUrl: 'https://github.com/cdklabs/cdk-pipelines-github.git',
+  testdir: 'src/__tests__',
+  bundledDeps: ['decamelize', 'yaml'],
 });
+
+project.addPeerDeps('@aws-cdk/core');
+project.addPeerDeps('@aws-cdk/cx-api');
+project.addPeerDeps('@aws-cdk/pipelines');
+project.addDevDeps('@aws-cdk/aws-lambda');
+project.addDevDeps('@aws-cdk/aws-s3');
+
 project.synth();
