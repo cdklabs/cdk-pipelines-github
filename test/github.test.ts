@@ -3,21 +3,19 @@ import { tmpdir } from 'os';
 import { join } from 'path';
 import * as lambda from '@aws-cdk/aws-lambda';
 import { Stack, Stage } from '@aws-cdk/core';
-import { Pipeline, SynthStep } from '@aws-cdk/pipelines';
-import { GitHubEngine } from '../github-engine';
+import { ShellStep } from '@aws-cdk/pipelines';
+import { WorkflowPipeline } from '../src/github-engine';
 import { GitHubExampleApp } from './example-app';
 import { TestApp } from './testutil';
+
+const fixtures = join(__dirname, 'fixtures');
 
 test('pipeline with only a synth step', () => {
   const app = new TestApp();
 
-  const github = new GitHubEngine({
+  const github = new WorkflowPipeline(app, 'Pipeline', {
     workflowPath: `${mkoutdir()}/deploy.yml`,
-  });
-
-  new Pipeline(app, 'Pipeline', {
-    engine: github,
-    synthStep: new SynthStep('Build', {
+    synth: new ShellStep('Build', {
       installCommands: ['yarn'],
       commands: ['yarn build'],
     }),
@@ -31,8 +29,11 @@ test('pipeline with only a synth step', () => {
 test('single wave/stage/stack', () => {
   const app = new TestApp();
 
-  const github = new GitHubEngine({
+  const pipeline = new WorkflowPipeline(app, 'Pipeline', {
     workflowPath: `${mkoutdir()}/deploy.yml`,
+    synth: new ShellStep('Build', {
+      commands: [],
+    }),
   });
 
   const stage = new Stage(app, 'MyStack', {
@@ -42,24 +43,16 @@ test('single wave/stage/stack', () => {
   const stack = new Stack(stage, 'MyStack');
 
   new lambda.Function(stack, 'Function', {
-    code: lambda.Code.fromAsset(join(__dirname, 'fixtures')),
+    code: lambda.Code.fromAsset(fixtures),
     handler: 'index.handler',
     runtime: lambda.Runtime.NODEJS_14_X,
-  });
-
-  const pipeline = new Pipeline(app, 'MyPipeline', {
-    engine: github,
-    synthStep: new SynthStep('Build', {
-      // installCommands: ['yarn'],
-      commands: ['echo "nothing to do"'],
-    }),
   });
 
   pipeline.addStage(stage);
 
   app.synth();
 
-  expect(readFileSync(github.workflowPath, 'utf-8')).toMatchSnapshot();
+  expect(readFileSync(pipeline.workflowPath, 'utf-8')).toMatchSnapshot();
 });
 
 test('example app', () => {

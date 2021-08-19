@@ -5,8 +5,8 @@ import * as lambda from '@aws-cdk/aws-lambda';
 import * as s3 from '@aws-cdk/aws-s3';
 import { App, RemovalPolicy, Stack, Stage, StageProps } from '@aws-cdk/core';
 import { EnvironmentUtils } from '@aws-cdk/cx-api';
-import { Pipeline, SynthStep } from '@aws-cdk/pipelines';
-import { GitHubEngine } from '../github-engine';
+import { ShellStep } from '@aws-cdk/pipelines';
+import { WorkflowPipeline } from '../src/github-engine';
 
 export interface GitHubExampleAppProps {
   /**
@@ -60,16 +60,12 @@ export class GitHubExampleApp extends App {
     const workflowsDir = path.join(repoDir, '.github/workflows');
     fs.mkdirSync(workflowsDir, { recursive: true });
 
-    const github = new GitHubEngine({
-      workflowPath: path.join(workflowsDir, 'deploy.yml'),
-      preSynthed: true,
-    });
-
-    const pipeline = new Pipeline(this, 'MyPipeline', {
-      engine: github,
-      synthStep: new SynthStep('Build', {
+    const pipeline = new WorkflowPipeline(this, 'Pipeline', {
+      synth: new ShellStep('Build', {
         commands: ['echo "nothing to do (cdk.out is committed)"'],
       }),
+      workflowPath: path.join(workflowsDir, 'deploy.yml'),
+      preSynthed: true,
     });
 
     pipeline.addStage(new MyStage(this, 'StageA', { env: EnvironmentUtils.parse(props.envA) }));

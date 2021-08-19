@@ -1,12 +1,12 @@
 import { writeFileSync } from 'fs';
 import * as path from 'path';
+import { Stage } from '@aws-cdk/core';
 import { EnvironmentPlaceholders } from '@aws-cdk/cx-api';
-import { BuildDeploymentOptions, IDeploymentEngine, ScriptStep, StackAsset, StackDeployment, Step } from '@aws-cdk/pipelines';
-import { AGraphNode, PipelineStructure, Graph, isGraph } from '@aws-cdk/pipelines/lib/helpers-internal';
-
+import { PipelineBase, PipelineBaseProps, ShellStep, StackAsset, StackDeployment, Step } from '@aws-cdk/pipelines';
+import { AGraphNode, PipelineGraph, Graph, isGraph } from '@aws-cdk/pipelines/lib/helpers-internal';
+import { Construct } from 'constructs';
 import * as decamelize from 'decamelize';
 import * as YAML from 'yaml';
-import { Stage } from '../../pipelines/packages/@aws-cdk/core/lib';
 import * as github from './workflows-model';
 
 const CDKOUT_ARTIFACT = 'cdk.out';
@@ -15,7 +15,7 @@ const RUNS_ON = 'ubuntu-latest';
 /**
  * Props for `GitHubEngine`.
  */
-export interface GitHubEngineProps {
+export interface WorkflowPipelineProps extends PipelineBaseProps {
   /**
    * File path for the GitHub workflow.
    *
@@ -64,15 +64,19 @@ export interface GitHubEngineProps {
 /**
  * GitHub backend for CDK Pipelines.
  */
-export class GitHubEngine implements IDeploymentEngine {
+export class WorkflowPipeline extends PipelineBase {
   public readonly workflowPath: string;
   public readonly workflowName: string;
 
   private readonly workflowTriggers: github.Triggers;
   private readonly preSynthed: boolean;
   private readonly awsCredentials: AwsCredentialsSecertNames;
+  private readonly cdkCliVersion?: string;
 
-  constructor(private readonly props: GitHubEngineProps = {}) {
+  constructor(scope: Construct, id: string, props: WorkflowPipelineProps) {
+    super(scope, id, props);
+
+    this.cdkCliVersion = props.cdkCliVersion;
     this.preSynthed = props.preSynthed ?? false;
     this.awsCredentials = props.awsCredentials ?? {
       accessKeyId: 'AWS_ACCESS_KEY_ID',
@@ -91,14 +95,14 @@ export class GitHubEngine implements IDeploymentEngine {
     };
   }
 
-  public buildDeployment(options: BuildDeploymentOptions): void {
-    const app = Stage.of(options.scope);
+  protected doBuildPipeline() {
+    const app = Stage.of(this);
     if (!app) { throw new Error('');}
     const cdkoutPath = path.resolve(app?.outdir);
 
     const jobs = new Array<Job>();
 
-    const structure = new PipelineStructure(options.blueprint, {
+    const structure = new PipelineGraph(this, {
       selfMutation: false,
       publishTemplate: true,
       prepareStep: false, // we create and execute the changeset in a single job
@@ -177,7 +181,7 @@ export class GitHubEngine implements IDeploymentEngine {
       case 'step':
         if (node.data.isBuildStep) {
           return this.jobForBuildStep(node, node.data.step);
-        } else if (node.data.step instanceof ScriptStep) {
+        } else if (node.data.step instanceof ShellStep) {
           return this.jobForScriptStep(node, node.data.step);
         } else {
           throw new Error(`unsupported step type: ${node.data.step.constructor.name}`);
@@ -186,7 +190,7 @@ export class GitHubEngine implements IDeploymentEngine {
   }
 
   private jobForAssetPublish(node: AGraphNode, assets: StackAsset[], options: Context): Job {
-    const installSuffix = this.props.cdkCliVersion ? `@${this.props.cdkCliVersion}` : '';
+    const installSuffix = this.cdkCliVersion ? `@${this.cdkCliVersion}` : '';
     const relativeToAssembly = (p: string) => path.posix.join(cdkoutDir, path.relative(options.assemblyPath, p));
 
     const cdkoutDir = 'cdk.out';
@@ -267,7 +271,7 @@ export class GitHubEngine implements IDeploymentEngine {
   }
 
   private jobForBuildStep(node: AGraphNode, step: Step): Job {
-    if (!(step instanceof ScriptStep)) {
+    if (!(step instanceof ShellStep)) {
       throw new Error('synthStep must be a ScriptStep');
     }
 
@@ -313,9 +317,9 @@ export class GitHubEngine implements IDeploymentEngine {
     };
   }
 
-  private jobForScriptStep(node: AGraphNode, step: ScriptStep): Job {
+  private jobForScriptStep(node: AGraphNode, step: ShellStep): Job {
 
-    if (Object.keys(step.envFromOutputs).length > 0) {
+    if (Object.keys(step.envFromCfnOutputs).length > 0) {
       throw new Error('"envFromOutputs" is not supported');
     }
 
@@ -449,7 +453,7 @@ interface Context {
   /**
    * The pipeline graph.
    */
-  readonly structure: PipelineStructure;
+  readonly structure: PipelineGraph;
 
   /**
    * Full path to `cdk.out` directory.

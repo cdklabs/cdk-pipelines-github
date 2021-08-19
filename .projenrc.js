@@ -8,13 +8,17 @@ const project = new AwsCdkConstructLibrary({
   cdkVersion: '1.119.0',
   defaultReleaseBranch: 'main',
   repositoryUrl: 'https://github.com/cdklabs/cdk-pipelines-github.git',
-  testdir: 'src/__tests__',
   bundledDeps: ['decamelize', 'yaml'],
 });
 
 project.addPeerDeps('@aws-cdk/core');
 project.addPeerDeps('@aws-cdk/cx-api');
 project.addPeerDeps('@aws-cdk/pipelines');
+project.addDevDeps('@aws-cdk/core');
+project.addDevDeps('@aws-cdk/cx-api');
+project.addDevDeps('@aws-cdk/pipelines');
+
+// used in tests
 project.addDevDeps('@aws-cdk/aws-lambda');
 project.addDevDeps('@aws-cdk/aws-s3');
 
