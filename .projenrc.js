@@ -5,7 +5,7 @@ const project = new AwsCdkConstructLibrary({
   description: 'GitHub Workflows support for CDK Pipelines',
   author: 'Amazon Web Services',
   authorAddress: 'https://aws.amazon.com',
-  cdkVersion: '1.109.0',
+  cdkVersion: '1.119.0',
   defaultReleaseBranch: 'main',
   repositoryUrl: 'https://github.com/cdklabs/cdk-pipelines-github.git',
   testdir: 'src/__tests__',

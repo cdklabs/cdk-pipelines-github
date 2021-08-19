@@ -32,7 +32,7 @@
     "organization": false
   },
   "devDependencies": {
-    "@aws-cdk/assert": "^1.109.0",
+    "@aws-cdk/assert": "^1.119.0",
     "@aws-cdk/aws-lambda": "^1.109.0",
     "@aws-cdk/aws-s3": "^1.109.0",
     "@types/jest": "^26.0.23",
@@ -62,8 +62,6 @@
     "constructs": "^3.2.27"
   },
   "dependencies": {
-    "@aws-cdk/core": "^1.109.0",
-    "@aws-cdk/cx-api": "^1.109.0",
     "decamelize": "^5.0.0",
     "yaml": "^1.10.2"
   },
