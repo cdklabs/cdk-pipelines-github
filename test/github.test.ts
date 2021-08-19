@@ -4,7 +4,7 @@ import { join } from 'path';
 import * as lambda from '@aws-cdk/aws-lambda';
 import { Stack, Stage } from '@aws-cdk/core';
 import { ShellStep } from '@aws-cdk/pipelines';
-import { WorkflowPipeline } from '../src/github-engine';
+import { GitHubWorkflow } from '../src';
 import { GitHubExampleApp } from './example-app';
 import { TestApp } from './testutil';
 
@@ -13,7 +13,7 @@ const fixtures = join(__dirname, 'fixtures');
 test('pipeline with only a synth step', () => {
   const app = new TestApp();
 
-  const github = new WorkflowPipeline(app, 'Pipeline', {
+  const github = new GitHubWorkflow(app, 'Pipeline', {
     workflowPath: `${mkoutdir()}/deploy.yml`,
     synth: new ShellStep('Build', {
       installCommands: ['yarn'],
@@ -29,7 +29,7 @@ test('pipeline with only a synth step', () => {
 test('single wave/stage/stack', () => {
   const app = new TestApp();
 
-  const pipeline = new WorkflowPipeline(app, 'Pipeline', {
+  const pipeline = new GitHubWorkflow(app, 'Pipeline', {
     workflowPath: `${mkoutdir()}/deploy.yml`,
     synth: new ShellStep('Build', {
       commands: [],

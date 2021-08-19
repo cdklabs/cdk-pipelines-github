@@ -12,11 +12,11 @@ called `MyStage` that includes CDK stacks for your app and you want to deploy it
 to two AWS environments (`BETA_ENV` and `PROD_ENV`):
 
 ```ts
-import { WorkflowPipeline } from 'cdk-pipelines-github';
+import { Pipeline } from 'cdk-pipelines-github';
 
 const app = new App();
 
-const pipeline = new WorkflowPipeline(app, 'Pipeline', {
+const pipeline = new Pipeline(app, 'Pipeline', {
   synth: new ShellStep('Build', {
     commands: [
       'yarn install',
@@ -39,9 +39,9 @@ sequence, and within each stage, it will deploy all the stacks according to
 their dependency order and maximum parallelism. If you app uses assets, assets
 will be published to the relevant destination environment.
 
-The `WorkflowPipeline` is derived from the base CDK Pipelines class, so most
-features should be supported out of the box. See the [CDK
-Pipelines](https://docs.aws.amazon.com/cdk/api/latest/docs/pipelines-readme.html)
+The `Pipeline` class from `cdk-pipelines-github` is derived from the base CDK
+Pipelines class, so most features should be supported out of the box. See the
+[CDK Pipelines](https://docs.aws.amazon.com/cdk/api/latest/docs/pipelines-readme.html)
 documentation for more details.
 
 **NOTES:**

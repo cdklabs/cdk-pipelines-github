@@ -6,7 +6,7 @@ import * as s3 from '@aws-cdk/aws-s3';
 import { App, RemovalPolicy, Stack, Stage, StageProps } from '@aws-cdk/core';
 import { EnvironmentUtils } from '@aws-cdk/cx-api';
 import { ShellStep } from '@aws-cdk/pipelines';
-import { WorkflowPipeline } from '../src/github-engine';
+import { GitHubWorkflow } from '../src';
 
 export interface GitHubExampleAppProps {
   /**
@@ -60,7 +60,7 @@ export class GitHubExampleApp extends App {
     const workflowsDir = path.join(repoDir, '.github/workflows');
     fs.mkdirSync(workflowsDir, { recursive: true });
 
-    const pipeline = new WorkflowPipeline(this, 'Pipeline', {
+    const pipeline = new GitHubWorkflow(this, 'Pipeline', {
       synth: new ShellStep('Build', {
         commands: ['echo "nothing to do (cdk.out is committed)"'],
       }),

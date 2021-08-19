@@ -13,9 +13,9 @@ const CDKOUT_ARTIFACT = 'cdk.out';
 const RUNS_ON = 'ubuntu-latest';
 
 /**
- * Props for `GitHubEngine`.
+ * Props for `GitHubWorkflow`.
  */
-export interface WorkflowPipelineProps extends PipelineBaseProps {
+export interface GitHubWorkflowProps extends PipelineBaseProps {
   /**
    * File path for the GitHub workflow.
    *
@@ -62,9 +62,9 @@ export interface WorkflowPipelineProps extends PipelineBaseProps {
 }
 
 /**
- * GitHub backend for CDK Pipelines.
+ * CDK Pipelines for GitHub workflows.
  */
-export class WorkflowPipeline extends PipelineBase {
+export class GitHubWorkflow extends PipelineBase {
   public readonly workflowPath: string;
   public readonly workflowName: string;
 
@@ -73,7 +73,7 @@ export class WorkflowPipeline extends PipelineBase {
   private readonly awsCredentials: AwsCredentialsSecertNames;
   private readonly cdkCliVersion?: string;
 
-  constructor(scope: Construct, id: string, props: WorkflowPipelineProps) {
+  constructor(scope: Construct, id: string, props: GitHubWorkflowProps) {
     super(scope, id, props);
 
     this.cdkCliVersion = props.cdkCliVersion;

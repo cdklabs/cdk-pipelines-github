@@ -1,11 +1,11 @@
-// This is a CDK app that uses CDK Pipelines with a GitHub workflows backend It
+// This is a CDK app that uses CDK Pipelines with a GitHub workflows backend. It
 // is intended to be executed from the root directory of a GitHub repository and
-// it will synthesize a `cdk.out` and `.github/workflows` directory, both are
-// exepcted to be committed.
+// it will synthesize a `cdk.out` and `.github/workflows` directory, both of which
+// are exepected to be committed into the repository.
 //
 // To run:
 //
-//    cdk synth -a "node manual-test.js"
+//    cdk synth -a "ts-node manual-test.ts"
 //
 
 import { GitHubExampleApp } from './example-app';
