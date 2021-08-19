@@ -6,8 +6,8 @@ Deploy CDK applications through GitHub workflows.
 
 ## Usage
 
-Assuming you have a [CDK
-stage](https://docs.aws.amazon.com/cdk/api/latest/docs/@aws-cdk_core.Stage.html)
+Assuming you have a
+[`Stage`](https://docs.aws.amazon.com/cdk/api/latest/docs/@aws-cdk_core.Stage.html)
 called `MyStage` that includes CDK stacks for your app and you want to deploy it
 to two AWS environments (`BETA_ENV` and `PROD_ENV`):
 
@@ -52,6 +52,49 @@ documentation for more details.
   for details.
 * The workflow expects the GitHub repository to include secrets with AWS
   credentials (`AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`).
+
+## Example
+
+You can find an example usage in [test/example-app.ts](./test/example-app.ts)
+which includes a simple CDK app and a pipeline.
+
+To run the example, clone this repository and install dependencies:
+
+```shell
+cd ~/projects # or some other playground space
+git clone https://github.com/cdklabs/cdk-pipelines-github
+cd cdk-pipelines-github
+yarn
+```
+
+Now, create a new GitHub repository and clone it as well:
+
+```shell
+cd ~/projects
+git clone https://github.com/myaccount/my-test-repository
+```
+
+You'll need to set up AWS credentials and AWS region environment variables:
+
+```shell
+export AWS_ACCESS_KEY_ID=xxxx
+export AWS_SECRET_ACCESS_KEY=xxxxx
+export AWS_REGION=xxxx
+```
+
+Now, run the `manual-test.sh` script when your working directory is the new repository:
+
+```shell
+cd ~/projects/my-test-repository
+~/projects/cdk-piplines/github/test/manual-test.sh
+```
+
+This will produce a `cdk.out` directory and a `.github/workflows/deploy.yml` file.
+
+Commit and push these files to your repo and you should see the deployment
+workflow in action. Make sure your GitHub repository has `AWS_ACCESS_KEY_ID` and
+`AWS_SECRET_ACCESS_KEY` secrets that can access the same account that you
+synthesized against.
 
 ## Not supported yet
 
