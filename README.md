@@ -58,6 +58,8 @@ documentation for more details.
 You can find an example usage in [test/example-app.ts](./test/example-app.ts)
 which includes a simple CDK app and a pipeline.
 
+You can find a repository that uses this example here: [eladb/test-app-cdkpipeline](https://github.com/eladb/test-app-cdkpipeline).
+
 To run the example, clone this repository and install dependencies:
 
 ```shell
@@ -74,12 +76,19 @@ cd ~/projects
 git clone https://github.com/myaccount/my-test-repository
 ```
 
-You'll need to set up AWS credentials and AWS region environment variables:
+You'll need to set up AWS credentials in your environment:
 
 ```shell
 export AWS_ACCESS_KEY_ID=xxxx
 export AWS_SECRET_ACCESS_KEY=xxxxx
-export AWS_REGION=xxxx
+```
+
+Bootstrap your environments:
+
+```shell
+export CDK_NEW_BOOTSTRAP=1
+npx cdk bootstrap aws://ACCOUNTID/us-east-1
+npx cdk bootstrap aws://ACCOUNTID/eu-west-2
 ```
 
 Now, run the `manual-test.sh` script when your working directory is the new repository:
