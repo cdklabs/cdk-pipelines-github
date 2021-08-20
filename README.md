@@ -2,6 +2,8 @@
 
 ![Experimental](https://img.shields.io/badge/experimental-important.svg?style=for-the-badge)
 
+NOTICE: this library is still not published to package managers. Stay tuned.
+
 Deploy CDK applications through GitHub workflows.
 
 ## Usage
