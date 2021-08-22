@@ -9,6 +9,11 @@ const project = new AwsCdkConstructLibrary({
   defaultReleaseBranch: 'main',
   repositoryUrl: 'https://github.com/cdklabs/cdk-pipelines-github.git',
   bundledDeps: ['decamelize', 'yaml'],
+
+  publishToPypi: {
+    distName: 'cdk-pipelines-github',
+    module: 'cdk_pipelines_github',
+  },
 });
 
 project.addPeerDeps('@aws-cdk/core');

@@ -74,3 +74,22 @@ jobs:
           NPM_REGISTRY: registry.npmjs.org
     container:
       image: jsii/superchain
+  release_pypi:
+    name: Release to PyPi
+    needs: release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: dist
+          path: dist
+      - name: Release
+        run: npx -p jsii-release@latest jsii-release-pypi
+        env:
+          TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
+          TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
+    container:
+      image: jsii/superchain

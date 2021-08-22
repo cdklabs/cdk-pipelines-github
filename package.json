@@ -122,7 +122,12 @@
   "stability": "stable",
   "jsii": {
     "outdir": "dist",
-    "targets": {},
+    "targets": {
+      "python": {
+        "distName": "cdk-pipelines-github",
+        "module": "cdk_pipelines_github"
+      }
+    },
     "tsc": {
       "outDir": "lib",
       "rootDir": "src"
