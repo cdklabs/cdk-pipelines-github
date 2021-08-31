@@ -58,7 +58,25 @@ export interface GitHubWorkflowProps extends PipelineBaseProps {
    *
    * @default - `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.
    */
-  readonly awsCredentials?: AwsCredentialsSecertNames;
+  readonly awsCredentials?: AwsCredentialsSecrets;
+
+  /**
+   * Build container options.
+   * @default - GitHub defaults
+   */
+  readonly buildContainer?: github.ContainerOptions;
+
+  /**
+   * GitHub workflow steps to execute before build.
+   * @default []
+   */
+  readonly preBuildSteps?: github.JobStep[];
+
+  /**
+   * GitHub workflow steps to execute after build.
+   * @default []
+   */
+  readonly postBuildSteps?: github.JobStep[];
 }
 
 /**
@@ -70,14 +88,21 @@ export class GitHubWorkflow extends PipelineBase {
 
   private readonly workflowTriggers: github.Triggers;
   private readonly preSynthed: boolean;
-  private readonly awsCredentials: AwsCredentialsSecertNames;
+  private readonly awsCredentials: AwsCredentialsSecrets;
   private readonly cdkCliVersion?: string;
+  private readonly buildContainer?: github.ContainerOptions;
+  private readonly preBuildSteps: github.JobStep[];
+  private readonly postBuildSteps: github.JobStep[];
 
   constructor(scope: Construct, id: string, props: GitHubWorkflowProps) {
     super(scope, id, props);
 
     this.cdkCliVersion = props.cdkCliVersion;
     this.preSynthed = props.preSynthed ?? false;
+    this.buildContainer = props.buildContainer;
+    this.preBuildSteps = props.preBuildSteps ?? [];
+    this.postBuildSteps = props.postBuildSteps ?? [];
+
     this.awsCredentials = props.awsCredentials ?? {
       accessKeyId: 'AWS_ACCESS_KEY_ID',
       secretAccessKey: 'AWS_SECRET_ACCESS_KEY',
@@ -304,13 +329,16 @@ export class GitHubWorkflow extends PipelineBase {
         runsOn: RUNS_ON,
         needs: this.renderDependencies(node),
         env: step.env,
+        container: this.buildContainer,
         steps: [
           ...this.stepsToCheckout(),
+          ...this.preBuildSteps,
           ...installSteps,
           {
             name: 'Build',
             run: step.commands.join('\n'),
           },
+          ...this.postBuildSteps,
           ...this.stepsToUploadAssembly(cdkOut.directory),
         ],
       },
@@ -485,7 +513,10 @@ function snakeCaseKeys<T = unknown>(obj: T, sep = '-'): T {
   return result as any;
 }
 
-export interface AwsCredentialsSecertNames {
+/**
+ * Names of secrets for AWS credentials.
+ */
+export interface AwsCredentialsSecrets {
   /**
    * @default "AWS_ACCESS_KEY_ID"
    */

@@ -66,6 +66,16 @@ export class GitHubExampleApp extends App {
       }),
       workflowPath: path.join(workflowsDir, 'deploy.yml'),
       preSynthed: true,
+      buildContainer: { image: 'alpine' },
+      preBuildSteps: [
+        {
+          uses: 'actions/setup-node@v2',
+          with: { nodeVersion: '14' },
+        },
+      ],
+      postBuildSteps: [
+        { run: 'echo post-build' },
+      ],
     });
 
     pipeline.addStage(new MyStage(this, 'StageA', { env: EnvironmentUtils.parse(props.envA) }));

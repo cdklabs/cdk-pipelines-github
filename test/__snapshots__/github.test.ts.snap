@@ -15,11 +15,17 @@ jobs:
     runs-on: ubuntu-latest
     needs: []
     env: {}
+    container:
+      image: alpine
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: \\"14\\"
       - name: Build
         run: echo \\"nothing to do (cdk.out is committed)\\"
+      - run: echo post-build
   Assets-FileAsset1:
     name: Publish Assets Assets-FileAsset1
     needs:
@@ -310,6 +316,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: []
     env: {}
+    container: null
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -340,6 +347,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: []
     env: {}
+    container: null
     steps:
       - name: Checkout
         uses: actions/checkout@v2
