@@ -11,7 +11,7 @@ Name|Description
 
 Name|Description
 ----|-----------
-[AwsCredentialsSecertNames](#cdk-pipelines-github-awscredentialssecertnames)|*No description*
+[AwsCredentialsSecrets](#cdk-pipelines-github-awscredentialssecrets)|Names of secrets for AWS credentials.
 [CheckRunOptions](#cdk-pipelines-github-checkrunoptions)|Check run options.
 [CheckSuiteOptions](#cdk-pipelines-github-checksuiteoptions)|Check suite options.
 [ContainerCredentials](#cdk-pipelines-github-containercredentials)|Credentials to use to authenticate to Docker registries.
@@ -84,8 +84,11 @@ new GitHubWorkflow(scope: Construct, id: string, props: GitHubWorkflowProps)
 * **id** (<code>string</code>)  *No description*
 * **props** (<code>[GitHubWorkflowProps](#cdk-pipelines-github-githubworkflowprops)</code>)  *No description*
   * **synth** (<code>[IFileSetProducer](#aws-cdk-pipelines-ifilesetproducer)</code>)  The build step that produces the CDK Cloud Assembly. 
-  * **awsCredentials** (<code>[AwsCredentialsSecertNames](#cdk-pipelines-github-awscredentialssecertnames)</code>)  Names of GitHub repository secrets that include AWS credentials for deployment. __*Default*__: `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.
+  * **awsCredentials** (<code>[AwsCredentialsSecrets](#cdk-pipelines-github-awscredentialssecrets)</code>)  Names of GitHub repository secrets that include AWS credentials for deployment. __*Default*__: `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.
+  * **buildContainer** (<code>[ContainerOptions](#cdk-pipelines-github-containeroptions)</code>)  Build container options. __*Default*__: GitHub defaults
   * **cdkCliVersion** (<code>string</code>)  Version of the CDK CLI to use. __*Default*__: automatic
+  * **postBuildSteps** (<code>Array<[JobStep](#cdk-pipelines-github-jobstep)></code>)  GitHub workflow steps to execute after build. __*Default*__: []
+  * **preBuildSteps** (<code>Array<[JobStep](#cdk-pipelines-github-jobstep)></code>)  GitHub workflow steps to execute before build. __*Default*__: []
   * **preSynthed** (<code>boolean</code>)  Indicates if the repository already contains a synthesized `cdk.out` directory, in which case we will simply checkout the repo in jobs that require `cdk.out`. __*Default*__: false
   * **workflowName** (<code>string</code>)  Name of the workflow. __*Default*__: "deploy"
   * **workflowPath** (<code>string</code>)  File path for the GitHub workflow. __*Default*__: ".github/workflows/deploy.yml"
@@ -118,10 +121,10 @@ protected doBuildPipeline(): void
 
 
 
-## struct AwsCredentialsSecertNames  <a id="cdk-pipelines-github-awscredentialssecertnames"></a>
+## struct AwsCredentialsSecrets  <a id="cdk-pipelines-github-awscredentialssecrets"></a>
 
 
-
+Names of secrets for AWS credentials.
 
 
 
@@ -244,8 +247,11 @@ Props for `GitHubWorkflow`.
 Name | Type | Description 
 -----|------|-------------
 **synth** | <code>[IFileSetProducer](#aws-cdk-pipelines-ifilesetproducer)</code> | The build step that produces the CDK Cloud Assembly.
-**awsCredentials**? | <code>[AwsCredentialsSecertNames](#cdk-pipelines-github-awscredentialssecertnames)</code> | Names of GitHub repository secrets that include AWS credentials for deployment.<br/>__*Default*__: `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.
+**awsCredentials**? | <code>[AwsCredentialsSecrets](#cdk-pipelines-github-awscredentialssecrets)</code> | Names of GitHub repository secrets that include AWS credentials for deployment.<br/>__*Default*__: `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.
+**buildContainer**? | <code>[ContainerOptions](#cdk-pipelines-github-containeroptions)</code> | Build container options.<br/>__*Default*__: GitHub defaults
 **cdkCliVersion**? | <code>string</code> | Version of the CDK CLI to use.<br/>__*Default*__: automatic
+**postBuildSteps**? | <code>Array<[JobStep](#cdk-pipelines-github-jobstep)></code> | GitHub workflow steps to execute after build.<br/>__*Default*__: []
+**preBuildSteps**? | <code>Array<[JobStep](#cdk-pipelines-github-jobstep)></code> | GitHub workflow steps to execute before build.<br/>__*Default*__: []
 **preSynthed**? | <code>boolean</code> | Indicates if the repository already contains a synthesized `cdk.out` directory, in which case we will simply checkout the repo in jobs that require `cdk.out`.<br/>__*Default*__: false
 **workflowName**? | <code>string</code> | Name of the workflow.<br/>__*Default*__: "deploy"
 **workflowPath**? | <code>string</code> | File path for the GitHub workflow.<br/>__*Default*__: ".github/workflows/deploy.yml"
