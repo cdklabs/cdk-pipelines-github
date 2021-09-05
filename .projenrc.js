@@ -26,6 +26,10 @@ const project = new AwsCdkConstructLibrary({
     dotNetNamespace: 'Cdklabs.CdkPipelinesGitHub',
     packageId: 'Cdklabs.CdkPipelinesGitHub',
   },
+
+  projenUpgradeSecret: 'PROJEN_GITHUB_TOKEN',
+  autoApproveUpgrades: true,
+  autoApproveOptions: { allowedUsernames: ['cdklabs-automation'], secret: 'GITHUB_TOKEN' },
 });
 
 project.addPeerDeps('@aws-cdk/core');
