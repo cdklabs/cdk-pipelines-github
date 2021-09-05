@@ -14,6 +14,18 @@ const project = new AwsCdkConstructLibrary({
     distName: 'cdk-pipelines-github',
     module: 'cdk_pipelines_github',
   },
+
+  publishToMaven: {
+    javaPackage: 'io.github.cdklabs.cdkpipelines.github',
+    mavenGroupId: 'io.github.cdklabs',
+    mavenArtifactId: 'cdk-pipelines-github',
+    mavenEndpoint: 'https://s01.oss.sonatype.org',
+  },
+
+  publishToNuget: {
+    dotNetNamespace: 'Cdklabs.CdkPipelinesGitHub',
+    packageId: 'Cdklabs.CdkPipelinesGitHub',
+  },
 });
 
 project.addPeerDeps('@aws-cdk/core');

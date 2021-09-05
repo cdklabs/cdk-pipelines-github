@@ -123,9 +123,20 @@
   "jsii": {
     "outdir": "dist",
     "targets": {
+      "java": {
+        "package": "io.github.cdklabs.cdkpipelines.github",
+        "maven": {
+          "groupId": "io.github.cdklabs",
+          "artifactId": "cdk-pipelines-github"
+        }
+      },
       "python": {
         "distName": "cdk-pipelines-github",
         "module": "cdk_pipelines_github"
+      },
+      "dotnet": {
+        "namespace": "Cdklabs.CdkPipelinesGitHub",
+        "packageId": "Cdklabs.CdkPipelinesGitHub"
       }
     },
     "tsc": {
