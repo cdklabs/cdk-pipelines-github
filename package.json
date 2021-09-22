@@ -37,11 +37,11 @@
   },
   "devDependencies": {
     "@aws-cdk/assert": "^1.119.0",
-    "@aws-cdk/aws-lambda": "^1.123.0",
-    "@aws-cdk/aws-s3": "^1.123.0",
-    "@aws-cdk/core": "^1.123.0",
-    "@aws-cdk/cx-api": "^1.123.0",
-    "@aws-cdk/pipelines": "^1.123.0",
+    "@aws-cdk/aws-lambda": "^1.124.0",
+    "@aws-cdk/aws-s3": "^1.124.0",
+    "@aws-cdk/core": "^1.124.0",
+    "@aws-cdk/cx-api": "^1.124.0",
+    "@aws-cdk/pipelines": "^1.124.0",
     "@types/jest": "^26.0.24",
     "@types/node": "^14.17.0",
     "@typescript-eslint/eslint-plugin": "^4.31.2",
@@ -58,15 +58,15 @@
     "jsii-pacmak": "^1.34.0",
     "json-schema": "^0.3.0",
     "npm-check-updates": "^11",
-    "projen": "^0.28.20",
+    "projen": "^0.28.24",
     "standard-version": "^9",
     "ts-jest": "^27.0.5",
     "typescript": "^4.4.3"
   },
   "peerDependencies": {
-    "@aws-cdk/core": "^1.123.0",
-    "@aws-cdk/cx-api": "^1.123.0",
-    "@aws-cdk/pipelines": "^1.123.0",
+    "@aws-cdk/core": "^1.124.0",
+    "@aws-cdk/cx-api": "^1.124.0",
+    "@aws-cdk/pipelines": "^1.124.0",
     "constructs": "^3.2.27"
   },
   "dependencies": {
