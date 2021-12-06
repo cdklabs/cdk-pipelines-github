@@ -1,6 +1,6 @@
-const { AwsCdkConstructLibrary } = require('projen');
+const { awscdk } = require('projen');
 
-const project = new AwsCdkConstructLibrary({
+const project = new awscdk.AwsCdkConstructLibrary({
   name: 'cdk-pipelines-github',
   description: 'GitHub Workflows support for CDK Pipelines',
   author: 'Amazon Web Services',
@@ -42,5 +42,8 @@ project.addDevDeps('@aws-cdk/pipelines');
 // used in tests
 project.addDevDeps('@aws-cdk/aws-lambda');
 project.addDevDeps('@aws-cdk/aws-s3');
+
+// JSII sets this to `false` so we need to be compatible
+project.tsconfigDev.compilerOptions.esModuleInterop = false;
 
 project.synth();

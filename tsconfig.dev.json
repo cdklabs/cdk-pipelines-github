@@ -2,6 +2,7 @@
   "compilerOptions": {
     "alwaysStrict": true,
     "declaration": true,
+    "esModuleInterop": false,
     "experimentalDecorators": true,
     "inlineSourceMap": true,
     "inlineSources": true,
