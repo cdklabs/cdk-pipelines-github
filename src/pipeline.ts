@@ -5,7 +5,7 @@ import { EnvironmentPlaceholders } from '@aws-cdk/cx-api';
 import { PipelineBase, PipelineBaseProps, ShellStep, StackAsset, StackDeployment, Step } from '@aws-cdk/pipelines';
 import { AGraphNode, PipelineGraph, Graph, isGraph } from '@aws-cdk/pipelines/lib/helpers-internal';
 import { Construct } from 'constructs';
-import decamelize from 'decamelize';
+import * as decamelize from 'decamelize';
 import * as YAML from 'yaml';
 import * as github from './workflows-model';
 
