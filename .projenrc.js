@@ -1,6 +1,6 @@
-const { AwsCdkConstructLibrary } = require('projen');
+const { awscdk } = require('projen');
 
-const project = new AwsCdkConstructLibrary({
+const project = new awscdk.AwsCdkConstructLibrary({
   name: 'cdk-pipelines-github',
   description: 'GitHub Workflows support for CDK Pipelines',
   author: 'Amazon Web Services',
