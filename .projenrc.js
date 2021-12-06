@@ -43,4 +43,7 @@ project.addDevDeps('@aws-cdk/pipelines');
 project.addDevDeps('@aws-cdk/aws-lambda');
 project.addDevDeps('@aws-cdk/aws-s3');
 
+// JSII sets this to `false` so we need to be compatible
+project.tsconfigDev.compilerOptions.esModuleInterop = false;
+
 project.synth();
