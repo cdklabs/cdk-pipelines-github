@@ -1,7 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import * as fs from 'fs';
 import * as path from 'path';
-import { App, AppProps, Stack, Stage } from '@aws-cdk/core';
+import { App, AppProps, Stack, Stage } from 'aws-cdk-lib';
 
 export class TestApp extends App {
   constructor(props?: Partial<AppProps>) {

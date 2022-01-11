@@ -1,11 +1,11 @@
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
-import * as lambda from '@aws-cdk/aws-lambda';
-import * as s3 from '@aws-cdk/aws-s3';
-import { App, RemovalPolicy, Stack, Stage, StageProps } from '@aws-cdk/core';
-import { EnvironmentUtils } from '@aws-cdk/cx-api';
-import { ShellStep } from '@aws-cdk/pipelines';
+import { App, RemovalPolicy, Stack, Stage, StageProps } from 'aws-cdk-lib';
+import * as lambda from 'aws-cdk-lib/aws-lambda';
+import * as s3 from 'aws-cdk-lib/aws-s3';
+import { EnvironmentUtils } from 'aws-cdk-lib/cx-api';
+import { ShellStep } from 'aws-cdk-lib/pipelines';
 import { GitHubWorkflow } from '../src';
 
 export interface GitHubExampleAppProps {

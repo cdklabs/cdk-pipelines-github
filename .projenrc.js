@@ -5,7 +5,7 @@ const project = new awscdk.AwsCdkConstructLibrary({
   description: 'GitHub Workflows support for CDK Pipelines',
   author: 'Amazon Web Services',
   authorAddress: 'https://aws.amazon.com',
-  cdkVersion: '1.119.0',
+  cdkVersion: '2.5.0',
   defaultReleaseBranch: 'main',
   repositoryUrl: 'https://github.com/cdklabs/cdk-pipelines-github.git',
   bundledDeps: ['decamelize', 'yaml'],
@@ -32,16 +32,10 @@ const project = new awscdk.AwsCdkConstructLibrary({
   autoApproveOptions: { allowedUsernames: ['cdklabs-automation'], secret: 'GITHUB_TOKEN' },
 });
 
-project.addPeerDeps('@aws-cdk/core');
-project.addPeerDeps('@aws-cdk/cx-api');
-project.addPeerDeps('@aws-cdk/pipelines');
-project.addDevDeps('@aws-cdk/core');
-project.addDevDeps('@aws-cdk/cx-api');
-project.addDevDeps('@aws-cdk/pipelines');
+project.addPeerDeps('aws-cdk-lib');
 
 // used in tests
-project.addDevDeps('@aws-cdk/aws-lambda');
-project.addDevDeps('@aws-cdk/aws-s3');
+project.addDevDeps('aws-cdk-lib');
 
 // JSII sets this to `false` so we need to be compatible
 project.tsconfigDev.compilerOptions.esModuleInterop = false;

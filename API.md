@@ -68,8 +68,8 @@ Name|Description
 
 CDK Pipelines for GitHub workflows.
 
-__Implements__: [IConstruct](#constructs-iconstruct), [IConstruct](#aws-cdk-core-iconstruct), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable)
-__Extends__: [PipelineBase](#aws-cdk-pipelines-pipelinebase)
+__Implements__: [IConstruct](#constructs-iconstruct), [IDependable](#constructs-idependable)
+__Extends__: [pipelines.PipelineBase](#aws-cdk-lib-pipelines-pipelinebase)
 
 ### Initializer
 
@@ -83,7 +83,7 @@ new GitHubWorkflow(scope: Construct, id: string, props: GitHubWorkflowProps)
 * **scope** (<code>[Construct](#constructs-construct)</code>)  *No description*
 * **id** (<code>string</code>)  *No description*
 * **props** (<code>[GitHubWorkflowProps](#cdk-pipelines-github-githubworkflowprops)</code>)  *No description*
-  * **synth** (<code>[IFileSetProducer](#aws-cdk-pipelines-ifilesetproducer)</code>)  The build step that produces the CDK Cloud Assembly. 
+  * **synth** (<code>[pipelines.IFileSetProducer](#aws-cdk-lib-pipelines-ifilesetproducer)</code>)  The build step that produces the CDK Cloud Assembly. 
   * **awsCredentials** (<code>[AwsCredentialsSecrets](#cdk-pipelines-github-awscredentialssecrets)</code>)  Names of GitHub repository secrets that include AWS credentials for deployment. __*Default*__: `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.
   * **buildContainer** (<code>[ContainerOptions](#cdk-pipelines-github-containeroptions)</code>)  Build container options. __*Default*__: GitHub defaults
   * **cdkCliVersion** (<code>string</code>)  Version of the CDK CLI to use. __*Default*__: automatic
@@ -246,7 +246,7 @@ Props for `GitHubWorkflow`.
 
 Name | Type | Description 
 -----|------|-------------
-**synth** | <code>[IFileSetProducer](#aws-cdk-pipelines-ifilesetproducer)</code> | The build step that produces the CDK Cloud Assembly.
+**synth** | <code>[pipelines.IFileSetProducer](#aws-cdk-lib-pipelines-ifilesetproducer)</code> | The build step that produces the CDK Cloud Assembly.
 **awsCredentials**? | <code>[AwsCredentialsSecrets](#cdk-pipelines-github-awscredentialssecrets)</code> | Names of GitHub repository secrets that include AWS credentials for deployment.<br/>__*Default*__: `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.
 **buildContainer**? | <code>[ContainerOptions](#cdk-pipelines-github-containeroptions)</code> | Build container options.<br/>__*Default*__: GitHub defaults
 **cdkCliVersion**? | <code>string</code> | Version of the CDK CLI to use.<br/>__*Default*__: automatic
