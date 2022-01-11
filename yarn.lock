@@ -1961,9 +1961,9 @@ duplexer3@^0.1.4:
   integrity sha1-7gHdHKwO08vH/b6jfcCo8c4ALOI=
 
 electron-to-chromium@^1.4.17:
-  version "1.4.39"
-  resolved "https://registry.npmjs.org/electron-to-chromium/-/electron-to-chromium-1.4.39.tgz#19c8e8ff712fe62bfdd4f3fe1c3b3fb4aa179ebb"
-  integrity sha512-bFH3gdRq/l7WlzSleiO6dwpZH3RhiJ8vlMq0tOJMfT+5nb+x397eJn2RHF6Ho/9GCKv+BkimNlUMHl9+Yh+Qcg==
+  version "1.4.40"
+  resolved "https://registry.npmjs.org/electron-to-chromium/-/electron-to-chromium-1.4.40.tgz#f5dbced7bfbc7072e5e7ca5487f8f9a42c8bc768"
+  integrity sha512-j+eVIyQGt2EU5xPWUblhpp5P5z5xyAdRgzogBgfe2F5JGV17gr9pfzWBua6DlPL00LavbOjxubWkWkbVQe9Wlw==
 
 emittery@^0.8.1:
   version "0.8.1"
@@ -4728,10 +4728,10 @@ progress@^2.0.0, progress@^2.0.3:
   resolved "https://registry.npmjs.org/progress/-/progress-2.0.3.tgz#7e8cf8d8f5b8f239c1bc68beb4eb78567d572ef8"
   integrity sha512-7PiHtLll5LdnKIMw100I+8xJXR5gW2QwWYkT6iJva0bXitZKa/XMrSbdmg3r2Xnaidz9Qumd0VPaMrZlF9V9sA==
 
-projen@^0.50.12:
-  version "0.50.17"
-  resolved "https://registry.npmjs.org/projen/-/projen-0.50.17.tgz#3c3540a22dea7f52dcb939ddeab05009e3385737"
-  integrity sha512-h8cbimlhSLXM+ZtXhJjluwAJV1IadC48OZPC5BcjKgC8kpbKj/ebntv+U4IMAHcAWj6w0Nns5lpM2RNSuqCOTg==
+projen@^0.50.21:
+  version "0.50.21"
+  resolved "https://registry.npmjs.org/projen/-/projen-0.50.21.tgz#d2c737c50c509bd62b8f110b0926da553ae7d70e"
+  integrity sha512-R2CArSfYo4qYO8NGbxxjM4u0+ATYkMLHI5B5PSrBhN22ubv9iWsCaebMAxT2DXK/AQ00g4aibFxHkdIedzOb3A==
   dependencies:
     "@iarna/toml" "^2.2.5"
     case "^1.6.3"

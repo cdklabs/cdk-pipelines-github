@@ -27,7 +27,6 @@ const project = new awscdk.AwsCdkConstructLibrary({
     packageId: 'Cdklabs.CdkPipelinesGitHub',
   },
 
-  projenUpgradeSecret: 'PROJEN_GITHUB_TOKEN',
   autoApproveUpgrades: true,
   autoApproveOptions: { allowedUsernames: ['cdklabs-automation'], secret: 'GITHUB_TOKEN' },
 });
