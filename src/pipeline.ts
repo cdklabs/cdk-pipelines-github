@@ -113,7 +113,7 @@ export class GitHubWorkflow extends PipelineBase {
       throw new Error('workflow file is expected to be a yaml file');
     }
     if (!this.workflowPath.includes('.github/workflows/')) {
-      throw new Error(`${this.workflowPath} workflow files must be stored in the '.github/workflows' directory of your repository`);
+      throw new Error('workflow files must be stored in the \'.github/workflows\' directory of your repository');
     }
 
     this.workflowName = props.workflowName ?? 'deploy';

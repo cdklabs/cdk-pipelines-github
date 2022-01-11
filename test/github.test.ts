@@ -66,6 +66,34 @@ test('example app', () => {
   expect(readFileSync(join(repoDir, '.github/workflows/deploy.yml'), 'utf-8')).toMatchSnapshot();
 });
 
+describe('workflow path requirements', () => {
+  test('invalid workflow path fails', () => {
+    const app = new TestApp();
+
+    expect(() => {
+      new GitHubWorkflow(app, 'Pipeline', {
+        workflowPath: 'deploy.yml',
+        synth: new ShellStep('Build', {
+          commands: [],
+        }),
+      });
+    }).toThrowError("workflow files must be stored in the '.github/workflows' directory of your repository");
+  });
+
+  test('workflow path must be a yaml file', () => {
+    const app = new TestApp();
+
+    expect(() => {
+      new GitHubWorkflow(app, 'Pipeline', {
+        workflowPath: '.github/workflows/deploy.json',
+        synth: new ShellStep('Build', {
+          commands: [],
+        }),
+      });
+    }).toThrowError('workflow file is expected to be a yaml file');
+  });
+});
+
 function mkoutdir() {
   return mkdtempSync(join(tmpdir(), 'cdk-pipelines-github-'));
 }
