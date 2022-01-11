@@ -14,7 +14,7 @@ test('pipeline with only a synth step', () => {
   const app = new TestApp();
 
   const github = new GitHubWorkflow(app, 'Pipeline', {
-    workflowPath: `${mkoutdir()}/deploy.yml`,
+    workflowPath: `${mkoutdir()}/.github/workflows/deploy.yml`,
     synth: new ShellStep('Build', {
       installCommands: ['yarn'],
       commands: ['yarn build'],
@@ -30,7 +30,7 @@ test('single wave/stage/stack', () => {
   const app = new TestApp();
 
   const pipeline = new GitHubWorkflow(app, 'Pipeline', {
-    workflowPath: `${mkoutdir()}/deploy.yml`,
+    workflowPath: `${mkoutdir()}/.github/workflows/deploy.yml`,
     synth: new ShellStep('Build', {
       commands: [],
     }),
