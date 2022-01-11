@@ -9,7 +9,7 @@ Deploy CDK applications through GitHub workflows.
 ## Usage
 
 Assuming you have a
-[`Stage`](https://docs.aws.amazon.com/cdk/api/latest/docs/@aws-cdk_core.Stage.html)
+[`Stage`](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.Stage.html)
 called `MyStage` that includes CDK stacks for your app and you want to deploy it
 to two AWS environments (`BETA_ENV` and `PROD_ENV`):
 
@@ -43,14 +43,14 @@ will be published to the relevant destination environment.
 
 The `Pipeline` class from `cdk-pipelines-github` is derived from the base CDK
 Pipelines class, so most features should be supported out of the box. See the
-[CDK Pipelines](https://docs.aws.amazon.com/cdk/api/latest/docs/pipelines-readme.html)
+[CDK Pipelines](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.pipelines-readme.html)
 documentation for more details.
 
 **NOTES:**
 
 * Environments must be bootstrapped separately using `cdk bootstrap`. See [CDK
   Environment
-  Bootstrapping](https://docs.aws.amazon.com/cdk/api/latest/docs/pipelines-readme.html#cdk-environment-bootstrapping)
+  Bootstrapping](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.pipelines-readme.html#cdk-environment-bootstrapping)
   for details.
 * The workflow expects the GitHub repository to include secrets with AWS
   credentials (`AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`).

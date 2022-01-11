@@ -1,9 +1,9 @@
 import { mkdtempSync, readFileSync } from 'fs';
 import { tmpdir } from 'os';
 import { join } from 'path';
-import * as lambda from '@aws-cdk/aws-lambda';
-import { Stack, Stage } from '@aws-cdk/core';
-import { ShellStep } from '@aws-cdk/pipelines';
+import { Stack, Stage } from 'aws-cdk-lib';
+import * as lambda from 'aws-cdk-lib/aws-lambda';
+import { ShellStep } from 'aws-cdk-lib/pipelines';
 import { GitHubWorkflow } from '../src';
 import { GitHubExampleApp } from './example-app';
 import { TestApp } from './testutil';
