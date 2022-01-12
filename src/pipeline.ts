@@ -1,4 +1,4 @@
-import { writeFileSync } from 'fs';
+import { mkdirSync, writeFileSync } from 'fs';
 import * as path from 'path';
 import { Stage } from 'aws-cdk-lib';
 import { EnvironmentPlaceholders } from 'aws-cdk-lib/cx-api';
@@ -112,6 +112,9 @@ export class GitHubWorkflow extends PipelineBase {
     if (!this.workflowPath.endsWith('.yml') && !this.workflowPath.endsWith('.yaml')) {
       throw new Error('workflow file is expected to be a yaml file');
     }
+    if (!this.workflowPath.includes('.github/workflows/')) {
+      throw new Error('workflow files must be stored in the \'.github/workflows\' directory of your repository');
+    }
 
     this.workflowName = props.workflowName ?? 'deploy';
     this.workflowTriggers = props.workflowTriggers ?? {
@@ -177,6 +180,7 @@ export class GitHubWorkflow extends PipelineBase {
 
     // eslint-disable-next-line no-console
     console.error(`writing ${this.workflowPath}`);
+    mkdirSync(path.dirname(this.workflowPath), { recursive: true });
     writeFileSync(this.workflowPath, yaml);
   }
 

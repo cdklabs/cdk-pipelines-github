@@ -14,7 +14,7 @@ test('pipeline with only a synth step', () => {
   const app = new TestApp();
 
   const github = new GitHubWorkflow(app, 'Pipeline', {
-    workflowPath: `${mkoutdir()}/deploy.yml`,
+    workflowPath: `${mkoutdir()}/.github/workflows/deploy.yml`,
     synth: new ShellStep('Build', {
       installCommands: ['yarn'],
       commands: ['yarn build'],
@@ -30,7 +30,7 @@ test('single wave/stage/stack', () => {
   const app = new TestApp();
 
   const pipeline = new GitHubWorkflow(app, 'Pipeline', {
-    workflowPath: `${mkoutdir()}/deploy.yml`,
+    workflowPath: `${mkoutdir()}/.github/workflows/deploy.yml`,
     synth: new ShellStep('Build', {
       commands: [],
     }),
@@ -64,6 +64,34 @@ test('example app', () => {
   });
   app.synth();
   expect(readFileSync(join(repoDir, '.github/workflows/deploy.yml'), 'utf-8')).toMatchSnapshot();
+});
+
+describe('workflow path', () => {
+  test('invalid workflow path fails', () => {
+    const app = new TestApp();
+
+    expect(() => {
+      new GitHubWorkflow(app, 'Pipeline', {
+        workflowPath: 'deploy.yml',
+        synth: new ShellStep('Build', {
+          commands: [],
+        }),
+      });
+    }).toThrowError("workflow files must be stored in the '.github/workflows' directory of your repository");
+  });
+
+  test('workflow path must be a yaml file', () => {
+    const app = new TestApp();
+
+    expect(() => {
+      new GitHubWorkflow(app, 'Pipeline', {
+        workflowPath: '.github/workflows/deploy.json',
+        synth: new ShellStep('Build', {
+          commands: [],
+        }),
+      });
+    }).toThrowError('workflow file is expected to be a yaml file');
+  });
 });
 
 function mkoutdir() {
