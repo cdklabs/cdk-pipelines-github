@@ -14,11 +14,12 @@ called `MyStage` that includes CDK stacks for your app and you want to deploy it
 to two AWS environments (`BETA_ENV` and `PROD_ENV`):
 
 ```ts
-import { Pipeline } from 'cdk-pipelines-github';
+import { ShellStep } from 'aws-cdk-lib/pipelines';
+import { GithubWorkflow } from 'cdk-pipelines-github';
 
 const app = new App();
 
-const pipeline = new Pipeline(app, 'Pipeline', {
+const pipeline = new GithubWorkflow(app, 'Pipeline', {
   synth: new ShellStep('Build', {
     commands: [
       'yarn install',
