@@ -180,7 +180,7 @@ export class GitHubWorkflow extends PipelineBase {
 
     // eslint-disable-next-line no-console
     console.error(`writing ${this.workflowPath}`);
-    mkdirSync(directoryPath(this.workflowPath), { recursive: true });
+    mkdirSync(path.dirname(this.workflowPath), { recursive: true });
     writeFileSync(this.workflowPath, yaml);
   }
 
@@ -543,10 +543,4 @@ export function* flatten<A>(xs: Iterable<A[]>): IterableIterator<A> {
       yield y;
     }
   }
-}
-
-function directoryPath(pathToFile: string) {
-  const directories = pathToFile.split(path.sep);
-  directories.pop();
-  return directories.join(path.sep);
 }

@@ -66,7 +66,7 @@ test('example app', () => {
   expect(readFileSync(join(repoDir, '.github/workflows/deploy.yml'), 'utf-8')).toMatchSnapshot();
 });
 
-describe('workflow path requirements', () => {
+describe('workflow path', () => {
   test('invalid workflow path fails', () => {
     const app = new TestApp();
 
