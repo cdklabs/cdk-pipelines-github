@@ -202,7 +202,7 @@ jobs:
       - uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
           name: StageA-FunctionStack
-          template: https://cdk-hnb659fds-assets-111111111111-us-east-1.s3.us-east-1.amazonaws.com/78a7673e89f59d0a6a53ec86baeb411cef605a4e970616398035dacb4bbd9ca0.json
+          template: https://cdk-hnb659fds-assets-111111111111-us-east-1.s3.us-east-1.amazonaws.com/c6eb397e9674810c84c295ca34efc7dd668cd429b6b9ae23d55951827cb0b25e.json
           no-fail-on-empty-changeset: \\"1\\"
           role-arn: arn:aws:iam::111111111111:role/cdk-hnb659fds-cfn-exec-role-111111111111-us-east-1
   StageB-BucketStack-Deploy:
@@ -259,7 +259,7 @@ jobs:
       - uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
           name: StageB-FunctionStack
-          template: https://cdk-hnb659fds-assets-222222222222-eu-west-2.s3.eu-west-2.amazonaws.com/ae5ab5677896732ad54d73c29bcf216d5000b0be5f4b62bd2e29fb29ef976b6e.json
+          template: https://cdk-hnb659fds-assets-222222222222-eu-west-2.s3.eu-west-2.amazonaws.com/fb62e56a6c1688f9100e146f40f609285a8d795b319efec11fa84896917aebf5.json
           no-fail-on-empty-changeset: \\"1\\"
           role-arn: arn:aws:iam::222222222222:role/cdk-hnb659fds-cfn-exec-role-222222222222-eu-west-2
 "
@@ -334,7 +334,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: cdk.out
-          path: /var/folders/5t/qdsk26vd29l6bk_3kg6ydwx00000gs/T/cdk-pipelines-github-WmeGA4/cdk.out
+          path: /tmp/cdk-pipelines-github-g34Khz/cdk.out
       - name: Install
         run: npm install --no-save cdk-assets
       - uses: aws-actions/configure-aws-credentials@v1
@@ -358,7 +358,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: cdk.out
-          path: /var/folders/5t/qdsk26vd29l6bk_3kg6ydwx00000gs/T/cdk-pipelines-github-WmeGA4/cdk.out
+          path: /tmp/cdk-pipelines-github-g34Khz/cdk.out
       - name: Install
         run: npm install --no-save cdk-assets
       - uses: aws-actions/configure-aws-credentials@v1
