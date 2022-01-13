@@ -1,4 +1,4 @@
-import { mkdtempSync, readFileSync } from 'fs';
+import { mkdtempSync, readFileSync, rmdirSync } from 'fs';
 import { tmpdir } from 'os';
 import { join } from 'path';
 import { Stack, Stage } from 'aws-cdk-lib';
@@ -30,7 +30,7 @@ test('single wave/stage/stack', () => {
   const app = new TestApp();
 
   const pipeline = new GitHubWorkflow(app, 'Pipeline', {
-    workflowPath: `${mkoutdir()}/.github/workflows/deploy.yml`,
+    workflowPath: 'temp/.github/workflows/deploy.yml',
     synth: new ShellStep('Build', {
       commands: [],
     }),
@@ -53,6 +53,9 @@ test('single wave/stage/stack', () => {
   app.synth();
 
   expect(readFileSync(pipeline.workflowPath, 'utf-8')).toMatchSnapshot();
+
+  // clean up temp dir
+  rmdirSync('temp', { recursive: true });
 });
 
 test('example app', () => {
