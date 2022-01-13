@@ -72,7 +72,7 @@ describe('workflow path', () => {
 
     expect(() => {
       new GitHubWorkflow(app, 'Pipeline', {
-        workflowPath: 'deploy.yml',
+        workflowPath: `${mkoutdir()}/deploy.yml`,
         synth: new ShellStep('Build', {
           commands: [],
         }),
@@ -85,7 +85,7 @@ describe('workflow path', () => {
 
     expect(() => {
       new GitHubWorkflow(app, 'Pipeline', {
-        workflowPath: '.github/workflows/deploy.json',
+        workflowPath: `${mkoutdir()}/.github/workflows/deploy.json`,
         synth: new ShellStep('Build', {
           commands: [],
         }),
