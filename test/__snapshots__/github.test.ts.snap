@@ -334,7 +334,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: cdk.out
-          path: /tmp/cdk-pipelines-github-g34Khz/cdk.out
+          path: /tmp/cdk-pipelines-github-oMoakA/cdk.out
       - name: Install
         run: npm install --no-save cdk-assets
       - uses: aws-actions/configure-aws-credentials@v1
@@ -358,7 +358,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: cdk.out
-          path: /tmp/cdk-pipelines-github-g34Khz/cdk.out
+          path: /tmp/cdk-pipelines-github-oMoakA/cdk.out
       - name: Install
         run: npm install --no-save cdk-assets
       - uses: aws-actions/configure-aws-credentials@v1
