@@ -312,7 +312,7 @@ Name | Type | Description
 **if**? | <code>string</code> | You can use the if conditional to prevent a job from running unless a condition is met.<br/>__*Optional*__
 **name**? | <code>string</code> | The name of the job displayed on GitHub.<br/>__*Optional*__
 **needs**? | <code>Array<string></code> | Identifies any jobs that must complete successfully before this job will run.<br/>__*Optional*__
-**outputs**? | <code>Map<string, [JobStepOutput](#cdk-pipelines-github-jobstepoutput)></code> | A map of outputs for a job.<br/>__*Optional*__
+**outputs**? | <code>Map<string, string></code> | A map of outputs for a job.<br/>__*Optional*__
 **services**? | <code>Map<string, [ContainerOptions](#cdk-pipelines-github-containeroptions)></code> | Used to host service containers for a job in a workflow.<br/>__*Optional*__
 **strategy**? | <code>[JobStrategy](#cdk-pipelines-github-jobstrategy)</code> | A strategy creates a build matrix for your jobs.<br/>__*Optional*__
 **timeoutMinutes**? | <code>number</code> | The maximum number of minutes to let a job run before GitHub automatically cancels it.<br/>__*Default*__: 360

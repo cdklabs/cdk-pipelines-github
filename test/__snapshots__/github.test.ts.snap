@@ -152,6 +152,16 @@ jobs:
           role-duration-seconds: 1800
       - name: Publish Assets-FileAsset6
         run: /bin/bash ./cdk.out/publish-Assets-FileAsset6-step.sh
+  StageA-Pre:
+    name: Pre
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    needs:
+      - Build-Build
+    env: {}
+    steps:
+      - run: echo hello
   StageA-BucketStack-Deploy:
     name: Deploy StageABucketStackEAC67DBE
     permissions:
@@ -160,6 +170,7 @@ jobs:
       - Build-Build
       - Assets-FileAsset1
       - Assets-FileAsset2
+      - StageA-Pre
       - Build-Build
     runs-on: ubuntu-latest
     steps:
@@ -172,7 +183,8 @@ jobs:
           role-duration-seconds: 1800
           role-to-assume: arn:aws:iam::111111111111:role/cdk-hnb659fds-deploy-role-111111111111-us-east-1
           role-external-id: Pipeline
-      - uses: aws-actions/aws-cloudformation-github-deploy@v1
+      - id: StageABucketStackEAC67DBE
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
           name: StageA-BucketStack
           template: https://cdk-hnb659fds-assets-111111111111-us-east-1.s3.us-east-1.amazonaws.com/edf2c6bcaf00190295ae3fb871034a825a9bc599ce0c57bde46ed35fe45a9718.json
@@ -187,6 +199,7 @@ jobs:
       - Assets-FileAsset3
       - Assets-FileAsset4
       - StageA-BucketStack-Deploy
+      - StageA-Pre
       - Build-Build
     runs-on: ubuntu-latest
     steps:
@@ -199,12 +212,29 @@ jobs:
           role-duration-seconds: 1800
           role-to-assume: arn:aws:iam::111111111111:role/cdk-hnb659fds-deploy-role-111111111111-us-east-1
           role-external-id: Pipeline
-      - uses: aws-actions/aws-cloudformation-github-deploy@v1
+      - id: StageAFunctionStackD42C27B8
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
           name: StageA-FunctionStack
-          template: https://cdk-hnb659fds-assets-111111111111-us-east-1.s3.us-east-1.amazonaws.com/c6eb397e9674810c84c295ca34efc7dd668cd429b6b9ae23d55951827cb0b25e.json
+          template: https://cdk-hnb659fds-assets-111111111111-us-east-1.s3.us-east-1.amazonaws.com/78a7673e89f59d0a6a53ec86baeb411cef605a4e970616398035dacb4bbd9ca0.json
           no-fail-on-empty-changeset: \\"1\\"
           role-arn: arn:aws:iam::111111111111:role/cdk-hnb659fds-cfn-exec-role-111111111111-us-east-1
+    outputs:
+      myout: \${{ steps.StageAFunctionStackD42C27B8.outputs.myout }}
+  StageA-Post:
+    name: Post
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    needs:
+      - StageA-FunctionStack-Deploy
+      - StageA-BucketStack-Deploy
+      - StageA-FunctionStack-Deploy
+      - Build-Build
+    env:
+      FN_NAME: \${{ needs.StageA-FunctionStack-Deploy.outputs.myout }}
+    steps:
+      - run: \\"echo FN_NAME equals: $FN_NAME\\"
   StageB-BucketStack-Deploy:
     name: Deploy StageBBucketStackDF3FFF07
     permissions:
@@ -216,6 +246,8 @@ jobs:
       - Build-Build
       - StageA-BucketStack-Deploy
       - StageA-FunctionStack-Deploy
+      - StageA-Pre
+      - StageA-Post
     runs-on: ubuntu-latest
     steps:
       - uses: aws-actions/configure-aws-credentials@v1
@@ -227,7 +259,8 @@ jobs:
           role-duration-seconds: 1800
           role-to-assume: arn:aws:iam::222222222222:role/cdk-hnb659fds-deploy-role-222222222222-eu-west-2
           role-external-id: Pipeline
-      - uses: aws-actions/aws-cloudformation-github-deploy@v1
+      - id: StageBBucketStackDF3FFF07
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
           name: StageB-BucketStack
           template: https://cdk-hnb659fds-assets-222222222222-eu-west-2.s3.eu-west-2.amazonaws.com/0251b0cee8f2645a2a13ae23fd40a19825d67955f2cbcd1576812addf4065a29.json
@@ -245,6 +278,8 @@ jobs:
       - Build-Build
       - StageA-BucketStack-Deploy
       - StageA-FunctionStack-Deploy
+      - StageA-Pre
+      - StageA-Post
     runs-on: ubuntu-latest
     steps:
       - uses: aws-actions/configure-aws-credentials@v1
@@ -256,10 +291,11 @@ jobs:
           role-duration-seconds: 1800
           role-to-assume: arn:aws:iam::222222222222:role/cdk-hnb659fds-deploy-role-222222222222-eu-west-2
           role-external-id: Pipeline
-      - uses: aws-actions/aws-cloudformation-github-deploy@v1
+      - id: StageBFunctionStack18098DCD
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
           name: StageB-FunctionStack
-          template: https://cdk-hnb659fds-assets-222222222222-eu-west-2.s3.eu-west-2.amazonaws.com/fb62e56a6c1688f9100e146f40f609285a8d795b319efec11fa84896917aebf5.json
+          template: https://cdk-hnb659fds-assets-222222222222-eu-west-2.s3.eu-west-2.amazonaws.com/ae5ab5677896732ad54d73c29bcf216d5000b0be5f4b62bd2e29fb29ef976b6e.json
           no-fail-on-empty-changeset: \\"1\\"
           role-arn: arn:aws:iam::222222222222:role/cdk-hnb659fds-cfn-exec-role-222222222222-eu-west-2
 "
@@ -390,7 +426,8 @@ jobs:
           role-duration-seconds: 1800
           role-to-assume: arn:aws:iam::111111111111:role/cdk-hnb659fds-deploy-role-111111111111-us-east-1
           role-external-id: Pipeline
-      - uses: aws-actions/aws-cloudformation-github-deploy@v1
+      - id: MyStack098574E7
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
           name: MyStack-MyStack
           template: https://cdk-hnb659fds-assets-111111111111-us-east-1.s3.us-east-1.amazonaws.com/52c2fe7f725481c405841b55cfb41b81965fadaa71665186ffb031ecd3f0ef36.json

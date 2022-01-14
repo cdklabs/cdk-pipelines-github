@@ -2,7 +2,7 @@ import { mkdirSync, writeFileSync } from 'fs';
 import * as path from 'path';
 import { Stage } from 'aws-cdk-lib';
 import { EnvironmentPlaceholders } from 'aws-cdk-lib/cx-api';
-import { PipelineBase, PipelineBaseProps, ShellStep, StackAsset, StackDeployment, Step } from 'aws-cdk-lib/pipelines';
+import { PipelineBase, PipelineBaseProps, ShellStep, StackAsset, StackDeployment, StackOutputReference, Step } from 'aws-cdk-lib/pipelines';
 import { AGraphNode, PipelineGraph, Graph, isGraph } from 'aws-cdk-lib/pipelines/lib/helpers-internal';
 import { Construct } from 'constructs';
 import * as decamelize from 'decamelize';
@@ -93,6 +93,7 @@ export class GitHubWorkflow extends PipelineBase {
   private readonly buildContainer?: github.ContainerOptions;
   private readonly preBuildSteps: github.JobStep[];
   private readonly postBuildSteps: github.JobStep[];
+  private readonly jobOutputs: Record<string, github.JobStepOutput> = {};
 
   constructor(scope: Construct, id: string, props: GitHubWorkflowProps) {
     super(scope, id, props);
@@ -158,7 +159,6 @@ export class GitHubWorkflow extends PipelineBase {
     }
 
     // convert jobs to a map and make sure there are no duplicates
-
     const jobmap: Record<string, github.Job> = {};
     for (const job of jobs) {
       if (job.id in jobmap) {
@@ -166,6 +166,9 @@ export class GitHubWorkflow extends PipelineBase {
       }
       jobmap[job.id] = snakeCaseKeys(job.definition);
     }
+
+    // Update jobs with late-bound output requests
+    this.insertJobOutputs(jobmap);
 
     const workflow = {
       name: this.workflowName,
@@ -182,6 +185,18 @@ export class GitHubWorkflow extends PipelineBase {
     console.error(`writing ${this.workflowPath}`);
     mkdirSync(path.dirname(this.workflowPath), { recursive: true });
     writeFileSync(this.workflowPath, yaml);
+  }
+
+  private insertJobOutputs(jobmap: Record<string, github.Job>) {
+    for (const [jobId, jobOutput] of Object.entries(this.jobOutputs)) {
+      jobmap[jobId] = {
+        ...jobmap[jobId],
+        outputs: {
+          ...jobmap[jobId].outputs,
+          [jobOutput.outputName]: `\${{ steps.${jobOutput.stepId}.outputs.${jobOutput.outputName} }}`,
+        },
+      };
+    }
   }
 
   /**
@@ -288,7 +303,6 @@ export class GitHubWorkflow extends PipelineBase {
     if (stack.executionRoleArn) {
       params['role-arn'] = resolve(stack.executionRoleArn);
     }
-
     const assumeRoleArn = stack.assumeRoleArn ? resolve(stack.assumeRoleArn) : undefined;
 
     return {
@@ -301,6 +315,7 @@ export class GitHubWorkflow extends PipelineBase {
         steps: [
           ...this.stepsToConfigureAws({ region, assumeRoleArn }),
           {
+            id: stack.stackArtifactId,
             uses: 'aws-actions/aws-cloudformation-github-deploy@v1',
             with: params,
           },
@@ -359,10 +374,35 @@ export class GitHubWorkflow extends PipelineBase {
     };
   }
 
-  private jobForScriptStep(node: AGraphNode, step: ShellStep): Job {
+  /**
+   * Searches for the stack that produced the output via the current
+   * job's dependencies.
+   *
+   * This function should always find a stack, since it is guaranteed
+   * that a CfnOutput comes from a referenced stack.
+   */
+  private findStackOfOutput(ref: StackOutputReference, node: AGraphNode) {
+    for (const dep of node.allDeps) {
+      if (dep.data?.type === 'execute' && ref.isProducedBy(dep.data.stack)) {
+        return [dep.uniqueId, dep.data.stack.stackArtifactId];
+      }
+    }
+    throw new Error('Should have found stack but did not');
+  }
 
-    if (Object.keys(step.envFromCfnOutputs).length > 0) {
-      throw new Error('"envFromOutputs" is not supported');
+  private addJobOutput(jobId: string, output: github.JobStepOutput) {
+    this.jobOutputs[jobId] = output;
+  }
+
+  private jobForScriptStep(node: AGraphNode, step: ShellStep): Job {
+    const envVariables: Record<string, string> = {};
+    for (const [envName, ref] of Object.entries(step.envFromCfnOutputs)) {
+      const [jobId, stepId] = this.findStackOfOutput(ref, node);
+      this.addJobOutput(jobId, {
+        outputName: ref.outputName,
+        stepId,
+      });
+      envVariables[envName.toUpperCase()] = `\${{ needs.${jobId}.outputs.${ref.outputName} }}`;
     }
 
     const downloadInputs = new Array<github.JobStep>();
@@ -402,7 +442,10 @@ export class GitHubWorkflow extends PipelineBase {
         },
         runsOn: RUNS_ON,
         needs: this.renderDependencies(node),
-        env: step.env,
+        env: {
+          ...step.env,
+          ...envVariables,
+        },
         steps: [
           ...downloadInputs,
           ...installSteps,
@@ -519,7 +562,8 @@ function snakeCaseKeys<T = unknown>(obj: T, sep = '-'): T {
 
   const result: Record<string, unknown> = {};
   for (let [k, v] of Object.entries(obj)) {
-    if (typeof v === 'object' && v != null) {
+    // we don't want to snake case environment variables
+    if (k !== 'env' && typeof v === 'object' && v != null) {
       v = snakeCaseKeys(v);
     }
     result[decamelize(k, { separator: sep })] = v;

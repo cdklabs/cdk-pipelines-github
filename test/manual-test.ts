@@ -18,7 +18,7 @@ if (!account) {
 const app = new GitHubExampleApp({
   repoDir: '.',
   envA: `aws://${account}/us-east-1`,
-  envB: `aws://${account}/eu-west-2`,
+  envB: `aws://${account}/eu-west-1`,
 });
 
 app.synth();
