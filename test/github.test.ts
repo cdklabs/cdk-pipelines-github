@@ -10,7 +10,7 @@ import { withTemporaryDirectory, TestApp } from './testutil';
 const fixtures = join(__dirname, 'fixtures');
 
 test('pipeline with only a synth step', () => {
-  withTemporaryDirectory<void>((dir) => {
+  withTemporaryDirectory((dir) => {
     const app = new TestApp();
 
     const github = new GitHubWorkflow(app, 'Pipeline', {
