@@ -1,4 +1,4 @@
-import { readFileSync } from 'fs';
+import { readFileSync, rmdirSync } from 'fs';
 import { join } from 'path';
 import { Stack, Stage } from 'aws-cdk-lib';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
@@ -29,7 +29,7 @@ test('pipeline with only a synth step', () => {
 
 test('single wave/stage/stack', () => {
   withTemporaryDirectory((dir) => {
-    const tempOutDir = `${dir}/temp.out`;
+    const tempOutDir = 'temp.out';
     const app = new TestApp({
       outdir: tempOutDir,
     });
@@ -58,6 +58,9 @@ test('single wave/stage/stack', () => {
     app.synth();
 
     expect(readFileSync(pipeline.workflowPath, 'utf-8')).toMatchSnapshot();
+
+    // clean up temp dir
+    rmdirSync(tempOutDir, { recursive: true });
   });
 });
 
