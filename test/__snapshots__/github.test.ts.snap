@@ -183,7 +183,7 @@ jobs:
           role-duration-seconds: 1800
           role-to-assume: arn:aws:iam::111111111111:role/cdk-hnb659fds-deploy-role-111111111111-us-east-1
           role-external-id: Pipeline
-      - id: StageABucketStackEAC67DBE
+      - id: Deploy
         uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
           name: StageA-BucketStack
@@ -212,7 +212,7 @@ jobs:
           role-duration-seconds: 1800
           role-to-assume: arn:aws:iam::111111111111:role/cdk-hnb659fds-deploy-role-111111111111-us-east-1
           role-external-id: Pipeline
-      - id: StageAFunctionStackD42C27B8
+      - id: Deploy
         uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
           name: StageA-FunctionStack
@@ -220,7 +220,7 @@ jobs:
           no-fail-on-empty-changeset: \\"1\\"
           role-arn: arn:aws:iam::111111111111:role/cdk-hnb659fds-cfn-exec-role-111111111111-us-east-1
     outputs:
-      myout: \${{ steps.StageAFunctionStackD42C27B8.outputs.myout }}
+      myout: \${{ steps.Deploy.outputs.myout }}
   StageA-Post:
     name: Post
     permissions:
@@ -259,7 +259,7 @@ jobs:
           role-duration-seconds: 1800
           role-to-assume: arn:aws:iam::222222222222:role/cdk-hnb659fds-deploy-role-222222222222-eu-west-2
           role-external-id: Pipeline
-      - id: StageBBucketStackDF3FFF07
+      - id: Deploy
         uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
           name: StageB-BucketStack
@@ -291,7 +291,7 @@ jobs:
           role-duration-seconds: 1800
           role-to-assume: arn:aws:iam::222222222222:role/cdk-hnb659fds-deploy-role-222222222222-eu-west-2
           role-external-id: Pipeline
-      - id: StageBFunctionStack18098DCD
+      - id: Deploy
         uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
           name: StageB-FunctionStack
@@ -426,7 +426,7 @@ jobs:
           role-duration-seconds: 1800
           role-to-assume: arn:aws:iam::111111111111:role/cdk-hnb659fds-deploy-role-111111111111-us-east-1
           role-external-id: Pipeline
-      - id: MyStack098574E7
+      - id: Deploy
         uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
           name: MyStack-MyStack

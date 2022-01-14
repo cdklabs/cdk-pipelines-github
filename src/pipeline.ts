@@ -93,7 +93,7 @@ export class GitHubWorkflow extends PipelineBase {
   private readonly buildContainer?: github.ContainerOptions;
   private readonly preBuildSteps: github.JobStep[];
   private readonly postBuildSteps: github.JobStep[];
-  private readonly jobOutputs: Record<string, github.JobStepOutput> = {};
+  private readonly jobOutputs: Record<string, github.JobStepOutput[]> = {};
 
   constructor(scope: Construct, id: string, props: GitHubWorkflowProps) {
     super(scope, id, props);
@@ -188,15 +188,23 @@ export class GitHubWorkflow extends PipelineBase {
   }
 
   private insertJobOutputs(jobmap: Record<string, github.Job>) {
-    for (const [jobId, jobOutput] of Object.entries(this.jobOutputs)) {
+    for (const [jobId, jobOutputs] of Object.entries(this.jobOutputs)) {
       jobmap[jobId] = {
         ...jobmap[jobId],
         outputs: {
           ...jobmap[jobId].outputs,
-          [jobOutput.outputName]: `\${{ steps.${jobOutput.stepId}.outputs.${jobOutput.outputName} }}`,
+          ...this.renderJobOutputs(jobOutputs),
         },
       };
     }
+  }
+
+  private renderJobOutputs(outputs: github.JobStepOutput[]) {
+    const renderedOutputs: Record<string, string> = {};
+    for (const output of outputs) {
+      renderedOutputs[output.outputName] = `\${{ steps.${output.stepId}.outputs.${output.outputName} }}`;
+    }
+    return renderedOutputs;
   }
 
   /**
@@ -314,7 +322,7 @@ export class GitHubWorkflow extends PipelineBase {
         steps: [
           ...this.stepsToConfigureAws({ region, assumeRoleArn }),
           {
-            id: stack.stackArtifactId,
+            id: 'Deploy',
             uses: 'aws-actions/aws-cloudformation-github-deploy@v1',
             with: params,
           },
@@ -383,7 +391,7 @@ export class GitHubWorkflow extends PipelineBase {
   private findStackOfOutput(ref: StackOutputReference, node: AGraphNode) {
     for (const dep of node.allDeps) {
       if (dep.data?.type === 'execute' && ref.isProducedBy(dep.data.stack)) {
-        return [dep.uniqueId, dep.data.stack.stackArtifactId];
+        return dep.uniqueId;
       }
     }
     // Should never happen
@@ -391,16 +399,20 @@ export class GitHubWorkflow extends PipelineBase {
   }
 
   private addJobOutput(jobId: string, output: github.JobStepOutput) {
-    this.jobOutputs[jobId] = output;
+    if (this.jobOutputs[jobId] === undefined) {
+      this.jobOutputs[jobId] = [output];
+    } else {
+      this.jobOutputs[jobId].push(output);
+    }
   }
 
   private jobForScriptStep(node: AGraphNode, step: ShellStep): Job {
     const envVariables: Record<string, string> = {};
     for (const [envName, ref] of Object.entries(step.envFromCfnOutputs)) {
-      const [jobId, stepId] = this.findStackOfOutput(ref, node);
+      const jobId = this.findStackOfOutput(ref, node);
       this.addJobOutput(jobId, {
         outputName: ref.outputName,
-        stepId,
+        stepId: 'Deploy',
       });
       envVariables[envName] = `\${{ needs.${jobId}.outputs.${ref.outputName} }}`;
     }
