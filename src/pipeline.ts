@@ -387,7 +387,8 @@ export class GitHubWorkflow extends PipelineBase {
         return [dep.uniqueId, dep.data.stack.stackArtifactId];
       }
     }
-    throw new Error('Should have found stack but did not');
+    // Should never happen
+    throw new Error(`The output ${ref.outputName} is not referenced by any of the dependent stacks!`);
   }
 
   private addJobOutput(jobId: string, output: github.JobStepOutput) {
@@ -402,7 +403,7 @@ export class GitHubWorkflow extends PipelineBase {
         outputName: ref.outputName,
         stepId,
       });
-      envVariables[envName.toUpperCase()] = `\${{ needs.${jobId}.outputs.${ref.outputName} }}`;
+      envVariables[envName] = `\${{ needs.${jobId}.outputs.${ref.outputName} }}`;
     }
 
     const downloadInputs = new Array<github.JobStep>();
