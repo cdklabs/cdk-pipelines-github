@@ -370,7 +370,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: cdk.out
-          path: temp/cdk.out
+          path: temp.out
       - name: Install
         run: npm install --no-save cdk-assets
       - uses: aws-actions/configure-aws-credentials@v1
@@ -394,7 +394,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: cdk.out
-          path: temp/cdk.out
+          path: temp.out
       - name: Install
         run: npm install --no-save cdk-assets
       - uses: aws-actions/configure-aws-credentials@v1

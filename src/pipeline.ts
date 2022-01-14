@@ -127,7 +127,7 @@ export class GitHubWorkflow extends PipelineBase {
   protected doBuildPipeline() {
     const app = Stage.of(this);
     if (!app) { throw new Error('');}
-    const cdkoutPath = path.resolve(app?.outdir);
+    const cdkoutDir = app?.outdir;
 
     const jobs = new Array<Job>();
 
@@ -147,7 +147,7 @@ export class GitHubWorkflow extends PipelineBase {
       for (const tranche of tranches) {
         for (const node of tranche) {
           const job = this.jobForNode(node, {
-            assemblyPath: cdkoutPath,
+            assemblyDir: cdkoutDir,
             structure,
           });
 
@@ -235,11 +235,10 @@ export class GitHubWorkflow extends PipelineBase {
 
   private jobForAssetPublish(node: AGraphNode, assets: StackAsset[], options: Context): Job {
     const installSuffix = this.cdkCliVersion ? `@${this.cdkCliVersion}` : '';
-    const pathDirectories = this.workflowPath.split(path.sep);
-    const cdkoutDir = path.join(pathDirectories.slice(0, pathDirectories.indexOf('.github')).join(path.sep), 'cdk.out');
+    const cdkoutDir = options.assemblyDir;
 
     // create one file and make one step
-    const relativeToAssembly = (p: string) => path.posix.join(cdkoutDir, path.relative(options.assemblyPath, p));
+    const relativeToAssembly = (p: string) => path.posix.join(cdkoutDir, path.relative(path.resolve(cdkoutDir), p));
     const fileContents: string[] = ['set -x'].concat(assets.map((asset) => {
       return `npx cdk-assets --path "${relativeToAssembly(asset.assetManifestPath)}" --verbose publish "${asset.assetSelector}"`;
     }));
@@ -542,9 +541,9 @@ interface Context {
   readonly structure: PipelineGraph;
 
   /**
-   * Full path to `cdk.out` directory.
+   * Name of cloud assembly directory.
    */
-  readonly assemblyPath: string;
+  readonly assemblyDir: string;
 }
 
 interface Job {
