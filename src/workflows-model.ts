@@ -74,7 +74,7 @@ export interface Job {
    * A map of outputs for a job. Job outputs are available to all downstream
    * jobs that depend on this job.
    */
-  readonly outputs?: Record<string, JobStepOutput>;
+  readonly outputs?: Record<string, string>;
 
   /**
    * A map of environment variables that are available to all steps in the
