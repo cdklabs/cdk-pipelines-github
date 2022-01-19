@@ -45,12 +45,8 @@ jobs:
           aws-region: us-west-2
           role-skip-session-tagging: true
           role-duration-seconds: 1800
-      - name: Publish edf2c6bcaf00190295ae3fb871034a825a9bc599ce0c57bde46ed35fe45a9718
-          (template)
-        run: npx cdk-assets --path
-          \\"cdk.out/assembly-StageA/StageABucketStackEAC67DBE.assets.json\\"
-          --verbose publish
-          \\"edf2c6bcaf00190295ae3fb871034a825a9bc599ce0c57bde46ed35fe45a9718:111111111111-us-east-1\\"
+      - name: Publish Assets-FileAsset1
+        run: /bin/bash ./cdk.out/publish-Assets-FileAsset1-step.sh
   Assets-FileAsset2:
     name: Publish Assets Assets-FileAsset2
     needs:
@@ -70,18 +66,8 @@ jobs:
           aws-region: us-west-2
           role-skip-session-tagging: true
           role-duration-seconds: 1800
-      - name: \\"Publish bdb08b9984816ecf43301a0c6d8913e270ee2448940b6b95e430dd222a4d90be
-          \\"
-        run: npx cdk-assets --path
-          \\"cdk.out/assembly-StageA/StageABucketStackEAC67DBE.assets.json\\"
-          --verbose publish
-          \\"bdb08b9984816ecf43301a0c6d8913e270ee2448940b6b95e430dd222a4d90be:111111111111-us-east-1\\"
-      - name: \\"Publish bdb08b9984816ecf43301a0c6d8913e270ee2448940b6b95e430dd222a4d90be
-          \\"
-        run: npx cdk-assets --path
-          \\"cdk.out/assembly-StageB/StageBBucketStackDF3FFF07.assets.json\\"
-          --verbose publish
-          \\"bdb08b9984816ecf43301a0c6d8913e270ee2448940b6b95e430dd222a4d90be:222222222222-eu-west-2\\"
+      - name: Publish Assets-FileAsset2
+        run: /bin/bash ./cdk.out/publish-Assets-FileAsset2-step.sh
   Assets-FileAsset3:
     name: Publish Assets Assets-FileAsset3
     needs:
@@ -101,12 +87,8 @@ jobs:
           aws-region: us-west-2
           role-skip-session-tagging: true
           role-duration-seconds: 1800
-      - name: Publish c6eb397e9674810c84c295ca34efc7dd668cd429b6b9ae23d55951827cb0b25e
-          (template)
-        run: npx cdk-assets --path
-          \\"cdk.out/assembly-StageA/StageAFunctionStackD42C27B8.assets.json\\"
-          --verbose publish
-          \\"c6eb397e9674810c84c295ca34efc7dd668cd429b6b9ae23d55951827cb0b25e:111111111111-us-east-1\\"
+      - name: Publish Assets-FileAsset3
+        run: /bin/bash ./cdk.out/publish-Assets-FileAsset3-step.sh
   Assets-FileAsset4:
     name: Publish Assets Assets-FileAsset4
     needs:
@@ -126,18 +108,8 @@ jobs:
           aws-region: us-west-2
           role-skip-session-tagging: true
           role-duration-seconds: 1800
-      - name: \\"Publish 110e18dfbcf5cf9d2a3778bf70a12ceccf9eb10d7dd493ef917073e32450a46c
-          \\"
-        run: npx cdk-assets --path
-          \\"cdk.out/assembly-StageA/StageAFunctionStackD42C27B8.assets.json\\"
-          --verbose publish
-          \\"110e18dfbcf5cf9d2a3778bf70a12ceccf9eb10d7dd493ef917073e32450a46c:111111111111-us-east-1\\"
-      - name: \\"Publish 110e18dfbcf5cf9d2a3778bf70a12ceccf9eb10d7dd493ef917073e32450a46c
-          \\"
-        run: npx cdk-assets --path
-          \\"cdk.out/assembly-StageB/StageBFunctionStack18098DCD.assets.json\\"
-          --verbose publish
-          \\"110e18dfbcf5cf9d2a3778bf70a12ceccf9eb10d7dd493ef917073e32450a46c:222222222222-eu-west-2\\"
+      - name: Publish Assets-FileAsset4
+        run: /bin/bash ./cdk.out/publish-Assets-FileAsset4-step.sh
   Assets-FileAsset5:
     name: Publish Assets Assets-FileAsset5
     needs:
@@ -157,12 +129,8 @@ jobs:
           aws-region: us-west-2
           role-skip-session-tagging: true
           role-duration-seconds: 1800
-      - name: Publish 0251b0cee8f2645a2a13ae23fd40a19825d67955f2cbcd1576812addf4065a29
-          (template)
-        run: npx cdk-assets --path
-          \\"cdk.out/assembly-StageB/StageBBucketStackDF3FFF07.assets.json\\"
-          --verbose publish
-          \\"0251b0cee8f2645a2a13ae23fd40a19825d67955f2cbcd1576812addf4065a29:222222222222-eu-west-2\\"
+      - name: Publish Assets-FileAsset5
+        run: /bin/bash ./cdk.out/publish-Assets-FileAsset5-step.sh
   Assets-FileAsset6:
     name: Publish Assets Assets-FileAsset6
     needs:
@@ -182,12 +150,8 @@ jobs:
           aws-region: us-west-2
           role-skip-session-tagging: true
           role-duration-seconds: 1800
-      - name: Publish fb62e56a6c1688f9100e146f40f609285a8d795b319efec11fa84896917aebf5
-          (template)
-        run: npx cdk-assets --path
-          \\"cdk.out/assembly-StageB/StageBFunctionStack18098DCD.assets.json\\"
-          --verbose publish
-          \\"fb62e56a6c1688f9100e146f40f609285a8d795b319efec11fa84896917aebf5:222222222222-eu-west-2\\"
+      - name: Publish Assets-FileAsset6
+        run: /bin/bash ./cdk.out/publish-Assets-FileAsset6-step.sh
   StageA-BucketStack-Deploy:
     name: Deploy StageABucketStackEAC67DBE
     permissions:
@@ -370,7 +334,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: cdk.out
-          path: cdk.out
+          path: temp.out
       - name: Install
         run: npm install --no-save cdk-assets
       - uses: aws-actions/configure-aws-credentials@v1
@@ -380,12 +344,8 @@ jobs:
           aws-region: us-west-2
           role-skip-session-tagging: true
           role-duration-seconds: 1800
-      - name: Publish 52c2fe7f725481c405841b55cfb41b81965fadaa71665186ffb031ecd3f0ef36
-          (template)
-        run: npx cdk-assets --path
-          \\"cdk.out/assembly-MyStack/MyStack098574E7.assets.json\\" --verbose
-          publish
-          \\"52c2fe7f725481c405841b55cfb41b81965fadaa71665186ffb031ecd3f0ef36:111111111111-us-east-1\\"
+      - name: Publish Assets-FileAsset1
+        run: /bin/bash ./cdk.out/publish-Assets-FileAsset1-step.sh
   Assets-FileAsset2:
     name: Publish Assets Assets-FileAsset2
     needs:
@@ -398,7 +358,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: cdk.out
-          path: cdk.out
+          path: temp.out
       - name: Install
         run: npm install --no-save cdk-assets
       - uses: aws-actions/configure-aws-credentials@v1
@@ -408,12 +368,8 @@ jobs:
           aws-region: us-west-2
           role-skip-session-tagging: true
           role-duration-seconds: 1800
-      - name: \\"Publish 110e18dfbcf5cf9d2a3778bf70a12ceccf9eb10d7dd493ef917073e32450a46c
-          \\"
-        run: npx cdk-assets --path
-          \\"cdk.out/assembly-MyStack/MyStack098574E7.assets.json\\" --verbose
-          publish
-          \\"110e18dfbcf5cf9d2a3778bf70a12ceccf9eb10d7dd493ef917073e32450a46c:111111111111-us-east-1\\"
+      - name: Publish Assets-FileAsset2
+        run: /bin/bash ./cdk.out/publish-Assets-FileAsset2-step.sh
   MyStack-MyStack-Deploy:
     name: Deploy MyStack098574E7
     permissions:
