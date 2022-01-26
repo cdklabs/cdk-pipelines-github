@@ -77,6 +77,14 @@ export interface GitHubWorkflowProps extends PipelineBaseProps {
    * @default []
    */
   readonly postBuildSteps?: github.JobStep[];
+
+  /**
+   * Names of Docker Hub secrets that include Docker Hub credentials for
+   * deployment.
+   *
+   * @default - `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN`.
+   */
+  readonly dockerHubCredentials?: DockerHubCredentialsSecrets;
 }
 
 /**
@@ -89,6 +97,7 @@ export class GitHubWorkflow extends PipelineBase {
   private readonly workflowTriggers: github.Triggers;
   private readonly preSynthed: boolean;
   private readonly awsCredentials: AwsCredentialsSecrets;
+  private readonly dockerHubCredentials: DockerHubCredentialsSecrets;
   private readonly cdkCliVersion?: string;
   private readonly buildContainer?: github.ContainerOptions;
   private readonly preBuildSteps: github.JobStep[];
@@ -107,6 +116,11 @@ export class GitHubWorkflow extends PipelineBase {
     this.awsCredentials = props.awsCredentials ?? {
       accessKeyId: 'AWS_ACCESS_KEY_ID',
       secretAccessKey: 'AWS_SECRET_ACCESS_KEY',
+    };
+
+    this.dockerHubCredentials = props.dockerHubCredentials ?? {
+      username: 'DOCKERHUB_USERNAME',
+      personalAccessToken: 'DOCKERHUB_TOKEN',
     };
 
     this.workflowPath = props.workflowPath ?? '.github/workflows/deploy.yml';
@@ -494,6 +508,34 @@ export class GitHubWorkflow extends PipelineBase {
     ];
   }
 
+  private stepsToConfigureDocker() {
+    const params: Record<string, any> = {
+      'username': `\${{ secrets.${this.dockerHubCredentials.username} }}`,
+      'password': `\${{ secrets.${this.dockerHubCredentials.personalAccessToken} }}`,
+    };
+
+    return [
+      {
+        uses: 'docker/login-action@v1',
+        with: params,
+      },
+    ];
+  }
+
+  private stepsToConfigureEcr() {
+    const params: Record<string, any> = {
+      'username': `\${{ secrets.${this.awsCredentials.accessKeyId} }}`,
+      'password': `\${{ secrets.${this.awsCredentials.secretAccessKey} }}`,
+    };
+
+    return [
+      {
+        uses: 'docker/login-action@v1',
+        with: params,
+      },
+    ];
+  }
+
   private stepsToDownloadAssembly(targetDir: string): github.JobStep[] {
     if (this.preSynthed) {
       return this.stepsToCheckout();
@@ -601,6 +643,18 @@ export interface AwsCredentialsSecrets {
    * @default - no session token is used
    */
   readonly sessionToken?: string;
+}
+
+export interface DockerHubCredentialsSecrets {
+  /**
+   * @default "DOCKERHUB_USERNAME"
+   */
+  readonly username?: string;
+
+  /**
+   * @default "DOCKERHUB_TOKEN"
+   */
+  readonly personalAccessToken?: string;
 }
 
 export function* flatten<A>(xs: Iterable<A[]>): IterableIterator<A> {
