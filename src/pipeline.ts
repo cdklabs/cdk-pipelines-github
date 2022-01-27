@@ -1,6 +1,7 @@
 import { mkdirSync, writeFileSync } from 'fs';
 import * as path from 'path';
 import { Stage } from 'aws-cdk-lib';
+//import { IRole } from 'aws-cdk-lib/aws-iam';
 import { EnvironmentPlaceholders } from 'aws-cdk-lib/cx-api';
 import { PipelineBase, PipelineBaseProps, ShellStep, StackAsset, StackDeployment, StackOutputReference, Step } from 'aws-cdk-lib/pipelines';
 import { AGraphNode, PipelineGraph, Graph, isGraph } from 'aws-cdk-lib/pipelines/lib/helpers-internal';
@@ -61,6 +62,11 @@ export interface GitHubWorkflowProps extends PipelineBaseProps {
   readonly awsCredentials?: AwsCredentialsSecrets;
 
   /**
+   * @default - GitHub repository secrets are used instead of OpenId.
+   */
+  readonly awsOpenIdConnectRole?: string; //IRole;
+
+  /**
    * Build container options.
    * @default - GitHub defaults
    */
@@ -89,6 +95,7 @@ export class GitHubWorkflow extends PipelineBase {
   private readonly workflowTriggers: github.Triggers;
   private readonly preSynthed: boolean;
   private readonly awsCredentials: AwsCredentialsSecrets;
+  private readonly awsOpenIdConnectRole?: string; //IRole;
   private readonly cdkCliVersion?: string;
   private readonly buildContainer?: github.ContainerOptions;
   private readonly preBuildSteps: github.JobStep[];
@@ -103,6 +110,7 @@ export class GitHubWorkflow extends PipelineBase {
     this.buildContainer = props.buildContainer;
     this.preBuildSteps = props.preBuildSteps ?? [];
     this.postBuildSteps = props.postBuildSteps ?? [];
+    this.awsOpenIdConnectRole = props.awsOpenIdConnectRole;
 
     this.awsCredentials = props.awsCredentials ?? {
       accessKeyId: 'AWS_ACCESS_KEY_ID',
@@ -149,6 +157,7 @@ export class GitHubWorkflow extends PipelineBase {
           const job = this.jobForNode(node, {
             assemblyDir: cdkoutDir,
             structure,
+            openIdConnection: this.awsOpenIdConnectRole ? true : false,
           });
 
           if (job) {
@@ -228,7 +237,7 @@ export class GitHubWorkflow extends PipelineBase {
         throw new Error('"prepare" is not supported by GitHub worflows');
 
       case 'execute':
-        return this.jobForDeploy(node, node.data.stack, node.data.captureOutputs);
+        return this.jobForDeploy(node, node.data.stack, node.data.captureOutputs, options);
 
       case 'step':
         if (node.data.isBuildStep) {
@@ -267,6 +276,7 @@ export class GitHubWorkflow extends PipelineBase {
         needs: this.renderDependencies(node),
         permissions: {
           contents: github.JobPermission.READ,
+          'id-token': github.JobPermission.WRITE,
         },
         runsOn: RUNS_ON,
         steps: [
@@ -275,14 +285,14 @@ export class GitHubWorkflow extends PipelineBase {
             name: 'Install',
             run: `npm install --no-save cdk-assets${installSuffix}`,
           },
-          ...this.stepsToConfigureAws({ region: 'us-west-2' }),
+          ...this.stepsToConfigureAws(options.openIdConnection, { region: 'us-west-2' }),
           publishStep,
         ],
       },
     };
   }
 
-  private jobForDeploy(node: AGraphNode, stack: StackDeployment, _captureOutputs: boolean): Job {
+  private jobForDeploy(node: AGraphNode, stack: StackDeployment, _captureOutputs: boolean, options: Context): Job {
     const region = stack.region;
     const account = stack.account;
     if (!region || !account) {
@@ -316,11 +326,14 @@ export class GitHubWorkflow extends PipelineBase {
       id: node.uniqueId,
       definition: {
         name: `Deploy ${stack.stackArtifactId}`,
-        permissions: { contents: github.JobPermission.NONE },
+        permissions: { 
+          contents: github.JobPermission.NONE,
+          'id-token': github.JobPermission.WRITE,
+        },
         needs: this.renderDependencies(node),
         runsOn: RUNS_ON,
         steps: [
-          ...this.stepsToConfigureAws({ region, assumeRoleArn }),
+          ...this.stepsToConfigureAws(options.openIdConnection, { region, assumeRoleArn }),
           {
             id: 'Deploy',
             uses: 'aws-actions/aws-cloudformation-github-deploy@v1',
@@ -468,22 +481,31 @@ export class GitHubWorkflow extends PipelineBase {
     };
   }
 
-  private stepsToConfigureAws({ region, assumeRoleArn }: { region: string; assumeRoleArn?: string }): github.JobStep[] {
-    const params: Record<string, any> = {
-      'aws-access-key-id': `\${{ secrets.${this.awsCredentials.accessKeyId} }}`,
-      'aws-secret-access-key': `\${{ secrets.${this.awsCredentials.secretAccessKey} }}`,
-      'aws-region': region,
-      'role-skip-session-tagging': true,
-      'role-duration-seconds': 30 * 60,
-    };
-
-    if (this.awsCredentials.sessionToken) {
-      params['aws-session-token'] = `\${{ secrets.${this.awsCredentials.sessionToken} }}`;
-    }
-
-    if (assumeRoleArn) {
-      params['role-to-assume'] = assumeRoleArn;
-      params['role-external-id'] = 'Pipeline';
+  private stepsToConfigureAws(openId: boolean, { region, assumeRoleArn }: { region: string; assumeRoleArn?: string }): github.JobStep[] {
+    let params: Record<string, any> = {};
+    if (openId) {
+      params = {
+        'role-to-assume': this.awsOpenIdConnectRole,//?.roleArn,
+        'role-duration-seconds': 30 * 60,
+        'aws-region': region,
+      };
+    } else {
+      params = {
+        'aws-access-key-id': `\${{ secrets.${this.awsCredentials.accessKeyId} }}`,
+        'aws-secret-access-key': `\${{ secrets.${this.awsCredentials.secretAccessKey} }}`,
+        'aws-region': region,
+        'role-skip-session-tagging': true,
+        'role-duration-seconds': 30 * 60,
+      };
+  
+      if (this.awsCredentials.sessionToken) {
+        params['aws-session-token'] = `\${{ secrets.${this.awsCredentials.sessionToken} }}`;
+      }
+  
+      if (assumeRoleArn) {
+        params['role-to-assume'] = assumeRoleArn;
+        params['role-external-id'] = 'Pipeline';
+      }
     }
 
     return [
@@ -556,6 +578,11 @@ interface Context {
    * Name of cloud assembly directory.
    */
   readonly assemblyDir: string;
+
+  /**
+   * Use Github OIDC to connect to AWS
+   */
+  readonly openIdConnection: boolean;
 }
 
 interface Job {

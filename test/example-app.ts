@@ -4,6 +4,7 @@ import * as path from 'path';
 import { App, CfnOutput, RemovalPolicy, Stack, Stage, StageProps } from 'aws-cdk-lib';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as s3 from 'aws-cdk-lib/aws-s3';
+//import * as iam from 'aws-cdk-lib/aws-iam';
 import { EnvironmentUtils } from 'aws-cdk-lib/cx-api';
 import { ShellStep } from 'aws-cdk-lib/pipelines';
 import { GitHubWorkflow } from '../src';
@@ -34,6 +35,8 @@ export interface GitHubExampleAppProps {
    * @example aws://111111111111/us-east-2
    */
   readonly envB: string;
+
+  //readonly oidcRole: IRole;
 }
 
 /**
@@ -76,6 +79,7 @@ export class GitHubExampleApp extends App {
       postBuildSteps: [
         { run: 'echo post-build' },
       ],
+      awsOpenIdConnectRole: 'arn:aws:iam::489318732371:role/github-oidc-test',
     });
 
     const myStage = new MyStage(this, 'StageA', { env: EnvironmentUtils.parse(props.envA) });

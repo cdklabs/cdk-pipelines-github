@@ -151,6 +151,7 @@ export interface JobPermissions {
   readonly repositoryProjects?: JobPermission;
   readonly securityEvents?: JobPermission;
   readonly statuses?: JobPermission;
+  readonly ['id-token']?: JobPermission;
 }
 
 /**
