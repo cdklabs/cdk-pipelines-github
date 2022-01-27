@@ -5,7 +5,7 @@
 Name|Description
 ----|-----------
 [GitHubWorkflow](#cdk-pipelines-github-githubworkflow)|CDK Pipelines for GitHub workflows.
-[GithubOidcProvider](#cdk-pipelines-github-githuboidcprovider)|Create a Github OIDC provider and accompanying role that trusts the provider.
+[GithubOidcProviderRole](#cdk-pipelines-github-githuboidcproviderrole)|Create a Github OIDC provider and accompanying role that trusts the provider.
 
 
 **Structs**
@@ -123,7 +123,7 @@ protected doBuildPipeline(): void
 
 
 
-## class GithubOidcProvider  <a id="cdk-pipelines-github-githuboidcprovider"></a>
+## class GithubOidcProviderRole  <a id="cdk-pipelines-github-githuboidcproviderrole"></a>
 
 Create a Github OIDC provider and accompanying role that trusts the provider.
 
@@ -139,7 +139,7 @@ __Extends__: [Construct](#constructs-construct)
 
 
 ```ts
-new GithubOidcProvider(scope: Construct, id: string, props: GithubOidcProps)
+new GithubOidcProviderRole(scope: Construct, id: string, props: GithubOidcProps)
 ```
 
 * **scope** (<code>[Construct](#constructs-construct)</code>)  *No description*

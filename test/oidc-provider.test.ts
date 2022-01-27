@@ -1,13 +1,13 @@
 import { Stack } from 'aws-cdk-lib';
+import { Template } from 'aws-cdk-lib/assertions';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import { GithubOidcProviderRole } from '../src';
-import { Template } from 'aws-cdk-lib/assertions';
 
 describe('github oidc provider', () => {
   test('basic configuration', () => {
     // GIVEN
     const stack = new Stack();
-    
+
     // WHEN
     new GithubOidcProviderRole(stack, 'MyProvider', {
       username: 'myuser',
@@ -16,7 +16,7 @@ describe('github oidc provider', () => {
 
     // THEN
     // has custom resource that creates provider
-    Template.fromStack(stack).resourceCountIs('Custom::AWSCDKOpenIdConnectProvider', 1);    
+    Template.fromStack(stack).resourceCountIs('Custom::AWSCDKOpenIdConnectProvider', 1);
 
 
     // has iam role
@@ -44,7 +44,7 @@ describe('github oidc provider', () => {
   test('provided provider', () => {
     // GIVEN
     const stack = new Stack();
-    
+
     // WHEN
     new GithubOidcProviderRole(stack, 'MyProvider', {
       username: 'myuser',
@@ -58,7 +58,7 @@ describe('github oidc provider', () => {
 
     // THEN
     // no custom resource created
-    Template.fromStack(stack).resourceCountIs('Custom::AWSCDKOpenIdConnectProvider', 0);    
+    Template.fromStack(stack).resourceCountIs('Custom::AWSCDKOpenIdConnectProvider', 0);
 
     // has iam role
     Template.fromStack(stack).hasResourceProperties('AWS::IAM::Role', {
