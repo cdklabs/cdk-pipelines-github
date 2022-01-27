@@ -1086,10 +1086,10 @@ available-typed-arrays@^1.0.5:
   resolved "https://registry.yarnpkg.com/available-typed-arrays/-/available-typed-arrays-1.0.5.tgz#92f95616501069d07d10edb2fc37d3e1c65123b7"
   integrity sha512-DMD0KiN46eipeziST1LPP/STfDU0sufISXmjSgvVsoU2tqxctQeASejWcfNtxYKqETM1UxQ8sp2OrSBWpHY6sw==
 
-aws-cdk-lib@2.8.0:
-  version "2.8.0"
-  resolved "https://registry.yarnpkg.com/aws-cdk-lib/-/aws-cdk-lib-2.8.0.tgz#11e1d21705bd7b60bd9fdd4e230ddd9202863fd0"
-  integrity sha512-i6vys7oGc77a6LpXuBF3434wyx6X7WUS/BPaRFAf52LWb8PPlq/pSOVP5kkKPgqCElvAzQatqMZuoeT6tbincQ==
+aws-cdk-lib@2.9.0:
+  version "2.9.0"
+  resolved "https://registry.yarnpkg.com/aws-cdk-lib/-/aws-cdk-lib-2.9.0.tgz#8281e8b75eab8e0671d5fe317b132a3f23f8ffe1"
+  integrity sha512-udr55VZjPSBYQgz/lF7QVr7zILdtuOoSRELpNlGTOQIU+HeHd6/x0HU9/5F8a/Yx4F8dWwz/uQ43t38A/n6bUQ==
   dependencies:
     "@balena/dockerignore" "^1.0.2"
     case "1.6.3"
@@ -1306,9 +1306,9 @@ camelcase@^6.2.0:
   integrity sha512-Gmy6FhYlCY7uOElZUSbxo2UCDH8owEk996gkbrpsgGtrJLM3J7jGxl9Ic7Qwwj4ivOE5AWZWRMecDdF7hqGjFA==
 
 caniuse-lite@^1.0.30001286:
-  version "1.0.30001301"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001301.tgz#ebc9086026534cab0dab99425d9c3b4425e5f450"
-  integrity sha512-csfD/GpHMqgEL3V3uIgosvh+SVIQvCh43SNu9HRbP1lnxkKm1kjDG4f32PP571JplkLjfS+mg2p1gxR7MYrrIA==
+  version "1.0.30001302"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001302.tgz#da57ce61c51177ef3661eeed7faef392d3790aaa"
+  integrity sha512-YYTMO+tfwvgUN+1ZnRViE53Ma1S/oETg+J2lISsqi/ZTNThj3ZYBOKP2rHwJc37oCsPqAzJ3w2puZHn0xlLPPw==
 
 case@1.6.3, case@^1.6.3:
   version "1.6.3"
@@ -2367,9 +2367,9 @@ flat-cache@^3.0.4:
     rimraf "^3.0.2"
 
 flatted@^3.1.0, flatted@^3.2.4:
-  version "3.2.4"
-  resolved "https://registry.yarnpkg.com/flatted/-/flatted-3.2.4.tgz#28d9969ea90661b5134259f312ab6aa7929ac5e2"
-  integrity sha512-8/sOawo8tJ4QOBX8YlQBMxL8+RLZfxMQOif9o0KUKTNTjMYElWPE0r/m5VNFxTRd0NSw8qSy8dajrwX4RYI1Hw==
+  version "3.2.5"
+  resolved "https://registry.yarnpkg.com/flatted/-/flatted-3.2.5.tgz#76c8584f4fc843db64702a6bd04ab7a8bd666da3"
+  integrity sha512-WIWGi2L3DyTUvUrwRKgGi9TwxQMUEqPOPQBVi71R96jZXJdFskXEmf54BoZaS1kknGODoIGASGEzBUYdyMCBJg==
 
 foreach@^2.0.5:
   version "2.0.5"
@@ -4684,10 +4684,10 @@ progress@^2.0.3:
   resolved "https://registry.yarnpkg.com/progress/-/progress-2.0.3.tgz#7e8cf8d8f5b8f239c1bc68beb4eb78567d572ef8"
   integrity sha512-7PiHtLll5LdnKIMw100I+8xJXR5gW2QwWYkT6iJva0bXitZKa/XMrSbdmg3r2Xnaidz9Qumd0VPaMrZlF9V9sA==
 
-projen@^0.52.0:
-  version "0.52.0"
-  resolved "https://registry.yarnpkg.com/projen/-/projen-0.52.0.tgz#3829291c2162dbe4fffaa21624af430ed5fb3d35"
-  integrity sha512-HrUXs4XKtuFQbFzS25q1UN9W8XqSBii4DRRfkgsUuAcfJwkNSCqFaLX1MrZNsw7a5EnXjQsMPag2Rel8WbpeVA==
+projen@^0.52.3:
+  version "0.52.3"
+  resolved "https://registry.yarnpkg.com/projen/-/projen-0.52.3.tgz#d5745a3ec7d56a7e64f75b84184c5200e6845eff"
+  integrity sha512-x0+Yt8R2/IYOgPt7vHZij42wx81GdcX01ainkgwK2uI11M0LnCJ+Xeg7y6CAjGqteAxUP/w4ZH6veg1GYb14ow==
   dependencies:
     "@iarna/toml" "^2.2.5"
     case "^1.6.3"
