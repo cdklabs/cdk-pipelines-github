@@ -1,7 +1,7 @@
 import { mkdirSync, writeFileSync } from 'fs';
 import * as path from 'path';
 import { Stage } from 'aws-cdk-lib';
-//import { IRole } from 'aws-cdk-lib/aws-iam';
+import { IRole } from 'aws-cdk-lib/aws-iam';
 import { EnvironmentPlaceholders } from 'aws-cdk-lib/cx-api';
 import { PipelineBase, PipelineBaseProps, ShellStep, StackAsset, StackDeployment, StackOutputReference, Step } from 'aws-cdk-lib/pipelines';
 import { AGraphNode, PipelineGraph, Graph, isGraph } from 'aws-cdk-lib/pipelines/lib/helpers-internal';
@@ -64,7 +64,7 @@ export interface GitHubWorkflowProps extends PipelineBaseProps {
   /**
    * @default - GitHub repository secrets are used instead of OpenId.
    */
-  readonly awsOpenIdConnectRole?: string; //IRole;
+  readonly awsOpenIdConnectRole?: IRole;
 
   /**
    * Build container options.
@@ -95,7 +95,7 @@ export class GitHubWorkflow extends PipelineBase {
   private readonly workflowTriggers: github.Triggers;
   private readonly preSynthed: boolean;
   private readonly awsCredentials: AwsCredentialsSecrets;
-  private readonly awsOpenIdConnectRole?: string; //IRole;
+  private readonly awsOpenIdConnectRole?: IRole;
   private readonly cdkCliVersion?: string;
   private readonly buildContainer?: github.ContainerOptions;
   private readonly preBuildSteps: github.JobStep[];
@@ -269,15 +269,20 @@ export class GitHubWorkflow extends PipelineBase {
       run: `/bin/bash ./cdk.out/${path.relative(cdkoutDir, publishStepFile)}`,
     };
 
+    const permissions: github.JobPermissions = {
+      contents: github.JobPermission.READ,
+    };
+
+    if (options.openIdConnection) {
+      permissions['id-token'] = github.JobPermission.WRITE;
+    }
+
     return {
       id: node.uniqueId,
       definition: {
         name: `Publish Assets ${node.uniqueId}`,
         needs: this.renderDependencies(node),
-        permissions: {
-          contents: github.JobPermission.READ,
-          'id-token': github.JobPermission.WRITE,
-        },
+        permissions,
         runsOn: RUNS_ON,
         steps: [
           ...this.stepsToDownloadAssembly(cdkoutDir),
@@ -322,14 +327,19 @@ export class GitHubWorkflow extends PipelineBase {
     }
     const assumeRoleArn = stack.assumeRoleArn ? resolve(stack.assumeRoleArn) : undefined;
 
+    const permissions: github.JobPermissions = {
+      contents: github.JobPermission.READ,
+    };
+
+    if (options.openIdConnection) {
+      permissions['id-token'] = github.JobPermission.WRITE;
+    }
+
     return {
       id: node.uniqueId,
       definition: {
         name: `Deploy ${stack.stackArtifactId}`,
-        permissions: { 
-          contents: github.JobPermission.NONE,
-          'id-token': github.JobPermission.WRITE,
-        },
+        permissions,
         needs: this.renderDependencies(node),
         runsOn: RUNS_ON,
         steps: [
@@ -485,7 +495,7 @@ export class GitHubWorkflow extends PipelineBase {
     let params: Record<string, any> = {};
     if (openId) {
       params = {
-        'role-to-assume': this.awsOpenIdConnectRole,//?.roleArn,
+        'role-to-assume': this.awsOpenIdConnectRole?.roleArn,
         'role-duration-seconds': 30 * 60,
         'aws-region': region,
       };
@@ -497,11 +507,11 @@ export class GitHubWorkflow extends PipelineBase {
         'role-skip-session-tagging': true,
         'role-duration-seconds': 30 * 60,
       };
-  
+
       if (this.awsCredentials.sessionToken) {
         params['aws-session-token'] = `\${{ secrets.${this.awsCredentials.sessionToken} }}`;
       }
-  
+
       if (assumeRoleArn) {
         params['role-to-assume'] = assumeRoleArn;
         params['role-external-id'] = 'Pipeline';

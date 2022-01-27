@@ -140,19 +140,21 @@ export interface Job {
  * specified are set to `JobPermission.NONE`, instead of the default behavior
  * when none is specified.
  */
-export interface JobPermissions {
-  readonly actions?: JobPermission;
-  readonly checks?: JobPermission;
-  readonly contents?: JobPermission;
-  readonly deployments?: JobPermission;
-  readonly issues?: JobPermission;
-  readonly packages?: JobPermission;
-  readonly pullRequests?: JobPermission;
-  readonly repositoryProjects?: JobPermission;
-  readonly securityEvents?: JobPermission;
-  readonly statuses?: JobPermission;
-  readonly ['id-token']?: JobPermission;
-}
+export type JobPermissions = Record<string, JobPermission>;//{[key in JobPermissionType]?: JobPermission };
+
+// export enum JobPermissionType {
+//   ACTIONS = 'actions',
+//   CHECKS = 'checks',
+//   CONTENTS = 'contents',
+//   DEPLOYMENTS = 'deployments',
+//   ISSUES = 'issues',
+//   PACKAGES = 'packages',
+//   PULL_REQUESTS = 'pullRequests',
+//   REPOSITORY_PROJECTS = 'repositoryProjects',
+//   SECURITY_EVENTS = 'securityEvents',
+//   STATUSES = 'statuses',
+//   ID_TOKEN = 'id-token',
+// }
 
 /**
  * Access level for workflow permission scopes.

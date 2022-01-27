@@ -5,6 +5,7 @@
 Name|Description
 ----|-----------
 [GitHubWorkflow](#cdk-pipelines-github-githubworkflow)|CDK Pipelines for GitHub workflows.
+[GithubOidcProvider](#cdk-pipelines-github-githuboidcprovider)|Create a Github OIDC provider and accompanying role that trusts the provider.
 
 
 **Structs**
@@ -23,13 +24,13 @@ Name|Description
 [DeploymentStatusOptions](#cdk-pipelines-github-deploymentstatusoptions)|The Deployment status event accepts no options.
 [ForkOptions](#cdk-pipelines-github-forkoptions)|The Fork event accepts no options.
 [GitHubWorkflowProps](#cdk-pipelines-github-githubworkflowprops)|Props for `GitHubWorkflow`.
+[GithubOidcProps](#cdk-pipelines-github-githuboidcprops)|*No description*
 [GollumOptions](#cdk-pipelines-github-gollumoptions)|The Gollum event accepts no options.
 [IssueCommentOptions](#cdk-pipelines-github-issuecommentoptions)|Issue comment options.
 [IssuesOptions](#cdk-pipelines-github-issuesoptions)|Issues options.
 [Job](#cdk-pipelines-github-job)|A GitHub Workflow job definition.
 [JobDefaults](#cdk-pipelines-github-jobdefaults)|Default settings for all steps in the job.
 [JobMatrix](#cdk-pipelines-github-jobmatrix)|A job matrix.
-[JobPermissions](#cdk-pipelines-github-jobpermissions)|The available scopes and access values for workflow permissions.
 [JobStep](#cdk-pipelines-github-jobstep)|A job step.
 [JobStepOutput](#cdk-pipelines-github-jobstepoutput)|An output binding for a job.
 [JobStrategy](#cdk-pipelines-github-jobstrategy)|A strategy creates a build matrix for your jobs.
@@ -85,6 +86,7 @@ new GitHubWorkflow(scope: Construct, id: string, props: GitHubWorkflowProps)
 * **props** (<code>[GitHubWorkflowProps](#cdk-pipelines-github-githubworkflowprops)</code>)  *No description*
   * **synth** (<code>[pipelines.IFileSetProducer](#aws-cdk-lib-pipelines-ifilesetproducer)</code>)  The build step that produces the CDK Cloud Assembly. 
   * **awsCredentials** (<code>[AwsCredentialsSecrets](#cdk-pipelines-github-awscredentialssecrets)</code>)  Names of GitHub repository secrets that include AWS credentials for deployment. __*Default*__: `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.
+  * **awsOpenIdConnectRole** (<code>[aws_iam.IRole](#aws-cdk-lib-aws-iam-irole)</code>)  *No description* __*Default*__: GitHub repository secrets are used instead of OpenId.
   * **buildContainer** (<code>[ContainerOptions](#cdk-pipelines-github-containeroptions)</code>)  Build container options. __*Default*__: GitHub defaults
   * **cdkCliVersion** (<code>string</code>)  Version of the CDK CLI to use. __*Default*__: automatic
   * **postBuildSteps** (<code>Array<[JobStep](#cdk-pipelines-github-jobstep)></code>)  GitHub workflow steps to execute after build. __*Default*__: []
@@ -118,6 +120,44 @@ protected doBuildPipeline(): void
 
 
 
+
+
+
+## class GithubOidcProvider  <a id="cdk-pipelines-github-githuboidcprovider"></a>
+
+Create a Github OIDC provider and accompanying role that trusts the provider.
+
+This role can be used to authenticate against AWS instead of using long-standing
+Github secrets.
+
+__Implements__: [IConstruct](#constructs-iconstruct), [IDependable](#constructs-idependable)
+__Extends__: [Construct](#constructs-construct)
+
+### Initializer
+
+
+
+
+```ts
+new GithubOidcProvider(scope: Construct, id: string, props: GithubOidcProps)
+```
+
+* **scope** (<code>[Construct](#constructs-construct)</code>)  *No description*
+* **id** (<code>string</code>)  *No description*
+* **props** (<code>[GithubOidcProps](#cdk-pipelines-github-githuboidcprops)</code>)  *No description*
+  * **repository** (<code>string</code>)  The Github repository where your actions come from. 
+  * **username** (<code>string</code>)  Your Github username. 
+  * **branch** (<code>string</code>)  The branch that your actions originate. __*Default*__: 'main'
+  * **provider** (<code>[aws_iam.IOpenIdConnectProvider](#aws-cdk-lib-aws-iam-iopenidconnectprovider)</code>)  The Github OpenId Connect Provider. Must have provider url `https://token.actions.githubusercontent.com`. The audience must be `sts:amazonaws.com`. __*Default*__: a provider is created for you.
+
+
+
+### Properties
+
+
+Name | Type | Description 
+-----|------|-------------
+**oidcRole** | <code>[aws_iam.IRole](#aws-cdk-lib-aws-iam-irole)</code> | The role that is created for you.
 
 
 
@@ -248,6 +288,7 @@ Name | Type | Description
 -----|------|-------------
 **synth** | <code>[pipelines.IFileSetProducer](#aws-cdk-lib-pipelines-ifilesetproducer)</code> | The build step that produces the CDK Cloud Assembly.
 **awsCredentials**? | <code>[AwsCredentialsSecrets](#cdk-pipelines-github-awscredentialssecrets)</code> | Names of GitHub repository secrets that include AWS credentials for deployment.<br/>__*Default*__: `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.
+**awsOpenIdConnectRole**? | <code>[aws_iam.IRole](#aws-cdk-lib-aws-iam-irole)</code> | __*Default*__: GitHub repository secrets are used instead of OpenId.
 **buildContainer**? | <code>[ContainerOptions](#cdk-pipelines-github-containeroptions)</code> | Build container options.<br/>__*Default*__: GitHub defaults
 **cdkCliVersion**? | <code>string</code> | Version of the CDK CLI to use.<br/>__*Default*__: automatic
 **postBuildSteps**? | <code>Array<[JobStep](#cdk-pipelines-github-jobstep)></code> | GitHub workflow steps to execute after build.<br/>__*Default*__: []
@@ -256,6 +297,22 @@ Name | Type | Description
 **workflowName**? | <code>string</code> | Name of the workflow.<br/>__*Default*__: "deploy"
 **workflowPath**? | <code>string</code> | File path for the GitHub workflow.<br/>__*Default*__: ".github/workflows/deploy.yml"
 **workflowTriggers**? | <code>[Triggers](#cdk-pipelines-github-triggers)</code> | GitHub workflow triggers.<br/>__*Default*__: By default, workflow is triggered on push to the `main` branch and can also be triggered manually (`workflow_dispatch`).
+
+
+
+## struct GithubOidcProps  <a id="cdk-pipelines-github-githuboidcprops"></a>
+
+
+
+
+
+
+Name | Type | Description 
+-----|------|-------------
+**repository** | <code>string</code> | The Github repository where your actions come from.
+**username** | <code>string</code> | Your Github username.
+**branch**? | <code>string</code> | The branch that your actions originate.<br/>__*Default*__: 'main'
+**provider**? | <code>[aws_iam.IOpenIdConnectProvider](#aws-cdk-lib-aws-iam-iopenidconnectprovider)</code> | The Github OpenId Connect Provider. Must have provider url `https://token.actions.githubusercontent.com`. The audience must be `sts:amazonaws.com`.<br/>__*Default*__: a provider is created for you.
 
 
 
@@ -300,7 +357,7 @@ A GitHub Workflow job definition.
 
 Name | Type | Description 
 -----|------|-------------
-**permissions** | <code>[JobPermissions](#cdk-pipelines-github-jobpermissions)</code> | You can modify the default permissions granted to the GITHUB_TOKEN, adding or removing access as required, so that you only allow the minimum required access.
+**permissions** | <code>Map<string, [JobPermission](#cdk-pipelines-github-jobpermission)></code> | You can modify the default permissions granted to the GITHUB_TOKEN, adding or removing access as required, so that you only allow the minimum required access.
 **runsOn** | <code>string</code> | The type of machine to run the job on.
 **steps** | <code>Array<[JobStep](#cdk-pipelines-github-jobstep)></code> | A job contains a sequence of tasks called steps.
 **concurrency**?🔹 | <code>any</code> | Concurrency ensures that only a single job or workflow using the same concurrency group will run at a time.<br/>__*Optional*__
@@ -344,33 +401,6 @@ Name | Type | Description
 **domain**? | <code>Map<string, Array<string>></code> | Each option you define in the matrix has a key and value.<br/>__*Optional*__
 **exclude**? | <code>Array<Map<string, string>></code> | You can remove a specific configurations defined in the build matrix using the exclude option.<br/>__*Optional*__
 **include**? | <code>Array<Map<string, string>></code> | You can add additional configuration options to a build matrix job that already exists.<br/>__*Optional*__
-
-
-
-## struct JobPermissions  <a id="cdk-pipelines-github-jobpermissions"></a>
-
-
-The available scopes and access values for workflow permissions.
-
-If you
-specify the access for any of these scopes, all those that are not
-specified are set to `JobPermission.NONE`, instead of the default behavior
-when none is specified.
-
-
-
-Name | Type | Description 
------|------|-------------
-**actions**? | <code>[JobPermission](#cdk-pipelines-github-jobpermission)</code> | __*Optional*__
-**checks**? | <code>[JobPermission](#cdk-pipelines-github-jobpermission)</code> | __*Optional*__
-**contents**? | <code>[JobPermission](#cdk-pipelines-github-jobpermission)</code> | __*Optional*__
-**deployments**? | <code>[JobPermission](#cdk-pipelines-github-jobpermission)</code> | __*Optional*__
-**issues**? | <code>[JobPermission](#cdk-pipelines-github-jobpermission)</code> | __*Optional*__
-**packages**? | <code>[JobPermission](#cdk-pipelines-github-jobpermission)</code> | __*Optional*__
-**pullRequests**? | <code>[JobPermission](#cdk-pipelines-github-jobpermission)</code> | __*Optional*__
-**repositoryProjects**? | <code>[JobPermission](#cdk-pipelines-github-jobpermission)</code> | __*Optional*__
-**securityEvents**? | <code>[JobPermission](#cdk-pipelines-github-jobpermission)</code> | __*Optional*__
-**statuses**? | <code>[JobPermission](#cdk-pipelines-github-jobpermission)</code> | __*Optional*__
 
 
 
