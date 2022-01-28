@@ -145,13 +145,13 @@ export interface JobPermissions {
   readonly checks?: JobPermission;
   readonly contents?: JobPermission;
   readonly deployments?: JobPermission;
-  readonly 'id-token'?: JobPermission;
+  readonly idToken?: JobPermission;
   readonly issues?: JobPermission;
   readonly discussions?: JobPermission;
   readonly packages?: JobPermission;
-  readonly 'pull-requests'?: JobPermission;
-  readonly 'repository-projects'?: JobPermission;
-  readonly 'security-events'?: JobPermission;
+  readonly pullRequests?: JobPermission;
+  readonly repositoryProjects?: JobPermission;
+  readonly securityEvents?: JobPermission;
   readonly statuses?: JobPermission;
 }
 
