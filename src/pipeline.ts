@@ -8,7 +8,7 @@ import { AGraphNode, PipelineGraph, Graph, isGraph } from 'aws-cdk-lib/pipelines
 import { Construct } from 'constructs';
 import * as decamelize from 'decamelize';
 import * as YAML from 'yaml';
-import * as github from './workflows-model';
+import * as github from './private/workflows-model';
 
 const CDKOUT_ARTIFACT = 'cdk.out';
 const RUNS_ON = 'ubuntu-latest';
@@ -269,20 +269,15 @@ export class GitHubWorkflow extends PipelineBase {
       run: `/bin/bash ./cdk.out/${path.relative(cdkoutDir, publishStepFile)}`,
     };
 
-    const permissions: github.JobPermissions = {
-      contents: github.JobPermission.READ,
-    };
-
-    if (options.openIdConnection) {
-      permissions['id-token'] = github.JobPermission.WRITE;
-    }
-
     return {
       id: node.uniqueId,
       definition: {
         name: `Publish Assets ${node.uniqueId}`,
         needs: this.renderDependencies(node),
-        permissions,
+        permissions: {
+          contents: github.JobPermission.READ,
+          ['id-token']: options.openIdConnection ? github.JobPermission.WRITE : github.JobPermission.NONE,
+        },
         runsOn: RUNS_ON,
         steps: [
           ...this.stepsToDownloadAssembly(cdkoutDir),
@@ -327,19 +322,14 @@ export class GitHubWorkflow extends PipelineBase {
     }
     const assumeRoleArn = stack.assumeRoleArn ? resolve(stack.assumeRoleArn) : undefined;
 
-    const permissions: github.JobPermissions = {
-      contents: github.JobPermission.READ,
-    };
-
-    if (options.openIdConnection) {
-      permissions['id-token'] = github.JobPermission.WRITE;
-    }
-
     return {
       id: node.uniqueId,
       definition: {
         name: `Deploy ${stack.stackArtifactId}`,
-        permissions,
+        permissions: {
+          contents: github.JobPermission.READ,
+          ['id-token']: options.openIdConnection ? github.JobPermission.WRITE : github.JobPermission.NONE,
+        },
         needs: this.renderDependencies(node),
         runsOn: RUNS_ON,
         steps: [
