@@ -3,6 +3,7 @@ import * as os from 'os';
 import * as path from 'path';
 import { App, CfnOutput, RemovalPolicy, Stack, Stage, StageProps } from 'aws-cdk-lib';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
+import * as codebuild from 'aws-cdk-lib/aws-codebuild';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import { EnvironmentUtils } from 'aws-cdk-lib/cx-api';
 import { ShellStep } from 'aws-cdk-lib/pipelines';
@@ -106,6 +107,23 @@ class MyStage extends Stage {
     const bucket = new s3.Bucket(bucketStack, 'Bucket', {
       autoDeleteObjects: true,
       removalPolicy: RemovalPolicy.DESTROY,
+    });
+
+    new codebuild.Project(fnStack, 'MyProject', {
+      buildSpec: codebuild.BuildSpec.fromObject({
+        version: '0.2',
+        phases: {
+          build: {
+            commands: ['ls'],
+          },
+        },
+      }),
+      grantReportGroupPermissions: false,
+      environment: {
+        buildImage: codebuild.LinuxBuildImage.fromAsset(fnStack, 'MyImage', {
+          directory: path.join(__dirname, 'demo-image'),
+        }),
+      },
     });
 
     const fn = new lambda.Function(fnStack, 'Function', {
