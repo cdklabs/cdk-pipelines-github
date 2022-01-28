@@ -2,12 +2,12 @@ import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 import { App, CfnOutput, RemovalPolicy, Stack, Stage, StageProps } from 'aws-cdk-lib';
-import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as codebuild from 'aws-cdk-lib/aws-codebuild';
+import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import { EnvironmentUtils } from 'aws-cdk-lib/cx-api';
 import { ShellStep } from 'aws-cdk-lib/pipelines';
-import { GitHubWorkflow } from '../src';
+import { GitHubWorkflow, DockerCredential } from '../src';
 
 export interface GitHubExampleAppProps {
   /**
@@ -77,6 +77,10 @@ export class GitHubExampleApp extends App {
       postBuildSteps: [
         { run: 'echo post-build' },
       ],
+      dockerCredentials: [
+        DockerCredential.dockerHub(),
+      ],
+      dockerLogin: true,
     });
 
     const myStage = new MyStage(this, 'StageA', { env: EnvironmentUtils.parse(props.envA) });

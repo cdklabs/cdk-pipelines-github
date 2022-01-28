@@ -4,6 +4,7 @@
 
 Name|Description
 ----|-----------
+[DockerCredential](#cdk-pipelines-github-dockercredential)|*No description*
 [GitHubWorkflow](#cdk-pipelines-github-githubworkflow)|CDK Pipelines for GitHub workflows.
 
 
@@ -21,6 +22,8 @@ Name|Description
 [DeleteOptions](#cdk-pipelines-github-deleteoptions)|The Delete event accepts no options.
 [DeploymentOptions](#cdk-pipelines-github-deploymentoptions)|The Deployment event accepts no options.
 [DeploymentStatusOptions](#cdk-pipelines-github-deploymentstatusoptions)|The Deployment status event accepts no options.
+[DockerHubCredentialSecrets](#cdk-pipelines-github-dockerhubcredentialsecrets)|*No description*
+[ExternalDockerCredentialSecrets](#cdk-pipelines-github-externaldockercredentialsecrets)|*No description*
 [ForkOptions](#cdk-pipelines-github-forkoptions)|The Fork event accepts no options.
 [GitHubWorkflowProps](#cdk-pipelines-github-githubworkflowprops)|Props for `GitHubWorkflow`.
 [GollumOptions](#cdk-pipelines-github-gollumoptions)|The Gollum event accepts no options.
@@ -64,6 +67,71 @@ Name|Description
 
 
 
+## class DockerCredential  <a id="cdk-pipelines-github-dockercredential"></a>
+
+
+
+
+
+### Properties
+
+
+Name | Type | Description 
+-----|------|-------------
+**name** | <code>string</code> | <span></span>
+**password**? | <code>string</code> | __*Optional*__
+**registry**? | <code>string</code> | __*Optional*__
+**username**? | <code>string</code> | __*Optional*__
+
+### Methods
+
+
+#### *static* customRegistry(registry, creds) <a id="cdk-pipelines-github-dockercredential-customregistry"></a>
+
+
+
+```ts
+static customRegistry(registry: string, creds: ExternalDockerCredentialSecrets): DockerCredential
+```
+
+* **registry** (<code>string</code>)  *No description*
+* **creds** (<code>[ExternalDockerCredentialSecrets](#cdk-pipelines-github-externaldockercredentialsecrets)</code>)  *No description*
+  * **password** (<code>string</code>)  The name of the Github Secret containing your registry password. 
+  * **username** (<code>string</code>)  The name of the Github Secret containing your registry username. 
+
+__Returns__:
+* <code>[DockerCredential](#cdk-pipelines-github-dockercredential)</code>
+
+#### *static* dockerHub(creds?) <a id="cdk-pipelines-github-dockercredential-dockerhub"></a>
+
+
+
+```ts
+static dockerHub(creds?: DockerHubCredentialSecrets): DockerCredential
+```
+
+* **creds** (<code>[DockerHubCredentialSecrets](#cdk-pipelines-github-dockerhubcredentialsecrets)</code>)  *No description*
+  * **personalAccessToken** (<code>string</code>)  The name of the Github Secret containing the DockerHub personal access token. __*Default*__: 'DOCKERHUB_TOKEN'
+  * **username** (<code>string</code>)  The name of the Github Secret containing the DockerHub username. __*Default*__: 'DOCKERHUB_USERNAME'
+
+__Returns__:
+* <code>[DockerCredential](#cdk-pipelines-github-dockercredential)</code>
+
+#### *static* ecr(registry) <a id="cdk-pipelines-github-dockercredential-ecr"></a>
+
+
+
+```ts
+static ecr(registry: string): DockerCredential
+```
+
+* **registry** (<code>string</code>)  *No description*
+
+__Returns__:
+* <code>[DockerCredential](#cdk-pipelines-github-dockercredential)</code>
+
+
+
 ## class GitHubWorkflow  <a id="cdk-pipelines-github-githubworkflow"></a>
 
 CDK Pipelines for GitHub workflows.
@@ -87,6 +155,8 @@ new GitHubWorkflow(scope: Construct, id: string, props: GitHubWorkflowProps)
   * **awsCredentials** (<code>[AwsCredentialsSecrets](#cdk-pipelines-github-awscredentialssecrets)</code>)  Names of GitHub repository secrets that include AWS credentials for deployment. __*Default*__: `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.
   * **buildContainer** (<code>[ContainerOptions](#cdk-pipelines-github-containeroptions)</code>)  Build container options. __*Default*__: GitHub defaults
   * **cdkCliVersion** (<code>string</code>)  Version of the CDK CLI to use. __*Default*__: automatic
+  * **dockerCredentials** (<code>Array<[DockerCredential](#cdk-pipelines-github-dockercredential)></code>)  The Docker Credentials to use to login. __*Optional*__
+  * **dockerLogin** (<code>boolean</code>)  Will login to Docker using your credentials. __*Default*__: false
   * **postBuildSteps** (<code>Array<[JobStep](#cdk-pipelines-github-jobstep)></code>)  GitHub workflow steps to execute after build. __*Default*__: []
   * **preBuildSteps** (<code>Array<[JobStep](#cdk-pipelines-github-jobstep)></code>)  GitHub workflow steps to execute before build. __*Default*__: []
   * **preSynthed** (<code>boolean</code>)  Indicates if the repository already contains a synthesized `cdk.out` directory, in which case we will simply checkout the repo in jobs that require `cdk.out`. __*Default*__: false
@@ -231,6 +301,34 @@ The Deployment event accepts no options.
 The Deployment status event accepts no options.
 
 
+## struct DockerHubCredentialSecrets  <a id="cdk-pipelines-github-dockerhubcredentialsecrets"></a>
+
+
+
+
+
+
+Name | Type | Description 
+-----|------|-------------
+**personalAccessToken**? | <code>string</code> | The name of the Github Secret containing the DockerHub personal access token.<br/>__*Default*__: 'DOCKERHUB_TOKEN'
+**username**? | <code>string</code> | The name of the Github Secret containing the DockerHub username.<br/>__*Default*__: 'DOCKERHUB_USERNAME'
+
+
+
+## struct ExternalDockerCredentialSecrets  <a id="cdk-pipelines-github-externaldockercredentialsecrets"></a>
+
+
+
+
+
+
+Name | Type | Description 
+-----|------|-------------
+**password** | <code>string</code> | The name of the Github Secret containing your registry password.
+**username** | <code>string</code> | The name of the Github Secret containing your registry username.
+
+
+
 ## struct ForkOptions  <a id="cdk-pipelines-github-forkoptions"></a>
 
 
@@ -250,6 +348,8 @@ Name | Type | Description
 **awsCredentials**? | <code>[AwsCredentialsSecrets](#cdk-pipelines-github-awscredentialssecrets)</code> | Names of GitHub repository secrets that include AWS credentials for deployment.<br/>__*Default*__: `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.
 **buildContainer**? | <code>[ContainerOptions](#cdk-pipelines-github-containeroptions)</code> | Build container options.<br/>__*Default*__: GitHub defaults
 **cdkCliVersion**? | <code>string</code> | Version of the CDK CLI to use.<br/>__*Default*__: automatic
+**dockerCredentials**? | <code>Array<[DockerCredential](#cdk-pipelines-github-dockercredential)></code> | The Docker Credentials to use to login.<br/>__*Optional*__
+**dockerLogin**? | <code>boolean</code> | Will login to Docker using your credentials.<br/>__*Default*__: false
 **postBuildSteps**? | <code>Array<[JobStep](#cdk-pipelines-github-jobstep)></code> | GitHub workflow steps to execute after build.<br/>__*Default*__: []
 **preBuildSteps**? | <code>Array<[JobStep](#cdk-pipelines-github-jobstep)></code> | GitHub workflow steps to execute before build.<br/>__*Default*__: []
 **preSynthed**? | <code>boolean</code> | Indicates if the repository already contains a synthesized `cdk.out` directory, in which case we will simply checkout the repo in jobs that require `cdk.out`.<br/>__*Default*__: false

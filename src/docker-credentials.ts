@@ -1,70 +1,54 @@
-// import * as pipelines from 'aws-cdk-lib/pipelines';
-// import * as secretsmanager from 'aws-cdk-lib/aws-secretsmanager';
-// import * as ecr from 'aws-cdk-lib/aws-ecr';
-// import * as iam from 'aws-cdk-lib/aws-iam';
-// import { DockerCredentialUsage } from 'aws-cdk-lib/pipelines';
+export class DockerCredential {
+  public static dockerHub(creds: DockerHubCredentialSecrets = {}): DockerCredential {
+    return new DockerCredential(
+      'docker',
+      undefined,
+      creds.username ?? 'DOCKERHUB_USERNAME',
+      creds.personalAccessToken ?? 'DOCKERHUB_TOKEN',
+    );
+  }
 
-// export abstract class GithubDockerCredential extends pipelines.DockerCredential {
-//   public static dockerHub(_secret: secretsmanager.Secret, _opts: pipelines.ExternalDockerCredentialOptions = {}): pipelines.DockerCredential {
-//     throw new Error('credentials with secrets manager not supported yet.');
-//   }
+  public static ecr(registry: string): DockerCredential {
+    return new DockerCredential('ecr', registry);
+  }
 
-//   public static dockerHubV2(opts?: ExternalDockerCredentialOptions): GithubDockerCredential {
-//     return new ExternalDockerCredential(opts?.usages);
-//   }
+  public static customRegistry(registry: string, creds: ExternalDockerCredentialSecrets): DockerCredential {
+    return new DockerCredential('custom', registry, creds.username, creds.password);
+  }
 
-//   public static customRegistry(
-//     _registryDomain: string,
-//     _secret: secretsmanager.ISecret,
-//     _opts: pipelines.ExternalDockerCredentialOptions = {}): pipelines.DockerCredential {
-//     throw new Error('credentials with secrets manager not supported yet.');  
-//   }
+  private constructor(
+    readonly name: string,
+    readonly registry?: string,
+    readonly username?: string,
+    readonly password?: string,
+  ) {}
+}
 
-//   public static ecr(_repositories: ecr.IRepository[], _opts?: pipelines.EcrDockerCredentialOptions): pipelines.DockerCredential {
-//     throw new Error('credentials with secrets manager not suported yet.');
-//   }
 
-//   constructor(protected readonly usages?: pipelines.DockerCredentialUsage[]) {
-//     super(usages);
-//     if (usages?.includes(pipelines.DockerCredentialUsage.SELF_UPDATE)) {
-//       throw new Error('github workflows does not support self mutation');
-//     }
-//   }
-// }
+export interface DockerHubCredentialSecrets {
+  /**
+   * The name of the Github Secret containing the DockerHub username.
+   *
+   * @default 'DOCKERHUB_USERNAME'
+   */
+  readonly username?: string;
 
-// export interface ExternalDockerCredentialOptions {
-//   /**
-//    * @default 'DOCKERHUB_USERNAME'
-//    */
-//   readonly secretUsernameField?: string;
+  /**
+   * The name of the Github Secret containing the DockerHub personal access token.
+   *
+   * @default 'DOCKERHUB_TOKEN'
+   */
+  readonly personalAccessToken?: string;
+}
 
-//   /**
-//    * @default 'DOCKERHUB_TOKEN'
-//    */
-//   readonly secretPasswordField?: string;
+export interface ExternalDockerCredentialSecrets {
+  /**
+   * The name of the Github Secret containing your registry username.
+   */
+  readonly username: string;
 
-//   readonly usages?: pipelines.DockerCredentialUsage[];
-// }
-
-// /**
-//  * DockerCredential defined by a registry domain and Github secrets.
-//  */
-// class ExternalDockerCredential extends GithubDockerCredential {
-//   constructor(
-//     private readonly registryDomain: string,
-//     private readonly opts: ExternalDockerCredentialOptions) {
-//     super(opts.usages);
-//   }
-
-//   public grantRead(_grantee: iam.IGrantable, _usage: DockerCredentialUsage) {
-//     return;
-//   }
-
-//   public _renderCdkAssetsConfig(): DockerCredentialCredentialSource {
-//     return {
-//       [this.registryDomain]: {
-        
-//       }
-//     }
-//   }
-// }
+  /**
+   * The name of the Github Secret containing your registry password.
+   */
+  readonly password: string;
+}

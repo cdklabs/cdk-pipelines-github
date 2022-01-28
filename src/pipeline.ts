@@ -7,8 +7,8 @@ import { AGraphNode, PipelineGraph, Graph, isGraph } from 'aws-cdk-lib/pipelines
 import { Construct } from 'constructs';
 import * as decamelize from 'decamelize';
 import * as YAML from 'yaml';
+import { DockerCredential } from './docker-credentials';
 import * as github from './workflows-model';
-//import { GithubDockerCredential } from './docker-credentials';
 
 const CDKOUT_ARTIFACT = 'cdk.out';
 const RUNS_ON = 'ubuntu-latest';
@@ -80,19 +80,16 @@ export interface GitHubWorkflowProps extends PipelineBaseProps {
   readonly postBuildSteps?: github.JobStep[];
 
   /**
-   * Names of GitHub repository secrets that include Docker credentials for
-   * deployment.
-   *
-   * @default - `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN`.
+   * The Docker Credentials to use to login
    */
-  readonly dockerCredentials?: DockerCredentialsSecrets;
+  readonly dockerCredentials?: DockerCredential[];
 
   /**
-   * Login to DockerHub
-   * 
+   * Will login to Docker using your credentials.
+   *
    * @default - false
    */
-  readonly dockerHubLogin?: boolean;
+  readonly dockerLogin?: boolean;
 }
 
 /**
@@ -105,8 +102,8 @@ export class GitHubWorkflow extends PipelineBase {
   private readonly workflowTriggers: github.Triggers;
   private readonly preSynthed: boolean;
   private readonly awsCredentials: AwsCredentialsSecrets;
-  private readonly dockerCredentials: DockerCredentialsSecrets;
-  private readonly loginToDockerHub: boolean;
+  private readonly dockerCredentials: DockerCredential[];
+  private readonly dockerLogin: boolean;
   private readonly cdkCliVersion?: string;
   private readonly buildContainer?: github.ContainerOptions;
   private readonly preBuildSteps: github.JobStep[];
@@ -127,11 +124,11 @@ export class GitHubWorkflow extends PipelineBase {
       secretAccessKey: 'AWS_SECRET_ACCESS_KEY',
     };
 
-    this.dockerCredentials = props.dockerCredentials ?? {
-      username: 'DOCKERHUB_USERNAME',
-      personalAccessToken: 'DOCKERHUB_TOKEN',
-    };
-    this.loginToDockerHub = props.dockerHubLogin ?? false;
+    this.dockerCredentials = props.dockerCredentials ?? [];
+    this.dockerLogin = props.dockerLogin ?? false;
+    if (this.dockerLogin && this.dockerCredentials.length === 0) {
+      throw new Error('Docker login enabled by credentials are missing');
+    }
 
     this.workflowPath = props.workflowPath ?? '.github/workflows/deploy.yml';
     if (!this.workflowPath.endsWith('.yml') && !this.workflowPath.endsWith('.yaml')) {
@@ -270,9 +267,11 @@ export class GitHubWorkflow extends PipelineBase {
     const cdkoutDir = options.assemblyDir;
 
     // check if asset is docker asset
-    let dockerLoginSteps = [{}]; 
-    if (node.uniqueId.match('DockerAsset') && this.loginToDockerHub) {
-      dockerLoginSteps = this.stepsToConfigureDocker();
+    const dockerLoginSteps: github.JobStep[] = [];
+    if (node.uniqueId.includes('DockerAsset') && this.dockerLogin) {
+      for (const creds of this.dockerCredentials) {
+        dockerLoginSteps.push(...this.stepsToConfigureDocker(creds));
+      }
     }
 
     // create one file and make one step
@@ -305,8 +304,8 @@ export class GitHubWorkflow extends PipelineBase {
             name: 'Install',
             run: `npm install --no-save cdk-assets${installSuffix}`,
           },
-          ...dockerLoginSteps,
           ...this.stepsToConfigureAws({ region: 'us-west-2' }),
+          ...dockerLoginSteps,
           publishStep,
         ],
       },
@@ -525,11 +524,25 @@ export class GitHubWorkflow extends PipelineBase {
     ];
   }
 
-  private stepsToConfigureDocker(): github.JobStep[] {
-    const params: Record<string, any> = {
-      'username': `\${{ secrets.${this.dockerCredentials.username} }}`,
-      'password': `\${{ secrets.${this.dockerCredentials.personalAccessToken} }}`,
-    };
+  private stepsToConfigureDocker(dockerCredential: DockerCredential): github.JobStep[] {
+    let params: Record<string, any>;
+
+    if (dockerCredential.name === 'docker') {
+      params = {
+        username: `\${{ secrets.${dockerCredential.username} }}`,
+        password: `\${{ secrets.${dockerCredential.password} }}`,
+      };
+    } else if (dockerCredential.name === 'ecr') {
+      params = {
+        registry: `\${{ secrets.${dockerCredential.registry} }}`,
+      };
+    } else {
+      params = {
+        registry: `\${{ secrets.${dockerCredential.registry} }}`,
+        username: `\${{ secrets.${dockerCredential.username} }}`,
+        password: `\${{ secrets.${dockerCredential.password} }}`,
+      };
+    }
 
     return [
       {
@@ -538,18 +551,6 @@ export class GitHubWorkflow extends PipelineBase {
       },
     ];
   }
-
-  // // should have already authenticated to aws
-  // private stepsToConfigureEcr(account: string, region: string) {
-  //   return [
-  //     {
-  //       uses: 'docker/login-action@v1',
-  //       with: {
-  //         registry: `${account}.dkr.ecr.${region}.amazonaws.com`,
-  //       },
-  //     },
-  //   ];
-  // }
 
   private stepsToDownloadAssembly(targetDir: string): github.JobStep[] {
     if (this.preSynthed) {
@@ -658,18 +659,6 @@ export interface AwsCredentialsSecrets {
    * @default - no session token is used
    */
   readonly sessionToken?: string;
-}
-
-export interface DockerCredentialsSecrets {
-  /**
-   * @default 'DOCKERHUB_USERNAME'
-   */
-  readonly username?: string;
-
-  /**
-   * @default 'DOCKERHUB_TOKEN'
-   */
-  readonly personalAccessToken?: string;
 }
 
 export function* flatten<A>(xs: Iterable<A[]>): IterableIterator<A> {

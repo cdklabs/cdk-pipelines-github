@@ -1,3 +1,3 @@
 export * from './pipeline';
 export * from './workflows-model';
-//export * from './docker-credentials';
+export * from './docker-credentials';

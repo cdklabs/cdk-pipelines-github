@@ -26,6 +26,31 @@ jobs:
       - name: Build
         run: echo \\"nothing to do (cdk.out is committed)\\"
       - run: echo post-build
+  Assets-DockerAsset1:
+    name: Publish Assets Assets-DockerAsset1
+    needs:
+      - Build-Build
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install
+        run: npm install --no-save cdk-assets
+      - uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: \${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: \${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-west-2
+          role-skip-session-tagging: true
+          role-duration-seconds: 1800
+      - uses: docker/login-action@v1
+        with:
+          username: \${{ secrets.DOCKERHUB_USERNAME }}
+          password: \${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Publish Assets-DockerAsset1
+        run: /bin/bash ./cdk.out/publish-Assets-DockerAsset1-step.sh
   Assets-FileAsset1:
     name: Publish Assets Assets-FileAsset1
     needs:
@@ -171,7 +196,6 @@ jobs:
       - Assets-FileAsset1
       - Assets-FileAsset2
       - StageA-Pre
-      - Build-Build
     runs-on: ubuntu-latest
     steps:
       - uses: aws-actions/configure-aws-credentials@v1
@@ -198,9 +222,9 @@ jobs:
       - Build-Build
       - Assets-FileAsset3
       - Assets-FileAsset4
+      - Assets-DockerAsset1
       - StageA-BucketStack-Deploy
       - StageA-Pre
-      - Build-Build
     runs-on: ubuntu-latest
     steps:
       - uses: aws-actions/configure-aws-credentials@v1
@@ -216,7 +240,7 @@ jobs:
         uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
           name: StageA-FunctionStack
-          template: https://cdk-hnb659fds-assets-111111111111-us-east-1.s3.us-east-1.amazonaws.com/78a7673e89f59d0a6a53ec86baeb411cef605a4e970616398035dacb4bbd9ca0.json
+          template: https://cdk-hnb659fds-assets-111111111111-us-east-1.s3.us-east-1.amazonaws.com/5ec3ab75ef5d7d9961289031e09a2c50d64b3e8b14c00218edcb6dc7410a8d0a.json
           no-fail-on-empty-changeset: \\"1\\"
           role-arn: arn:aws:iam::111111111111:role/cdk-hnb659fds-cfn-exec-role-111111111111-us-east-1
     outputs:
@@ -243,7 +267,6 @@ jobs:
       - Build-Build
       - Assets-FileAsset5
       - Assets-FileAsset2
-      - Build-Build
       - StageA-BucketStack-Deploy
       - StageA-FunctionStack-Deploy
       - StageA-Pre
@@ -274,8 +297,8 @@ jobs:
       - Build-Build
       - Assets-FileAsset6
       - Assets-FileAsset4
+      - Assets-DockerAsset1
       - StageB-BucketStack-Deploy
-      - Build-Build
       - StageA-BucketStack-Deploy
       - StageA-FunctionStack-Deploy
       - StageA-Pre
@@ -295,7 +318,7 @@ jobs:
         uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
           name: StageB-FunctionStack
-          template: https://cdk-hnb659fds-assets-222222222222-eu-west-2.s3.eu-west-2.amazonaws.com/ae5ab5677896732ad54d73c29bcf216d5000b0be5f4b62bd2e29fb29ef976b6e.json
+          template: https://cdk-hnb659fds-assets-222222222222-eu-west-2.s3.eu-west-2.amazonaws.com/5fe5c7157510c4bb13b84ef5a8f7d4011957f69b88bd09b5a48ad1142a3f740d.json
           no-fail-on-empty-changeset: \\"1\\"
           role-arn: arn:aws:iam::222222222222:role/cdk-hnb659fds-cfn-exec-role-222222222222-eu-west-2
 "
@@ -414,7 +437,6 @@ jobs:
       - Build-Build
       - Assets-FileAsset1
       - Assets-FileAsset2
-      - Build-Build
     runs-on: ubuntu-latest
     steps:
       - uses: aws-actions/configure-aws-credentials@v1
