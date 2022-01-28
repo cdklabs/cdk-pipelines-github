@@ -133,8 +133,9 @@ Github secrets.
 
 You can do this manually in the console, or create a separate stack that uses this construct.
 You must `cdk deploy` once (with your normal AWS credentials) to have this role created for you.
-You can then utilize the arn as a stack output and send it into the Github Workflow app via
-the `githubOidcRoleArn` property.
+
+You can then utilize the role arn as a stack output and send it into the Github Workflow app via
+the `githubOidcRoleArn` property. The role arn will be `arn:aws:iam::<accountId>:role/GithubActionRole`.
 
 __Implements__: [IConstruct](#constructs-iconstruct), [IDependable](#constructs-idependable)
 __Extends__: [Construct](#constructs-construct)
@@ -163,7 +164,7 @@ new GithubOidc(scope: Construct, id: string, props: GithubOidcProps)
 
 Name | Type | Description 
 -----|------|-------------
-**roleArn** | <code>string</code> | The arn of the role that gets created.
+**roleArn** | <code>string</code> | The arn of the role that gets created. The arn will equal `arn:aws:iam::<accountId>:role/GithubActionRole`.
 
 
 

@@ -42,14 +42,16 @@ export interface GithubOidcProps {
  *
  * You can do this manually in the console, or create a separate stack that uses this construct.
  * You must `cdk deploy` once (with your normal AWS credentials) to have this role created for you.
- * You can then utilize the arn as a stack output and send it into the Github Workflow app via
- * the `githubOidcRoleArn` property.
+ *
+ * You can then utilize the role arn as a stack output and send it into the Github Workflow app via
+ * the `githubOidcRoleArn` property. The role arn will be `arn:aws:iam::<accountId>:role/GithubActionRole`.
  *
  * @see https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-amazon-web-services
  */
 export class GithubOidc extends Construct {
   /**
-   * The arn of the role that gets created.
+   * The arn of the role that gets created. The arn will equal
+   * `arn:aws:iam::<accountId>:role/GithubActionRole`.
    *
    * You should use this arn as input to the `githubOidcRoleArn` property
    * in your Github Workflow app.
@@ -81,7 +83,9 @@ export class GithubOidc extends Construct {
     );
 
     const role = new iam.Role(this, 'github-role', {
+      roleName: 'GithubActionRole',
       assumedBy: principal,
+      managedPolicies: [iam.ManagedPolicy.fromAwsManagedPolicyName('AdministratorAccess')],
     });
 
     this.roleArn = role.roleArn;

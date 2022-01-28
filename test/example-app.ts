@@ -76,6 +76,7 @@ export class GitHubExampleApp extends App {
       postBuildSteps: [
         { run: 'echo post-build' },
       ],
+      awsOidcRoleArn: 'arn:aws:iam::489318732371:role/NewcdkStack-oidcrolegithubrole78A9B404-SYRMW58E7CK9',
     });
 
     const myStage = new MyStage(this, 'StageA', { env: EnvironmentUtils.parse(props.envA) });
