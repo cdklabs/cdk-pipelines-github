@@ -34,8 +34,6 @@ export interface GitHubExampleAppProps {
    * @example aws://111111111111/us-east-2
    */
   readonly envB: string;
-
-  //readonly oidcRole: IRole;
 }
 
 /**
@@ -66,7 +64,6 @@ export class GitHubExampleApp extends App {
       synth: new ShellStep('Build', {
         commands: ['echo "nothing to do (cdk.out is committed)"'],
       }),
-      //awsOpenIdConnectRole: oidcStack.role,
       workflowPath: path.join(workflowsDir, 'deploy.yml'),
       preSynthed: true,
       buildContainer: { image: 'alpine' },

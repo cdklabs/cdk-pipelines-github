@@ -54,7 +54,7 @@ export class GithubOidc extends Construct {
    * You should use this arn as input to the `githubOidcRoleArn` property
    * in your Github Workflow app.
    */
-  public readonly oidcRole: iam.IRole;
+  public readonly roleArn: string;
 
   constructor(scope: Construct, id: string, props: GithubOidcProps) {
     super(scope, id);
@@ -84,6 +84,6 @@ export class GithubOidc extends Construct {
       assumedBy: principal,
     });
 
-    this.oidcRole = role;
+    this.roleArn = role.roleArn;
   }
 }

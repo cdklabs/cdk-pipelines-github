@@ -87,7 +87,7 @@ new GitHubWorkflow(scope: Construct, id: string, props: GitHubWorkflowProps)
 * **props** (<code>[GitHubWorkflowProps](#cdk-pipelines-github-githubworkflowprops)</code>)  *No description*
   * **synth** (<code>[pipelines.IFileSetProducer](#aws-cdk-lib-pipelines-ifilesetproducer)</code>)  The build step that produces the CDK Cloud Assembly. 
   * **awsCredentials** (<code>[AwsCredentialsSecrets](#cdk-pipelines-github-awscredentialssecrets)</code>)  Names of GitHub repository secrets that include AWS credentials for deployment. __*Default*__: `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.
-  * **awsOpenIdConnectRole** (<code>[aws_iam.IRole](#aws-cdk-lib-aws-iam-irole)</code>)  *No description* __*Default*__: GitHub repository secrets are used instead of OpenId.
+  * **awsOidcRoleArn** (<code>string</code>)  A role that utilizes the Github OIDC Identity Provider in your AWS account. __*Default*__: GitHub repository secrets are used instead of OpenId.
   * **buildContainer** (<code>[ContainerOptions](#cdk-pipelines-github-containeroptions)</code>)  Build container options. __*Default*__: GitHub defaults
   * **cdkCliVersion** (<code>string</code>)  Version of the CDK CLI to use. __*Default*__: automatic
   * **postBuildSteps** (<code>Array<[JobStep](#cdk-pipelines-github-jobstep)></code>)  GitHub workflow steps to execute after build. __*Default*__: []
@@ -163,7 +163,7 @@ new GithubOidc(scope: Construct, id: string, props: GithubOidcProps)
 
 Name | Type | Description 
 -----|------|-------------
-**oidcRole** | <code>[aws_iam.IRole](#aws-cdk-lib-aws-iam-irole)</code> | The arn of the role that gets created.
+**roleArn** | <code>string</code> | The arn of the role that gets created.
 
 
 
@@ -294,7 +294,7 @@ Name | Type | Description
 -----|------|-------------
 **synth** | <code>[pipelines.IFileSetProducer](#aws-cdk-lib-pipelines-ifilesetproducer)</code> | The build step that produces the CDK Cloud Assembly.
 **awsCredentials**? | <code>[AwsCredentialsSecrets](#cdk-pipelines-github-awscredentialssecrets)</code> | Names of GitHub repository secrets that include AWS credentials for deployment.<br/>__*Default*__: `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.
-**awsOpenIdConnectRole**? | <code>[aws_iam.IRole](#aws-cdk-lib-aws-iam-irole)</code> | __*Default*__: GitHub repository secrets are used instead of OpenId.
+**awsOidcRoleArn**? | <code>string</code> | A role that utilizes the Github OIDC Identity Provider in your AWS account.<br/>__*Default*__: GitHub repository secrets are used instead of OpenId.
 **buildContainer**? | <code>[ContainerOptions](#cdk-pipelines-github-containeroptions)</code> | Build container options.<br/>__*Default*__: GitHub defaults
 **cdkCliVersion**? | <code>string</code> | Version of the CDK CLI to use.<br/>__*Default*__: automatic
 **postBuildSteps**? | <code>Array<[JobStep](#cdk-pipelines-github-jobstep)></code> | GitHub workflow steps to execute after build.<br/>__*Default*__: []

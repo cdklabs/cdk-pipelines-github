@@ -1,7 +1,6 @@
 import { mkdirSync, writeFileSync } from 'fs';
 import * as path from 'path';
 import { Stage } from 'aws-cdk-lib';
-import { IRole } from 'aws-cdk-lib/aws-iam';
 import { EnvironmentPlaceholders } from 'aws-cdk-lib/cx-api';
 import { PipelineBase, PipelineBaseProps, ShellStep, StackAsset, StackDeployment, StackOutputReference, Step } from 'aws-cdk-lib/pipelines';
 import { AGraphNode, PipelineGraph, Graph, isGraph } from 'aws-cdk-lib/pipelines/lib/helpers-internal';
@@ -62,24 +61,34 @@ export interface GitHubWorkflowProps extends PipelineBaseProps {
   readonly awsCredentials?: AwsCredentialsSecrets;
 
   /**
+   * A role that utilizes the Github OIDC Identity Provider in your AWS account.
+   * If supplied, this will be used instead of `awsCredentials`.
+   *
+   * You can create your own role in the console with the necessary trust policy
+   * to allow github actions from your github repository to assume the role, or
+   * you can utilize the `GithubOidc` construct to create a role for you.
+   *
    * @default - GitHub repository secrets are used instead of OpenId.
    */
-  readonly awsOpenIdConnectRole?: IRole;
+  readonly awsOidcRoleArn?: string;
 
   /**
    * Build container options.
+   *
    * @default - GitHub defaults
    */
   readonly buildContainer?: github.ContainerOptions;
 
   /**
    * GitHub workflow steps to execute before build.
+   *
    * @default []
    */
   readonly preBuildSteps?: github.JobStep[];
 
   /**
    * GitHub workflow steps to execute after build.
+   *
    * @default []
    */
   readonly postBuildSteps?: github.JobStep[];
@@ -95,7 +104,8 @@ export class GitHubWorkflow extends PipelineBase {
   private readonly workflowTriggers: github.Triggers;
   private readonly preSynthed: boolean;
   private readonly awsCredentials: AwsCredentialsSecrets;
-  private readonly awsOpenIdConnectRole?: IRole;
+  private readonly awsOidcRoleArn?: string;
+  private readonly useAwsOidc: boolean;
   private readonly cdkCliVersion?: string;
   private readonly buildContainer?: github.ContainerOptions;
   private readonly preBuildSteps: github.JobStep[];
@@ -110,7 +120,8 @@ export class GitHubWorkflow extends PipelineBase {
     this.buildContainer = props.buildContainer;
     this.preBuildSteps = props.preBuildSteps ?? [];
     this.postBuildSteps = props.postBuildSteps ?? [];
-    this.awsOpenIdConnectRole = props.awsOpenIdConnectRole;
+    this.awsOidcRoleArn = props.awsOidcRoleArn;
+    this.useAwsOidc = this.awsOidcRoleArn ? true : false;
 
     this.awsCredentials = props.awsCredentials ?? {
       accessKeyId: 'AWS_ACCESS_KEY_ID',
@@ -157,7 +168,6 @@ export class GitHubWorkflow extends PipelineBase {
           const job = this.jobForNode(node, {
             assemblyDir: cdkoutDir,
             structure,
-            openIdConnection: this.awsOpenIdConnectRole ? true : false,
           });
 
           if (job) {
@@ -237,7 +247,7 @@ export class GitHubWorkflow extends PipelineBase {
         throw new Error('"prepare" is not supported by GitHub worflows');
 
       case 'execute':
-        return this.jobForDeploy(node, node.data.stack, node.data.captureOutputs, options);
+        return this.jobForDeploy(node, node.data.stack, node.data.captureOutputs);
 
       case 'step':
         if (node.data.isBuildStep) {
@@ -276,7 +286,7 @@ export class GitHubWorkflow extends PipelineBase {
         needs: this.renderDependencies(node),
         permissions: {
           contents: github.JobPermission.READ,
-          idToken: options.openIdConnection ? github.JobPermission.WRITE : github.JobPermission.NONE,
+          idToken: this.useAwsOidc ? github.JobPermission.WRITE : github.JobPermission.NONE,
         },
         runsOn: RUNS_ON,
         steps: [
@@ -285,14 +295,14 @@ export class GitHubWorkflow extends PipelineBase {
             name: 'Install',
             run: `npm install --no-save cdk-assets${installSuffix}`,
           },
-          ...this.stepsToConfigureAws(options.openIdConnection, { region: 'us-west-2' }),
+          ...this.stepsToConfigureAws(this.useAwsOidc, { region: 'us-west-2' }),
           publishStep,
         ],
       },
     };
   }
 
-  private jobForDeploy(node: AGraphNode, stack: StackDeployment, _captureOutputs: boolean, options: Context): Job {
+  private jobForDeploy(node: AGraphNode, stack: StackDeployment, _captureOutputs: boolean): Job {
     const region = stack.region;
     const account = stack.account;
     if (!region || !account) {
@@ -328,12 +338,12 @@ export class GitHubWorkflow extends PipelineBase {
         name: `Deploy ${stack.stackArtifactId}`,
         permissions: {
           contents: github.JobPermission.READ,
-          idToken: options.openIdConnection ? github.JobPermission.WRITE : github.JobPermission.NONE,
+          idToken: this.useAwsOidc ? github.JobPermission.WRITE : github.JobPermission.NONE,
         },
         needs: this.renderDependencies(node),
         runsOn: RUNS_ON,
         steps: [
-          ...this.stepsToConfigureAws(options.openIdConnection, { region, assumeRoleArn }),
+          ...this.stepsToConfigureAws(this.useAwsOidc, { region, assumeRoleArn }),
           {
             id: 'Deploy',
             uses: 'aws-actions/aws-cloudformation-github-deploy@v1',
@@ -485,7 +495,7 @@ export class GitHubWorkflow extends PipelineBase {
     let params: Record<string, any> = {};
     if (openId) {
       params = {
-        'role-to-assume': this.awsOpenIdConnectRole?.roleArn,
+        'role-to-assume': this.awsOidcRoleArn,
         'role-duration-seconds': 30 * 60,
         'aws-region': region,
       };
@@ -578,11 +588,6 @@ interface Context {
    * Name of cloud assembly directory.
    */
   readonly assemblyDir: string;
-
-  /**
-   * Use Github OIDC to connect to AWS
-   */
-  readonly openIdConnection: boolean;
 }
 
 interface Job {
