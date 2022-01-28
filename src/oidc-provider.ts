@@ -1,6 +1,9 @@
 import * as iam from 'aws-cdk-lib/aws-iam';
 import { Construct } from 'constructs';
 
+/**
+ * Properties for the GithubOidc construct.
+ */
 export interface GithubOidcProps {
   /**
    * Your Github username.
@@ -33,15 +36,23 @@ export interface GithubOidcProps {
 }
 
 /**
- * Create a Github OIDC provider and accompanying role that trusts the provider.
+ * Create or references a Github OIDC provider and accompanying role that trusts the provider.
  * This role can be used to authenticate against AWS instead of using long-standing
  * Github secrets.
  *
+ * You can do this manually in the console, or create a separate stack that uses this construct.
+ * You must `cdk deploy` once (with your normal AWS credentials) to have this role created for you.
+ * You can then utilize the arn as a stack output and send it into the Github Workflow app via
+ * the `githubOidcRoleArn` property.
+ *
  * @see https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-amazon-web-services
  */
-export class GithubOidcProviderRole extends Construct {
+export class GithubOidc extends Construct {
   /**
-   * The role that is created for you.
+   * The arn of the role that gets created.
+   *
+   * You should use this arn as input to the `githubOidcRoleArn` property
+   * in your Github Workflow app.
    */
   public readonly oidcRole: iam.IRole;
 
@@ -52,6 +63,7 @@ export class GithubOidcProviderRole extends Construct {
     const providerUrl = `https://${rawEndpoint}`;
     const audience = 'sts.amazonaws.com';
 
+    // uses the given provider or creates a new one.
     const provider = props.provider ?? new iam.OpenIdConnectProvider(this, 'github-oidc', {
       url: providerUrl,
       clientIds: [audience],
