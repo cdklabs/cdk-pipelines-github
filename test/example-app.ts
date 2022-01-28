@@ -80,7 +80,6 @@ export class GitHubExampleApp extends App {
       dockerCredentials: [
         DockerCredential.dockerHub(),
       ],
-      dockerLogin: true,
     });
 
     const myStage = new MyStage(this, 'StageA', { env: EnvironmentUtils.parse(props.envA) });

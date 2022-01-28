@@ -80,16 +80,10 @@ export interface GitHubWorkflowProps extends PipelineBaseProps {
   readonly postBuildSteps?: github.JobStep[];
 
   /**
-   * The Docker Credentials to use to login
+   * The Docker Credentials to use to login. If you set this variable,
+   * you will be logged in to docker when you upload Docker Assets.
    */
   readonly dockerCredentials?: DockerCredential[];
-
-  /**
-   * Will login to Docker using your credentials.
-   *
-   * @default - false
-   */
-  readonly dockerLogin?: boolean;
 }
 
 /**
@@ -103,7 +97,6 @@ export class GitHubWorkflow extends PipelineBase {
   private readonly preSynthed: boolean;
   private readonly awsCredentials: AwsCredentialsSecrets;
   private readonly dockerCredentials: DockerCredential[];
-  private readonly dockerLogin: boolean;
   private readonly cdkCliVersion?: string;
   private readonly buildContainer?: github.ContainerOptions;
   private readonly preBuildSteps: github.JobStep[];
@@ -125,10 +118,6 @@ export class GitHubWorkflow extends PipelineBase {
     };
 
     this.dockerCredentials = props.dockerCredentials ?? [];
-    this.dockerLogin = props.dockerLogin ?? false;
-    if (this.dockerLogin && this.dockerCredentials.length === 0) {
-      throw new Error('Docker login enabled by credentials are missing');
-    }
 
     this.workflowPath = props.workflowPath ?? '.github/workflows/deploy.yml';
     if (!this.workflowPath.endsWith('.yml') && !this.workflowPath.endsWith('.yaml')) {
@@ -266,9 +255,9 @@ export class GitHubWorkflow extends PipelineBase {
     const installSuffix = this.cdkCliVersion ? `@${this.cdkCliVersion}` : '';
     const cdkoutDir = options.assemblyDir;
 
-    // check if asset is docker asset
+    // check if asset is docker asset and if we have docker credentials
     const dockerLoginSteps: github.JobStep[] = [];
-    if (node.uniqueId.includes('DockerAsset') && this.dockerLogin) {
+    if (node.uniqueId.includes('DockerAsset') && this.dockerCredentials.length > 0) {
       for (const creds of this.dockerCredentials) {
         dockerLoginSteps.push(...this.stepsToConfigureDocker(creds));
       }
@@ -529,8 +518,8 @@ export class GitHubWorkflow extends PipelineBase {
 
     if (dockerCredential.name === 'docker') {
       params = {
-        username: `\${{ secrets.${dockerCredential.username} }}`,
-        password: `\${{ secrets.${dockerCredential.password} }}`,
+        username: `\${{ secrets.${dockerCredential.usernameKey} }}`,
+        password: `\${{ secrets.${dockerCredential.passwordKey} }}`,
       };
     } else if (dockerCredential.name === 'ecr') {
       params = {
@@ -539,8 +528,8 @@ export class GitHubWorkflow extends PipelineBase {
     } else {
       params = {
         registry: `\${{ secrets.${dockerCredential.registry} }}`,
-        username: `\${{ secrets.${dockerCredential.username} }}`,
-        password: `\${{ secrets.${dockerCredential.password} }}`,
+        username: `\${{ secrets.${dockerCredential.usernameKey} }}`,
+        password: `\${{ secrets.${dockerCredential.passwordKey} }}`,
       };
     }
 
