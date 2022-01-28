@@ -2,12 +2,11 @@ import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 import { App, CfnOutput, RemovalPolicy, Stack, Stage, StageProps } from 'aws-cdk-lib';
-import * as iam from 'aws-cdk-lib/aws-iam';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import { EnvironmentUtils } from 'aws-cdk-lib/cx-api';
 import { ShellStep } from 'aws-cdk-lib/pipelines';
-import { GitHubWorkflow, GithubOidcProviderRole } from '../src';
+import { GitHubWorkflow } from '../src';
 
 export interface GitHubExampleAppProps {
   /**
@@ -63,13 +62,11 @@ export class GitHubExampleApp extends App {
     const workflowsDir = path.join(repoDir, '.github/workflows');
     fs.mkdirSync(workflowsDir, { recursive: true });
 
-    const oidcStack = new MyStack(this, 'Oidc-Stack');
-
     const pipeline = new GitHubWorkflow(this, 'Pipeline', {
       synth: new ShellStep('Build', {
         commands: ['echo "nothing to do (cdk.out is committed)"'],
       }),
-      awsOpenIdConnectRole: oidcStack.role,
+      //awsOpenIdConnectRole: oidcStack.role,
       workflowPath: path.join(workflowsDir, 'deploy.yml'),
       preSynthed: true,
       buildContainer: { image: 'alpine' },
@@ -128,24 +125,5 @@ class MyStage extends Stage {
     });
 
     bucket.grantRead(fn);
-  }
-}
-
-class MyStack extends Stack {
-  public readonly role: iam.IRole;
-  constructor(scope: App, id: string) {
-    super(scope, id);
-
-    const provider = new GithubOidcProviderRole(this, 'oidc-role', {
-      repository: 'github-pipelines',
-      username: 'kaizen3031593',
-      provider: iam.OpenIdConnectProvider.fromOpenIdConnectProviderArn(
-        this,
-        'github',
-        'arn:aws:iam::489318732371:oidc-provider/token.actions.githubusercontent.com',
-      ),
-    });
-
-    this.role = provider.oidcRole;
   }
 }

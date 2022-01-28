@@ -5,7 +5,7 @@
 Name|Description
 ----|-----------
 [GitHubWorkflow](#cdk-pipelines-github-githubworkflow)|CDK Pipelines for GitHub workflows.
-[GithubOidcProviderRole](#cdk-pipelines-github-githuboidcproviderrole)|Create a Github OIDC provider and accompanying role that trusts the provider.
+[GithubOidc](#cdk-pipelines-github-githuboidc)|Create or references a Github OIDC provider and accompanying role that trusts the provider.
 
 
 **Structs**
@@ -24,13 +24,14 @@ Name|Description
 [DeploymentStatusOptions](#cdk-pipelines-github-deploymentstatusoptions)|The Deployment status event accepts no options.
 [ForkOptions](#cdk-pipelines-github-forkoptions)|The Fork event accepts no options.
 [GitHubWorkflowProps](#cdk-pipelines-github-githubworkflowprops)|Props for `GitHubWorkflow`.
-[GithubOidcProps](#cdk-pipelines-github-githuboidcprops)|*No description*
+[GithubOidcProps](#cdk-pipelines-github-githuboidcprops)|Properties for the GithubOidc construct.
 [GollumOptions](#cdk-pipelines-github-gollumoptions)|The Gollum event accepts no options.
 [IssueCommentOptions](#cdk-pipelines-github-issuecommentoptions)|Issue comment options.
 [IssuesOptions](#cdk-pipelines-github-issuesoptions)|Issues options.
 [Job](#cdk-pipelines-github-job)|A GitHub Workflow job definition.
 [JobDefaults](#cdk-pipelines-github-jobdefaults)|Default settings for all steps in the job.
 [JobMatrix](#cdk-pipelines-github-jobmatrix)|A job matrix.
+[JobPermissions](#cdk-pipelines-github-jobpermissions)|The available scopes and access values for workflow permissions.
 [JobStep](#cdk-pipelines-github-jobstep)|A job step.
 [JobStepOutput](#cdk-pipelines-github-jobstepoutput)|An output binding for a job.
 [JobStrategy](#cdk-pipelines-github-jobstrategy)|A strategy creates a build matrix for your jobs.
@@ -123,12 +124,17 @@ protected doBuildPipeline(): void
 
 
 
-## class GithubOidcProviderRole  <a id="cdk-pipelines-github-githuboidcproviderrole"></a>
+## class GithubOidc  <a id="cdk-pipelines-github-githuboidc"></a>
 
-Create a Github OIDC provider and accompanying role that trusts the provider.
+Create or references a Github OIDC provider and accompanying role that trusts the provider.
 
 This role can be used to authenticate against AWS instead of using long-standing
 Github secrets.
+
+You can do this manually in the console, or create a separate stack that uses this construct.
+You must `cdk deploy` once (with your normal AWS credentials) to have this role created for you.
+You can then utilize the arn as a stack output and send it into the Github Workflow app via
+the `githubOidcRoleArn` property.
 
 __Implements__: [IConstruct](#constructs-iconstruct), [IDependable](#constructs-idependable)
 __Extends__: [Construct](#constructs-construct)
@@ -139,7 +145,7 @@ __Extends__: [Construct](#constructs-construct)
 
 
 ```ts
-new GithubOidcProviderRole(scope: Construct, id: string, props: GithubOidcProps)
+new GithubOidc(scope: Construct, id: string, props: GithubOidcProps)
 ```
 
 * **scope** (<code>[Construct](#constructs-construct)</code>)  *No description*
@@ -157,7 +163,7 @@ new GithubOidcProviderRole(scope: Construct, id: string, props: GithubOidcProps)
 
 Name | Type | Description 
 -----|------|-------------
-**oidcRole** | <code>[aws_iam.IRole](#aws-cdk-lib-aws-iam-irole)</code> | The role that is created for you.
+**oidcRole** | <code>[aws_iam.IRole](#aws-cdk-lib-aws-iam-irole)</code> | The arn of the role that gets created.
 
 
 
@@ -303,7 +309,7 @@ Name | Type | Description
 ## struct GithubOidcProps  <a id="cdk-pipelines-github-githuboidcprops"></a>
 
 
-
+Properties for the GithubOidc construct.
 
 
 
@@ -357,7 +363,7 @@ A GitHub Workflow job definition.
 
 Name | Type | Description 
 -----|------|-------------
-**permissions** | <code>Map<string, [JobPermission](#cdk-pipelines-github-jobpermission)></code> | You can modify the default permissions granted to the GITHUB_TOKEN, adding or removing access as required, so that you only allow the minimum required access.
+**permissions** | <code>[JobPermissions](#cdk-pipelines-github-jobpermissions)</code> | You can modify the default permissions granted to the GITHUB_TOKEN, adding or removing access as required, so that you only allow the minimum required access.
 **runsOn** | <code>string</code> | The type of machine to run the job on.
 **steps** | <code>Array<[JobStep](#cdk-pipelines-github-jobstep)></code> | A job contains a sequence of tasks called steps.
 **concurrency**?🔹 | <code>any</code> | Concurrency ensures that only a single job or workflow using the same concurrency group will run at a time.<br/>__*Optional*__
@@ -401,6 +407,35 @@ Name | Type | Description
 **domain**? | <code>Map<string, Array<string>></code> | Each option you define in the matrix has a key and value.<br/>__*Optional*__
 **exclude**? | <code>Array<Map<string, string>></code> | You can remove a specific configurations defined in the build matrix using the exclude option.<br/>__*Optional*__
 **include**? | <code>Array<Map<string, string>></code> | You can add additional configuration options to a build matrix job that already exists.<br/>__*Optional*__
+
+
+
+## struct JobPermissions  <a id="cdk-pipelines-github-jobpermissions"></a>
+
+
+The available scopes and access values for workflow permissions.
+
+If you
+specify the access for any of these scopes, all those that are not
+specified are set to `JobPermission.NONE`, instead of the default behavior
+when none is specified.
+
+
+
+Name | Type | Description 
+-----|------|-------------
+**actions**? | <code>[JobPermission](#cdk-pipelines-github-jobpermission)</code> | __*Optional*__
+**checks**? | <code>[JobPermission](#cdk-pipelines-github-jobpermission)</code> | __*Optional*__
+**contents**? | <code>[JobPermission](#cdk-pipelines-github-jobpermission)</code> | __*Optional*__
+**deployments**? | <code>[JobPermission](#cdk-pipelines-github-jobpermission)</code> | __*Optional*__
+**discussions**? | <code>[JobPermission](#cdk-pipelines-github-jobpermission)</code> | __*Optional*__
+**idToken**? | <code>[JobPermission](#cdk-pipelines-github-jobpermission)</code> | __*Optional*__
+**issues**? | <code>[JobPermission](#cdk-pipelines-github-jobpermission)</code> | __*Optional*__
+**packages**? | <code>[JobPermission](#cdk-pipelines-github-jobpermission)</code> | __*Optional*__
+**pullRequests**? | <code>[JobPermission](#cdk-pipelines-github-jobpermission)</code> | __*Optional*__
+**repositoryProjects**? | <code>[JobPermission](#cdk-pipelines-github-jobpermission)</code> | __*Optional*__
+**securityEvents**? | <code>[JobPermission](#cdk-pipelines-github-jobpermission)</code> | __*Optional*__
+**statuses**? | <code>[JobPermission](#cdk-pipelines-github-jobpermission)</code> | __*Optional*__
 
 
 

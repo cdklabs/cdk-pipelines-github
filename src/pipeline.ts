@@ -8,7 +8,7 @@ import { AGraphNode, PipelineGraph, Graph, isGraph } from 'aws-cdk-lib/pipelines
 import { Construct } from 'constructs';
 import * as decamelize from 'decamelize';
 import * as YAML from 'yaml';
-import * as github from './private/workflows-model';
+import * as github from './workflows-model';
 
 const CDKOUT_ARTIFACT = 'cdk.out';
 const RUNS_ON = 'ubuntu-latest';
@@ -276,7 +276,7 @@ export class GitHubWorkflow extends PipelineBase {
         needs: this.renderDependencies(node),
         permissions: {
           contents: github.JobPermission.READ,
-          ['id-token']: options.openIdConnection ? github.JobPermission.WRITE : github.JobPermission.NONE,
+          idToken: options.openIdConnection ? github.JobPermission.WRITE : github.JobPermission.NONE,
         },
         runsOn: RUNS_ON,
         steps: [
@@ -328,7 +328,7 @@ export class GitHubWorkflow extends PipelineBase {
         name: `Deploy ${stack.stackArtifactId}`,
         permissions: {
           contents: github.JobPermission.READ,
-          ['id-token']: options.openIdConnection ? github.JobPermission.WRITE : github.JobPermission.NONE,
+          idToken: options.openIdConnection ? github.JobPermission.WRITE : github.JobPermission.NONE,
         },
         needs: this.renderDependencies(node),
         runsOn: RUNS_ON,

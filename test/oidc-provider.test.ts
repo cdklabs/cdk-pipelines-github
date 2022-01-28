@@ -1,7 +1,7 @@
 import { Stack } from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
 import * as iam from 'aws-cdk-lib/aws-iam';
-import { GithubOidcProviderRole } from '../src';
+import { GithubOidc } from '../src';
 
 describe('github oidc provider', () => {
   test('basic configuration', () => {
@@ -9,7 +9,7 @@ describe('github oidc provider', () => {
     const stack = new Stack();
 
     // WHEN
-    new GithubOidcProviderRole(stack, 'MyProvider', {
+    new GithubOidc(stack, 'MyProvider', {
       username: 'myuser',
       repository: 'myrepo',
     });
@@ -46,7 +46,7 @@ describe('github oidc provider', () => {
     const stack = new Stack();
 
     // WHEN
-    new GithubOidcProviderRole(stack, 'MyProvider', {
+    new GithubOidc(stack, 'MyProvider', {
       username: 'myuser',
       repository: 'myrepo',
       provider: iam.OpenIdConnectProvider.fromOpenIdConnectProviderArn(
