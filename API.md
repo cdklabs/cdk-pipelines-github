@@ -93,8 +93,7 @@ Name | Type | Description
 Create a credential for a custom registry.
 
 This method assumes that you will have long-lived
-Github Secrets stored under the usernameKey and passwordKey that will authenticate to the
-registry you provide.
+Github Secrets stored under the usernameKey and passwordKey.
 
 ```ts
 static customRegistry(registry: string, creds: ExternalDockerCredentialSecrets): DockerCredential
@@ -110,15 +109,10 @@ __Returns__:
 
 #### *static* dockerHub(creds?) <a id="cdk-pipelines-github-dockercredential-dockerhub"></a>
 
-Reference credential secrets to authenticate to DockerHub.
+Create a credential for DockerHub.
 
-This method assumes
-that your credentials will be stored as long-lived Github Secrets under the
-usernameKey and personalAccessTokenKey.
-
-The default for usernameKey is `DOCKERHUB_USERNAME`. The default for personalAccessTokenKey
-is `DOCKERHUB_TOKEN`. If you do not set these values, your credentials should be
-found in your Github Secrets under these default keys.
+This method assumes that you will have long-lived
+Github Secrets stored under the usernameKey and personalAccessTokenKey.
 
 ```ts
 static dockerHub(creds?: DockerHubCredentialSecrets): DockerCredential
@@ -133,13 +127,7 @@ __Returns__:
 
 #### *static* ecr(registry) <a id="cdk-pipelines-github-dockercredential-ecr"></a>
 
-Create a credential for ECR.
-
-This method will reuse your AWS credentials to log in to AWS.
-Your AWS credentials are already used to deploy your CDK stacks. It can be supplied via
-Github Secrets or using an IAM role that trusts the Github OIDC identity provider.
-
-TODO: note the necessary permissions for the IAM role here.
+Create a credential for ECR. This method will reuse your AWS credentials to log in to AWS.
 
 NOTE - All ECR repositories in the same account and region share a domain name
 (e.g., 0123456789012.dkr.ecr.eu-west-1.amazonaws.com), and can only have one associated
