@@ -1,2 +1,0 @@
-set -x
-npx cdk-assets --path "temp.out/assembly-MyStage/MyStageBuildStackEE7613FD.assets.json" --verbose publish "bf3395b0ca977c5e3fcf8e3905a8a6981b81d7356e390da732ec29f385bb7ec0:000000000000-us-east-1"
