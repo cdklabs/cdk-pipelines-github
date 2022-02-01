@@ -145,7 +145,9 @@ export class GitHubWorkflow extends PipelineBase {
 
   protected doBuildPipeline() {
     const app = Stage.of(this);
-    if (!app) { throw new Error('');}
+    if (!app) {
+      throw new Error('The Github Workflow must extend App');
+    }
     const cdkoutDir = app.outdir;
 
     const jobs = new Array<Job>();

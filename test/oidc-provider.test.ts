@@ -1,7 +1,7 @@
 import { Stack } from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
 import * as iam from 'aws-cdk-lib/aws-iam';
-import { GithubOidc } from '../src';
+import { AwsOidc } from '../src';
 
 describe('github oidc provider', () => {
   test('basic configuration', () => {
@@ -9,9 +9,8 @@ describe('github oidc provider', () => {
     const stack = new Stack();
 
     // WHEN
-    new GithubOidc(stack, 'MyProvider', {
-      username: 'myuser',
-      repository: 'myrepo',
+    new AwsOidc(stack, 'MyProvider', {
+      repoString: 'myuser/myrepo',
     });
 
     // THEN
@@ -26,8 +25,8 @@ describe('github oidc provider', () => {
           {
             Action: 'sts:AssumeRoleWithWebIdentity',
             Condition: {
-              StringEquals: {
-                'token.actions.githubusercontent.com:sub': 'repo:myuser/myrepo:ref:refs/heads/main',
+              StringLike: {
+                'token.actions.githubusercontent.com:sub': 'repo:myuser/myrepo:ref:refs/heads/*',
               },
             },
             Principal: {
@@ -46,9 +45,8 @@ describe('github oidc provider', () => {
     const stack = new Stack();
 
     // WHEN
-    new GithubOidc(stack, 'MyProvider', {
-      username: 'myuser',
-      repository: 'myrepo',
+    new AwsOidc(stack, 'MyProvider', {
+      repoString: 'myuser/myrepo',
       provider: iam.OpenIdConnectProvider.fromOpenIdConnectProviderArn(
         stack,
         'open-id',
@@ -67,8 +65,8 @@ describe('github oidc provider', () => {
           {
             Action: 'sts:AssumeRoleWithWebIdentity',
             Condition: {
-              StringEquals: {
-                'token.actions.githubusercontent.com:sub': 'repo:myuser/myrepo:ref:refs/heads/main',
+              StringLike: {
+                'token.actions.githubusercontent.com:sub': 'repo:myuser/myrepo:ref:refs/heads/*',
               },
             },
             Principal: {

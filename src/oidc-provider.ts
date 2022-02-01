@@ -1,26 +1,30 @@
+import { CfnOutput } from 'aws-cdk-lib';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import { Construct } from 'constructs';
 
 /**
- * Properties for the GithubOidc construct.
+ * Properties for the AwsOidc construct.
  */
-export interface GithubOidcProps {
+export interface AwsOidcProps {
   /**
-   * Your Github username.
+   * Your Github username and repository passed in as a single string.
+   * For example, `owner/repo`.
    */
-  readonly username: string;
+  readonly repoString: string;
 
   /**
-   * The Github repository where your actions come from.
-   */
-  readonly repository: string;
-
-  /**
-   * The branch that your actions originate.
+   * The branch of your repository that triggers Github Actions.
    *
-   * @default 'main'
+   * @default - all branches
    */
   readonly branch?: string;
+
+  /**
+   * The name of the Oidc role.
+   *
+   * @default 'GithubActionRole'
+   */
+  readonly roleName?: string;
 
   /**
    * The Github OpenId Connect Provider. Must have provider url
@@ -36,29 +40,28 @@ export interface GithubOidcProps {
 }
 
 /**
- * Create or references a Github OIDC provider and accompanying role that trusts the provider.
- * This role can be used to authenticate against AWS instead of using long-standing
- * Github secrets.
+ * Creates or references a Github OIDC provider and accompanying role that trusts the provider.
+ * This role can be used to authenticate against AWS instead of using long-lived AWS user credentials
+ * stored in Github secrets.
  *
  * You can do this manually in the console, or create a separate stack that uses this construct.
  * You must `cdk deploy` once (with your normal AWS credentials) to have this role created for you.
  *
- * You can then utilize the role arn as a stack output and send it into the Github Workflow app via
- * the `githubOidcRoleArn` property. The role arn will be `arn:aws:iam::<accountId>:role/GithubActionRole`.
+ * You can then make note of the role arn in the stack output and send it into the Github Workflow app via
+ * the `awsOidcRoleArn` property. The role arn will be `arn:aws:iam::<accountId>:role/GithubActionRole`.
  *
  * @see https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-amazon-web-services
  */
-export class GithubOidc extends Construct {
+export class AwsOidc extends Construct {
   /**
-   * The arn of the role that gets created. The arn will equal
-   * `arn:aws:iam::<accountId>:role/GithubActionRole`.
+   * The role that gets created.
    *
-   * You should use this arn as input to the `githubOidcRoleArn` property
-   * in your Github Workflow app.
+   * You should use the arn of this role as input to the `awsOidcRoleArn`
+   * property in your Github Workflow app.
    */
-  public readonly roleArn: string;
+  public readonly role: iam.IRole;
 
-  constructor(scope: Construct, id: string, props: GithubOidcProps) {
+  constructor(scope: Construct, id: string, props: AwsOidcProps) {
     super(scope, id);
 
     const rawEndpoint = 'token.actions.githubusercontent.com';
@@ -75,19 +78,22 @@ export class GithubOidc extends Construct {
     const principal = new iam.FederatedPrincipal(
       provider.openIdConnectProviderArn,
       {
-        StringEquals: {
-          [`${rawEndpoint}:sub`]: `repo:${props.username}/${props.repository}:ref:refs/heads/${props.branch ?? 'main'}`,
+        StringLike: {
+          [`${rawEndpoint}:sub`]: `repo:${props.repoString}:ref:refs/heads/${props.branch ?? '*'}`,
         },
       },
       'sts:AssumeRoleWithWebIdentity',
     );
 
-    const role = new iam.Role(this, 'github-role', {
-      roleName: 'GithubActionRole',
+    this.role = new iam.Role(this, 'github-role', {
+      roleName: props.roleName ?? 'GithubActionRole',
       assumedBy: principal,
       managedPolicies: [iam.ManagedPolicy.fromAwsManagedPolicyName('AdministratorAccess')],
     });
 
-    this.roleArn = role.roleArn;
+    // show the role arn in the stack output
+    new CfnOutput(this, 'roleArn', {
+      value: this.role.roleArn,
+    });
   }
 }

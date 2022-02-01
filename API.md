@@ -4,8 +4,8 @@
 
 Name|Description
 ----|-----------
+[AwsOidc](#cdk-pipelines-github-awsoidc)|Creates or references a Github OIDC provider and accompanying role that trusts the provider.
 [GitHubWorkflow](#cdk-pipelines-github-githubworkflow)|CDK Pipelines for GitHub workflows.
-[GithubOidc](#cdk-pipelines-github-githuboidc)|Create or references a Github OIDC provider and accompanying role that trusts the provider.
 
 
 **Structs**
@@ -13,6 +13,7 @@ Name|Description
 Name|Description
 ----|-----------
 [AwsCredentialsSecrets](#cdk-pipelines-github-awscredentialssecrets)|Names of secrets for AWS credentials.
+[AwsOidcProps](#cdk-pipelines-github-awsoidcprops)|Properties for the AwsOidc construct.
 [CheckRunOptions](#cdk-pipelines-github-checkrunoptions)|Check run options.
 [CheckSuiteOptions](#cdk-pipelines-github-checksuiteoptions)|Check suite options.
 [ContainerCredentials](#cdk-pipelines-github-containercredentials)|Credentials to use to authenticate to Docker registries.
@@ -24,7 +25,6 @@ Name|Description
 [DeploymentStatusOptions](#cdk-pipelines-github-deploymentstatusoptions)|The Deployment status event accepts no options.
 [ForkOptions](#cdk-pipelines-github-forkoptions)|The Fork event accepts no options.
 [GitHubWorkflowProps](#cdk-pipelines-github-githubworkflowprops)|Props for `GitHubWorkflow`.
-[GithubOidcProps](#cdk-pipelines-github-githuboidcprops)|Properties for the GithubOidc construct.
 [GollumOptions](#cdk-pipelines-github-gollumoptions)|The Gollum event accepts no options.
 [IssueCommentOptions](#cdk-pipelines-github-issuecommentoptions)|Issue comment options.
 [IssuesOptions](#cdk-pipelines-github-issuesoptions)|Issues options.
@@ -63,6 +63,50 @@ Name|Description
 Name|Description
 ----|-----------
 [JobPermission](#cdk-pipelines-github-jobpermission)|Access level for workflow permission scopes.
+
+
+
+## class AwsOidc  <a id="cdk-pipelines-github-awsoidc"></a>
+
+Creates or references a Github OIDC provider and accompanying role that trusts the provider.
+
+This role can be used to authenticate against AWS instead of using long-lived AWS user credentials
+stored in Github secrets.
+
+You can do this manually in the console, or create a separate stack that uses this construct.
+You must `cdk deploy` once (with your normal AWS credentials) to have this role created for you.
+
+You can then make note of the role arn in the stack output and send it into the Github Workflow app via
+the `awsOidcRoleArn` property. The role arn will be `arn:aws:iam::<accountId>:role/GithubActionRole`.
+
+__Implements__: [IConstruct](#constructs-iconstruct), [IDependable](#constructs-idependable)
+__Extends__: [Construct](#constructs-construct)
+
+### Initializer
+
+
+
+
+```ts
+new AwsOidc(scope: Construct, id: string, props: AwsOidcProps)
+```
+
+* **scope** (<code>[Construct](#constructs-construct)</code>)  *No description*
+* **id** (<code>string</code>)  *No description*
+* **props** (<code>[AwsOidcProps](#cdk-pipelines-github-awsoidcprops)</code>)  *No description*
+  * **repoString** (<code>string</code>)  Your Github username and repository passed in as a single string. 
+  * **branch** (<code>string</code>)  The branch of your repository that triggers Github Actions. __*Default*__: all branches
+  * **provider** (<code>[aws_iam.IOpenIdConnectProvider](#aws-cdk-lib-aws-iam-iopenidconnectprovider)</code>)  The Github OpenId Connect Provider. Must have provider url `https://token.actions.githubusercontent.com`. The audience must be `sts:amazonaws.com`. __*Default*__: a provider is created for you.
+  * **roleName** (<code>string</code>)  The name of the Oidc role. __*Default*__: 'GithubActionRole'
+
+
+
+### Properties
+
+
+Name | Type | Description 
+-----|------|-------------
+**role** | <code>[aws_iam.IRole](#aws-cdk-lib-aws-iam-irole)</code> | The role that gets created.
 
 
 
@@ -124,50 +168,6 @@ protected doBuildPipeline(): void
 
 
 
-## class GithubOidc  <a id="cdk-pipelines-github-githuboidc"></a>
-
-Create or references a Github OIDC provider and accompanying role that trusts the provider.
-
-This role can be used to authenticate against AWS instead of using long-standing
-Github secrets.
-
-You can do this manually in the console, or create a separate stack that uses this construct.
-You must `cdk deploy` once (with your normal AWS credentials) to have this role created for you.
-
-You can then utilize the role arn as a stack output and send it into the Github Workflow app via
-the `githubOidcRoleArn` property. The role arn will be `arn:aws:iam::<accountId>:role/GithubActionRole`.
-
-__Implements__: [IConstruct](#constructs-iconstruct), [IDependable](#constructs-idependable)
-__Extends__: [Construct](#constructs-construct)
-
-### Initializer
-
-
-
-
-```ts
-new GithubOidc(scope: Construct, id: string, props: GithubOidcProps)
-```
-
-* **scope** (<code>[Construct](#constructs-construct)</code>)  *No description*
-* **id** (<code>string</code>)  *No description*
-* **props** (<code>[GithubOidcProps](#cdk-pipelines-github-githuboidcprops)</code>)  *No description*
-  * **repository** (<code>string</code>)  The Github repository where your actions come from. 
-  * **username** (<code>string</code>)  Your Github username. 
-  * **branch** (<code>string</code>)  The branch that your actions originate. __*Default*__: 'main'
-  * **provider** (<code>[aws_iam.IOpenIdConnectProvider](#aws-cdk-lib-aws-iam-iopenidconnectprovider)</code>)  The Github OpenId Connect Provider. Must have provider url `https://token.actions.githubusercontent.com`. The audience must be `sts:amazonaws.com`. __*Default*__: a provider is created for you.
-
-
-
-### Properties
-
-
-Name | Type | Description 
------|------|-------------
-**roleArn** | <code>string</code> | The arn of the role that gets created. The arn will equal `arn:aws:iam::<accountId>:role/GithubActionRole`.
-
-
-
 ## struct AwsCredentialsSecrets  <a id="cdk-pipelines-github-awscredentialssecrets"></a>
 
 
@@ -180,6 +180,22 @@ Name | Type | Description
 **accessKeyId**? | <code>string</code> | __*Default*__: "AWS_ACCESS_KEY_ID"
 **secretAccessKey**? | <code>string</code> | __*Default*__: "AWS_SECRET_ACCESS_KEY"
 **sessionToken**? | <code>string</code> | __*Default*__: no session token is used
+
+
+
+## struct AwsOidcProps  <a id="cdk-pipelines-github-awsoidcprops"></a>
+
+
+Properties for the AwsOidc construct.
+
+
+
+Name | Type | Description 
+-----|------|-------------
+**repoString** | <code>string</code> | Your Github username and repository passed in as a single string.
+**branch**? | <code>string</code> | The branch of your repository that triggers Github Actions.<br/>__*Default*__: all branches
+**provider**? | <code>[aws_iam.IOpenIdConnectProvider](#aws-cdk-lib-aws-iam-iopenidconnectprovider)</code> | The Github OpenId Connect Provider. Must have provider url `https://token.actions.githubusercontent.com`. The audience must be `sts:amazonaws.com`.<br/>__*Default*__: a provider is created for you.
+**roleName**? | <code>string</code> | The name of the Oidc role.<br/>__*Default*__: 'GithubActionRole'
 
 
 
@@ -304,22 +320,6 @@ Name | Type | Description
 **workflowName**? | <code>string</code> | Name of the workflow.<br/>__*Default*__: "deploy"
 **workflowPath**? | <code>string</code> | File path for the GitHub workflow.<br/>__*Default*__: ".github/workflows/deploy.yml"
 **workflowTriggers**? | <code>[Triggers](#cdk-pipelines-github-triggers)</code> | GitHub workflow triggers.<br/>__*Default*__: By default, workflow is triggered on push to the `main` branch and can also be triggered manually (`workflow_dispatch`).
-
-
-
-## struct GithubOidcProps  <a id="cdk-pipelines-github-githuboidcprops"></a>
-
-
-Properties for the GithubOidc construct.
-
-
-
-Name | Type | Description 
------|------|-------------
-**repository** | <code>string</code> | The Github repository where your actions come from.
-**username** | <code>string</code> | Your Github username.
-**branch**? | <code>string</code> | The branch that your actions originate.<br/>__*Default*__: 'main'
-**provider**? | <code>[aws_iam.IOpenIdConnectProvider](#aws-cdk-lib-aws-iam-iopenidconnectprovider)</code> | The Github OpenId Connect Provider. Must have provider url `https://token.actions.githubusercontent.com`. The audience must be `sts:amazonaws.com`.<br/>__*Default*__: a provider is created for you.
 
 
 
