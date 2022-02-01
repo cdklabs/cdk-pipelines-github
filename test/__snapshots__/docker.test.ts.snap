@@ -1,333 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`example app 1`] = `
-"name: deploy
-on:
-  push:
-    branches:
-      - main
-  workflow_dispatch: {}
-jobs:
-  Build-Build:
-    name: Synthesize
-    permissions:
-      contents: read
-    runs-on: ubuntu-latest
-    needs: []
-    env: {}
-    container:
-      image: alpine
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
-        with:
-          node-version: \\"14\\"
-      - name: Build
-        run: echo \\"nothing to do (cdk.out is committed)\\"
-      - run: echo post-build
-  Assets-DockerAsset1:
-    name: Publish Assets Assets-DockerAsset1
-    needs:
-      - Build-Build
-    permissions:
-      contents: read
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Install
-        run: npm install --no-save cdk-assets
-      - uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: \${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: \${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-west-2
-          role-skip-session-tagging: true
-          role-duration-seconds: 1800
-      - uses: docker/login-action@v1
-        with:
-          registry: 489318732371.dkr.ecr.us-east-1.amazonaws.com
-      - name: Publish Assets-DockerAsset1
-        run: /bin/bash ./cdk.out/publish-Assets-DockerAsset1-step.sh
-  Assets-FileAsset1:
-    name: Publish Assets Assets-FileAsset1
-    needs:
-      - Build-Build
-    permissions:
-      contents: read
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Install
-        run: npm install --no-save cdk-assets
-      - uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: \${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: \${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-west-2
-          role-skip-session-tagging: true
-          role-duration-seconds: 1800
-      - name: Publish Assets-FileAsset1
-        run: /bin/bash ./cdk.out/publish-Assets-FileAsset1-step.sh
-  Assets-FileAsset2:
-    name: Publish Assets Assets-FileAsset2
-    needs:
-      - Build-Build
-    permissions:
-      contents: read
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Install
-        run: npm install --no-save cdk-assets
-      - uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: \${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: \${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-west-2
-          role-skip-session-tagging: true
-          role-duration-seconds: 1800
-      - name: Publish Assets-FileAsset2
-        run: /bin/bash ./cdk.out/publish-Assets-FileAsset2-step.sh
-  Assets-FileAsset3:
-    name: Publish Assets Assets-FileAsset3
-    needs:
-      - Build-Build
-    permissions:
-      contents: read
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Install
-        run: npm install --no-save cdk-assets
-      - uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: \${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: \${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-west-2
-          role-skip-session-tagging: true
-          role-duration-seconds: 1800
-      - name: Publish Assets-FileAsset3
-        run: /bin/bash ./cdk.out/publish-Assets-FileAsset3-step.sh
-  Assets-FileAsset4:
-    name: Publish Assets Assets-FileAsset4
-    needs:
-      - Build-Build
-    permissions:
-      contents: read
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Install
-        run: npm install --no-save cdk-assets
-      - uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: \${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: \${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-west-2
-          role-skip-session-tagging: true
-          role-duration-seconds: 1800
-      - name: Publish Assets-FileAsset4
-        run: /bin/bash ./cdk.out/publish-Assets-FileAsset4-step.sh
-  Assets-FileAsset5:
-    name: Publish Assets Assets-FileAsset5
-    needs:
-      - Build-Build
-    permissions:
-      contents: read
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Install
-        run: npm install --no-save cdk-assets
-      - uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: \${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: \${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-west-2
-          role-skip-session-tagging: true
-          role-duration-seconds: 1800
-      - name: Publish Assets-FileAsset5
-        run: /bin/bash ./cdk.out/publish-Assets-FileAsset5-step.sh
-  Assets-FileAsset6:
-    name: Publish Assets Assets-FileAsset6
-    needs:
-      - Build-Build
-    permissions:
-      contents: read
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Install
-        run: npm install --no-save cdk-assets
-      - uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: \${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: \${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-west-2
-          role-skip-session-tagging: true
-          role-duration-seconds: 1800
-      - name: Publish Assets-FileAsset6
-        run: /bin/bash ./cdk.out/publish-Assets-FileAsset6-step.sh
-  StageA-Pre:
-    name: Pre
-    permissions:
-      contents: read
-    runs-on: ubuntu-latest
-    needs:
-      - Build-Build
-    env: {}
-    steps:
-      - run: echo hello
-  StageA-BucketStack-Deploy:
-    name: Deploy StageABucketStackEAC67DBE
-    permissions:
-      contents: none
-    needs:
-      - Build-Build
-      - Assets-FileAsset1
-      - Assets-FileAsset2
-      - StageA-Pre
-      - Build-Build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: \${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: \${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
-          role-skip-session-tagging: true
-          role-duration-seconds: 1800
-          role-to-assume: arn:aws:iam::111111111111:role/cdk-hnb659fds-deploy-role-111111111111-us-east-1
-          role-external-id: Pipeline
-      - id: Deploy
-        uses: aws-actions/aws-cloudformation-github-deploy@v1
-        with:
-          name: StageA-BucketStack
-          template: https://cdk-hnb659fds-assets-111111111111-us-east-1.s3.us-east-1.amazonaws.com/edf2c6bcaf00190295ae3fb871034a825a9bc599ce0c57bde46ed35fe45a9718.json
-          no-fail-on-empty-changeset: \\"1\\"
-          role-arn: arn:aws:iam::111111111111:role/cdk-hnb659fds-cfn-exec-role-111111111111-us-east-1
-  StageA-FunctionStack-Deploy:
-    name: Deploy StageAFunctionStackD42C27B8
-    permissions:
-      contents: none
-    needs:
-      - Build-Build
-      - Assets-FileAsset3
-      - Assets-FileAsset4
-      - Assets-DockerAsset1
-      - StageA-BucketStack-Deploy
-      - StageA-Pre
-      - Build-Build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: \${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: \${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
-          role-skip-session-tagging: true
-          role-duration-seconds: 1800
-          role-to-assume: arn:aws:iam::111111111111:role/cdk-hnb659fds-deploy-role-111111111111-us-east-1
-          role-external-id: Pipeline
-      - id: Deploy
-        uses: aws-actions/aws-cloudformation-github-deploy@v1
-        with:
-          name: StageA-FunctionStack
-          template: https://cdk-hnb659fds-assets-111111111111-us-east-1.s3.us-east-1.amazonaws.com/89ec3d0dfa6d10253ea56583483cd30ece0cfcdd1befe97db569d3b81a1b7e15.json
-          no-fail-on-empty-changeset: \\"1\\"
-          role-arn: arn:aws:iam::111111111111:role/cdk-hnb659fds-cfn-exec-role-111111111111-us-east-1
-    outputs:
-      myout: \${{ steps.Deploy.outputs.myout }}
-  StageA-Post:
-    name: Post
-    permissions:
-      contents: read
-    runs-on: ubuntu-latest
-    needs:
-      - StageA-FunctionStack-Deploy
-      - StageA-BucketStack-Deploy
-      - StageA-FunctionStack-Deploy
-      - Build-Build
-    env:
-      FN_NAME: \${{ needs.StageA-FunctionStack-Deploy.outputs.myout }}
-    steps:
-      - run: \\"echo FN_NAME equals: $FN_NAME\\"
-  StageB-BucketStack-Deploy:
-    name: Deploy StageBBucketStackDF3FFF07
-    permissions:
-      contents: none
-    needs:
-      - Build-Build
-      - Assets-FileAsset5
-      - Assets-FileAsset2
-      - Build-Build
-      - StageA-BucketStack-Deploy
-      - StageA-FunctionStack-Deploy
-      - StageA-Pre
-      - StageA-Post
-    runs-on: ubuntu-latest
-    steps:
-      - uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: \${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: \${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: eu-west-2
-          role-skip-session-tagging: true
-          role-duration-seconds: 1800
-          role-to-assume: arn:aws:iam::222222222222:role/cdk-hnb659fds-deploy-role-222222222222-eu-west-2
-          role-external-id: Pipeline
-      - id: Deploy
-        uses: aws-actions/aws-cloudformation-github-deploy@v1
-        with:
-          name: StageB-BucketStack
-          template: https://cdk-hnb659fds-assets-222222222222-eu-west-2.s3.eu-west-2.amazonaws.com/0251b0cee8f2645a2a13ae23fd40a19825d67955f2cbcd1576812addf4065a29.json
-          no-fail-on-empty-changeset: \\"1\\"
-          role-arn: arn:aws:iam::222222222222:role/cdk-hnb659fds-cfn-exec-role-222222222222-eu-west-2
-  StageB-FunctionStack-Deploy:
-    name: Deploy StageBFunctionStack18098DCD
-    permissions:
-      contents: none
-    needs:
-      - Build-Build
-      - Assets-FileAsset6
-      - Assets-FileAsset4
-      - Assets-DockerAsset1
-      - StageB-BucketStack-Deploy
-      - Build-Build
-      - StageA-BucketStack-Deploy
-      - StageA-FunctionStack-Deploy
-      - StageA-Pre
-      - StageA-Post
-    runs-on: ubuntu-latest
-    steps:
-      - uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: \${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: \${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: eu-west-2
-          role-skip-session-tagging: true
-          role-duration-seconds: 1800
-          role-to-assume: arn:aws:iam::222222222222:role/cdk-hnb659fds-deploy-role-222222222222-eu-west-2
-          role-external-id: Pipeline
-      - id: Deploy
-        uses: aws-actions/aws-cloudformation-github-deploy@v1
-        with:
-          name: StageB-FunctionStack
-          template: https://cdk-hnb659fds-assets-222222222222-eu-west-2.s3.eu-west-2.amazonaws.com/48258139d688dda445ac7f4ea30c9b25306d07b55ab3a364158c0661c3b582c0.json
-          no-fail-on-empty-changeset: \\"1\\"
-          role-arn: arn:aws:iam::222222222222:role/cdk-hnb659fds-cfn-exec-role-222222222222-eu-west-2
-"
-`;
-
-exports[`pipeline with only a synth step 1`] = `
+exports[`correct format for docker credentials: DockerHub 1`] = `
 "name: deploy
 on:
   push:
@@ -355,35 +28,34 @@ jobs:
         with:
           name: cdk.out
           path: cdk.out
-"
-`;
-
-exports[`single wave/stage/stack 1`] = `
-"name: deploy
-on:
-  push:
-    branches:
-      - main
-  workflow_dispatch: {}
-jobs:
-  Build-Build:
-    name: Synthesize
+  Assets-DockerAsset1:
+    name: Publish Assets Assets-DockerAsset1
+    needs:
+      - Build-Build
     permissions:
       contents: read
     runs-on: ubuntu-latest
-    needs: []
-    env: {}
-    container: null
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Build
-        run: \\"\\"
-      - name: Upload cdk.out
-        uses: actions/upload-artifact@v2.1.1
+      - name: Download cdk.out
+        uses: actions/download-artifact@v2
         with:
           name: cdk.out
-          path: cdk.out
+          path: temp.out
+      - name: Install
+        run: npm install --no-save cdk-assets
+      - uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: \${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: \${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-west-2
+          role-skip-session-tagging: true
+          role-duration-seconds: 1800
+      - uses: docker/login-action@v1
+        with:
+          username: \${{ secrets.DOCKERHUB_USERNAME }}
+          password: \${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Publish Assets-DockerAsset1
+        run: /bin/bash ./cdk.out/publish-Assets-DockerAsset1-step.sh
   Assets-FileAsset1:
     name: Publish Assets Assets-FileAsset1
     needs:
@@ -408,8 +80,66 @@ jobs:
           role-duration-seconds: 1800
       - name: Publish Assets-FileAsset1
         run: /bin/bash ./cdk.out/publish-Assets-FileAsset1-step.sh
-  Assets-FileAsset2:
-    name: Publish Assets Assets-FileAsset2
+  MyStage-BuildStack-Deploy:
+    name: Deploy MyStageBuildStackEE7613FD
+    permissions:
+      contents: none
+    needs:
+      - Build-Build
+      - Assets-FileAsset1
+      - Assets-DockerAsset1
+      - Build-Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: \${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: \${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+          role-skip-session-tagging: true
+          role-duration-seconds: 1800
+          role-to-assume: arn:aws:iam::000000000000:role/cdk-hnb659fds-deploy-role-000000000000-us-east-1
+          role-external-id: Pipeline
+      - id: Deploy
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
+        with:
+          name: MyStage-BuildStack
+          template: https://cdk-hnb659fds-assets-000000000000-us-east-1.s3.us-east-1.amazonaws.com/bf3395b0ca977c5e3fcf8e3905a8a6981b81d7356e390da732ec29f385bb7ec0.json
+          no-fail-on-empty-changeset: \\"1\\"
+          role-arn: arn:aws:iam::000000000000:role/cdk-hnb659fds-cfn-exec-role-000000000000-us-east-1
+"
+`;
+
+exports[`correct format for docker credentials: ECR 1`] = `
+"name: deploy
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: {}
+jobs:
+  Build-Build:
+    name: Synthesize
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    needs: []
+    env: {}
+    container: null
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install
+        run: yarn
+      - name: Build
+        run: yarn build
+      - name: Upload cdk.out
+        uses: actions/upload-artifact@v2.1.1
+        with:
+          name: cdk.out
+          path: cdk.out
+  Assets-DockerAsset1:
+    name: Publish Assets Assets-DockerAsset1
     needs:
       - Build-Build
     permissions:
@@ -430,16 +160,43 @@ jobs:
           aws-region: us-west-2
           role-skip-session-tagging: true
           role-duration-seconds: 1800
-      - name: Publish Assets-FileAsset2
-        run: /bin/bash ./cdk.out/publish-Assets-FileAsset2-step.sh
-  MyStack-MyStack-Deploy:
-    name: Deploy MyStack098574E7
+      - uses: docker/login-action@v1
+        with:
+          registry: 000000000000.dkr.ecr.us-east-1.amazonaws.com
+      - name: Publish Assets-DockerAsset1
+        run: /bin/bash ./cdk.out/publish-Assets-DockerAsset1-step.sh
+  Assets-FileAsset1:
+    name: Publish Assets Assets-FileAsset1
+    needs:
+      - Build-Build
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download cdk.out
+        uses: actions/download-artifact@v2
+        with:
+          name: cdk.out
+          path: temp.out
+      - name: Install
+        run: npm install --no-save cdk-assets
+      - uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: \${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: \${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-west-2
+          role-skip-session-tagging: true
+          role-duration-seconds: 1800
+      - name: Publish Assets-FileAsset1
+        run: /bin/bash ./cdk.out/publish-Assets-FileAsset1-step.sh
+  MyStage-BuildStack-Deploy:
+    name: Deploy MyStageBuildStackEE7613FD
     permissions:
       contents: none
     needs:
       - Build-Build
       - Assets-FileAsset1
-      - Assets-FileAsset2
+      - Assets-DockerAsset1
       - Build-Build
     runs-on: ubuntu-latest
     steps:
@@ -450,14 +207,238 @@ jobs:
           aws-region: us-east-1
           role-skip-session-tagging: true
           role-duration-seconds: 1800
-          role-to-assume: arn:aws:iam::111111111111:role/cdk-hnb659fds-deploy-role-111111111111-us-east-1
+          role-to-assume: arn:aws:iam::000000000000:role/cdk-hnb659fds-deploy-role-000000000000-us-east-1
           role-external-id: Pipeline
       - id: Deploy
         uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
-          name: MyStack-MyStack
-          template: https://cdk-hnb659fds-assets-111111111111-us-east-1.s3.us-east-1.amazonaws.com/52c2fe7f725481c405841b55cfb41b81965fadaa71665186ffb031ecd3f0ef36.json
+          name: MyStage-BuildStack
+          template: https://cdk-hnb659fds-assets-000000000000-us-east-1.s3.us-east-1.amazonaws.com/bf3395b0ca977c5e3fcf8e3905a8a6981b81d7356e390da732ec29f385bb7ec0.json
           no-fail-on-empty-changeset: \\"1\\"
-          role-arn: arn:aws:iam::111111111111:role/cdk-hnb659fds-cfn-exec-role-111111111111-us-east-1
+          role-arn: arn:aws:iam::000000000000:role/cdk-hnb659fds-cfn-exec-role-000000000000-us-east-1
+"
+`;
+
+exports[`correct format for docker credentials: custom registry 1`] = `
+"name: deploy
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: {}
+jobs:
+  Build-Build:
+    name: Synthesize
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    needs: []
+    env: {}
+    container: null
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install
+        run: yarn
+      - name: Build
+        run: yarn build
+      - name: Upload cdk.out
+        uses: actions/upload-artifact@v2.1.1
+        with:
+          name: cdk.out
+          path: cdk.out
+  Assets-DockerAsset1:
+    name: Publish Assets Assets-DockerAsset1
+    needs:
+      - Build-Build
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download cdk.out
+        uses: actions/download-artifact@v2
+        with:
+          name: cdk.out
+          path: temp.out
+      - name: Install
+        run: npm install --no-save cdk-assets
+      - uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: \${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: \${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-west-2
+          role-skip-session-tagging: true
+          role-duration-seconds: 1800
+      - uses: docker/login-action@v1
+        with:
+          registry: registry
+          username: \${{ secrets.CUSTOM_USERNAME }}
+          password: \${{ secrets.CUSTOM_PASSWORD }}
+      - name: Publish Assets-DockerAsset1
+        run: /bin/bash ./cdk.out/publish-Assets-DockerAsset1-step.sh
+  Assets-FileAsset1:
+    name: Publish Assets Assets-FileAsset1
+    needs:
+      - Build-Build
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download cdk.out
+        uses: actions/download-artifact@v2
+        with:
+          name: cdk.out
+          path: temp.out
+      - name: Install
+        run: npm install --no-save cdk-assets
+      - uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: \${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: \${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-west-2
+          role-skip-session-tagging: true
+          role-duration-seconds: 1800
+      - name: Publish Assets-FileAsset1
+        run: /bin/bash ./cdk.out/publish-Assets-FileAsset1-step.sh
+  MyStage-BuildStack-Deploy:
+    name: Deploy MyStageBuildStackEE7613FD
+    permissions:
+      contents: none
+    needs:
+      - Build-Build
+      - Assets-FileAsset1
+      - Assets-DockerAsset1
+      - Build-Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: \${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: \${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+          role-skip-session-tagging: true
+          role-duration-seconds: 1800
+          role-to-assume: arn:aws:iam::000000000000:role/cdk-hnb659fds-deploy-role-000000000000-us-east-1
+          role-external-id: Pipeline
+      - id: Deploy
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
+        with:
+          name: MyStage-BuildStack
+          template: https://cdk-hnb659fds-assets-000000000000-us-east-1.s3.us-east-1.amazonaws.com/bf3395b0ca977c5e3fcf8e3905a8a6981b81d7356e390da732ec29f385bb7ec0.json
+          no-fail-on-empty-changeset: \\"1\\"
+          role-arn: arn:aws:iam::000000000000:role/cdk-hnb659fds-cfn-exec-role-000000000000-us-east-1
+"
+`;
+
+exports[`correct format for docker credentials: multiple credentials 1`] = `
+"name: deploy
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: {}
+jobs:
+  Build-Build:
+    name: Synthesize
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    needs: []
+    env: {}
+    container: null
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install
+        run: yarn
+      - name: Build
+        run: yarn build
+      - name: Upload cdk.out
+        uses: actions/upload-artifact@v2.1.1
+        with:
+          name: cdk.out
+          path: cdk.out
+  Assets-DockerAsset1:
+    name: Publish Assets Assets-DockerAsset1
+    needs:
+      - Build-Build
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download cdk.out
+        uses: actions/download-artifact@v2
+        with:
+          name: cdk.out
+          path: temp.out
+      - name: Install
+        run: npm install --no-save cdk-assets
+      - uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: \${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: \${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-west-2
+          role-skip-session-tagging: true
+          role-duration-seconds: 1800
+      - uses: docker/login-action@v1
+        with:
+          username: \${{ secrets.DOCKERHUB_USERNAME }}
+          password: \${{ secrets.DOCKERHUB_TOKEN }}
+      - uses: docker/login-action@v1
+        with:
+          registry: 000000000000.dkr.ecr.us-east-1.amazonaws.com
+      - name: Publish Assets-DockerAsset1
+        run: /bin/bash ./cdk.out/publish-Assets-DockerAsset1-step.sh
+  Assets-FileAsset1:
+    name: Publish Assets Assets-FileAsset1
+    needs:
+      - Build-Build
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download cdk.out
+        uses: actions/download-artifact@v2
+        with:
+          name: cdk.out
+          path: temp.out
+      - name: Install
+        run: npm install --no-save cdk-assets
+      - uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: \${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: \${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-west-2
+          role-skip-session-tagging: true
+          role-duration-seconds: 1800
+      - name: Publish Assets-FileAsset1
+        run: /bin/bash ./cdk.out/publish-Assets-FileAsset1-step.sh
+  MyStage-BuildStack-Deploy:
+    name: Deploy MyStageBuildStackEE7613FD
+    permissions:
+      contents: none
+    needs:
+      - Build-Build
+      - Assets-FileAsset1
+      - Assets-DockerAsset1
+      - Build-Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: \${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: \${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+          role-skip-session-tagging: true
+          role-duration-seconds: 1800
+          role-to-assume: arn:aws:iam::000000000000:role/cdk-hnb659fds-deploy-role-000000000000-us-east-1
+          role-external-id: Pipeline
+      - id: Deploy
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
+        with:
+          name: MyStage-BuildStack
+          template: https://cdk-hnb659fds-assets-000000000000-us-east-1.s3.us-east-1.amazonaws.com/bf3395b0ca977c5e3fcf8e3905a8a6981b81d7356e390da732ec29f385bb7ec0.json
+          no-fail-on-empty-changeset: \\"1\\"
+          role-arn: arn:aws:iam::000000000000:role/cdk-hnb659fds-cfn-exec-role-000000000000-us-east-1
 "
 `;

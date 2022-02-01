@@ -523,11 +523,11 @@ export class GitHubWorkflow extends PipelineBase {
       };
     } else if (dockerCredential.name === 'ecr') {
       params = {
-        registry: `\${{ secrets.${dockerCredential.registry} }}`,
+        registry: dockerCredential.registry,
       };
     } else {
       params = {
-        registry: `\${{ secrets.${dockerCredential.registry} }}`,
+        registry: dockerCredential.registry,
         username: `\${{ secrets.${dockerCredential.usernameKey} }}`,
         password: `\${{ secrets.${dockerCredential.passwordKey} }}`,
       };
