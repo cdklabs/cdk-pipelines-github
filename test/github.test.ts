@@ -1,4 +1,4 @@
-import { readFileSync, rmdirSync } from 'fs';
+import { readFileSync } from 'fs';
 import { join } from 'path';
 import { Stack, Stage } from 'aws-cdk-lib';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
@@ -59,8 +59,7 @@ test('single wave/stage/stack', () => {
 
     expect(readFileSync(pipeline.workflowPath, 'utf-8')).toMatchSnapshot();
 
-    // clean up temp dir
-    rmdirSync(tempOutDir, { recursive: true });
+    app.cleanup();
   });
 });
 
