@@ -195,7 +195,6 @@ jobs:
       - Assets-FileAsset1
       - Assets-FileAsset2
       - StageA-Pre
-      - Build-Build
     runs-on: ubuntu-latest
     steps:
       - uses: aws-actions/configure-aws-credentials@v1
@@ -225,7 +224,6 @@ jobs:
       - Assets-DockerAsset1
       - StageA-BucketStack-Deploy
       - StageA-Pre
-      - Build-Build
     runs-on: ubuntu-latest
     steps:
       - uses: aws-actions/configure-aws-credentials@v1
@@ -268,7 +266,6 @@ jobs:
       - Build-Build
       - Assets-FileAsset5
       - Assets-FileAsset2
-      - Build-Build
       - StageA-BucketStack-Deploy
       - StageA-FunctionStack-Deploy
       - StageA-Pre
@@ -301,7 +298,6 @@ jobs:
       - Assets-FileAsset4
       - Assets-DockerAsset1
       - StageB-BucketStack-Deploy
-      - Build-Build
       - StageA-BucketStack-Deploy
       - StageA-FunctionStack-Deploy
       - StageA-Pre
@@ -440,7 +436,6 @@ jobs:
       - Build-Build
       - Assets-FileAsset1
       - Assets-FileAsset2
-      - Build-Build
     runs-on: ubuntu-latest
     steps:
       - uses: aws-actions/configure-aws-credentials@v1
