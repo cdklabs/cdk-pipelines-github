@@ -266,7 +266,7 @@ jobs:
         uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
           name: StageA-FunctionStack
-          template: https://cdk-hnb659fds-assets-111111111111-us-east-1.s3.us-east-1.amazonaws.com/aa15ebbb39d69ab63308d4ae0f53a51ecc20c9a2c85d743b5f65e918dce848eb.json
+          template: https://cdk-hnb659fds-assets-111111111111-us-east-1.s3.us-east-1.amazonaws.com/09caea33a230ccd27aa47bc5fcf4371ab2ae6d8db7e1ed926b07e416fde00dbe.json
           no-fail-on-empty-changeset: \\"1\\"
           role-arn: arn:aws:iam::111111111111:role/cdk-hnb659fds-cfn-exec-role-111111111111-us-east-1
     outputs:
@@ -364,7 +364,7 @@ jobs:
         uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
           name: StageB-FunctionStack
-          template: https://cdk-hnb659fds-assets-222222222222-eu-west-2.s3.eu-west-2.amazonaws.com/88a1622c070eb1e48c7710be5ffaa6a3bfbe7200d03388685408e0ad22f5db38.json
+          template: https://cdk-hnb659fds-assets-222222222222-eu-west-2.s3.eu-west-2.amazonaws.com/d45b2f240143e9ddf11c9a5c67e5aeb7628af61bfbd5c34bbcdb56e8898da02b.json
           no-fail-on-empty-changeset: \\"1\\"
           role-arn: arn:aws:iam::222222222222:role/cdk-hnb659fds-cfn-exec-role-222222222222-eu-west-2
 "

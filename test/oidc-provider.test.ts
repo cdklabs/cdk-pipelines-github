@@ -78,7 +78,7 @@ describe('github oidc provider', () => {
     });
   });
 
-  test('permissions', () => {
+  test('Policy has correct permissions', () => {
     // GIVEN
     const stack = new Stack();
 
@@ -93,6 +93,8 @@ describe('github oidc provider', () => {
         PolicyDocument: {
           Statement: [{
             Action: 'sts:AssumeRole',
+            Resource: '*',
+            Effect: 'Allow',
             Condition: {
               'ForAnyValue:StringEquals': {
                 'iam:ResourceTag/aws-cdk:bootstrap-role': [
@@ -103,6 +105,10 @@ describe('github oidc provider', () => {
                 ],
               },
             },
+          }, {
+            Action: 'ecr:GetAuthorizationToken',
+            Resource: '*',
+            Effect: 'Allow',
           }],
         },
       }],

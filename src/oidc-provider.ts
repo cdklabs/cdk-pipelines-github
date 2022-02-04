@@ -94,12 +94,19 @@ export class AwsOidc extends Construct {
       },
     });
 
+    // permit this role from accessing ecr repositories for docker assets
+    const ecrPolicyStatement = new iam.PolicyStatement({
+      effect: iam.Effect.ALLOW,
+      actions: ['ecr:GetAuthorizationToken'],
+      resources: ['*'],
+    });
+
     this.role = new iam.Role(this, 'github-role', {
       roleName: props.roleName ?? 'GithubActionRole',
       assumedBy: principal,
       inlinePolicies: {
         AssumeBootstrapRoles: new iam.PolicyDocument({
-          statements: [oidcPolicyStatement],
+          statements: [oidcPolicyStatement, ecrPolicyStatement],
         }),
       },
     });
