@@ -7,8 +7,8 @@ import { AGraphNode, PipelineGraph, Graph, isGraph } from 'aws-cdk-lib/pipelines
 import { Construct } from 'constructs';
 import * as decamelize from 'decamelize';
 import * as YAML from 'yaml';
-import { awsCredentialStep } from './private/aws-credentials';
 import { DockerCredential } from './docker-credentials';
+import { awsCredentialStep } from './private/aws-credentials';
 import * as github from './workflows-model';
 
 const CDKOUT_ARTIFACT = 'cdk.out';
