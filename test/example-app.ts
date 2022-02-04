@@ -77,9 +77,8 @@ export class GitHubExampleApp extends App {
       postBuildSteps: [
         { run: 'echo post-build' },
       ],
-      awsOidcRoleArn: 'arn:aws:iam::489318732371:role/GithubActionRole',
       dockerCredentials: [
-        DockerCredential.ecr('489318732371.dkr.ecr.us-east-1.amazonaws.com'),
+        DockerCredential.ecr('000000000000.dkr.ecr.us-east-1.amazonaws.com'),
       ],
     });
 
