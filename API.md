@@ -109,6 +109,9 @@ new AwsOidc(scope: Construct, id: string, props: AwsOidcProps)
 Name | Type | Description 
 -----|------|-------------
 **role** | <code>[aws_iam.IRole](#aws-cdk-lib-aws-iam-irole)</code> | The role that gets created.
+
+
+
 ## class DockerCredential  <a id="cdk-pipelines-github-dockercredential"></a>
 
 Represents a credential used to authenticate to a docker registry.
