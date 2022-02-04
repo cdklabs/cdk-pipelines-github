@@ -7,6 +7,7 @@ import { AGraphNode, PipelineGraph, Graph, isGraph } from 'aws-cdk-lib/pipelines
 import { Construct } from 'constructs';
 import * as decamelize from 'decamelize';
 import * as YAML from 'yaml';
+import { awsCredentialStep } from './private/aws-credentials';
 import * as github from './workflows-model';
 
 const CDKOUT_ARTIFACT = 'cdk.out';
@@ -494,38 +495,40 @@ export class GitHubWorkflow extends PipelineBase {
   }
 
   private stepsToConfigureAws(openId: boolean, { region, assumeRoleArn }: { region: string; assumeRoleArn?: string }): github.JobStep[] {
-    let params: Record<string, any> = {};
-    if (openId) {
-      params = {
-        'role-to-assume': this.awsOidcRoleArn,
-        'role-duration-seconds': 30 * 60,
-        'aws-region': region,
-      };
-    } else {
-      params = {
-        'aws-access-key-id': `\${{ secrets.${this.awsCredentials.accessKeyId} }}`,
-        'aws-secret-access-key': `\${{ secrets.${this.awsCredentials.secretAccessKey} }}`,
-        'aws-region': region,
-        'role-skip-session-tagging': true,
-        'role-duration-seconds': 30 * 60,
-      };
-
-      if (this.awsCredentials.sessionToken) {
-        params['aws-session-token'] = `\${{ secrets.${this.awsCredentials.sessionToken} }}`;
-      }
-
-      if (assumeRoleArn) {
-        params['role-to-assume'] = assumeRoleArn;
-        params['role-external-id'] = 'Pipeline';
-      }
+    function getDeployRole(arn: string) {
+      return arn.replace('cfn-exec', 'deploy');
     }
 
-    return [
-      {
-        uses: 'aws-actions/configure-aws-credentials@v1',
-        with: params,
-      },
-    ];
+    let steps: github.JobStep[] = [];
+
+    if (openId) {
+      steps.push(awsCredentialStep('Authenticate Via OIDC Role', {
+        region,
+        oidcRoleArn: this.awsOidcRoleArn,
+      }));
+
+      if (assumeRoleArn) {
+        // Result of initial credentials with OIDC role are these environment variables
+        steps.push(awsCredentialStep('Assume CDK Deploy Role', {
+          region,
+          accessKeyId: '${{ env.AWS_ACCESS_KEY_ID }}',
+          secretAccessKey: '${{ env.AWS_SECRET_ACCESS_KEY }}',
+          sessionToken: '${{ env.AWS_SESSION_TOKEN }}',
+          roleToAssume: getDeployRole(assumeRoleArn),
+        }));
+      }
+    } else {
+      steps.push(awsCredentialStep('Authenticate Via GitHub Secrets', {
+        region,
+        accessKeyId: `\${{ secrets.${this.awsCredentials.accessKeyId} }}`,
+        secretAccessKey: `\${{ secrets.${this.awsCredentials.secretAccessKey} }}`,
+        sessionToken: `\${{ secrets.${this.awsCredentials.sessionToken} }}`,
+        roleToAssume: assumeRoleArn,
+        roleExternalId: assumeRoleArn ? 'Pipeline' : undefined,
+      }));
+    }
+
+    return steps;
   }
 
   private stepsToDownloadAssembly(targetDir: string): github.JobStep[] {

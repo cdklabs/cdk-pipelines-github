@@ -13,13 +13,6 @@ export interface AwsOidcProps {
   readonly repoString: string;
 
   /**
-   * The branch of your repository that triggers Github Actions.
-   *
-   * @default - all branches
-   */
-  readonly branch?: string;
-
-  /**
    * The name of the Oidc role.
    *
    * @default 'GithubActionRole'
@@ -66,12 +59,11 @@ export class AwsOidc extends Construct {
 
     const rawEndpoint = 'token.actions.githubusercontent.com';
     const providerUrl = `https://${rawEndpoint}`;
-    const audience = 'sts.amazonaws.com';
 
     // uses the given provider or creates a new one.
     const provider = props.provider ?? new iam.OpenIdConnectProvider(this, 'github-oidc', {
       url: providerUrl,
-      clientIds: [audience],
+      clientIds: ['sts.amazonaws.com'],
     });
 
     // create a role that references the provider as a trusted entity
@@ -79,16 +71,37 @@ export class AwsOidc extends Construct {
       provider.openIdConnectProviderArn,
       {
         StringLike: {
-          [`${rawEndpoint}:sub`]: `repo:${props.repoString}:ref:refs/heads/${props.branch ?? '*'}`,
+          [`${rawEndpoint}:sub`]: `repo:${props.repoString}:*`,
         },
       },
       'sts:AssumeRoleWithWebIdentity',
     );
 
+    // permit this role from assuming all of the CDK bootstrap roles
+    const oidcPolicyStatement = new iam.PolicyStatement({
+      effect: iam.Effect.ALLOW,
+      actions: ['sts:AssumeRole'],
+      resources: ['*'],
+      conditions: {
+        'ForAnyValue:StringEquals': {
+          'iam:ResourceTag/aws-cdk:bootstrap-role': [
+            'deploy',
+            'lookup',
+            'file-publishing',
+            'image-publishing',
+          ],
+        },
+      },
+    });
+
     this.role = new iam.Role(this, 'github-role', {
       roleName: props.roleName ?? 'GithubActionRole',
       assumedBy: principal,
-      managedPolicies: [iam.ManagedPolicy.fromAwsManagedPolicyName('AdministratorAccess')],
+      inlinePolicies: {
+        AssumeBootstrapRoles: new iam.PolicyDocument({
+          statements: [oidcPolicyStatement],
+        }),
+      },
     });
 
     // show the role arn in the stack output

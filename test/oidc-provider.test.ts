@@ -26,7 +26,7 @@ describe('github oidc provider', () => {
             Action: 'sts:AssumeRoleWithWebIdentity',
             Condition: {
               StringLike: {
-                'token.actions.githubusercontent.com:sub': 'repo:myuser/myrepo:ref:refs/heads/*',
+                'token.actions.githubusercontent.com:sub': 'repo:myuser/myrepo:*',
               },
             },
             Principal: {
@@ -66,7 +66,7 @@ describe('github oidc provider', () => {
             Action: 'sts:AssumeRoleWithWebIdentity',
             Condition: {
               StringLike: {
-                'token.actions.githubusercontent.com:sub': 'repo:myuser/myrepo:ref:refs/heads/*',
+                'token.actions.githubusercontent.com:sub': 'repo:myuser/myrepo:*',
               },
             },
             Principal: {
@@ -75,6 +75,37 @@ describe('github oidc provider', () => {
           },
         ],
       },
+    });
+  });
+
+  test('permissions', () => {
+    // GIVEN
+    const stack = new Stack();
+
+    // WHEN
+    new AwsOidc(stack, 'MyProvider', {
+      repoString: 'myuser/myrepo',
+    });
+
+    // THEN
+    Template.fromStack(stack).hasResourceProperties('AWS::IAM::Role', {
+      Policies: [{
+        PolicyDocument: {
+          Statement: [{
+            Action: 'sts:AssumeRole',
+            Condition: {
+              'ForAnyValue:StringEquals': {
+                'iam:ResourceTag/aws-cdk:bootstrap-role': [
+                  'deploy',
+                  'lookup',
+                  'file-publishing',
+                  'image-publishing',
+                ],
+              },
+            },
+          }],
+        },
+      }],
     });
   });
 });
