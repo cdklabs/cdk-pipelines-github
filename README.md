@@ -113,7 +113,6 @@ synthesized against.
 This is work in progress. The following features are still not supported:
 
 * [ ] Credentials and roles (document permissions required, etc)
-* [ ] Support Docker image assets
 * [ ] Anti-tamper check for CI runs (`synth` should fail if `CI=1` and the workflow has changed)
 * [ ] Revise Documentation
 
