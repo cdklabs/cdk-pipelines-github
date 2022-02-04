@@ -2,9 +2,18 @@
 
 ![Experimental](https://img.shields.io/badge/experimental-important.svg?style=for-the-badge)
 
-NOTICE: this library is still not published to package managers. Stay tuned.
-
 Deploy CDK applications through GitHub workflows.
+
+
+## Table of Contents
+
+- [Usage](#usage)
+- [AWS Credentials](#aws-credentials)
+  + [GitHub Secrets](#github-secrets)
+  + [OpenId Connect](#openid-connect)
+- [Assets](#assets)
+   + [Docker](#docker)
+- [Tutorial](#tutorial)
 
 ## Usage
 
@@ -26,7 +35,6 @@ const pipeline = new GithubWorkflow(app, 'Pipeline', {
       'yarn build',
     ],
   }),
-  workflowPath: '.github/workflows/deploy.yml',
 });
 
 pipeline.addStage(new MyStage(this, 'Beta', { env: BETA_ENV }));
@@ -55,8 +63,48 @@ documentation for more details.
   for details.
 * The workflow expects the GitHub repository to include secrets with AWS
   credentials (`AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`).
+  
+## AWS Credentials
 
-## Example
+There are two ways to supply AWS credentials to the workflow. The default is to
+store long-lived AWS user credentials in GitHub secrets. Alternatively, you can
+use an IAM role that trusts the GitHub OpenId Connect provider to authenticate.
+Using OIDC to authenticate is not the default because it is a newer option, but
+there are compelling benefits to this approach. You can read more
+[here](https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect).
+
+### GitHub Secrets
+
+Authenticating via this approach means that you will be manually creating AWS
+credentials and duplicating them in GitHub secrets. The workflow expects the
+GitHub repository to include secrets with AWS credentials under `AWS_ACCESS_KEY_ID`
+and `AWS_SECRET_ACCESS_KEY`. You can override these defaults by supplying the
+`awsCredentials` property to the workflow:
+
+```ts
+const app = new App();
+
+const pipeline = new GithubWorkflow(app, 'Pipeline', {
+  synth: new ShellStep('Build', {
+    commands: [
+      'yarn install',
+      'yarn build',
+    ],
+  }),
+  awsCredentials: {
+    accessKeyId: 'MY_ID',
+    secretAccessKey: 'MY_KEY',
+    sessionToken: 'MY_TOKEN', // default is no token
+});
+```
+
+### OpenId Connect
+
+## Assets
+
+### Docker
+
+## Tutorial
 
 You can find an example usage in [test/example-app.ts](./test/example-app.ts)
 which includes a simple CDK app and a pipeline.
