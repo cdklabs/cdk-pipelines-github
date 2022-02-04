@@ -17,7 +17,8 @@ interface AwsCredentialsStepProps {
   readonly roleSkipSessionTagging?: boolean;
 
   /**
-   * The OIDC role arn, if we are using OIDC to authenticate.
+   * The OIDC role arn, if we are using OIDC to authenticate. The other option
+   * to authenticate is with `accessKeyId` and `secretAccessKey`.
    *
    * @default - OIDC not used and `accessKeyId` and `secretAccessKey` are expected.
    */
@@ -29,16 +30,24 @@ interface AwsCredentialsStepProps {
   readonly region: string;
 
   /**
+   * To authenticate via GitHub secrets, at least this and `secretAccessKey` must
+   * be provided. Alternatively, provide just an `oidcRoleArn`.
+   *
    * @default undefined
    */
   readonly accessKeyId?: string;
 
   /**
+   * To authenticate via GitHub secrets, at least this and `accessKeyId` must
+   * be provided. Alternatively, provide just an `oidcRoleArn`.
+   *
    * @default undefined
    */
   readonly secretAccessKey?: string;
 
   /**
+   * Provide an AWS session token.
+   *
    * @default undefined
    */
   readonly sessionToken?: string;
@@ -47,8 +56,14 @@ interface AwsCredentialsStepProps {
 export function awsCredentialStep(stepName: string, props: AwsCredentialsStepProps): github.JobStep {
   const params: Record<string, any> = {};
 
+  // Neither of these checks should occur, since this method is internal,
+  // but they are here just in case.
   if (!props.oidcRoleArn && !(props.accessKeyId && props.secretAccessKey)) {
     throw new Error('AWS authentication not found via OIDC or GitHub secrets');
+  }
+
+  if (props.oidcRoleArn && (props.accessKeyId || props.secretAccessKey)) {
+    throw new Error('Please provide one method of authentication, not both');
   }
 
   params['aws-region'] = props.region;
