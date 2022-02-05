@@ -165,11 +165,11 @@ new MyAwsOidcRole(app, 'MyAwsOidcRole');
 app.synth();
 ```
 
-> Note: If you have previously created the GitHub identity provider with url
-> `https://token.actions.githubusercontent.com`, the above example will fail
-> because you can only have one such provider defined per account. In this
-> case, you must provide the already created provider into your `AwsOidc`
-> construct via the `provider` property.
+Note: If you have previously created the GitHub identity provider with url
+`https://token.actions.githubusercontent.com`, the above example will fail
+because you can only have one such provider defined per account. In this
+case, you must provide the already created provider into your `AwsOidc`
+construct via the `provider` property.
 
 ```ts
 class MyAwsOidcRole extends Stack {
