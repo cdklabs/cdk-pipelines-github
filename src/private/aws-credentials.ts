@@ -17,12 +17,12 @@ interface AwsCredentialsStepProps {
   readonly roleSkipSessionTagging?: boolean;
 
   /**
-   * The OIDC role arn, if we are using OIDC to authenticate. The other option
+   * The GitHub Action role arn, if we are using OIDC to authenticate. The other option
    * to authenticate is with `accessKeyId` and `secretAccessKey`.
    *
    * @default - OIDC not used and `accessKeyId` and `secretAccessKey` are expected.
    */
-  readonly oidcRoleArn?: string;
+  readonly githubActionRoleArn?: string;
 
   /**
    * The AWS Region.
@@ -58,11 +58,11 @@ export function awsCredentialStep(stepName: string, props: AwsCredentialsStepPro
 
   // Neither of these checks should occur, since this method is internal,
   // but they are here just in case.
-  if (!props.oidcRoleArn && !(props.accessKeyId && props.secretAccessKey)) {
+  if (!props.githubActionRoleArn && !(props.accessKeyId && props.secretAccessKey)) {
     throw new Error('AWS authentication not found via OIDC or GitHub secrets');
   }
 
-  if (props.oidcRoleArn && (props.accessKeyId || props.secretAccessKey)) {
+  if (props.githubActionRoleArn && (props.accessKeyId || props.secretAccessKey)) {
     throw new Error('Please provide one method of authentication, not both');
   }
 
@@ -72,8 +72,8 @@ export function awsCredentialStep(stepName: string, props: AwsCredentialsStepPro
   // which CDK bootstrapped roles do not currently have.
   params['role-skip-session-tagging'] = props.roleSkipSessionTagging ?? true;
 
-  if (props.oidcRoleArn) {
-    params['role-to-assume'] = props.oidcRoleArn;
+  if (props.githubActionRoleArn) {
+    params['role-to-assume'] = props.githubActionRoleArn;
   } else {
     params['aws-access-key-id'] = props.accessKeyId;
     params['aws-secret-access-key'] = props.secretAccessKey;

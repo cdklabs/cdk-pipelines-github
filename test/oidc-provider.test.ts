@@ -1,15 +1,15 @@
 import { Stack } from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
 import * as iam from 'aws-cdk-lib/aws-iam';
-import { AwsOidc } from '../src';
+import { GithubActionRole } from '../src';
 
-describe('github oidc provider', () => {
+describe('GithubActionRole construct', () => {
   test('basic configuration with one repo', () => {
     // GIVEN
     const stack = new Stack();
 
     // WHEN
-    new AwsOidc(stack, 'MyProvider', {
+    new GithubActionRole(stack, 'MyProvider', {
       repos: ['myuser/myrepo'],
     });
 
@@ -45,7 +45,7 @@ describe('github oidc provider', () => {
     const stack = new Stack();
 
     // WHEN
-    new AwsOidc(stack, 'MyProvider', {
+    new GithubActionRole(stack, 'MyProvider', {
       repos: [
         'myuser/myrepo',
         'myuser/myrepo2',
@@ -89,7 +89,7 @@ describe('github oidc provider', () => {
     const stack = new Stack();
 
     // WHEN
-    new AwsOidc(stack, 'MyProvider', {
+    new GithubActionRole(stack, 'MyProvider', {
       repos: ['myuser/myrepo'],
       provider: iam.OpenIdConnectProvider.fromOpenIdConnectProviderArn(
         stack,
@@ -127,7 +127,7 @@ describe('github oidc provider', () => {
     const stack = new Stack();
 
     // WHEN
-    new AwsOidc(stack, 'MyProvider', {
+    new GithubActionRole(stack, 'MyProvider', {
       repos: ['myuser/myrepo'],
     });
 

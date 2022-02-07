@@ -68,11 +68,11 @@ export interface GitHubWorkflowProps extends PipelineBaseProps {
    *
    * You can create your own role in the console with the necessary trust policy
    * to allow github actions from your github repository to assume the role, or
-   * you can utilize the `GithubOidc` construct to create a role for you.
+   * you can utilize the `GithubActionRole` construct to create a role for you.
    *
-   * @default - GitHub repository secrets are used instead of OpenId.
+   * @default - GitHub repository secrets are used instead of OpenId Connect role.
    */
-  readonly awsOidcRoleArn?: string;
+  readonly githubActionRoleArn?: string;
 
   /**
    * Build container options.
@@ -112,8 +112,8 @@ export class GitHubWorkflow extends PipelineBase {
   private readonly workflowTriggers: github.Triggers;
   private readonly preSynthed: boolean;
   private readonly awsCredentials: AwsCredentialsSecrets;
-  private readonly awsOidcRoleArn?: string;
-  private readonly useAwsOidc: boolean;
+  private readonly githubActionRoleArn?: string;
+  private readonly useGithubActionRole: boolean;
   private readonly dockerCredentials: DockerCredential[];
   private readonly cdkCliVersion?: string;
   private readonly buildContainer?: github.ContainerOptions;
@@ -129,8 +129,8 @@ export class GitHubWorkflow extends PipelineBase {
     this.buildContainer = props.buildContainer;
     this.preBuildSteps = props.preBuildSteps ?? [];
     this.postBuildSteps = props.postBuildSteps ?? [];
-    this.awsOidcRoleArn = props.awsOidcRoleArn;
-    this.useAwsOidc = this.awsOidcRoleArn ? true : false;
+    this.githubActionRoleArn = props.githubActionRoleArn;
+    this.useGithubActionRole = this.githubActionRoleArn ? true : false;
 
     this.awsCredentials = props.awsCredentials ?? {
       accessKeyId: 'AWS_ACCESS_KEY_ID',
@@ -307,7 +307,7 @@ export class GitHubWorkflow extends PipelineBase {
         needs: this.renderDependencies(node),
         permissions: {
           contents: github.JobPermission.READ,
-          idToken: this.useAwsOidc ? github.JobPermission.WRITE : github.JobPermission.NONE,
+          idToken: this.useGithubActionRole ? github.JobPermission.WRITE : github.JobPermission.NONE,
         },
         runsOn: RUNS_ON,
         steps: [
@@ -316,7 +316,7 @@ export class GitHubWorkflow extends PipelineBase {
             name: 'Install',
             run: `npm install --no-save cdk-assets${installSuffix}`,
           },
-          ...this.stepsToConfigureAws(this.useAwsOidc, { region: 'us-west-2' }),
+          ...this.stepsToConfigureAws(this.useGithubActionRole, { region: 'us-west-2' }),
           ...dockerLoginSteps,
           publishStep,
         ],
@@ -360,12 +360,12 @@ export class GitHubWorkflow extends PipelineBase {
         name: `Deploy ${stack.stackArtifactId}`,
         permissions: {
           contents: github.JobPermission.READ,
-          idToken: this.useAwsOidc ? github.JobPermission.WRITE : github.JobPermission.NONE,
+          idToken: this.useGithubActionRole ? github.JobPermission.WRITE : github.JobPermission.NONE,
         },
         needs: this.renderDependencies(node),
         runsOn: RUNS_ON,
         steps: [
-          ...this.stepsToConfigureAws(this.useAwsOidc, { region, assumeRoleArn }),
+          ...this.stepsToConfigureAws(this.useGithubActionRole, { region, assumeRoleArn }),
           {
             id: 'Deploy',
             uses: 'aws-actions/aws-cloudformation-github-deploy@v1',
@@ -523,11 +523,11 @@ export class GitHubWorkflow extends PipelineBase {
     if (openId) {
       steps.push(awsCredentialStep('Authenticate Via OIDC Role', {
         region,
-        oidcRoleArn: this.awsOidcRoleArn,
+        githubActionRoleArn: this.githubActionRoleArn,
       }));
 
       if (assumeRoleArn) {
-        // Result of initial credentials with OIDC role are these environment variables
+        // Result of initial credentials with GitHub Action role are these environment variables
         steps.push(awsCredentialStep('Assume CDK Deploy Role', {
           region,
           accessKeyId: '${{ env.AWS_ACCESS_KEY_ID }}',

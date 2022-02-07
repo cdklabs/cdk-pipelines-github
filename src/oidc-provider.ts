@@ -3,9 +3,9 @@ import * as iam from 'aws-cdk-lib/aws-iam';
 import { Construct } from 'constructs';
 
 /**
- * Properties for the AwsOidc construct.
+ * Properties for the GitHubActionRole construct.
  */
-export interface AwsOidcProps {
+export interface GithubActionRoleProps {
   /**
    * A list of GitHub repositories you want to be able to access the IAM role.
    * Each entry should be your GitHub username and repository passed in as a
@@ -44,20 +44,20 @@ export interface AwsOidcProps {
  * You must `cdk deploy` once (with your normal AWS credentials) to have this role created for you.
  *
  * You can then make note of the role arn in the stack output and send it into the Github Workflow app via
- * the `awsOidcRoleArn` property. The role arn will be `arn:aws:iam::<accountId>:role/GithubActionRole`.
+ * the `githubActionRoleArn` property. The role arn will be `arn:aws:iam::<accountId>:role/GithubActionRole`.
  *
  * @see https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-amazon-web-services
  */
-export class AwsOidc extends Construct {
+export class GithubActionRole extends Construct {
   /**
    * The role that gets created.
    *
-   * You should use the arn of this role as input to the `awsOidcRoleArn`
+   * You should use the arn of this role as input to the `githubActionRoleArn`
    * property in your Github Workflow app.
    */
   public readonly role: iam.IRole;
 
-  constructor(scope: Construct, id: string, props: AwsOidcProps) {
+  constructor(scope: Construct, id: string, props: GithubActionRoleProps) {
     super(scope, id);
 
     const rawEndpoint = 'token.actions.githubusercontent.com';
