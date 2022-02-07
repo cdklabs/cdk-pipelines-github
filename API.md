@@ -265,7 +265,10 @@ Name | Type | Description
 
 #### *static* existingGithubActionsProvider(scope) <a id="cdk-pipelines-github-githubactionrole-existinggithubactionsprovider"></a>
 
+Reference an existing github actions provider.
 
+You do not need to pass in an arn because the arn for such
+a provider is always the same.
 
 ```ts
 static existingGithubActionsProvider(scope: Construct): IOpenIdConnectProvider

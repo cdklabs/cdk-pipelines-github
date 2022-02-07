@@ -49,6 +49,11 @@ export interface GithubActionRoleProps {
  * @see https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-amazon-web-services
  */
 export class GithubActionRole extends Construct {
+  /**
+   * Reference an existing github actions provider.
+   * You do not need to pass in an arn because the arn for such
+   * a provider is always the same.
+   */
   public static existingGithubActionsProvider(scope: Construct): iam.IOpenIdConnectProvider {
     return iam.OpenIdConnectProvider.fromOpenIdConnectProviderArn(
       scope,
