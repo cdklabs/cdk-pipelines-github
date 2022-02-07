@@ -74,7 +74,7 @@ test('pipeline with oidc authentication', () => {
         installCommands: ['yarn'],
         commands: ['yarn build'],
       }),
-      githubActionRoleArn: 'arn:aws:iam::000000000000:role/GithubActionRole',
+      gitHubActionRoleArn: 'arn:aws:iam::000000000000:role/GitHubActionRole',
     });
 
     const stage = new Stage(app, 'MyStack', {

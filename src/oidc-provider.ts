@@ -5,7 +5,7 @@ import { Construct } from 'constructs';
 /**
  * Properties for the GitHubActionRole construct.
  */
-export interface GithubActionRoleProps {
+export interface GitHubActionRoleProps {
   /**
    * A list of GitHub repositories you want to be able to access the IAM role.
    * Each entry should be your GitHub username and repository passed in as a
@@ -18,12 +18,12 @@ export interface GithubActionRoleProps {
   /**
    * The name of the Oidc role.
    *
-   * @default 'GithubActionRole'
+   * @default 'GitHubActionRole'
    */
   readonly roleName?: string;
 
   /**
-   * The Github OpenId Connect Provider. Must have provider url
+   * The GitHub OpenId Connect Provider. Must have provider url
    * `https://token.actions.githubusercontent.com`. The audience must be
    * `sts:amazonaws.com`.
    *
@@ -36,28 +36,28 @@ export interface GithubActionRoleProps {
 }
 
 /**
- * Creates or references a Github OIDC provider and accompanying role that trusts the provider.
+ * Creates or references a GitHub OIDC provider and accompanying role that trusts the provider.
  * This role can be used to authenticate against AWS instead of using long-lived AWS user credentials
- * stored in Github secrets.
+ * stored in GitHub secrets.
  *
  * You can do this manually in the console, or create a separate stack that uses this construct.
  * You must `cdk deploy` once (with your normal AWS credentials) to have this role created for you.
  *
  * You can then make note of the role arn in the stack output and send it into the Github Workflow app via
- * the `githubActionRoleArn` property. The role arn will be `arn:aws:iam::<accountId>:role/GithubActionRole`.
+ * the `gitHubActionRoleArn` property. The role arn will be `arn:aws:iam::<accountId>:role/GithubActionRole`.
  *
  * @see https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-amazon-web-services
  */
-export class GithubActionRole extends Construct {
+export class GitHubActionRole extends Construct {
   /**
-   * Reference an existing github actions provider.
+   * Reference an existing GitHub Actions provider.
    * You do not need to pass in an arn because the arn for such
    * a provider is always the same.
    */
-  public static existingGithubActionsProvider(scope: Construct): iam.IOpenIdConnectProvider {
+  public static existingGitHubActionsProvider(scope: Construct): iam.IOpenIdConnectProvider {
     return iam.OpenIdConnectProvider.fromOpenIdConnectProviderArn(
       scope,
-      'GithubActionProvider',
+      'GitHubActionProvider',
       `arn:aws:iam::${Aws.ACCOUNT_ID}:oidc-provider/token.actions.githubusercontent.com`,
     );
   }
@@ -65,19 +65,19 @@ export class GithubActionRole extends Construct {
   /**
    * The role that gets created.
    *
-   * You should use the arn of this role as input to the `githubActionRoleArn`
-   * property in your Github Workflow app.
+   * You should use the arn of this role as input to the `gitHubActionRoleArn`
+   * property in your GitHub Workflow app.
    */
   public readonly role: iam.IRole;
 
-  constructor(scope: Construct, id: string, props: GithubActionRoleProps) {
+  constructor(scope: Construct, id: string, props: GitHubActionRoleProps) {
     super(scope, id);
 
     const rawEndpoint = 'token.actions.githubusercontent.com';
     const providerUrl = `https://${rawEndpoint}`;
 
     // uses the given provider or creates a new one.
-    const provider = props.provider ?? new iam.OpenIdConnectProvider(this, 'github-oidc', {
+    const provider = props.provider ?? new iam.OpenIdConnectProvider(this, 'github-provider', {
       url: providerUrl,
       clientIds: ['sts.amazonaws.com'],
     });
@@ -117,8 +117,8 @@ export class GithubActionRole extends Construct {
       resources: ['*'],
     });
 
-    this.role = new iam.Role(this, 'github-role', {
-      roleName: props.roleName ?? 'GithubActionRole',
+    this.role = new iam.Role(this, 'github-action-role', {
+      roleName: props.roleName ?? 'GitHubActionRole',
       assumedBy: principal,
       inlinePolicies: {
         AssumeBootstrapRoles: new iam.PolicyDocument({

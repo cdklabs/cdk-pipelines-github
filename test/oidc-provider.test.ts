@@ -1,6 +1,6 @@
 import { Stack } from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
-import { GithubActionRole } from '../src';
+import { GitHubActionRole } from '../src';
 
 describe('GithubActionRole construct', () => {
   test('basic configuration with one repo', () => {
@@ -8,7 +8,7 @@ describe('GithubActionRole construct', () => {
     const stack = new Stack();
 
     // WHEN
-    new GithubActionRole(stack, 'MyProvider', {
+    new GitHubActionRole(stack, 'MyProvider', {
       repos: ['myuser/myrepo'],
     });
 
@@ -30,7 +30,7 @@ describe('GithubActionRole construct', () => {
             },
             Principal: {
               Federated: {
-                Ref: 'MyProvidergithuboidc418E600D',
+                Ref: 'MyProvidergithubprovider4ACAD993',
               },
             },
           },
@@ -44,7 +44,7 @@ describe('GithubActionRole construct', () => {
     const stack = new Stack();
 
     // WHEN
-    new GithubActionRole(stack, 'MyProvider', {
+    new GitHubActionRole(stack, 'MyProvider', {
       repos: [
         'myuser/myrepo',
         'myuser/myrepo2',
@@ -74,7 +74,7 @@ describe('GithubActionRole construct', () => {
             },
             Principal: {
               Federated: {
-                Ref: 'MyProvidergithuboidc418E600D',
+                Ref: 'MyProvidergithubprovider4ACAD993',
               },
             },
           },
@@ -88,9 +88,9 @@ describe('GithubActionRole construct', () => {
     const stack = new Stack();
 
     // WHEN
-    new GithubActionRole(stack, 'MyProvider', {
+    new GitHubActionRole(stack, 'MyProvider', {
       repos: ['myuser/myrepo'],
-      provider: GithubActionRole.existingGithubActionsProvider(stack),
+      provider: GitHubActionRole.existingGitHubActionsProvider(stack),
     });
 
     // THEN
@@ -133,7 +133,7 @@ describe('GithubActionRole construct', () => {
     const stack = new Stack();
 
     // WHEN
-    new GithubActionRole(stack, 'MyProvider', {
+    new GitHubActionRole(stack, 'MyProvider', {
       repos: ['myuser/myrepo'],
     });
 

@@ -63,16 +63,16 @@ export interface GitHubWorkflowProps extends PipelineBaseProps {
   readonly awsCredentials?: AwsCredentialsSecrets;
 
   /**
-   * A role that utilizes the Github OIDC Identity Provider in your AWS account.
+   * A role that utilizes the GitHub OIDC Identity Provider in your AWS account.
    * If supplied, this will be used instead of `awsCredentials`.
    *
    * You can create your own role in the console with the necessary trust policy
-   * to allow github actions from your github repository to assume the role, or
-   * you can utilize the `GithubActionRole` construct to create a role for you.
+   * to allow gitHub actions from your gitHub repository to assume the role, or
+   * you can utilize the `GitHubActionRole` construct to create a role for you.
    *
    * @default - GitHub repository secrets are used instead of OpenId Connect role.
    */
-  readonly githubActionRoleArn?: string;
+  readonly gitHubActionRoleArn?: string;
 
   /**
    * Build container options.
@@ -112,8 +112,8 @@ export class GitHubWorkflow extends PipelineBase {
   private readonly workflowTriggers: github.Triggers;
   private readonly preSynthed: boolean;
   private readonly awsCredentials: AwsCredentialsSecrets;
-  private readonly githubActionRoleArn?: string;
-  private readonly useGithubActionRole: boolean;
+  private readonly gitHubActionRoleArn?: string;
+  private readonly useGitHubActionRole: boolean;
   private readonly dockerCredentials: DockerCredential[];
   private readonly cdkCliVersion?: string;
   private readonly buildContainer?: github.ContainerOptions;
@@ -129,8 +129,8 @@ export class GitHubWorkflow extends PipelineBase {
     this.buildContainer = props.buildContainer;
     this.preBuildSteps = props.preBuildSteps ?? [];
     this.postBuildSteps = props.postBuildSteps ?? [];
-    this.githubActionRoleArn = props.githubActionRoleArn;
-    this.useGithubActionRole = this.githubActionRoleArn ? true : false;
+    this.gitHubActionRoleArn = props.gitHubActionRoleArn;
+    this.useGitHubActionRole = this.gitHubActionRoleArn ? true : false;
 
     this.awsCredentials = props.awsCredentials ?? {
       accessKeyId: 'AWS_ACCESS_KEY_ID',
@@ -157,7 +157,7 @@ export class GitHubWorkflow extends PipelineBase {
   protected doBuildPipeline() {
     const app = Stage.of(this);
     if (!app) {
-      throw new Error('The Github Workflow must be defined in the scope of an App');
+      throw new Error('The GitHub Workflow must be defined in the scope of an App');
     }
     const cdkoutDir = app.outdir;
 
@@ -251,13 +251,13 @@ export class GitHubWorkflow extends PipelineBase {
         throw new Error(`jobForNode: did not expect to get group nodes: ${node.data?.type}`);
 
       case 'self-update':
-        throw new Error('github workflows does not support self mutation');
+        throw new Error('GitHub Workflows does not support self mutation');
 
       case 'publish-assets':
         return this.jobForAssetPublish(node, node.data.assets, options);
 
       case 'prepare':
-        throw new Error('"prepare" is not supported by GitHub worflows');
+        throw new Error('"prepare" is not supported by GitHub Worflows');
 
       case 'execute':
         return this.jobForDeploy(node, node.data.stack, node.data.captureOutputs);
@@ -307,7 +307,7 @@ export class GitHubWorkflow extends PipelineBase {
         needs: this.renderDependencies(node),
         permissions: {
           contents: github.JobPermission.READ,
-          idToken: this.useGithubActionRole ? github.JobPermission.WRITE : github.JobPermission.NONE,
+          idToken: this.useGitHubActionRole ? github.JobPermission.WRITE : github.JobPermission.NONE,
         },
         runsOn: RUNS_ON,
         steps: [
@@ -316,7 +316,7 @@ export class GitHubWorkflow extends PipelineBase {
             name: 'Install',
             run: `npm install --no-save cdk-assets${installSuffix}`,
           },
-          ...this.stepsToConfigureAws(this.useGithubActionRole, { region: 'us-west-2' }),
+          ...this.stepsToConfigureAws(this.useGitHubActionRole, { region: 'us-west-2' }),
           ...dockerLoginSteps,
           publishStep,
         ],
@@ -360,12 +360,12 @@ export class GitHubWorkflow extends PipelineBase {
         name: `Deploy ${stack.stackArtifactId}`,
         permissions: {
           contents: github.JobPermission.READ,
-          idToken: this.useGithubActionRole ? github.JobPermission.WRITE : github.JobPermission.NONE,
+          idToken: this.useGitHubActionRole ? github.JobPermission.WRITE : github.JobPermission.NONE,
         },
         needs: this.renderDependencies(node),
         runsOn: RUNS_ON,
         steps: [
-          ...this.stepsToConfigureAws(this.useGithubActionRole, { region, assumeRoleArn }),
+          ...this.stepsToConfigureAws(this.useGitHubActionRole, { region, assumeRoleArn }),
           {
             id: 'Deploy',
             uses: 'aws-actions/aws-cloudformation-github-deploy@v1',
@@ -523,7 +523,7 @@ export class GitHubWorkflow extends PipelineBase {
     if (openId) {
       steps.push(awsCredentialStep('Authenticate Via OIDC Role', {
         region,
-        githubActionRoleArn: this.githubActionRoleArn,
+        gitHubActionRoleArn: this.gitHubActionRoleArn,
       }));
 
       if (assumeRoleArn) {

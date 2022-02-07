@@ -5,8 +5,8 @@
 Name|Description
 ----|-----------
 [DockerCredential](#cdk-pipelines-github-dockercredential)|Represents a credential used to authenticate to a docker registry.
+[GitHubActionRole](#cdk-pipelines-github-githubactionrole)|Creates or references a GitHub OIDC provider and accompanying role that trusts the provider.
 [GitHubWorkflow](#cdk-pipelines-github-githubworkflow)|CDK Pipelines for GitHub workflows.
-[GithubActionRole](#cdk-pipelines-github-githubactionrole)|Creates or references a Github OIDC provider and accompanying role that trusts the provider.
 
 
 **Structs**
@@ -23,11 +23,11 @@ Name|Description
 [DeleteOptions](#cdk-pipelines-github-deleteoptions)|The Delete event accepts no options.
 [DeploymentOptions](#cdk-pipelines-github-deploymentoptions)|The Deployment event accepts no options.
 [DeploymentStatusOptions](#cdk-pipelines-github-deploymentstatusoptions)|The Deployment status event accepts no options.
-[DockerHubCredentialSecrets](#cdk-pipelines-github-dockerhubcredentialsecrets)|Locations of Github Secrets used to authenticate to DockerHub.
-[ExternalDockerCredentialSecrets](#cdk-pipelines-github-externaldockercredentialsecrets)|Generic structure to supply the locations of Github Secrets used to authenticate to a docker registry.
+[DockerHubCredentialSecrets](#cdk-pipelines-github-dockerhubcredentialsecrets)|Locations of GitHub Secrets used to authenticate to DockerHub.
+[ExternalDockerCredentialSecrets](#cdk-pipelines-github-externaldockercredentialsecrets)|Generic structure to supply the locations of GitHub Secrets used to authenticate to a docker registry.
 [ForkOptions](#cdk-pipelines-github-forkoptions)|The Fork event accepts no options.
+[GitHubActionRoleProps](#cdk-pipelines-github-githubactionroleprops)|Properties for the GitHubActionRole construct.
 [GitHubWorkflowProps](#cdk-pipelines-github-githubworkflowprops)|Props for `GitHubWorkflow`.
-[GithubActionRoleProps](#cdk-pipelines-github-githubactionroleprops)|Properties for the GitHubActionRole construct.
 [GollumOptions](#cdk-pipelines-github-gollumoptions)|The Gollum event accepts no options.
 [IssueCommentOptions](#cdk-pipelines-github-issuecommentoptions)|Issue comment options.
 [IssuesOptions](#cdk-pipelines-github-issuesoptions)|Issues options.
@@ -73,7 +73,7 @@ Name|Description
 
 Represents a credential used to authenticate to a docker registry.
 
-Uses the official Docker Login Github Action to authenticate.
+Uses the official Docker Login GitHub Action to authenticate.
 
 
 
@@ -95,7 +95,7 @@ Name | Type | Description
 Create a credential for a custom registry.
 
 This method assumes that you will have long-lived
-Github Secrets stored under the usernameKey and passwordKey that will authenticate to the
+GitHub Secrets stored under the usernameKey and passwordKey that will authenticate to the
 registry you provide.
 
 ```ts
@@ -104,8 +104,8 @@ static customRegistry(registry: string, creds: ExternalDockerCredentialSecrets):
 
 * **registry** (<code>string</code>)  *No description*
 * **creds** (<code>[ExternalDockerCredentialSecrets](#cdk-pipelines-github-externaldockercredentialsecrets)</code>)  *No description*
-  * **passwordKey** (<code>string</code>)  The key of the Github Secret containing your registry password. 
-  * **usernameKey** (<code>string</code>)  The key of the Github Secret containing your registry username. 
+  * **passwordKey** (<code>string</code>)  The key of the GitHub Secret containing your registry password. 
+  * **usernameKey** (<code>string</code>)  The key of the GitHub Secret containing your registry username. 
 
 __Returns__:
 * <code>[DockerCredential](#cdk-pipelines-github-dockercredential)</code>
@@ -115,20 +115,20 @@ __Returns__:
 Reference credential secrets to authenticate to DockerHub.
 
 This method assumes
-that your credentials will be stored as long-lived Github Secrets under the
+that your credentials will be stored as long-lived GitHub Secrets under the
 usernameKey and personalAccessTokenKey.
 
 The default for usernameKey is `DOCKERHUB_USERNAME`. The default for personalAccessTokenKey
 is `DOCKERHUB_TOKEN`. If you do not set these values, your credentials should be
-found in your Github Secrets under these default keys.
+found in your GitHub Secrets under these default keys.
 
 ```ts
 static dockerHub(creds?: DockerHubCredentialSecrets): DockerCredential
 ```
 
 * **creds** (<code>[DockerHubCredentialSecrets](#cdk-pipelines-github-dockerhubcredentialsecrets)</code>)  *No description*
-  * **personalAccessTokenKey** (<code>string</code>)  The key of the Github Secret containing the DockerHub personal access token. __*Default*__: 'DOCKERHUB_TOKEN'
-  * **usernameKey** (<code>string</code>)  The key of the Github Secret containing the DockerHub username. __*Default*__: 'DOCKERHUB_USERNAME'
+  * **personalAccessTokenKey** (<code>string</code>)  The key of the GitHub Secret containing the DockerHub personal access token. __*Default*__: 'DOCKERHUB_TOKEN'
+  * **usernameKey** (<code>string</code>)  The key of the GitHub Secret containing the DockerHub username. __*Default*__: 'DOCKERHUB_USERNAME'
 
 __Returns__:
 * <code>[DockerCredential](#cdk-pipelines-github-dockercredential)</code>
@@ -139,9 +139,7 @@ Create a credential for ECR.
 
 This method will reuse your AWS credentials to log in to AWS.
 Your AWS credentials are already used to deploy your CDK stacks. It can be supplied via
-Github Secrets or using an IAM role that trusts the Github OIDC identity provider.
-
-TODO: note the necessary permissions for the IAM role here.
+GitHub Secrets or using an IAM role that trusts the GitHub OIDC identity provider.
 
 NOTE - All ECR repositories in the same account and region share a domain name
 (e.g., 0123456789012.dkr.ecr.eu-west-1.amazonaws.com), and can only have one associated
@@ -157,6 +155,68 @@ static ecr(registry: string): DockerCredential
 
 __Returns__:
 * <code>[DockerCredential](#cdk-pipelines-github-dockercredential)</code>
+
+
+
+## class GitHubActionRole  <a id="cdk-pipelines-github-githubactionrole"></a>
+
+Creates or references a GitHub OIDC provider and accompanying role that trusts the provider.
+
+This role can be used to authenticate against AWS instead of using long-lived AWS user credentials
+stored in GitHub secrets.
+
+You can do this manually in the console, or create a separate stack that uses this construct.
+You must `cdk deploy` once (with your normal AWS credentials) to have this role created for you.
+
+You can then make note of the role arn in the stack output and send it into the Github Workflow app via
+the `gitHubActionRoleArn` property. The role arn will be `arn:aws:iam::<accountId>:role/GithubActionRole`.
+
+__Implements__: [IConstruct](#constructs-iconstruct), [IDependable](#constructs-idependable)
+__Extends__: [Construct](#constructs-construct)
+
+### Initializer
+
+
+
+
+```ts
+new GitHubActionRole(scope: Construct, id: string, props: GitHubActionRoleProps)
+```
+
+* **scope** (<code>[Construct](#constructs-construct)</code>)  *No description*
+* **id** (<code>string</code>)  *No description*
+* **props** (<code>[GitHubActionRoleProps](#cdk-pipelines-github-githubactionroleprops)</code>)  *No description*
+  * **repos** (<code>Array<string></code>)  A list of GitHub repositories you want to be able to access the IAM role. 
+  * **provider** (<code>[aws_iam.IOpenIdConnectProvider](#aws-cdk-lib-aws-iam-iopenidconnectprovider)</code>)  The GitHub OpenId Connect Provider. Must have provider url `https://token.actions.githubusercontent.com`. The audience must be `sts:amazonaws.com`. __*Default*__: a provider is created for you.
+  * **roleName** (<code>string</code>)  The name of the Oidc role. __*Default*__: 'GitHubActionRole'
+
+
+
+### Properties
+
+
+Name | Type | Description 
+-----|------|-------------
+**role** | <code>[aws_iam.IRole](#aws-cdk-lib-aws-iam-irole)</code> | The role that gets created.
+
+### Methods
+
+
+#### *static* existingGitHubActionsProvider(scope) <a id="cdk-pipelines-github-githubactionrole-existinggithubactionsprovider"></a>
+
+Reference an existing GitHub Actions provider.
+
+You do not need to pass in an arn because the arn for such
+a provider is always the same.
+
+```ts
+static existingGitHubActionsProvider(scope: Construct): IOpenIdConnectProvider
+```
+
+* **scope** (<code>[Construct](#constructs-construct)</code>)  *No description*
+
+__Returns__:
+* <code>[aws_iam.IOpenIdConnectProvider](#aws-cdk-lib-aws-iam-iopenidconnectprovider)</code>
 
 
 
@@ -184,7 +244,7 @@ new GitHubWorkflow(scope: Construct, id: string, props: GitHubWorkflowProps)
   * **buildContainer** (<code>[ContainerOptions](#cdk-pipelines-github-containeroptions)</code>)  Build container options. __*Default*__: GitHub defaults
   * **cdkCliVersion** (<code>string</code>)  Version of the CDK CLI to use. __*Default*__: automatic
   * **dockerCredentials** (<code>Array<[DockerCredential](#cdk-pipelines-github-dockercredential)></code>)  The Docker Credentials to use to login. __*Optional*__
-  * **githubActionRoleArn** (<code>string</code>)  A role that utilizes the Github OIDC Identity Provider in your AWS account. __*Default*__: GitHub repository secrets are used instead of OpenId Connect role.
+  * **gitHubActionRoleArn** (<code>string</code>)  A role that utilizes the GitHub OIDC Identity Provider in your AWS account. __*Default*__: GitHub repository secrets are used instead of OpenId Connect role.
   * **postBuildSteps** (<code>Array<[JobStep](#cdk-pipelines-github-jobstep)></code>)  GitHub workflow steps to execute after build. __*Default*__: []
   * **preBuildSteps** (<code>Array<[JobStep](#cdk-pipelines-github-jobstep)></code>)  GitHub workflow steps to execute before build. __*Default*__: []
   * **preSynthed** (<code>boolean</code>)  Indicates if the repository already contains a synthesized `cdk.out` directory, in which case we will simply checkout the repo in jobs that require `cdk.out`. __*Default*__: false
@@ -216,68 +276,6 @@ protected doBuildPipeline(): void
 
 
 
-
-
-
-## class GithubActionRole  <a id="cdk-pipelines-github-githubactionrole"></a>
-
-Creates or references a Github OIDC provider and accompanying role that trusts the provider.
-
-This role can be used to authenticate against AWS instead of using long-lived AWS user credentials
-stored in Github secrets.
-
-You can do this manually in the console, or create a separate stack that uses this construct.
-You must `cdk deploy` once (with your normal AWS credentials) to have this role created for you.
-
-You can then make note of the role arn in the stack output and send it into the Github Workflow app via
-the `githubActionRoleArn` property. The role arn will be `arn:aws:iam::<accountId>:role/GithubActionRole`.
-
-__Implements__: [IConstruct](#constructs-iconstruct), [IDependable](#constructs-idependable)
-__Extends__: [Construct](#constructs-construct)
-
-### Initializer
-
-
-
-
-```ts
-new GithubActionRole(scope: Construct, id: string, props: GithubActionRoleProps)
-```
-
-* **scope** (<code>[Construct](#constructs-construct)</code>)  *No description*
-* **id** (<code>string</code>)  *No description*
-* **props** (<code>[GithubActionRoleProps](#cdk-pipelines-github-githubactionroleprops)</code>)  *No description*
-  * **repos** (<code>Array<string></code>)  A list of GitHub repositories you want to be able to access the IAM role. 
-  * **provider** (<code>[aws_iam.IOpenIdConnectProvider](#aws-cdk-lib-aws-iam-iopenidconnectprovider)</code>)  The Github OpenId Connect Provider. Must have provider url `https://token.actions.githubusercontent.com`. The audience must be `sts:amazonaws.com`. __*Default*__: a provider is created for you.
-  * **roleName** (<code>string</code>)  The name of the Oidc role. __*Default*__: 'GithubActionRole'
-
-
-
-### Properties
-
-
-Name | Type | Description 
------|------|-------------
-**role** | <code>[aws_iam.IRole](#aws-cdk-lib-aws-iam-irole)</code> | The role that gets created.
-
-### Methods
-
-
-#### *static* existingGithubActionsProvider(scope) <a id="cdk-pipelines-github-githubactionrole-existinggithubactionsprovider"></a>
-
-Reference an existing github actions provider.
-
-You do not need to pass in an arn because the arn for such
-a provider is always the same.
-
-```ts
-static existingGithubActionsProvider(scope: Construct): IOpenIdConnectProvider
-```
-
-* **scope** (<code>[Construct](#constructs-construct)</code>)  *No description*
-
-__Returns__:
-* <code>[aws_iam.IOpenIdConnectProvider](#aws-cdk-lib-aws-iam-iopenidconnectprovider)</code>
 
 
 
@@ -394,28 +392,28 @@ The Deployment status event accepts no options.
 ## struct DockerHubCredentialSecrets  <a id="cdk-pipelines-github-dockerhubcredentialsecrets"></a>
 
 
-Locations of Github Secrets used to authenticate to DockerHub.
+Locations of GitHub Secrets used to authenticate to DockerHub.
 
 
 
 Name | Type | Description 
 -----|------|-------------
-**personalAccessTokenKey**? | <code>string</code> | The key of the Github Secret containing the DockerHub personal access token.<br/>__*Default*__: 'DOCKERHUB_TOKEN'
-**usernameKey**? | <code>string</code> | The key of the Github Secret containing the DockerHub username.<br/>__*Default*__: 'DOCKERHUB_USERNAME'
+**personalAccessTokenKey**? | <code>string</code> | The key of the GitHub Secret containing the DockerHub personal access token.<br/>__*Default*__: 'DOCKERHUB_TOKEN'
+**usernameKey**? | <code>string</code> | The key of the GitHub Secret containing the DockerHub username.<br/>__*Default*__: 'DOCKERHUB_USERNAME'
 
 
 
 ## struct ExternalDockerCredentialSecrets  <a id="cdk-pipelines-github-externaldockercredentialsecrets"></a>
 
 
-Generic structure to supply the locations of Github Secrets used to authenticate to a docker registry.
+Generic structure to supply the locations of GitHub Secrets used to authenticate to a docker registry.
 
 
 
 Name | Type | Description 
 -----|------|-------------
-**passwordKey** | <code>string</code> | The key of the Github Secret containing your registry password.
-**usernameKey** | <code>string</code> | The key of the Github Secret containing your registry username.
+**passwordKey** | <code>string</code> | The key of the GitHub Secret containing your registry password.
+**usernameKey** | <code>string</code> | The key of the GitHub Secret containing your registry username.
 
 
 
@@ -423,6 +421,21 @@ Name | Type | Description
 
 
 The Fork event accepts no options.
+
+
+## struct GitHubActionRoleProps  <a id="cdk-pipelines-github-githubactionroleprops"></a>
+
+
+Properties for the GitHubActionRole construct.
+
+
+
+Name | Type | Description 
+-----|------|-------------
+**repos** | <code>Array<string></code> | A list of GitHub repositories you want to be able to access the IAM role.
+**provider**? | <code>[aws_iam.IOpenIdConnectProvider](#aws-cdk-lib-aws-iam-iopenidconnectprovider)</code> | The GitHub OpenId Connect Provider. Must have provider url `https://token.actions.githubusercontent.com`. The audience must be `sts:amazonaws.com`.<br/>__*Default*__: a provider is created for you.
+**roleName**? | <code>string</code> | The name of the Oidc role.<br/>__*Default*__: 'GitHubActionRole'
+
 
 
 ## struct GitHubWorkflowProps  <a id="cdk-pipelines-github-githubworkflowprops"></a>
@@ -439,28 +452,13 @@ Name | Type | Description
 **buildContainer**? | <code>[ContainerOptions](#cdk-pipelines-github-containeroptions)</code> | Build container options.<br/>__*Default*__: GitHub defaults
 **cdkCliVersion**? | <code>string</code> | Version of the CDK CLI to use.<br/>__*Default*__: automatic
 **dockerCredentials**? | <code>Array<[DockerCredential](#cdk-pipelines-github-dockercredential)></code> | The Docker Credentials to use to login.<br/>__*Optional*__
-**githubActionRoleArn**? | <code>string</code> | A role that utilizes the Github OIDC Identity Provider in your AWS account.<br/>__*Default*__: GitHub repository secrets are used instead of OpenId Connect role.
+**gitHubActionRoleArn**? | <code>string</code> | A role that utilizes the GitHub OIDC Identity Provider in your AWS account.<br/>__*Default*__: GitHub repository secrets are used instead of OpenId Connect role.
 **postBuildSteps**? | <code>Array<[JobStep](#cdk-pipelines-github-jobstep)></code> | GitHub workflow steps to execute after build.<br/>__*Default*__: []
 **preBuildSteps**? | <code>Array<[JobStep](#cdk-pipelines-github-jobstep)></code> | GitHub workflow steps to execute before build.<br/>__*Default*__: []
 **preSynthed**? | <code>boolean</code> | Indicates if the repository already contains a synthesized `cdk.out` directory, in which case we will simply checkout the repo in jobs that require `cdk.out`.<br/>__*Default*__: false
 **workflowName**? | <code>string</code> | Name of the workflow.<br/>__*Default*__: "deploy"
 **workflowPath**? | <code>string</code> | File path for the GitHub workflow.<br/>__*Default*__: ".github/workflows/deploy.yml"
 **workflowTriggers**? | <code>[Triggers](#cdk-pipelines-github-triggers)</code> | GitHub workflow triggers.<br/>__*Default*__: By default, workflow is triggered on push to the `main` branch and can also be triggered manually (`workflow_dispatch`).
-
-
-
-## struct GithubActionRoleProps  <a id="cdk-pipelines-github-githubactionroleprops"></a>
-
-
-Properties for the GitHubActionRole construct.
-
-
-
-Name | Type | Description 
------|------|-------------
-**repos** | <code>Array<string></code> | A list of GitHub repositories you want to be able to access the IAM role.
-**provider**? | <code>[aws_iam.IOpenIdConnectProvider](#aws-cdk-lib-aws-iam-iopenidconnectprovider)</code> | The Github OpenId Connect Provider. Must have provider url `https://token.actions.githubusercontent.com`. The audience must be `sts:amazonaws.com`.<br/>__*Default*__: a provider is created for you.
-**roleName**? | <code>string</code> | The name of the Oidc role.<br/>__*Default*__: 'GithubActionRole'
 
 
 

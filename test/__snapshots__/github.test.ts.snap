@@ -406,7 +406,7 @@ jobs:
           aws-region: us-west-2
           role-duration-seconds: 1800
           role-skip-session-tagging: true
-          role-to-assume: arn:aws:iam::000000000000:role/GithubActionRole
+          role-to-assume: arn:aws:iam::000000000000:role/GitHubActionRole
       - name: Publish Assets-FileAsset1
         run: /bin/bash ./cdk.out/publish-Assets-FileAsset1-step.sh
   Assets-FileAsset2:
@@ -431,7 +431,7 @@ jobs:
           aws-region: us-west-2
           role-duration-seconds: 1800
           role-skip-session-tagging: true
-          role-to-assume: arn:aws:iam::000000000000:role/GithubActionRole
+          role-to-assume: arn:aws:iam::000000000000:role/GitHubActionRole
       - name: Publish Assets-FileAsset2
         run: /bin/bash ./cdk.out/publish-Assets-FileAsset2-step.sh
   MyStack-MyStack-Deploy:
@@ -451,7 +451,7 @@ jobs:
           aws-region: us-east-1
           role-duration-seconds: 1800
           role-skip-session-tagging: true
-          role-to-assume: arn:aws:iam::000000000000:role/GithubActionRole
+          role-to-assume: arn:aws:iam::000000000000:role/GitHubActionRole
       - name: Assume CDK Deploy Role
         uses: aws-actions/configure-aws-credentials@v1
         with:
