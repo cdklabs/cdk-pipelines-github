@@ -167,7 +167,7 @@ class MyGithubActionRole extends Stack {
 
     const provider = new GithubActionRole(this, 'github-action-role', {
       repos: ['myUser/myRepo'],
-      provider: GithubActionRole.existingGithubActionsProvider(),
+      provider: GithubActionRole.existingGithubActionsProvider(this),
     });
   }
 }
