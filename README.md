@@ -2,8 +2,15 @@
 
 ![Experimental](https://img.shields.io/badge/experimental-important.svg?style=for-the-badge)
 
-Deploy CDK applications through GitHub workflows.
+A construct library for painless Continuous Delivery of CDK applications,
+deployed via
+[GitHub Workflows](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions).
 
+The CDK already has a CI/CD solution,
+[CDK Pipelines](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.pipelines-readme.html),
+which creates an AWS CodePipeline that deploys CDK applications. This module 
+serves the same surface area, except that it is implemented with GitHub 
+Workflows.
 
 ## Table of Contents
 
@@ -104,7 +111,6 @@ const pipeline = new GithubWorkflow(app, 'Pipeline', {
   awsCredentials: {
     accessKeyId: 'MY_ID',
     secretAccessKey: 'MY_KEY',
-    sessionToken: 'MY_TOKEN', // default is no token
   },
 });
 ```
@@ -177,7 +183,7 @@ class MyAwsOidcRole extends Stack {
     super(scope, id, props);
 
     const provider = new AwsOidc(this, 'oidc-role', {
-      repoString: 'myUser/myRepo',
+      repos: ['myUser/myRepo'],
       provider: iam.OpenIdConnectProvider.fromOpenIdConnectProviderArn(
         this,
         'github',
@@ -190,7 +196,7 @@ class MyAwsOidcRole extends Stack {
 
 #### Manual Setup
 
-In a nutshell, the IAM role you provide must reference the GitHub OIDC identity
+The IAM role you provide must reference the GitHub OIDC identity
 provider as a trusted entity. You must also set up a trust relationship between
 the IAM role and your GitHub repository. For a step-by-step tutorial on how to
 set this up, see
@@ -233,10 +239,8 @@ Here is a minimum set of permissions for the IAM role:
 
 ### Using Docker in the Pipeline
 
-You can use Docker in GitHub Workflows in a similar fashion to CDK Pipelines,
-except you cannot run Docker in the self-mutate project because there is no
-concept of self-mutate in GitHub Worklows. For a full discussion on how to use
-Docker in CDK Pipelines, see
+You can use Docker in GitHub Workflows in a similar fashion to CDK Pipelines.
+For a full discussion on how to use Docker in CDK Pipelines, see
 [Using Docker in the Pipeline](https://github.com/aws/aws-cdk/blob/master/packages/@aws-cdk/pipelines/README.md#using-docker-in-the-pipeline).
 
 Just like CDK Pipelines, you may need to authenticate to Docker registries to
