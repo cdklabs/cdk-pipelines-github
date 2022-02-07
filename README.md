@@ -16,9 +16,9 @@ Workflows.
 
 - [Usage](#usage)
 - [AWS Credentials](#aws-credentials)
-  + [GitHub Secrets](#github-secrets)
-  + [OpenId Connect](#openid-connect)
+  + [GitHub Action Role](#github-action-role)
     - [`GithubActionRole` Construct](#githubactionrole-construct)
+  + [GitHub Secrets](#github-secrets)
 - [Using Docker In The Pipeline](#using-docker-in-the-pipeline)
   + [Authenticating To Docker Registries](#authenticating-to-docker-registries)
 - [Tutorial](#tutorial)
