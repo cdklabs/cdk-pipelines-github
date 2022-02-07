@@ -4,13 +4,13 @@ import * as iam from 'aws-cdk-lib/aws-iam';
 import { AwsOidc } from '../src';
 
 describe('github oidc provider', () => {
-  test('basic configuration', () => {
+  test('basic configuration with one repo', () => {
     // GIVEN
     const stack = new Stack();
 
     // WHEN
     new AwsOidc(stack, 'MyProvider', {
-      repoString: 'myuser/myrepo',
+      repos: ['myuser/myrepo'],
     });
 
     // THEN
@@ -26,7 +26,51 @@ describe('github oidc provider', () => {
             Action: 'sts:AssumeRoleWithWebIdentity',
             Condition: {
               StringLike: {
-                'token.actions.githubusercontent.com:sub': 'repo:myuser/myrepo:*',
+                'token.actions.githubusercontent.com:sub': ['repo:myuser/myrepo:*'],
+              },
+            },
+            Principal: {
+              Federated: {
+                Ref: 'MyProvidergithuboidc418E600D',
+              },
+            },
+          },
+        ],
+      },
+    });
+  });
+
+  test('basic configuration with multiple repos', () => {
+    // GIVEN
+    const stack = new Stack();
+
+    // WHEN
+    new AwsOidc(stack, 'MyProvider', {
+      repos: [
+        'myuser/myrepo',
+        'myuser/myrepo2',
+        'myuser/myrepo3',
+      ],
+    });
+
+    // THEN
+    // has custom resource that creates provider
+    Template.fromStack(stack).resourceCountIs('Custom::AWSCDKOpenIdConnectProvider', 1);
+
+
+    // has iam role
+    Template.fromStack(stack).hasResourceProperties('AWS::IAM::Role', {
+      AssumeRolePolicyDocument: {
+        Statement: [
+          {
+            Action: 'sts:AssumeRoleWithWebIdentity',
+            Condition: {
+              StringLike: {
+                'token.actions.githubusercontent.com:sub': [
+                  'repo:myuser/myrepo:*',
+                  'repo:myuser/myrepo2:*',
+                  'repo:myuser/myrepo3:*',
+                ],
               },
             },
             Principal: {
@@ -46,7 +90,7 @@ describe('github oidc provider', () => {
 
     // WHEN
     new AwsOidc(stack, 'MyProvider', {
-      repoString: 'myuser/myrepo',
+      repos: ['myuser/myrepo'],
       provider: iam.OpenIdConnectProvider.fromOpenIdConnectProviderArn(
         stack,
         'open-id',
@@ -66,7 +110,7 @@ describe('github oidc provider', () => {
             Action: 'sts:AssumeRoleWithWebIdentity',
             Condition: {
               StringLike: {
-                'token.actions.githubusercontent.com:sub': 'repo:myuser/myrepo:*',
+                'token.actions.githubusercontent.com:sub': ['repo:myuser/myrepo:*'],
               },
             },
             Principal: {
@@ -84,7 +128,7 @@ describe('github oidc provider', () => {
 
     // WHEN
     new AwsOidc(stack, 'MyProvider', {
-      repoString: 'myuser/myrepo',
+      repos: ['myuser/myrepo'],
     });
 
     // THEN

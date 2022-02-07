@@ -7,10 +7,13 @@ import { Construct } from 'constructs';
  */
 export interface AwsOidcProps {
   /**
-   * Your Github username and repository passed in as a single string.
-   * For example, `owner/repo`.
+   * A list of GitHub repositories you want to be able to access the IAM role.
+   * Each entry should be your GitHub username and repository passed in as a
+   * single string.
+   *
+   * For example, `['owner/repo1', 'owner/repo2'].
    */
-  readonly repoString: string;
+  readonly repos: string[];
 
   /**
    * The name of the Oidc role.
@@ -71,7 +74,7 @@ export class AwsOidc extends Construct {
       provider.openIdConnectProviderArn,
       {
         StringLike: {
-          [`${rawEndpoint}:sub`]: `repo:${props.repoString}:*`,
+          [`${rawEndpoint}:sub`]: formatRepos(props.repos),
         },
       },
       'sts:AssumeRoleWithWebIdentity',
@@ -116,4 +119,12 @@ export class AwsOidc extends Construct {
       value: this.role.roleArn,
     });
   }
+}
+
+function formatRepos(repos: string[]) {
+  const formattedRepos = [];
+  for (const repo of repos) {
+    formattedRepos.push(`repo:${repo}:*`);
+  }
+  return formattedRepos;
 }

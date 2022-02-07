@@ -97,7 +97,7 @@ new AwsOidc(scope: Construct, id: string, props: AwsOidcProps)
 * **scope** (<code>[Construct](#constructs-construct)</code>)  *No description*
 * **id** (<code>string</code>)  *No description*
 * **props** (<code>[AwsOidcProps](#cdk-pipelines-github-awsoidcprops)</code>)  *No description*
-  * **repoString** (<code>string</code>)  Your Github username and repository passed in as a single string. 
+  * **repos** (<code>Array<string></code>)  A list of GitHub repositories you want to be able to access the IAM role. 
   * **provider** (<code>[aws_iam.IOpenIdConnectProvider](#aws-cdk-lib-aws-iam-iopenidconnectprovider)</code>)  The Github OpenId Connect Provider. Must have provider url `https://token.actions.githubusercontent.com`. The audience must be `sts:amazonaws.com`. __*Default*__: a provider is created for you.
   * **roleName** (<code>string</code>)  The name of the Oidc role. __*Default*__: 'GithubActionRole'
 
@@ -286,7 +286,7 @@ Properties for the AwsOidc construct.
 
 Name | Type | Description 
 -----|------|-------------
-**repoString** | <code>string</code> | Your Github username and repository passed in as a single string.
+**repos** | <code>Array<string></code> | A list of GitHub repositories you want to be able to access the IAM role.
 **provider**? | <code>[aws_iam.IOpenIdConnectProvider](#aws-cdk-lib-aws-iam-iopenidconnectprovider)</code> | The Github OpenId Connect Provider. Must have provider url `https://token.actions.githubusercontent.com`. The audience must be `sts:amazonaws.com`.<br/>__*Default*__: a provider is created for you.
 **roleName**? | <code>string</code> | The name of the Oidc role.<br/>__*Default*__: 'GithubActionRole'
 

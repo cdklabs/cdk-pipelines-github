@@ -157,7 +157,7 @@ export class GitHubWorkflow extends PipelineBase {
   protected doBuildPipeline() {
     const app = Stage.of(this);
     if (!app) {
-      throw new Error('The Github Workflow must extend App');
+      throw new Error('The Github Workflow must be defined in the scope of an App');
     }
     const cdkoutDir = app.outdir;
 
@@ -543,7 +543,6 @@ export class GitHubWorkflow extends PipelineBase {
         secretAccessKey: `\${{ secrets.${this.awsCredentials.secretAccessKey} }}`,
         sessionToken: `\${{ secrets.${this.awsCredentials.sessionToken} }}`,
         roleToAssume: assumeRoleArn,
-        roleExternalId: assumeRoleArn ? 'Pipeline' : undefined,
       }));
     }
 
