@@ -47,6 +47,7 @@ const pipeline = new GithubWorkflow(app, 'Pipeline', {
       'yarn build',
     ],
   }),
+  githubActionRoleArn: 'arn:aws:iam::<account-id>:role/GithubActionRole',
 });
 
 pipeline.addStage(new MyStage(this, 'Beta', { env: BETA_ENV }));
@@ -73,48 +74,27 @@ documentation for more details.
   Environment
   Bootstrapping](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.pipelines-readme.html#cdk-environment-bootstrapping)
   for details.
-* The workflow expects the GitHub repository to include secrets with AWS
-  credentials (`AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`).
   
 ## AWS Credentials
 
-There are two ways to supply AWS credentials to the workflow. The default is to
-store long-lived AWS user credentials in GitHub secrets. Alternatively, you can
-use an IAM role that trusts the GitHub OpenId Connect provider to authenticate.
-Using OIDC to authenticate is not the default because it is a newer option, but
-there are compelling benefits to this approach. You can read more
+There are two ways to supply AWS credentials to the workflow:
+
+* GitHub Action IAM Role (recommended).
+* Long-lived AWS Credentials stored in GitHub Secrets.
+
+The GitHub Action IAM Role authenticates via the GitHub OpenID Connect provider
+and is recommended, but it requires preparing your AWS account beforehand. This
+approach allows your Workflow to exchange short-lived tokens directly from AWS.
+With OIDC, benefits include:
+
+* No cloud secrets.
+* Authentication and authorization management.
+* Rotating credentials.
+ 
+You can read more
 [here](https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect).
 
-### GitHub Secrets
-
-Authenticating via this approach means that you will be manually creating AWS
-credentials and duplicating them in GitHub secrets. The workflow expects the
-GitHub repository to include secrets with AWS credentials under 
-`AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`. You can override these defaults 
-by supplying the `awsCredentials` property to the workflow:
-
-```ts
-import { App } from 'aws-cdk-lib';
-import { ShellStep } from 'aws-cdk-lib/pipelines';
-import { GithubWorkflow } from 'cdk-pipelines-github';
-
-const app = new App();
-
-const pipeline = new GithubWorkflow(app, 'Pipeline', {
-  synth: new ShellStep('Build', {
-    commands: [
-      'yarn install',
-      'yarn build',
-    ],
-  }),
-  awsCredentials: {
-    accessKeyId: 'MY_ID',
-    secretAccessKey: 'MY_KEY',
-  },
-});
-```
-
-### OpenId Connect
+### GitHub Action Role
 
 Authenticating via OpenId Connect means you do not need to store long-lived 
 credentials as GitHub Secrets. With OIDC, you provide a pre-provisioned IAM
@@ -140,8 +120,8 @@ const pipeline = new GithubWorkflow(app, 'Pipeline', {
 
 There are two ways to create this IAM role:
 
-  - Use the `GithubActionRole` construct (recommended and described below).
-  - Manually set up the role ([Guide](https://github.com/cdklabs/cdk-pipelines-github/blob/main/GITHUB_ACTION_ROLE_SETUP.md)).
+* Use the `GithubActionRole` construct (recommended and described below).
+* Manually set up the role ([Guide](https://github.com/cdklabs/cdk-pipelines-github/blob/main/GITHUB_ACTION_ROLE_SETUP.md)).
 
 #### `GithubActionRole` Construct
 
@@ -178,6 +158,8 @@ because you can only have one such provider defined per account. In this
 case, you must provide the already created provider into your `GithubActionRole`
 construct via the `provider` property.
 
+> Make sure the audience for the provider is `sts.amazonaws.com` in this case.
+
 ```ts
 class MyGithubActionRole extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
@@ -185,14 +167,39 @@ class MyGithubActionRole extends Stack {
 
     const provider = new GithubActionRole(this, 'github-action-role', {
       repos: ['myUser/myRepo'],
-      provider: iam.OpenIdConnectProvider.fromOpenIdConnectProviderArn(
-        this,
-        'github',
-        'arn:aws:iam::<account-id>:oidc-provider/token.actions.githubusercontent.com',
-      ),
+      provider: GithubActionRole.existingGithubActionsProvider(),
     });
   }
 }
+```
+
+### GitHub Secrets
+
+Authenticating via this approach means that you will be manually creating AWS
+credentials and duplicating them in GitHub secrets. The workflow expects the
+GitHub repository to include secrets with AWS credentials under 
+`AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`. You can override these defaults 
+by supplying the `awsCredentials` property to the workflow:
+
+```ts
+import { App } from 'aws-cdk-lib';
+import { ShellStep } from 'aws-cdk-lib/pipelines';
+import { GithubWorkflow } from 'cdk-pipelines-github';
+
+const app = new App();
+
+const pipeline = new GithubWorkflow(app, 'Pipeline', {
+  synth: new ShellStep('Build', {
+    commands: [
+      'yarn install',
+      'yarn build',
+    ],
+  }),
+  awsCredentials: {
+    accessKeyId: 'MY_ID',
+    secretAccessKey: 'MY_KEY',
+  },
+});
 ```
 
 ### Using Docker in the Pipeline

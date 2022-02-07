@@ -13,7 +13,7 @@ construct that this library provides.
 
 ## Manually set up the GitHub Action Role
 
-  - Step 1: Add the Identity Provider to AWS and set up a Role Trust Policy
+* Step 1: Add the Identity Provider to AWS and set up a Role Trust Policy
 
   The IAM role you provide must reference the GitHub OIDC identity
   provider as a trusted entity. You must also set up a trust relationship between
@@ -21,7 +21,7 @@ construct that this library provides.
   set this up, see
   [Configuring OpenID Connect in AWS](https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-amazon-web-services).
 
-  - Step 2: Configure the Role's Permissions
+* Step 2: Configure the Role's Permissions
 
   In addition to setting up a relationship between GitHub and AWS, the IAM role 
   must also have permissions to assume CDK bootstrapped IAM roles and permissions 
@@ -58,7 +58,7 @@ construct that this library provides.
   }
   ```
 
-  - Step 3: Send your Role's arn to your GitHub Workflow
+* Step 3: Send your Role's arn to your GitHub Workflow
 
   You now have a role with the necessary permissions to allow GitHub Actions
   to assume the role and execute CloudFormation deployments on your behalf. What's
