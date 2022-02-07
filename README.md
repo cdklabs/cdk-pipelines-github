@@ -18,8 +18,7 @@ Workflows.
 - [AWS Credentials](#aws-credentials)
   + [GitHub Secrets](#github-secrets)
   + [OpenId Connect](#openid-connect)
-    - [`AwsOidc` Construct](#awsoidc-construct)
-    - [Manual Setup](#manual-setup)
+    - [`GithubActionRole` Construct](#githubactionrole-construct)
 - [Using Docker In The Pipeline](#using-docker-in-the-pipeline)
   + [Authenticating To Docker Registries](#authenticating-to-docker-registries)
 - [Tutorial](#tutorial)
@@ -119,7 +118,7 @@ const pipeline = new GithubWorkflow(app, 'Pipeline', {
 
 Authenticating via OpenId Connect means you do not need to store long-lived 
 credentials as GitHub Secrets. With OIDC, you provide a pre-provisioned IAM
-role to your GitHub Workflow via the `awsOidcRoleArn` property.
+role to your GitHub Workflow via the `githubActionRoleArn` property.
 
 ```ts
 import { App } from 'aws-cdk-lib';
@@ -135,14 +134,16 @@ const pipeline = new GithubWorkflow(app, 'Pipeline', {
       'yarn build',
     ],
   }),
-  awsOidcRoleArn: 'arn:aws:iam::<account-id>:role/GithubActionRole',
+  githubActionRoleArn: 'arn:aws:iam::<account-id>:role/GithubActionRole',
 });
 ```
 
-You can create this role either by manually setting it up, or taking advantage
-of the `AwsOidc` construct (recommended).
+There are two ways to create this IAM role:
 
-#### `AwsOidc` Construct
+  - Use the `GithubActionRole` construct (recommended and described below).
+  - Manually set up the role ([Guide](https://github.com/cdklabs/cdk-pipelines-github/blob/main/GITHUB_ACTION_ROLE_SETUP.md)).
+
+#### `GithubActionRole` Construct
 
 Because this construct involves creating an IAM role in your account, it must
 be created separate to your GitHub Workflow and deployed via a normal
@@ -153,36 +154,36 @@ To utilize this construct, create a separate CDK stack with the following code
 and `cdk deploy`:
 
 ```ts
-import { AwsOidc } from 'cdk-pipelines-github';
+import { GithubActionRole } from 'cdk-pipelines-github';
 import { App, Construct, Stack, StackProps } from 'aws-cdk-lib';
 
-class MyAwsOidcRole extends Stack {
+class MyGithubActionRole extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
-    const provider = new AwsOidc(this, 'oidc-role', {
+    const provider = new GithubActionRole(this, 'github-action-role', {
       repoString: 'myUser/myRepo',
     };
   }
 }
 
 const app = new App();
-new MyAwsOidcRole(app, 'MyAwsOidcRole');
+new MyGithubActionRole(app, 'MyGithubActionRole');
 app.synth();
 ```
 
 Note: If you have previously created the GitHub identity provider with url
 `https://token.actions.githubusercontent.com`, the above example will fail
 because you can only have one such provider defined per account. In this
-case, you must provide the already created provider into your `AwsOidc`
+case, you must provide the already created provider into your `GithubActionRole`
 construct via the `provider` property.
 
 ```ts
-class MyAwsOidcRole extends Stack {
+class MyGithubActionRole extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
-    const provider = new AwsOidc(this, 'oidc-role', {
+    const provider = new GithubActionRole(this, 'github-action-role', {
       repos: ['myUser/myRepo'],
       provider: iam.OpenIdConnectProvider.fromOpenIdConnectProviderArn(
         this,
@@ -191,49 +192,6 @@ class MyAwsOidcRole extends Stack {
       ),
     });
   }
-}
-```
-
-#### Manual Setup
-
-The IAM role you provide must reference the GitHub OIDC identity
-provider as a trusted entity. You must also set up a trust relationship between
-the IAM role and your GitHub repository. For a step-by-step tutorial on how to
-set this up, see
-[Configuring OpenID Connect in AWS](https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-amazon-web-services).
-
-In addition to setting up a relationship between GitHub and AWS, the IAM role 
-must also have permissions to assume CDK bootstrapped IAM roles and permissions 
-to access ECR repositories (if you plan on referencing Docker assets in your 
-workflow).
-
-Here is a minimum set of permissions for the IAM role: 
-
-```json
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Condition": {
-        "ForAnyValue:StringEquals": {
-          "iam:ResourceTag/aws-cdk:bootstrap-role": [
-            "deploy",
-            "lookup",
-            "file-publishing",
-            "image-publishing"
-          ]
-        }
-      },
-      "Action": "sts:AssumeRole",
-      "Resource": "*",
-      "Effect": "Allow"
-    },
-    {
-      "Action": "ecr:GetAuthorizationToken",
-      "Effect": "Allow",
-      "Resource": "*"
-    }
-  ]
 }
 ```
 
