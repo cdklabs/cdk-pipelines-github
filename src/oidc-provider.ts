@@ -62,7 +62,6 @@ export class GithubActionRole extends Construct {
     );
   }
 
-
   /**
    * The role that gets created.
    *
