@@ -260,6 +260,22 @@ Name | Type | Description
 -----|------|-------------
 **role** | <code>[aws_iam.IRole](#aws-cdk-lib-aws-iam-irole)</code> | The role that gets created.
 
+### Methods
+
+
+#### *static* existingGithubActionsProvider(scope) <a id="cdk-pipelines-github-githubactionrole-existinggithubactionsprovider"></a>
+
+
+
+```ts
+static existingGithubActionsProvider(scope: Construct): IOpenIdConnectProvider
+```
+
+* **scope** (<code>[Construct](#constructs-construct)</code>)  *No description*
+
+__Returns__:
+* <code>[aws_iam.IOpenIdConnectProvider](#aws-cdk-lib-aws-iam-iopenidconnectprovider)</code>
+
 
 
 ## struct AwsCredentialsSecrets  <a id="cdk-pipelines-github-awscredentialssecrets"></a>

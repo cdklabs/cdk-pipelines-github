@@ -1,6 +1,5 @@
 import { Stack } from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
-import * as iam from 'aws-cdk-lib/aws-iam';
 import { GithubActionRole } from '../src';
 
 describe('GithubActionRole construct', () => {
@@ -91,11 +90,7 @@ describe('GithubActionRole construct', () => {
     // WHEN
     new GithubActionRole(stack, 'MyProvider', {
       repos: ['myuser/myrepo'],
-      provider: iam.OpenIdConnectProvider.fromOpenIdConnectProviderArn(
-        stack,
-        'open-id',
-        'arn:aws:iam::000000000000:oidc-provider/token.actions.githubusercontent.com',
-      ),
+      provider: GithubActionRole.existingGithubActionsProvider(stack),
     });
 
     // THEN
@@ -114,7 +109,18 @@ describe('GithubActionRole construct', () => {
               },
             },
             Principal: {
-              Federated: 'arn:aws:iam::000000000000:oidc-provider/token.actions.githubusercontent.com',
+              Federated: {
+                'Fn::Join': [
+                  '',
+                  [
+                    'arn:aws:iam::',
+                    {
+                      Ref: 'AWS::AccountId',
+                    },
+                    ':oidc-provider/token.actions.githubusercontent.com',
+                  ],
+                ],
+              },
             },
           },
         ],

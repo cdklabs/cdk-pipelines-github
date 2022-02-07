@@ -1,4 +1,4 @@
-import { CfnOutput } from 'aws-cdk-lib';
+import { Aws, CfnOutput } from 'aws-cdk-lib';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import { Construct } from 'constructs';
 
@@ -49,6 +49,15 @@ export interface GithubActionRoleProps {
  * @see https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-amazon-web-services
  */
 export class GithubActionRole extends Construct {
+  public static existingGithubActionsProvider(scope: Construct): iam.IOpenIdConnectProvider {
+    return iam.OpenIdConnectProvider.fromOpenIdConnectProviderArn(
+      scope,
+      'GithubActionProvider',
+      `arn:aws:iam::${Aws.ACCOUNT_ID}:oidc-provider/token.actions.githubusercontent.com`,
+    );
+  }
+
+
   /**
    * The role that gets created.
    *
