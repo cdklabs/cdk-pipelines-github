@@ -17,7 +17,7 @@ Workflows.
 - [Usage](#usage)
 - [AWS Credentials](#aws-credentials)
   + [GitHub Action Role](#github-action-role)
-    - [`GithubActionRole` Construct](#githubactionrole-construct)
+    - [`GitHubActionRole` Construct](#githubactionrole-construct)
   + [GitHub Secrets](#github-secrets)
 - [Using Docker In The Pipeline](#using-docker-in-the-pipeline)
   + [Authenticating To Docker Registries](#authenticating-to-docker-registries)
@@ -36,18 +36,18 @@ to two AWS environments (`BETA_ENV` and `PROD_ENV`):
 ```ts
 import { App } from 'aws-cdk-lib';
 import { ShellStep } from 'aws-cdk-lib/pipelines';
-import { GithubWorkflow } from 'cdk-pipelines-github';
+import { GitHubWorkflow } from 'cdk-pipelines-github';
 
 const app = new App();
 
-const pipeline = new GithubWorkflow(app, 'Pipeline', {
+const pipeline = new GitHubWorkflow(app, 'Pipeline', {
   synth: new ShellStep('Build', {
     commands: [
       'yarn install',
       'yarn build',
     ],
   }),
-  githubActionRoleArn: 'arn:aws:iam::<account-id>:role/GithubActionRole',
+  gitHubActionRoleArn: 'arn:aws:iam::<account-id>:role/GitHubActionRole',
 });
 
 pipeline.addStage(new MyStage(this, 'Beta', { env: BETA_ENV }));
@@ -98,32 +98,32 @@ You can read more
 
 Authenticating via OpenId Connect means you do not need to store long-lived 
 credentials as GitHub Secrets. With OIDC, you provide a pre-provisioned IAM
-role to your GitHub Workflow via the `githubActionRoleArn` property.
+role to your GitHub Workflow via the `gitHubActionRoleArn` property.
 
 ```ts
 import { App } from 'aws-cdk-lib';
 import { ShellStep } from 'aws-cdk-lib/pipelines';
-import { GithubWorkflow } from 'cdk-pipelines-github';
+import { GitHubWorkflow } from 'cdk-pipelines-github';
 
 const app = new App();
 
-const pipeline = new GithubWorkflow(app, 'Pipeline', {
+const pipeline = new GitHubWorkflow(app, 'Pipeline', {
   synth: new ShellStep('Build', {
     commands: [
       'yarn install',
       'yarn build',
     ],
   }),
-  githubActionRoleArn: 'arn:aws:iam::<account-id>:role/GithubActionRole',
+  gitHubActionRoleArn: 'arn:aws:iam::<account-id>:role/GitHubActionRole',
 });
 ```
 
 There are two ways to create this IAM role:
 
-* Use the `GithubActionRole` construct (recommended and described below).
+* Use the `GitHubActionRole` construct (recommended and described below).
 * Manually set up the role ([Guide](https://github.com/cdklabs/cdk-pipelines-github/blob/main/GITHUB_ACTION_ROLE_SETUP.md)).
 
-#### `GithubActionRole` Construct
+#### `GitHubActionRole` Construct
 
 Because this construct involves creating an IAM role in your account, it must
 be created separate to your GitHub Workflow and deployed via a normal
@@ -134,21 +134,21 @@ To utilize this construct, create a separate CDK stack with the following code
 and `cdk deploy`:
 
 ```ts
-import { GithubActionRole } from 'cdk-pipelines-github';
+import { GitHubActionRole } from 'cdk-pipelines-github';
 import { App, Construct, Stack, StackProps } from 'aws-cdk-lib';
 
-class MyGithubActionRole extends Stack {
+class MyGitHubActionRole extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
-    const provider = new GithubActionRole(this, 'github-action-role', {
+    const provider = new GitHubActionRole(this, 'github-action-role', {
       repoString: 'myUser/myRepo',
     };
   }
 }
 
 const app = new App();
-new MyGithubActionRole(app, 'MyGithubActionRole');
+new MyGitHubActionRole(app, 'MyGitHubActionRole');
 app.synth();
 ```
 
@@ -161,13 +161,13 @@ construct via the `provider` property.
 > Make sure the audience for the provider is `sts.amazonaws.com` in this case.
 
 ```ts
-class MyGithubActionRole extends Stack {
+class MyGitHubActionRole extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
-    const provider = new GithubActionRole(this, 'github-action-role', {
+    const provider = new GitHubActionRole(this, 'github-action-role', {
       repos: ['myUser/myRepo'],
-      provider: GithubActionRole.existingGithubActionsProvider(this),
+      provider: GitHubActionRole.existingGitHubActionsProvider(this),
     });
   }
 }
@@ -184,11 +184,11 @@ by supplying the `awsCredentials` property to the workflow:
 ```ts
 import { App } from 'aws-cdk-lib';
 import { ShellStep } from 'aws-cdk-lib/pipelines';
-import { GithubWorkflow } from 'cdk-pipelines-github';
+import { GitHubWorkflow } from 'cdk-pipelines-github';
 
 const app = new App();
 
-const pipeline = new GithubWorkflow(app, 'Pipeline', {
+const pipeline = new GitHubWorkflow(app, 'Pipeline', {
   synth: new ShellStep('Build', {
     commands: [
       'yarn install',
@@ -222,11 +222,11 @@ due to being in a different environment (e.g., ECR repo) or to avoid throttling
 ```ts
 import { App } from 'aws-cdk-lib';
 import { ShellStep } from 'aws-cdk-lib/pipelines';
-import { GithubWorkflow } from 'cdk-pipelines-github';
+import { GitHubWorkflow } from 'cdk-pipelines-github';
 
 const app = new App();
 
-const pipeline = new GithubWorkflow(app, 'Pipeline', {
+const pipeline = new GitHubWorkflow(app, 'Pipeline', {
   synth: new ShellStep('Build', {
     commands: [
       'yarn install',

@@ -8,7 +8,7 @@ There are two ways to authenticate to AWS in your GitHub Workflow:
 This document details how to manually set up the OpenID Connect Role (called the
 GitHub Action Role). Furthermore, if you are reading this, you have decided not 
 to utilize the
-[`GithubActionRole`](https://github.com/cdklabs/cdk-pipelines-github/blob/main/README.md#githubactionrole-construct)
+[`GitHubActionRole`](https://github.com/cdklabs/cdk-pipelines-github/blob/main/README.md#githubactionrole-construct)
 construct that this library provides. 
 
 ## Manually set up the GitHub Action Role
@@ -67,17 +67,17 @@ construct that this library provides.
   ```ts
   import { App } from 'aws-cdk-lib';
   import { ShellStep } from 'aws-cdk-lib/pipelines';
-  import { GithubWorkflow } from 'cdk-pipelines-github';
+  import { GitHubWorkflow } from 'cdk-pipelines-github';
 
   const app = new App();
 
-  const pipeline = new GithubWorkflow(app, 'Pipeline', {
+  const pipeline = new GitHubWorkflow(app, 'Pipeline', {
     synth: new ShellStep('Build', {
       commands: [
         'yarn install',
         'yarn build',
       ],
     }),
-    githubActionRoleArn: '// your role arn here',
+    gitHubActionRoleArn: '// your role arn here',
   });
   ```
