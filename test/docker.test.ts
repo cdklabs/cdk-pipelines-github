@@ -13,7 +13,7 @@ const dockers = join(__dirname, 'demo-image');
 describe('correct format for docker credentials:', () => {
   let app: TestApp;
   beforeEach(() => {
-    const tempOutDir = 'temp.out';
+    const tempOutDir = 'temp1.out';
     app = new TestApp({
       outdir: tempOutDir,
     });
