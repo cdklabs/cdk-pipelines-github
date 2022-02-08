@@ -253,9 +253,14 @@ export class GitHubWorkflow extends PipelineBase {
   }
 
   private jobForAssetPublish(node: AGraphNode, assets: StackAsset[], options: Context): Job {
+    if (assets.length === 0) {
+      throw new Error('Asset Publish step must have at least 1 asset');
+    }
+
     const installSuffix = this.cdkCliVersion ? `@${this.cdkCliVersion}` : '';
     const cdkoutDir = options.assemblyDir;
     const jobId = node.uniqueId;
+    const assetId = assets[0].assetId;
 
     // check if asset is docker asset and if we have docker credentials
     const dockerLoginSteps: github.JobStep[] = [];
@@ -268,13 +273,12 @@ export class GitHubWorkflow extends PipelineBase {
     // create one file and make one step
     const relativeToAssembly = (p: string) => path.posix.join(cdkoutDir, path.relative(path.resolve(cdkoutDir), p));
     const fileContents: string[] = ['set -x'].concat(assets.map((asset) => {
-      // we need the jobId to reference the outputs later
-      this.assetHashMap[asset.assetId] = jobId;
-      return [
-        `npx cdk-assets --path "${relativeToAssembly(asset.assetManifestPath)}" --verbose publish "${asset.assetSelector}"`,
-        `echo '::set-output name=hash::${asset.assetId}'`,
-      ].join('\n');
+      return `npx cdk-assets --path "${relativeToAssembly(asset.assetManifestPath)}" --verbose publish "${asset.assetSelector}"`;
     }));
+
+    // we need the jobId to reference the outputs later
+    this.assetHashMap[assetId] = jobId;
+    fileContents.push(`echo '::set-output name=hash::${assetId}'`);
 
     const publishStepFile = path.join(cdkoutDir, `publish-${jobId}-step.sh`);
     mkdirSync(path.dirname(publishStepFile), { recursive: true });
