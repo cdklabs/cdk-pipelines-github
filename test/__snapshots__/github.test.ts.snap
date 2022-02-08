@@ -34,7 +34,7 @@ jobs:
       contents: read
     runs-on: ubuntu-latest
     outputs:
-      asset-hash: \${{ steps.Publish.outputs.hash }}
+      asset-hash: \${{ steps.Publish.outputs.asset-hash }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -61,7 +61,7 @@ jobs:
       contents: read
     runs-on: ubuntu-latest
     outputs:
-      asset-hash: \${{ steps.Publish.outputs.hash }}
+      asset-hash: \${{ steps.Publish.outputs.asset-hash }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -85,7 +85,7 @@ jobs:
       contents: read
     runs-on: ubuntu-latest
     outputs:
-      asset-hash: \${{ steps.Publish.outputs.hash }}
+      asset-hash: \${{ steps.Publish.outputs.asset-hash }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -109,7 +109,7 @@ jobs:
       contents: read
     runs-on: ubuntu-latest
     outputs:
-      asset-hash: \${{ steps.Publish.outputs.hash }}
+      asset-hash: \${{ steps.Publish.outputs.asset-hash }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -133,7 +133,7 @@ jobs:
       contents: read
     runs-on: ubuntu-latest
     outputs:
-      asset-hash: \${{ steps.Publish.outputs.hash }}
+      asset-hash: \${{ steps.Publish.outputs.asset-hash }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -157,7 +157,7 @@ jobs:
       contents: read
     runs-on: ubuntu-latest
     outputs:
-      asset-hash: \${{ steps.Publish.outputs.hash }}
+      asset-hash: \${{ steps.Publish.outputs.asset-hash }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -181,7 +181,7 @@ jobs:
       contents: read
     runs-on: ubuntu-latest
     outputs:
-      asset-hash: \${{ steps.Publish.outputs.hash }}
+      asset-hash: \${{ steps.Publish.outputs.asset-hash }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -413,7 +413,7 @@ jobs:
       contents: read
     runs-on: ubuntu-latest
     outputs:
-      asset-hash: \${{ steps.Publish.outputs.hash }}
+      asset-hash: \${{ steps.Publish.outputs.asset-hash }}
     steps:
       - name: Download cdk.out
         uses: actions/download-artifact@v2
@@ -440,7 +440,7 @@ jobs:
       contents: read
     runs-on: ubuntu-latest
     outputs:
-      asset-hash: \${{ steps.Publish.outputs.hash }}
+      asset-hash: \${{ steps.Publish.outputs.asset-hash }}
     steps:
       - name: Download cdk.out
         uses: actions/download-artifact@v2

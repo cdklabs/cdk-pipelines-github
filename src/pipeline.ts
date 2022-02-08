@@ -12,6 +12,7 @@ import * as github from './workflows-model';
 
 const CDKOUT_ARTIFACT = 'cdk.out';
 const RUNS_ON = 'ubuntu-latest';
+const ASSET_HASH_NAME = 'asset-hash';
 
 /**
  * Props for `GitHubWorkflow`.
@@ -278,7 +279,7 @@ export class GitHubWorkflow extends PipelineBase {
 
     // we need the jobId to reference the outputs later
     this.assetHashMap[assetId] = jobId;
-    fileContents.push(`echo '::set-output name=hash::${assetId}'`);
+    fileContents.push(`echo '::set-output name=${ASSET_HASH_NAME}::${assetId}'`);
 
     const publishStepFile = path.join(cdkoutDir, `publish-${jobId}-step.sh`);
     mkdirSync(path.dirname(publishStepFile), { recursive: true });
@@ -300,7 +301,7 @@ export class GitHubWorkflow extends PipelineBase {
         },
         runsOn: RUNS_ON,
         outputs: {
-          assetHash: '${{ steps.Publish.outputs.hash }}',
+          [ASSET_HASH_NAME]: `\${{ steps.Publish.outputs.${ASSET_HASH_NAME} }}`,
         },
         steps: [
           ...this.stepsToDownloadAssembly(cdkoutDir),
@@ -340,7 +341,7 @@ export class GitHubWorkflow extends PipelineBase {
       if (this.assetHashMap[hash] === undefined) {
         throw new Error(`Template asset hash ${hash} not found.`);
       }
-      return template.replace(hash, `\${{ needs.${this.assetHashMap[hash]}.outputs.asset-hash }}`);
+      return template.replace(hash, `\${{ needs.${this.assetHashMap[hash]}.outputs.${ASSET_HASH_NAME} }}`);
     };
 
     const params: Record<string, any> = {
