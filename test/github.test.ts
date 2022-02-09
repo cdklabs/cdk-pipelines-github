@@ -138,7 +138,10 @@ describe('diff protection when GITHUB_ACTIONS set to true', () => {
 
 function wrapEnv(variable: string, value: string, cb: () => void) {
   const original = process.env[variable];
-  process.env[variable] = value;
-  cb();
-  process.env[variable] = original;
+  try {
+    process.env[variable] = value;
+    cb();
+  } finally {
+    process.env[variable] = original;
+  }
 }
