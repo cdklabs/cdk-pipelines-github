@@ -1,4 +1,4 @@
-import { mkdirSync, writeFileSync } from 'fs';
+import { mkdirSync, writeFileSync, readFileSync, existsSync } from 'fs';
 import * as path from 'path';
 import { Stage } from 'aws-cdk-lib';
 import { EnvironmentPlaceholders } from 'aws-cdk-lib/cx-api';
@@ -218,6 +218,16 @@ export class GitHubWorkflow extends PipelineBase {
     // eslint-disable-next-line no-console
     console.log(`writing ${this.workflowPath}`);
     mkdirSync(path.dirname(this.workflowPath), { recursive: true });
+
+    // GITHUB_WORKFLOW is set when GitHub Actions is running the workflow.
+    // see: https://docs.github.com/en/actions/learn-github-actions/environment-variables#default-environment-variables
+    if (process.env.GITHUB_WORKFLOW === this.workflowName) {
+      // check if workflow file has changed
+      if (!existsSync(this.workflowPath) || yaml !== readFileSync(this.workflowPath, 'utf8')) {
+        throw new Error(`Please commit the updated workflow file ${path.relative(__dirname, this.workflowPath)} when you change your pipeline definition.`);
+      }
+    }
+
     writeFileSync(this.workflowPath, yaml);
   }
 
