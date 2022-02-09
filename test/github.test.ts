@@ -139,29 +139,29 @@ describe('diff protection when GITHUB_WORKFLOW set', () => {
     // set GITHUB_WORKFLOW env variable to simulate GitHub environment
     wrapEnv('GITHUB_WORKFLOW', 'deploy', () => withTemporaryDirectory((dir) => {
       const repoDir = dir;
-      const app = new GitHubExampleApp({
+      const githubApp = new GitHubExampleApp({
         repoDir: repoDir,
         envA: 'aws://111111111111/us-east-1',
         envB: 'aws://222222222222/eu-west-2',
       });
-      expect(() => app.synth()).toThrowError(/Please commit the updated workflow file/);
+      expect(() => githubApp.synth()).toThrowError(/Please commit the updated workflow file/);
     }));
   });
 
   test('synth succeeds with no diff', () => {
     withTemporaryDirectory((dir) => {
       const repoDir = dir;
-      const app = new GitHubExampleApp({
+      const githubApp = new GitHubExampleApp({
         repoDir: repoDir,
         envA: 'aws://111111111111/us-east-1',
         envB: 'aws://222222222222/eu-west-2',
       });
 
       // synth to write the deploy.yml the first time
-      app.synth();
+      githubApp.synth();
 
       // simulate GitHub environment with the same deploy.yml
-      wrapEnv('GITHUB_WORKFLOW', 'deploy', () => app.synth());
+      wrapEnv('GITHUB_WORKFLOW', 'deploy', () => githubApp.synth());
     });
   });
 });
