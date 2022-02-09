@@ -53,7 +53,8 @@ jobs:
       - uses: docker/login-action@v1
         with:
           registry: 000000000000.dkr.ecr.us-east-1.amazonaws.com
-      - name: Publish Assets-DockerAsset1
+      - id: Publish
+        name: Publish Assets-DockerAsset1
         run: /bin/bash ./cdk.out/publish-Assets-DockerAsset1-step.sh
   Assets-FileAsset1:
     name: Publish Assets Assets-FileAsset1
@@ -79,7 +80,8 @@ jobs:
           aws-access-key-id: \${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: \${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-session-token: \${{ secrets.undefined }}
-      - name: Publish Assets-FileAsset1
+      - id: Publish
+        name: Publish Assets-FileAsset1
         run: /bin/bash ./cdk.out/publish-Assets-FileAsset1-step.sh
   Assets-FileAsset2:
     name: Publish Assets Assets-FileAsset2
@@ -105,7 +107,8 @@ jobs:
           aws-access-key-id: \${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: \${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-session-token: \${{ secrets.undefined }}
-      - name: Publish Assets-FileAsset2
+      - id: Publish
+        name: Publish Assets-FileAsset2
         run: /bin/bash ./cdk.out/publish-Assets-FileAsset2-step.sh
   Assets-FileAsset3:
     name: Publish Assets Assets-FileAsset3
@@ -131,7 +134,8 @@ jobs:
           aws-access-key-id: \${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: \${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-session-token: \${{ secrets.undefined }}
-      - name: Publish Assets-FileAsset3
+      - id: Publish
+        name: Publish Assets-FileAsset3
         run: /bin/bash ./cdk.out/publish-Assets-FileAsset3-step.sh
   Assets-FileAsset4:
     name: Publish Assets Assets-FileAsset4
@@ -157,7 +161,8 @@ jobs:
           aws-access-key-id: \${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: \${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-session-token: \${{ secrets.undefined }}
-      - name: Publish Assets-FileAsset4
+      - id: Publish
+        name: Publish Assets-FileAsset4
         run: /bin/bash ./cdk.out/publish-Assets-FileAsset4-step.sh
   Assets-FileAsset5:
     name: Publish Assets Assets-FileAsset5
@@ -183,7 +188,8 @@ jobs:
           aws-access-key-id: \${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: \${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-session-token: \${{ secrets.undefined }}
-      - name: Publish Assets-FileAsset5
+      - id: Publish
+        name: Publish Assets-FileAsset5
         run: /bin/bash ./cdk.out/publish-Assets-FileAsset5-step.sh
   Assets-FileAsset6:
     name: Publish Assets Assets-FileAsset6
@@ -209,7 +215,8 @@ jobs:
           aws-access-key-id: \${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: \${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-session-token: \${{ secrets.undefined }}
-      - name: Publish Assets-FileAsset6
+      - id: Publish
+        name: Publish Assets-FileAsset6
         run: /bin/bash ./cdk.out/publish-Assets-FileAsset6-step.sh
   StageA-Pre:
     name: Pre
@@ -410,6 +417,8 @@ jobs:
       contents: read
       id-token: write
     runs-on: ubuntu-latest
+    outputs:
+      asset-hash: \${{ steps.Publish.outputs.asset-hash }}
     steps:
       - name: Download cdk.out
         uses: actions/download-artifact@v2
@@ -425,7 +434,8 @@ jobs:
           role-duration-seconds: 1800
           role-skip-session-tagging: true
           role-to-assume: arn:aws:iam::000000000000:role/GitHubActionRole
-      - name: Publish Assets-FileAsset1
+      - id: Publish
+        name: Publish Assets-FileAsset1
         run: /bin/bash ./cdk.out/publish-Assets-FileAsset1-step.sh
   Assets-FileAsset2:
     name: Publish Assets Assets-FileAsset2
@@ -435,6 +445,8 @@ jobs:
       contents: read
       id-token: write
     runs-on: ubuntu-latest
+    outputs:
+      asset-hash: \${{ steps.Publish.outputs.asset-hash }}
     steps:
       - name: Download cdk.out
         uses: actions/download-artifact@v2
@@ -450,7 +462,8 @@ jobs:
           role-duration-seconds: 1800
           role-skip-session-tagging: true
           role-to-assume: arn:aws:iam::000000000000:role/GitHubActionRole
-      - name: Publish Assets-FileAsset2
+      - id: Publish
+        name: Publish Assets-FileAsset2
         run: /bin/bash ./cdk.out/publish-Assets-FileAsset2-step.sh
   MyStack-MyStack-Deploy:
     name: Deploy MyStack098574E7
@@ -485,7 +498,8 @@ jobs:
         uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
           name: MyStack-MyStack
-          template: https://cdk-hnb659fds-assets-111111111111-us-east-1.s3.us-east-1.amazonaws.com/52c2fe7f725481c405841b55cfb41b81965fadaa71665186ffb031ecd3f0ef36.json
+          template: https://cdk-hnb659fds-assets-111111111111-us-east-1.s3.us-east-1.amazonaws.com/\${{
+            needs.Assets-FileAsset1.outputs.asset-hash }}.json
           no-fail-on-empty-changeset: \\"1\\"
           role-arn: arn:aws:iam::111111111111:role/cdk-hnb659fds-cfn-exec-role-111111111111-us-east-1
 "
@@ -575,7 +589,8 @@ jobs:
           aws-access-key-id: \${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: \${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-session-token: \${{ secrets.undefined }}
-      - name: Publish Assets-FileAsset1
+      - id: Publish
+        name: Publish Assets-FileAsset1
         run: /bin/bash ./cdk.out/publish-Assets-FileAsset1-step.sh
   Assets-FileAsset2:
     name: Publish Assets Assets-FileAsset2
@@ -604,7 +619,8 @@ jobs:
           aws-access-key-id: \${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: \${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-session-token: \${{ secrets.undefined }}
-      - name: Publish Assets-FileAsset2
+      - id: Publish
+        name: Publish Assets-FileAsset2
         run: /bin/bash ./cdk.out/publish-Assets-FileAsset2-step.sh
   MyStack-MyStack-Deploy:
     name: Deploy MyStack098574E7
