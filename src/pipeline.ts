@@ -8,10 +8,12 @@ import { Construct } from 'constructs';
 import * as decamelize from 'decamelize';
 import * as YAML from 'yaml';
 import { DockerCredential } from './docker-credentials';
+import { awsCredentialStep } from './private/aws-credentials';
 import * as github from './workflows-model';
 
 const CDKOUT_ARTIFACT = 'cdk.out';
 const RUNS_ON = 'ubuntu-latest';
+const ASSET_HASH_NAME = 'asset-hash';
 
 /**
  * Props for `GitHubWorkflow`.
@@ -62,19 +64,34 @@ export interface GitHubWorkflowProps extends PipelineBaseProps {
   readonly awsCredentials?: AwsCredentialsSecrets;
 
   /**
+   * A role that utilizes the GitHub OIDC Identity Provider in your AWS account.
+   * If supplied, this will be used instead of `awsCredentials`.
+   *
+   * You can create your own role in the console with the necessary trust policy
+   * to allow gitHub actions from your gitHub repository to assume the role, or
+   * you can utilize the `GitHubActionRole` construct to create a role for you.
+   *
+   * @default - GitHub repository secrets are used instead of OpenId Connect role.
+   */
+  readonly gitHubActionRoleArn?: string;
+
+  /**
    * Build container options.
+   *
    * @default - GitHub defaults
    */
   readonly buildContainer?: github.ContainerOptions;
 
   /**
    * GitHub workflow steps to execute before build.
+   *
    * @default []
    */
   readonly preBuildSteps?: github.JobStep[];
 
   /**
    * GitHub workflow steps to execute after build.
+   *
    * @default []
    */
   readonly postBuildSteps?: github.JobStep[];
@@ -96,12 +113,15 @@ export class GitHubWorkflow extends PipelineBase {
   private readonly workflowTriggers: github.Triggers;
   private readonly preSynthed: boolean;
   private readonly awsCredentials: AwsCredentialsSecrets;
+  private readonly gitHubActionRoleArn?: string;
+  private readonly useGitHubActionRole: boolean;
   private readonly dockerCredentials: DockerCredential[];
   private readonly cdkCliVersion?: string;
   private readonly buildContainer?: github.ContainerOptions;
   private readonly preBuildSteps: github.JobStep[];
   private readonly postBuildSteps: github.JobStep[];
   private readonly jobOutputs: Record<string, github.JobStepOutput[]> = {};
+  private readonly assetHashMap: Record<string, string> = {};
 
   constructor(scope: Construct, id: string, props: GitHubWorkflowProps) {
     super(scope, id, props);
@@ -111,6 +131,8 @@ export class GitHubWorkflow extends PipelineBase {
     this.buildContainer = props.buildContainer;
     this.preBuildSteps = props.preBuildSteps ?? [];
     this.postBuildSteps = props.postBuildSteps ?? [];
+    this.gitHubActionRoleArn = props.gitHubActionRoleArn;
+    this.useGitHubActionRole = this.gitHubActionRoleArn ? true : false;
 
     this.awsCredentials = props.awsCredentials ?? {
       accessKeyId: 'AWS_ACCESS_KEY_ID',
@@ -136,8 +158,10 @@ export class GitHubWorkflow extends PipelineBase {
 
   protected doBuildPipeline() {
     const app = Stage.of(this);
-    if (!app) { throw new Error('');}
-    const cdkoutDir = app?.outdir;
+    if (!app) {
+      throw new Error('The GitHub Workflow must be defined in the scope of an App');
+    }
+    const cdkoutDir = app.outdir;
 
     const jobs = new Array<Job>();
 
@@ -192,7 +216,7 @@ export class GitHubWorkflow extends PipelineBase {
     });
 
     // eslint-disable-next-line no-console
-    console.error(`writing ${this.workflowPath}`);
+    console.log(`writing ${this.workflowPath}`);
     mkdirSync(path.dirname(this.workflowPath), { recursive: true });
 
     // GITHUB_WORKFLOW is set when GitHub Actions is running the workflow.
@@ -239,13 +263,13 @@ export class GitHubWorkflow extends PipelineBase {
         throw new Error(`jobForNode: did not expect to get group nodes: ${node.data?.type}`);
 
       case 'self-update':
-        throw new Error('github workflows does not support self mutation');
+        throw new Error('GitHub Workflows does not support self mutation');
 
       case 'publish-assets':
         return this.jobForAssetPublish(node, node.data.assets, options);
 
       case 'prepare':
-        throw new Error('"prepare" is not supported by GitHub worflows');
+        throw new Error('"prepare" is not supported by GitHub Worflows');
 
       case 'execute':
         return this.jobForDeploy(node, node.data.stack, node.data.captureOutputs);
@@ -262,8 +286,14 @@ export class GitHubWorkflow extends PipelineBase {
   }
 
   private jobForAssetPublish(node: AGraphNode, assets: StackAsset[], options: Context): Job {
+    if (assets.length === 0) {
+      throw new Error('Asset Publish step must have at least 1 asset');
+    }
+
     const installSuffix = this.cdkCliVersion ? `@${this.cdkCliVersion}` : '';
     const cdkoutDir = options.assemblyDir;
+    const jobId = node.uniqueId;
+    const assetId = assets[0].assetId;
 
     // check if asset is docker asset and if we have docker credentials
     const dockerLoginSteps: github.JobStep[] = [];
@@ -279,31 +309,40 @@ export class GitHubWorkflow extends PipelineBase {
       return `npx cdk-assets --path "${relativeToAssembly(asset.assetManifestPath)}" --verbose publish "${asset.assetSelector}"`;
     }));
 
-    const publishStepFile = path.join(cdkoutDir, `publish-${node.uniqueId}-step.sh`);
+    // we need the jobId to reference the outputs later
+    this.assetHashMap[assetId] = jobId;
+    fileContents.push(`echo '::set-output name=${ASSET_HASH_NAME}::${assetId}'`);
+
+    const publishStepFile = path.join(cdkoutDir, `publish-${jobId}-step.sh`);
     mkdirSync(path.dirname(publishStepFile), { recursive: true });
     writeFileSync(publishStepFile, fileContents.join('\n'), { encoding: 'utf-8' });
 
     const publishStep: github.JobStep = {
-      name: `Publish ${node.uniqueId}`,
+      id: 'Publish',
+      name: `Publish ${jobId}`,
       run: `/bin/bash ./cdk.out/${path.relative(cdkoutDir, publishStepFile)}`,
     };
 
     return {
-      id: node.uniqueId,
+      id: jobId,
       definition: {
-        name: `Publish Assets ${node.uniqueId}`,
+        name: `Publish Assets ${jobId}`,
         needs: this.renderDependencies(node),
         permissions: {
           contents: github.JobPermission.READ,
+          idToken: this.useGitHubActionRole ? github.JobPermission.WRITE : github.JobPermission.NONE,
         },
         runsOn: RUNS_ON,
+        outputs: {
+          [ASSET_HASH_NAME]: `\${{ steps.Publish.outputs.${ASSET_HASH_NAME} }}`,
+        },
         steps: [
           ...this.stepsToDownloadAssembly(cdkoutDir),
           {
             name: 'Install',
             run: `npm install --no-save cdk-assets${installSuffix}`,
           },
-          ...this.stepsToConfigureAws({ region: 'us-west-2' }),
+          ...this.stepsToConfigureAws(this.useGitHubActionRole, { region: 'us-west-2' }),
           ...dockerLoginSteps,
           publishStep,
         ],
@@ -330,9 +369,17 @@ export class GitHubWorkflow extends PipelineBase {
       });
     };
 
+    const replaceAssetHash = (template: string) => {
+      const hash = path.parse(template.split('/').pop() ?? '').name;
+      if (this.assetHashMap[hash] === undefined) {
+        throw new Error(`Template asset hash ${hash} not found.`);
+      }
+      return template.replace(hash, `\${{ needs.${this.assetHashMap[hash]}.outputs.${ASSET_HASH_NAME} }}`);
+    };
+
     const params: Record<string, any> = {
       'name': stack.stackName,
-      'template': resolve(stack.templateUrl),
+      'template': replaceAssetHash(resolve(stack.templateUrl)),
       'no-fail-on-empty-changeset': '1',
     };
 
@@ -345,11 +392,14 @@ export class GitHubWorkflow extends PipelineBase {
       id: node.uniqueId,
       definition: {
         name: `Deploy ${stack.stackArtifactId}`,
-        permissions: { contents: github.JobPermission.NONE },
+        permissions: {
+          contents: github.JobPermission.READ,
+          idToken: this.useGitHubActionRole ? github.JobPermission.WRITE : github.JobPermission.NONE,
+        },
         needs: this.renderDependencies(node),
         runsOn: RUNS_ON,
         steps: [
-          ...this.stepsToConfigureAws({ region, assumeRoleArn }),
+          ...this.stepsToConfigureAws(this.useGitHubActionRole, { region, assumeRoleArn }),
           {
             id: 'Deploy',
             uses: 'aws-actions/aws-cloudformation-github-deploy@v1',
@@ -497,30 +547,40 @@ export class GitHubWorkflow extends PipelineBase {
     };
   }
 
-  private stepsToConfigureAws({ region, assumeRoleArn }: { region: string; assumeRoleArn?: string }): github.JobStep[] {
-    const params: Record<string, any> = {
-      'aws-access-key-id': `\${{ secrets.${this.awsCredentials.accessKeyId} }}`,
-      'aws-secret-access-key': `\${{ secrets.${this.awsCredentials.secretAccessKey} }}`,
-      'aws-region': region,
-      'role-skip-session-tagging': true,
-      'role-duration-seconds': 30 * 60,
-    };
-
-    if (this.awsCredentials.sessionToken) {
-      params['aws-session-token'] = `\${{ secrets.${this.awsCredentials.sessionToken} }}`;
+  private stepsToConfigureAws(openId: boolean, { region, assumeRoleArn }: { region: string; assumeRoleArn?: string }): github.JobStep[] {
+    function getDeployRole(arn: string) {
+      return arn.replace('cfn-exec', 'deploy');
     }
 
-    if (assumeRoleArn) {
-      params['role-to-assume'] = assumeRoleArn;
-      params['role-external-id'] = 'Pipeline';
+    let steps: github.JobStep[] = [];
+
+    if (openId) {
+      steps.push(awsCredentialStep('Authenticate Via OIDC Role', {
+        region,
+        gitHubActionRoleArn: this.gitHubActionRoleArn,
+      }));
+
+      if (assumeRoleArn) {
+        // Result of initial credentials with GitHub Action role are these environment variables
+        steps.push(awsCredentialStep('Assume CDK Deploy Role', {
+          region,
+          accessKeyId: '${{ env.AWS_ACCESS_KEY_ID }}',
+          secretAccessKey: '${{ env.AWS_SECRET_ACCESS_KEY }}',
+          sessionToken: '${{ env.AWS_SESSION_TOKEN }}',
+          roleToAssume: getDeployRole(assumeRoleArn),
+        }));
+      }
+    } else {
+      steps.push(awsCredentialStep('Authenticate Via GitHub Secrets', {
+        region,
+        accessKeyId: `\${{ secrets.${this.awsCredentials.accessKeyId} }}`,
+        secretAccessKey: `\${{ secrets.${this.awsCredentials.secretAccessKey} }}`,
+        sessionToken: `\${{ secrets.${this.awsCredentials.sessionToken} }}`,
+        roleToAssume: assumeRoleArn,
+      }));
     }
 
-    return [
-      {
-        uses: 'aws-actions/configure-aws-credentials@v1',
-        with: params,
-      },
-    ];
+    return steps;
   }
 
   private stepsToConfigureDocker(dockerCredential: DockerCredential): github.JobStep[] {
