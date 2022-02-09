@@ -107,9 +107,7 @@ describe('workflow path', () => {
 describe('diff protection', () => {
   test('synth fails when SYNTH env variable set', () => {
     // set SYNTH env variable to simulate GitHub environment
-    process.env.SYNTH = 'github';
-
-    withTemporaryDirectory((dir) => {
+    wrapEnv('SYNTH', 'github', () => withTemporaryDirectory((dir) => {
       const repoDir = dir;
       const app = new GitHubExampleApp({
         repoDir: repoDir,
@@ -117,9 +115,7 @@ describe('diff protection', () => {
         envB: 'aws://222222222222/eu-west-2',
       });
       expect(() => app.synth()).toThrowError('The committed workflow file differs from the synthesized workflow file. Did you forget to commit?');
-    });
-
-    process.env.SYNTH = '';
+    }));
   });
 
   test('synth fails when SYNTH env variable set', () => {
@@ -135,9 +131,14 @@ describe('diff protection', () => {
       app.synth();
 
       // simulate GitHub environment with the same deploy.yml
-      process.env.SYNTH = 'github';
-      app.synth();
-      process.env.SYNTH = '';
+      wrapEnv('SYNTH', 'github', () => app.synth());
     });
   });
 });
+
+function wrapEnv(variable: string, value: string, cb: () => void) {
+  const original = process.env[variable];
+  process.env[variable] = value;
+  cb();
+  process.env[variable] = original;
+}
