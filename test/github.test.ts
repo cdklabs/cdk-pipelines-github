@@ -104,10 +104,10 @@ describe('workflow path', () => {
   });
 });
 
-describe('diff protection when GITHUB_ACTIONS set to true', () => {
+describe('diff protection when GITHUB_WORKFLOW set', () => {
   test('synth fails with diff', () => {
-    // set GITHUB_ACTIONS env variable to simulate GitHub environment
-    wrapEnv('GITHUB_ACTIONS', 'true', () => withTemporaryDirectory((dir) => {
+    // set GITHUB_WORKFLOW env variable to simulate GitHub environment
+    wrapEnv('GITHUB_WORKFLOW', 'deploy', () => withTemporaryDirectory((dir) => {
       const repoDir = dir;
       const app = new GitHubExampleApp({
         repoDir: repoDir,
@@ -131,7 +131,7 @@ describe('diff protection when GITHUB_ACTIONS set to true', () => {
       app.synth();
 
       // simulate GitHub environment with the same deploy.yml
-      wrapEnv('GITHUB_ACTIONS', 'true', () => app.synth());
+      wrapEnv('GITHUB_WORKFLOW', 'deploy', () => app.synth());
     });
   });
 });
