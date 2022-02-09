@@ -14,7 +14,8 @@ jobs:
       contents: read
     runs-on: ubuntu-latest
     needs: []
-    env: {}
+    env:
+      SYNTH: github
     container:
       image: alpine
     steps:
@@ -337,7 +338,8 @@ jobs:
       contents: read
     runs-on: ubuntu-latest
     needs: []
-    env: {}
+    env:
+      SYNTH: github
     container: null
     steps:
       - name: Checkout
@@ -368,7 +370,8 @@ jobs:
       contents: read
     runs-on: ubuntu-latest
     needs: []
-    env: {}
+    env:
+      SYNTH: github
     container: null
     steps:
       - name: Checkout

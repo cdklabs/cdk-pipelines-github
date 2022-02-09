@@ -1,4 +1,4 @@
-import { mkdirSync, writeFileSync } from 'fs';
+import { mkdirSync, writeFileSync, readFileSync, existsSync } from 'fs';
 import * as path from 'path';
 import { Stage } from 'aws-cdk-lib';
 import { EnvironmentPlaceholders } from 'aws-cdk-lib/cx-api';
@@ -194,6 +194,19 @@ export class GitHubWorkflow extends PipelineBase {
     // eslint-disable-next-line no-console
     console.error(`writing ${this.workflowPath}`);
     mkdirSync(path.dirname(this.workflowPath), { recursive: true });
+
+    if (process.env.SYNTH === 'github') {
+      // check if workflow file has changed
+      if (!existsSync(this.workflowPath)) {
+        throw new Error('The committed workflow file differs from the synthesized workflow file. Did you forget to commit?');
+      }
+
+      const oldYaml = readFileSync(this.workflowPath, 'utf8');
+      if (yaml !== oldYaml) {
+        throw new Error('The committed workflow file differs from the synthesized workflow file. Did you forget to commit?');
+      }
+    }
+
     writeFileSync(this.workflowPath, yaml);
   }
 
@@ -383,7 +396,10 @@ export class GitHubWorkflow extends PipelineBase {
         },
         runsOn: RUNS_ON,
         needs: this.renderDependencies(node),
-        env: step.env,
+        env: {
+          ...step.env,
+          SYNTH: 'github',
+        },
         container: this.buildContainer,
         steps: [
           ...this.stepsToCheckout(),
