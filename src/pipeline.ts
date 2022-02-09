@@ -195,15 +195,12 @@ export class GitHubWorkflow extends PipelineBase {
     console.error(`writing ${this.workflowPath}`);
     mkdirSync(path.dirname(this.workflowPath), { recursive: true });
 
-    if (process.env.SYNTH === 'github') {
+    // GITHUB_ACTIONS set to true when GitHub Actions is running the workflow.
+    // see: https://docs.github.com/en/actions/learn-github-actions/environment-variables#default-environment-variables
+    if (process.env.GITHUB_ACTIONS === 'true') {
       // check if workflow file has changed
-      if (!existsSync(this.workflowPath)) {
-        throw new Error('The committed workflow file differs from the synthesized workflow file. Did you forget to commit?');
-      }
-
-      const oldYaml = readFileSync(this.workflowPath, 'utf8');
-      if (yaml !== oldYaml) {
-        throw new Error('The committed workflow file differs from the synthesized workflow file. Did you forget to commit?');
+      if (!existsSync(this.workflowPath) || yaml !== readFileSync(this.workflowPath, 'utf8')) {
+        throw new Error(`Please commit the updated workflow file ${path.relative(__dirname, this.workflowPath)} when you change your pipeline definition.`);
       }
     }
 
@@ -396,10 +393,7 @@ export class GitHubWorkflow extends PipelineBase {
         },
         runsOn: RUNS_ON,
         needs: this.renderDependencies(node),
-        env: {
-          ...step.env,
-          SYNTH: 'github',
-        },
+        env: step.env,
         container: this.buildContainer,
         steps: [
           ...this.stepsToCheckout(),

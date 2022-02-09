@@ -104,21 +104,21 @@ describe('workflow path', () => {
   });
 });
 
-describe('diff protection', () => {
-  test('synth fails when SYNTH env variable set', () => {
-    // set SYNTH env variable to simulate GitHub environment
-    wrapEnv('SYNTH', 'github', () => withTemporaryDirectory((dir) => {
+describe('diff protection when GITHUB_ACTIONS set to true', () => {
+  test('synth fails with diff', () => {
+    // set GITHUB_ACTIONS env variable to simulate GitHub environment
+    wrapEnv('GITHUB_ACTIONS', 'true', () => withTemporaryDirectory((dir) => {
       const repoDir = dir;
       const app = new GitHubExampleApp({
         repoDir: repoDir,
         envA: 'aws://111111111111/us-east-1',
         envB: 'aws://222222222222/eu-west-2',
       });
-      expect(() => app.synth()).toThrowError('The committed workflow file differs from the synthesized workflow file. Did you forget to commit?');
+      expect(() => app.synth()).toThrowError(/Please commit the updated workflow file/);
     }));
   });
 
-  test('synth fails when SYNTH env variable set', () => {
+  test('synth succeeds with no diff', () => {
     withTemporaryDirectory((dir) => {
       const repoDir = dir;
       const app = new GitHubExampleApp({
@@ -131,7 +131,7 @@ describe('diff protection', () => {
       app.synth();
 
       // simulate GitHub environment with the same deploy.yml
-      wrapEnv('SYNTH', 'github', () => app.synth());
+      wrapEnv('GITHUB_ACTIONS', 'true', () => app.synth());
     });
   });
 });
