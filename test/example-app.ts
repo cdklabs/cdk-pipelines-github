@@ -78,7 +78,7 @@ export class GitHubExampleApp extends App {
         { run: 'echo post-build' },
       ],
       dockerCredentials: [
-        DockerCredential.ecr('489318732371.dkr.ecr.us-east-1.amazonaws.com'),
+        DockerCredential.ecr('000000000000.dkr.ecr.us-east-1.amazonaws.com'),
       ],
     });
 
