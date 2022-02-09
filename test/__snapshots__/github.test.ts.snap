@@ -34,6 +34,8 @@ jobs:
       contents: read
       id-token: none
     runs-on: ubuntu-latest
+    outputs:
+      asset-hash: \${{ steps.Publish.outputs.asset-hash }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -61,6 +63,8 @@ jobs:
       contents: read
       id-token: none
     runs-on: ubuntu-latest
+    outputs:
+      asset-hash: \${{ steps.Publish.outputs.asset-hash }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -85,6 +89,8 @@ jobs:
       contents: read
       id-token: none
     runs-on: ubuntu-latest
+    outputs:
+      asset-hash: \${{ steps.Publish.outputs.asset-hash }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -109,6 +115,8 @@ jobs:
       contents: read
       id-token: none
     runs-on: ubuntu-latest
+    outputs:
+      asset-hash: \${{ steps.Publish.outputs.asset-hash }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -133,6 +141,8 @@ jobs:
       contents: read
       id-token: none
     runs-on: ubuntu-latest
+    outputs:
+      asset-hash: \${{ steps.Publish.outputs.asset-hash }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -157,6 +167,8 @@ jobs:
       contents: read
       id-token: none
     runs-on: ubuntu-latest
+    outputs:
+      asset-hash: \${{ steps.Publish.outputs.asset-hash }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -181,6 +193,8 @@ jobs:
       contents: read
       id-token: none
     runs-on: ubuntu-latest
+    outputs:
+      asset-hash: \${{ steps.Publish.outputs.asset-hash }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -234,7 +248,8 @@ jobs:
         uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
           name: StageA-BucketStack
-          template: https://cdk-hnb659fds-assets-111111111111-us-east-1.s3.us-east-1.amazonaws.com/edf2c6bcaf00190295ae3fb871034a825a9bc599ce0c57bde46ed35fe45a9718.json
+          template: https://cdk-hnb659fds-assets-111111111111-us-east-1.s3.us-east-1.amazonaws.com/\${{
+            needs.Assets-FileAsset1.outputs.asset-hash }}.json
           no-fail-on-empty-changeset: \\"1\\"
           role-arn: arn:aws:iam::111111111111:role/cdk-hnb659fds-cfn-exec-role-111111111111-us-east-1
   StageA-FunctionStack-Deploy:
@@ -266,7 +281,8 @@ jobs:
         uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
           name: StageA-FunctionStack
-          template: https://cdk-hnb659fds-assets-111111111111-us-east-1.s3.us-east-1.amazonaws.com/d00a04867152722585c5d2d80be455aaa7adae4923afb69356b45000803cc50a.json
+          template: https://cdk-hnb659fds-assets-111111111111-us-east-1.s3.us-east-1.amazonaws.com/\${{
+            needs.Assets-FileAsset3.outputs.asset-hash }}.json
           no-fail-on-empty-changeset: \\"1\\"
           role-arn: arn:aws:iam::111111111111:role/cdk-hnb659fds-cfn-exec-role-111111111111-us-east-1
     outputs:
@@ -315,7 +331,8 @@ jobs:
         uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
           name: StageB-BucketStack
-          template: https://cdk-hnb659fds-assets-222222222222-eu-west-2.s3.eu-west-2.amazonaws.com/0251b0cee8f2645a2a13ae23fd40a19825d67955f2cbcd1576812addf4065a29.json
+          template: https://cdk-hnb659fds-assets-222222222222-eu-west-2.s3.eu-west-2.amazonaws.com/\${{
+            needs.Assets-FileAsset5.outputs.asset-hash }}.json
           no-fail-on-empty-changeset: \\"1\\"
           role-arn: arn:aws:iam::222222222222:role/cdk-hnb659fds-cfn-exec-role-222222222222-eu-west-2
   StageB-FunctionStack-Deploy:
@@ -350,7 +367,8 @@ jobs:
         uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
           name: StageB-FunctionStack
-          template: https://cdk-hnb659fds-assets-222222222222-eu-west-2.s3.eu-west-2.amazonaws.com/4e375872ccb386d78744052cd31dd35d128314bfef2434e33e47fbcd542ea2bd.json
+          template: https://cdk-hnb659fds-assets-222222222222-eu-west-2.s3.eu-west-2.amazonaws.com/\${{
+            needs.Assets-FileAsset6.outputs.asset-hash }}.json
           no-fail-on-empty-changeset: \\"1\\"
           role-arn: arn:aws:iam::222222222222:role/cdk-hnb659fds-cfn-exec-role-222222222222-eu-west-2
 "
@@ -538,6 +556,8 @@ jobs:
       contents: read
       id-token: none
     runs-on: ubuntu-latest
+    outputs:
+      asset-hash: \${{ steps.Publish.outputs.asset-hash }}
     steps:
       - name: Download cdk.out
         uses: actions/download-artifact@v2
@@ -565,6 +585,8 @@ jobs:
       contents: read
       id-token: none
     runs-on: ubuntu-latest
+    outputs:
+      asset-hash: \${{ steps.Publish.outputs.asset-hash }}
     steps:
       - name: Download cdk.out
         uses: actions/download-artifact@v2
@@ -610,7 +632,8 @@ jobs:
         uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
           name: MyStack-MyStack
-          template: https://cdk-hnb659fds-assets-111111111111-us-east-1.s3.us-east-1.amazonaws.com/52c2fe7f725481c405841b55cfb41b81965fadaa71665186ffb031ecd3f0ef36.json
+          template: https://cdk-hnb659fds-assets-111111111111-us-east-1.s3.us-east-1.amazonaws.com/\${{
+            needs.Assets-FileAsset1.outputs.asset-hash }}.json
           no-fail-on-empty-changeset: \\"1\\"
           role-arn: arn:aws:iam::111111111111:role/cdk-hnb659fds-cfn-exec-role-111111111111-us-east-1
 "

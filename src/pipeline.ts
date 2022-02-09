@@ -13,6 +13,7 @@ import * as github from './workflows-model';
 
 const CDKOUT_ARTIFACT = 'cdk.out';
 const RUNS_ON = 'ubuntu-latest';
+const ASSET_HASH_NAME = 'asset-hash';
 
 /**
  * Props for `GitHubWorkflow`.
@@ -120,6 +121,7 @@ export class GitHubWorkflow extends PipelineBase {
   private readonly preBuildSteps: github.JobStep[];
   private readonly postBuildSteps: github.JobStep[];
   private readonly jobOutputs: Record<string, github.JobStepOutput[]> = {};
+  private readonly assetHashMap: Record<string, string> = {};
 
   constructor(scope: Construct, id: string, props: GitHubWorkflowProps) {
     super(scope, id, props);
@@ -274,8 +276,14 @@ export class GitHubWorkflow extends PipelineBase {
   }
 
   private jobForAssetPublish(node: AGraphNode, assets: StackAsset[], options: Context): Job {
+    if (assets.length === 0) {
+      throw new Error('Asset Publish step must have at least 1 asset');
+    }
+
     const installSuffix = this.cdkCliVersion ? `@${this.cdkCliVersion}` : '';
     const cdkoutDir = options.assemblyDir;
+    const jobId = node.uniqueId;
+    const assetId = assets[0].assetId;
 
     // check if asset is docker asset and if we have docker credentials
     const dockerLoginSteps: github.JobStep[] = [];
@@ -291,25 +299,33 @@ export class GitHubWorkflow extends PipelineBase {
       return `npx cdk-assets --path "${relativeToAssembly(asset.assetManifestPath)}" --verbose publish "${asset.assetSelector}"`;
     }));
 
-    const publishStepFile = path.join(cdkoutDir, `publish-${node.uniqueId}-step.sh`);
+    // we need the jobId to reference the outputs later
+    this.assetHashMap[assetId] = jobId;
+    fileContents.push(`echo '::set-output name=${ASSET_HASH_NAME}::${assetId}'`);
+
+    const publishStepFile = path.join(cdkoutDir, `publish-${jobId}-step.sh`);
     mkdirSync(path.dirname(publishStepFile), { recursive: true });
     writeFileSync(publishStepFile, fileContents.join('\n'), { encoding: 'utf-8' });
 
     const publishStep: github.JobStep = {
-      name: `Publish ${node.uniqueId}`,
+      id: 'Publish',
+      name: `Publish ${jobId}`,
       run: `/bin/bash ./cdk.out/${path.relative(cdkoutDir, publishStepFile)}`,
     };
 
     return {
-      id: node.uniqueId,
+      id: jobId,
       definition: {
-        name: `Publish Assets ${node.uniqueId}`,
+        name: `Publish Assets ${jobId}`,
         needs: this.renderDependencies(node),
         permissions: {
           contents: github.JobPermission.READ,
           idToken: this.useGitHubActionRole ? github.JobPermission.WRITE : github.JobPermission.NONE,
         },
         runsOn: RUNS_ON,
+        outputs: {
+          [ASSET_HASH_NAME]: `\${{ steps.Publish.outputs.${ASSET_HASH_NAME} }}`,
+        },
         steps: [
           ...this.stepsToDownloadAssembly(cdkoutDir),
           {
@@ -343,9 +359,17 @@ export class GitHubWorkflow extends PipelineBase {
       });
     };
 
+    const replaceAssetHash = (template: string) => {
+      const hash = path.parse(template.split('/').pop() ?? '').name;
+      if (this.assetHashMap[hash] === undefined) {
+        throw new Error(`Template asset hash ${hash} not found.`);
+      }
+      return template.replace(hash, `\${{ needs.${this.assetHashMap[hash]}.outputs.${ASSET_HASH_NAME} }}`);
+    };
+
     const params: Record<string, any> = {
       'name': stack.stackName,
-      'template': resolve(stack.templateUrl),
+      'template': replaceAssetHash(resolve(stack.templateUrl)),
       'no-fail-on-empty-changeset': '1',
     };
 

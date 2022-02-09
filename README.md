@@ -2,9 +2,29 @@
 
 ![Experimental](https://img.shields.io/badge/experimental-important.svg?style=for-the-badge)
 
-NOTICE: this library is still not published to package managers. Stay tuned.
+A construct library for painless Continuous Delivery of CDK applications,
+deployed via
+[GitHub Workflows](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions).
 
-Deploy CDK applications through GitHub workflows.
+The CDK already has a CI/CD solution,
+[CDK Pipelines](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.pipelines-readme.html),
+which creates an AWS CodePipeline that deploys CDK applications. This module 
+serves the same surface area, except that it is implemented with GitHub 
+Workflows.
+
+## Table of Contents
+
+- [Usage](#usage)
+- [AWS Credentials](#aws-credentials)
+  + [GitHub Action Role](#github-action-role)
+    - [`GitHubActionRole` Construct](#githubactionrole-construct)
+  + [GitHub Secrets](#github-secrets)
+- [Using Docker In The Pipeline](#using-docker-in-the-pipeline)
+  + [Authenticating To Docker Registries](#authenticating-to-docker-registries)
+- [Tutorial](#tutorial)
+- [Not Supported Yet](#not-supported-yet)
+- [Contributing](#contributing)
+- [License](#license)
 
 ## Usage
 
@@ -14,19 +34,20 @@ called `MyStage` that includes CDK stacks for your app and you want to deploy it
 to two AWS environments (`BETA_ENV` and `PROD_ENV`):
 
 ```ts
+import { App } from 'aws-cdk-lib';
 import { ShellStep } from 'aws-cdk-lib/pipelines';
-import { GithubWorkflow } from 'cdk-pipelines-github';
+import { GitHubWorkflow } from 'cdk-pipelines-github';
 
 const app = new App();
 
-const pipeline = new GithubWorkflow(app, 'Pipeline', {
+const pipeline = new GitHubWorkflow(app, 'Pipeline', {
   synth: new ShellStep('Build', {
     commands: [
       'yarn install',
       'yarn build',
     ],
   }),
-  workflowPath: '.github/workflows/deploy.yml',
+  gitHubActionRoleArn: 'arn:aws:iam::<account-id>:role/GitHubActionRole',
 });
 
 pipeline.addStage(new MyStage(this, 'Beta', { env: BETA_ENV }));
@@ -53,10 +74,186 @@ documentation for more details.
   Environment
   Bootstrapping](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.pipelines-readme.html#cdk-environment-bootstrapping)
   for details.
-* The workflow expects the GitHub repository to include secrets with AWS
-  credentials (`AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`).
+  
+## AWS Credentials
 
-## Example
+There are two ways to supply AWS credentials to the workflow:
+
+* GitHub Action IAM Role (recommended).
+* Long-lived AWS Credentials stored in GitHub Secrets.
+
+The GitHub Action IAM Role authenticates via the GitHub OpenID Connect provider
+and is recommended, but it requires preparing your AWS account beforehand. This
+approach allows your Workflow to exchange short-lived tokens directly from AWS.
+With OIDC, benefits include:
+
+* No cloud secrets.
+* Authentication and authorization management.
+* Rotating credentials.
+ 
+You can read more
+[here](https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect).
+
+### GitHub Action Role
+
+Authenticating via OpenId Connect means you do not need to store long-lived 
+credentials as GitHub Secrets. With OIDC, you provide a pre-provisioned IAM
+role to your GitHub Workflow via the `gitHubActionRoleArn` property.
+
+```ts
+import { App } from 'aws-cdk-lib';
+import { ShellStep } from 'aws-cdk-lib/pipelines';
+import { GitHubWorkflow } from 'cdk-pipelines-github';
+
+const app = new App();
+
+const pipeline = new GitHubWorkflow(app, 'Pipeline', {
+  synth: new ShellStep('Build', {
+    commands: [
+      'yarn install',
+      'yarn build',
+    ],
+  }),
+  gitHubActionRoleArn: 'arn:aws:iam::<account-id>:role/GitHubActionRole',
+});
+```
+
+There are two ways to create this IAM role:
+
+* Use the `GitHubActionRole` construct (recommended and described below).
+* Manually set up the role ([Guide](https://github.com/cdklabs/cdk-pipelines-github/blob/main/GITHUB_ACTION_ROLE_SETUP.md)).
+
+#### `GitHubActionRole` Construct
+
+Because this construct involves creating an IAM role in your account, it must
+be created separate to your GitHub Workflow and deployed via a normal
+`cdk deploy` with your local AWS credentials. Upon successful deployment, the
+arn of your newly created IAM role will be exposed as a `CfnOutput`.
+
+To utilize this construct, create a separate CDK stack with the following code
+and `cdk deploy`:
+
+```ts
+import { GitHubActionRole } from 'cdk-pipelines-github';
+import { App, Construct, Stack, StackProps } from 'aws-cdk-lib';
+
+class MyGitHubActionRole extends Stack {
+  constructor(scope: Construct, id: string, props?: StackProps) {
+    super(scope, id, props);
+
+    const provider = new GitHubActionRole(this, 'github-action-role', {
+      repoString: 'myUser/myRepo',
+    };
+  }
+}
+
+const app = new App();
+new MyGitHubActionRole(app, 'MyGitHubActionRole');
+app.synth();
+```
+
+Note: If you have previously created the GitHub identity provider with url
+`https://token.actions.githubusercontent.com`, the above example will fail
+because you can only have one such provider defined per account. In this
+case, you must provide the already created provider into your `GithubActionRole`
+construct via the `provider` property.
+
+> Make sure the audience for the provider is `sts.amazonaws.com` in this case.
+
+```ts
+class MyGitHubActionRole extends Stack {
+  constructor(scope: Construct, id: string, props?: StackProps) {
+    super(scope, id, props);
+
+    const provider = new GitHubActionRole(this, 'github-action-role', {
+      repos: ['myUser/myRepo'],
+      provider: GitHubActionRole.existingGitHubActionsProvider(this),
+    });
+  }
+}
+```
+
+### GitHub Secrets
+
+Authenticating via this approach means that you will be manually creating AWS
+credentials and duplicating them in GitHub secrets. The workflow expects the
+GitHub repository to include secrets with AWS credentials under 
+`AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`. You can override these defaults 
+by supplying the `awsCredentials` property to the workflow:
+
+```ts
+import { App } from 'aws-cdk-lib';
+import { ShellStep } from 'aws-cdk-lib/pipelines';
+import { GitHubWorkflow } from 'cdk-pipelines-github';
+
+const app = new App();
+
+const pipeline = new GitHubWorkflow(app, 'Pipeline', {
+  synth: new ShellStep('Build', {
+    commands: [
+      'yarn install',
+      'yarn build',
+    ],
+  }),
+  awsCredentials: {
+    accessKeyId: 'MY_ID',
+    secretAccessKey: 'MY_KEY',
+  },
+});
+```
+
+### Using Docker in the Pipeline
+
+You can use Docker in GitHub Workflows in a similar fashion to CDK Pipelines.
+For a full discussion on how to use Docker in CDK Pipelines, see
+[Using Docker in the Pipeline](https://github.com/aws/aws-cdk/blob/master/packages/@aws-cdk/pipelines/README.md#using-docker-in-the-pipeline).
+
+Just like CDK Pipelines, you may need to authenticate to Docker registries to
+avoid being throttled. 
+
+#### Authenticating to Docker registries
+
+You can specify credentials to use for authenticating to Docker registries as
+part of the Workflow definition. This can be useful if any Docker image assets — 
+in the pipeline or any of the application stages — require authentication, either 
+due to being in a different environment (e.g., ECR repo) or to avoid throttling 
+(e.g., DockerHub).
+
+```ts
+import { App } from 'aws-cdk-lib';
+import { ShellStep } from 'aws-cdk-lib/pipelines';
+import { GitHubWorkflow } from 'cdk-pipelines-github';
+
+const app = new App();
+
+const pipeline = new GitHubWorkflow(app, 'Pipeline', {
+  synth: new ShellStep('Build', {
+    commands: [
+      'yarn install',
+      'yarn build',
+    ],
+  }),
+  dockerCredentials: [
+    // Authenticate to ECR
+    DockerCredential.ecr('<account-id>.dkr.ecr.<aws-region>.amazonaws.com'),
+
+    // Authenticate to DockerHub
+    DockerCredential.dockerHub({
+      // These properties are defaults; feel free to omit
+      usernameKey: 'DOCKERHUB_USERNAME',
+      personalAccessTokenKey: 'DOCKERHUB_TOKEN',
+    }),
+
+    // Authenticate to Custom Registries
+    DockerCredential.customRegistry('custom-registry', {
+      usernameKey: 'CUSTOM_USERNAME',
+      passwordKey: 'CUSTOM_PASSWORD',
+    }),
+  ],
+});
+```
+
+## Tutorial
 
 You can find an example usage in [test/example-app.ts](./test/example-app.ts)
 which includes a simple CDK app and a pipeline.
@@ -112,9 +309,7 @@ synthesized against.
 
 This is work in progress. The following features are still not supported:
 
-* [ ] Credentials and roles (document permissions required, etc)
 * [ ] Anti-tamper check for CI runs (`synth` should fail if `CI=1` and the workflow has changed)
-* [ ] Revise Documentation
 
 ## Contributing
 
