@@ -101,6 +101,13 @@ export interface GitHubWorkflowProps extends PipelineBaseProps {
    * you will be logged in to docker when you upload Docker Assets.
    */
   readonly dockerCredentials?: DockerCredential[];
+
+  /**
+   * Additional context values for the Workflow
+   *
+   * @default - no additional context
+   */
+  readonly context?: Record<string, any>;
 }
 
 /**
@@ -122,6 +129,7 @@ export class GitHubWorkflow extends PipelineBase {
   private readonly postBuildSteps: github.JobStep[];
   private readonly jobOutputs: Record<string, github.JobStepOutput[]> = {};
   private readonly assetHashMap: Record<string, string> = {};
+  private readonly context: Record<string, any>;
 
   constructor(scope: Construct, id: string, props: GitHubWorkflowProps) {
     super(scope, id, props);
@@ -133,6 +141,7 @@ export class GitHubWorkflow extends PipelineBase {
     this.postBuildSteps = props.postBuildSteps ?? [];
     this.gitHubActionRoleArn = props.gitHubActionRoleArn;
     this.useGitHubActionRole = this.gitHubActionRoleArn ? true : false;
+    this.context = props.context ?? {};
 
     this.awsCredentials = props.awsCredentials ?? {
       accessKeyId: 'AWS_ACCESS_KEY_ID',
@@ -221,7 +230,8 @@ export class GitHubWorkflow extends PipelineBase {
 
     // GITHUB_WORKFLOW is set when GitHub Actions is running the workflow.
     // see: https://docs.github.com/en/actions/learn-github-actions/environment-variables#default-environment-variables
-    if (process.env.GITHUB_WORKFLOW === this.workflowName) {
+    const diffProtection = this.context.diffProtection ?? true;
+    if (diffProtection && process.env.GITHUB_WORKFLOW === this.workflowName) {
       // check if workflow file has changed
       if (!existsSync(this.workflowPath) || yaml !== readFileSync(this.workflowPath, 'utf8')) {
         throw new Error(`Please commit the updated workflow file ${path.relative(__dirname, this.workflowPath)} when you change your pipeline definition.`);

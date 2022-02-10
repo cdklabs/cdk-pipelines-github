@@ -164,6 +164,23 @@ describe('diff protection when GITHUB_WORKFLOW set', () => {
       wrapEnv('GITHUB_WORKFLOW', 'deploy', () => githubApp.synth());
     });
   });
+
+  test('turn off diff protection', () => {
+    // set GITHUB_WORKFLOW env variable to simulate GitHub environment
+    wrapEnv('GITHUB_WORKFLOW', 'deploy', () => withTemporaryDirectory((dir) => {
+      new GitHubWorkflow(app, 'Pipeline', {
+        workflowPath: `${dir}/.github/workflows/deploy.yml`,
+        synth: new ShellStep('Build', {
+          installCommands: ['yarn'],
+          commands: ['yarn build'],
+        }),
+        context: {
+          diffProtection: false,
+        },
+      });
+      expect(() => app.synth()).not.toThrowError();
+    }));
+  });
 });
 
 function wrapEnv(variable: string, value: string, cb: () => void) {
