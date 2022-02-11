@@ -243,7 +243,6 @@ new GitHubWorkflow(scope: Construct, id: string, props: GitHubWorkflowProps)
   * **awsCredentials** (<code>[AwsCredentialsSecrets](#cdk-pipelines-github-awscredentialssecrets)</code>)  Names of GitHub repository secrets that include AWS credentials for deployment. __*Default*__: `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.
   * **buildContainer** (<code>[ContainerOptions](#cdk-pipelines-github-containeroptions)</code>)  Build container options. __*Default*__: GitHub defaults
   * **cdkCliVersion** (<code>string</code>)  Version of the CDK CLI to use. __*Default*__: automatic
-  * **context** (<code>Map<string, any></code>)  Additional context values for the Workflow. __*Default*__: no additional context
   * **dockerCredentials** (<code>Array<[DockerCredential](#cdk-pipelines-github-dockercredential)></code>)  The Docker Credentials to use to login. __*Optional*__
   * **gitHubActionRoleArn** (<code>string</code>)  A role that utilizes the GitHub OIDC Identity Provider in your AWS account. __*Default*__: GitHub repository secrets are used instead of OpenId Connect role.
   * **postBuildSteps** (<code>Array<[JobStep](#cdk-pipelines-github-jobstep)></code>)  GitHub workflow steps to execute after build. __*Default*__: []
@@ -452,7 +451,6 @@ Name | Type | Description
 **awsCredentials**? | <code>[AwsCredentialsSecrets](#cdk-pipelines-github-awscredentialssecrets)</code> | Names of GitHub repository secrets that include AWS credentials for deployment.<br/>__*Default*__: `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.
 **buildContainer**? | <code>[ContainerOptions](#cdk-pipelines-github-containeroptions)</code> | Build container options.<br/>__*Default*__: GitHub defaults
 **cdkCliVersion**? | <code>string</code> | Version of the CDK CLI to use.<br/>__*Default*__: automatic
-**context**? | <code>Map<string, any></code> | Additional context values for the Workflow.<br/>__*Default*__: no additional context
 **dockerCredentials**? | <code>Array<[DockerCredential](#cdk-pipelines-github-dockercredential)></code> | The Docker Credentials to use to login.<br/>__*Optional*__
 **gitHubActionRoleArn**? | <code>string</code> | A role that utilizes the GitHub OIDC Identity Provider in your AWS account.<br/>__*Default*__: GitHub repository secrets are used instead of OpenId Connect role.
 **postBuildSteps**? | <code>Array<[JobStep](#cdk-pipelines-github-jobstep)></code> | GitHub workflow steps to execute after build.<br/>__*Default*__: []
