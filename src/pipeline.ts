@@ -215,8 +215,7 @@ export class GitHubWorkflow extends PipelineBase {
       indent: 2,
     });
 
-    // eslint-disable-next-line no-console
-    console.log(`writing ${this.workflowPath}`);
+    // create directory if it does not exist
     mkdirSync(path.dirname(this.workflowPath), { recursive: true });
 
     // GITHUB_WORKFLOW is set when GitHub Actions is running the workflow.
@@ -229,6 +228,8 @@ export class GitHubWorkflow extends PipelineBase {
       }
     }
 
+    // eslint-disable-next-line no-console
+    console.log(`writing ${this.workflowPath}`);
     writeFileSync(this.workflowPath, yaml);
   }
 
