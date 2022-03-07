@@ -15,6 +15,7 @@ Workflows.
 ## Table of Contents
 
 - [Usage](#usage)
+- [Developer Workflow](#developer-workflow)
 - [AWS Credentials](#aws-credentials)
   + [GitHub Action Role](#github-action-role)
     - [`GitHubActionRole` Construct](#githubactionrole-construct)
@@ -58,10 +59,10 @@ app.synth();
 
 When you run `cdk synth`, a `deploy.yml` workflow will be created under
 `.github/workflows` in your repo. This workflow will deploy your application
-based on the definition of the pipeline. In this case, it will the two stages in
-sequence, and within each stage, it will deploy all the stacks according to
-their dependency order and maximum parallelism. If you app uses assets, assets
-will be published to the relevant destination environment.
+based on the definition of the pipeline. In the example above, it will deploy
+the two stages in sequence, and within each stage, it will deploy all the
+stacks according to their dependency order and maximum parallelism. If your app
+uses assets, assets will be published to the relevant destination environment.
 
 The `Pipeline` class from `cdk-pipelines-github` is derived from the base CDK
 Pipelines class, so most features should be supported out of the box. See the
@@ -74,7 +75,32 @@ documentation for more details.
   Environment
   Bootstrapping](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.pipelines-readme.html#cdk-environment-bootstrapping)
   for details.
-  
+
+## Developer Workflow
+
+Assuming you have your CDK app checked out on your local machine, here are the suggested steps
+to develop your GitHub Workflow.
+
+* Set up AWS Credentials your local environment. See [AWS Credentials](#aws-credentials) for the two
+  ways you may set up your credentials.
+
+* When you've updated your pipeline and are ready to deploy, run `cdk synth`. `cdk synth` will generate
+  a cloud assembly under the `cdk.out` folder and also the workflow file in `.github/workflows/deploy.yml`.
+  You should commit your code changes to GitHub along with `deploy.yml`, but you do not need to commit
+  the contents in `cdk.out`.
+
+* When you commit to your GitHub repository, GitHub will automatically try to run the workflow found under
+  `.github/workflows/deploy.yml`. The first step of this workflow will be the `synth` step, where it
+  re-synthesizes your CDK app and creates a new `cdk.out` folder. That is why it is unnecessary to commit
+  your local `cdk.out`.
+
+* You will be able to see the result of the run on the `Actions` tab in your repository:
+
+  ![Screen Shot 2021-08-22 at 12 06 05](https://user-images.githubusercontent.com/598796/130349345-a10a2f75-0848-4de8-bc4c-f5a1418ee228.png)
+
+For an in-depth run-through on creating your own GitHub Workflow, see the
+[Tutorial](#tutorial) section.
+
 ## AWS Credentials
 
 There are two ways to supply AWS credentials to the workflow:
@@ -196,8 +222,8 @@ const pipeline = new GitHubWorkflow(app, 'Pipeline', {
     ],
   }),
   awsCredentials: {
-    accessKeyId: 'MY_ID',
-    secretAccessKey: 'MY_KEY',
+    accessKeyId: 'MY_ID', // GitHub will look for the access key id under the secret `MY_ID`
+    secretAccessKey: 'MY_KEY', // GitHub will look for the secret access key under the secret `MY_KEY`
   },
 });
 ```
@@ -276,7 +302,9 @@ cd ~/projects
 git clone https://github.com/myaccount/my-test-repository
 ```
 
-You'll need to set up AWS credentials in your environment:
+You'll need to set up AWS credentials in your environment. Note that this tutorial uses
+long-lived GitHub secrets as credentials for simplicity, but it is recommended to set up
+a GitHub OIDC role instead.
 
 ```shell
 export AWS_ACCESS_KEY_ID=xxxx
@@ -305,11 +333,28 @@ workflow in action. Make sure your GitHub repository has `AWS_ACCESS_KEY_ID` and
 `AWS_SECRET_ACCESS_KEY` secrets that can access the same account that you
 synthesized against.
 
+> Here, we do want to commit `cdk.out`. This is not a recommended use-case; it is because
+> the app you are synthesizing is not in the repository you've created. The example app has
+> some special options set to allow this:
+> ```ts
+> import { App } from 'aws-cdk-lib';
+> import { ShellStep } from 'aws-cdk-lib/pipelines';
+> import { GitHubWorkflow } from 'cdk-pipelines-github';
+> 
+> const pipeline = new GitHubWorkflow(new App(), 'Pipeline', {
+>   synth: new ShellStep('Build', {
+>     commands: ['echo "nothing to do (cdk.out is committed)"'],
+>   }),
+>   preSynthed: true,
+> });
+> ```
+
 ## Not supported yet
 
-This is work in progress. The following features are still not supported:
-
-* [ ] Anti-tamper check for CI runs (`synth` should fail if `CI=1` and the workflow has changed)
+Most features that exist in CDK Pipelines are supported. However, as the CDK Pipelines
+feature are expands, the feature set for GitHub Workflows may lag behind. If you see a
+feature that you feel should be supported by GitHub Workflows, please open a GitHub issue
+to track it. 
 
 ## Contributing
 
