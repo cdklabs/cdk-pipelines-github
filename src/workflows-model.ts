@@ -398,7 +398,7 @@ export interface ContainerCredentials {
  *
  * @see https://docs.github.com/en/actions/reference/events-that-trigger-workflows
  */
-export interface Triggers {
+export interface WorkflowTriggers {
   //#region Scheduled events
   /**
    * You can schedule a workflow to run at specific UTC times using POSIX cron

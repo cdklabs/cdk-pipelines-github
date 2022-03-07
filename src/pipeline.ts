@@ -39,7 +39,7 @@ export interface GitHubWorkflowProps extends PipelineBaseProps {
    * @default - By default, workflow is triggered on push to the `main` branch
    * and can also be triggered manually (`workflow_dispatch`).
    */
-  readonly workflowTriggers?: github.Triggers;
+  readonly workflowTriggers?: github.WorkflowTriggers;
 
   /**
    * Version of the CDK CLI to use.
@@ -110,7 +110,7 @@ export class GitHubWorkflow extends PipelineBase {
   public readonly workflowPath: string;
   public readonly workflowName: string;
 
-  private readonly workflowTriggers: github.Triggers;
+  private readonly workflowTriggers: github.WorkflowTriggers;
   private readonly preSynthed: boolean;
   private readonly awsCredentials: AwsCredentialsSecrets;
   private readonly gitHubActionRoleArn?: string;
