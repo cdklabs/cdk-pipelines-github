@@ -55,10 +55,10 @@ Name|Description
 [RepositoryDispatchOptions](#cdk-pipelines-github-repositorydispatchoptions)|Repository dispatch options.
 [RunSettings](#cdk-pipelines-github-runsettings)|Run settings for a job.
 [StatusOptions](#cdk-pipelines-github-statusoptions)|The Status event accepts no options.
-[Triggers](#cdk-pipelines-github-triggers)|The set of available triggers for GitHub Workflows.
 [WatchOptions](#cdk-pipelines-github-watchoptions)|Watch options.
 [WorkflowDispatchOptions](#cdk-pipelines-github-workflowdispatchoptions)|The Workflow dispatch event accepts no options.
 [WorkflowRunOptions](#cdk-pipelines-github-workflowrunoptions)|Workflow run options.
+[WorkflowTriggers](#cdk-pipelines-github-workflowtriggers)|The set of available triggers for GitHub Workflows.
 
 
 **Enums**
@@ -250,7 +250,7 @@ new GitHubWorkflow(scope: Construct, id: string, props: GitHubWorkflowProps)
   * **preSynthed** (<code>boolean</code>)  Indicates if the repository already contains a synthesized `cdk.out` directory, in which case we will simply checkout the repo in jobs that require `cdk.out`. __*Default*__: false
   * **workflowName** (<code>string</code>)  Name of the workflow. __*Default*__: "deploy"
   * **workflowPath** (<code>string</code>)  File path for the GitHub workflow. __*Default*__: ".github/workflows/deploy.yml"
-  * **workflowTriggers** (<code>[Triggers](#cdk-pipelines-github-triggers)</code>)  GitHub workflow triggers. __*Default*__: By default, workflow is triggered on push to the `main` branch and can also be triggered manually (`workflow_dispatch`).
+  * **workflowTriggers** (<code>[WorkflowTriggers](#cdk-pipelines-github-workflowtriggers)</code>)  GitHub workflow triggers. __*Default*__: By default, workflow is triggered on push to the `main` branch and can also be triggered manually (`workflow_dispatch`).
 
 
 
@@ -458,7 +458,7 @@ Name | Type | Description
 **preSynthed**? | <code>boolean</code> | Indicates if the repository already contains a synthesized `cdk.out` directory, in which case we will simply checkout the repo in jobs that require `cdk.out`.<br/>__*Default*__: false
 **workflowName**? | <code>string</code> | Name of the workflow.<br/>__*Default*__: "deploy"
 **workflowPath**? | <code>string</code> | File path for the GitHub workflow.<br/>__*Default*__: ".github/workflows/deploy.yml"
-**workflowTriggers**? | <code>[Triggers](#cdk-pipelines-github-triggers)</code> | GitHub workflow triggers.<br/>__*Default*__: By default, workflow is triggered on push to the `main` branch and can also be triggered manually (`workflow_dispatch`).
+**workflowTriggers**? | <code>[WorkflowTriggers](#cdk-pipelines-github-workflowtriggers)</code> | GitHub workflow triggers.<br/>__*Default*__: By default, workflow is triggered on push to the `main` branch and can also be triggered manually (`workflow_dispatch`).
 
 
 
@@ -838,7 +838,39 @@ Name | Type | Description
 The Status event accepts no options.
 
 
-## struct Triggers  <a id="cdk-pipelines-github-triggers"></a>
+## struct WatchOptions  <a id="cdk-pipelines-github-watchoptions"></a>
+
+
+Watch options.
+
+
+
+Name | Type | Description 
+-----|------|-------------
+**types**? | <code>Array<string></code> | Which activity types to trigger on.<br/>__*Optional*__
+
+
+
+## struct WorkflowDispatchOptions  <a id="cdk-pipelines-github-workflowdispatchoptions"></a>
+
+
+The Workflow dispatch event accepts no options.
+
+
+## struct WorkflowRunOptions  <a id="cdk-pipelines-github-workflowrunoptions"></a>
+
+
+Workflow run options.
+
+
+
+Name | Type | Description 
+-----|------|-------------
+**types**? | <code>Array<string></code> | Which activity types to trigger on.<br/>__*Optional*__
+
+
+
+## struct WorkflowTriggers  <a id="cdk-pipelines-github-workflowtriggers"></a>
 
 
 The set of available triggers for GitHub Workflows.
@@ -877,38 +909,6 @@ Name | Type | Description
 **watch**? | <code>[WatchOptions](#cdk-pipelines-github-watchoptions)</code> | Runs your workflow anytime the watch event occurs.<br/>__*Optional*__
 **workflowDispatch**? | <code>[WorkflowDispatchOptions](#cdk-pipelines-github-workflowdispatchoptions)</code> | You can configure custom-defined input properties, default input values, and required inputs for the event directly in your workflow.<br/>__*Optional*__
 **workflowRun**? | <code>[WorkflowRunOptions](#cdk-pipelines-github-workflowrunoptions)</code> | This event occurs when a workflow run is requested or completed, and allows you to execute a workflow based on the finished result of another workflow.<br/>__*Optional*__
-
-
-
-## struct WatchOptions  <a id="cdk-pipelines-github-watchoptions"></a>
-
-
-Watch options.
-
-
-
-Name | Type | Description 
------|------|-------------
-**types**? | <code>Array<string></code> | Which activity types to trigger on.<br/>__*Optional*__
-
-
-
-## struct WorkflowDispatchOptions  <a id="cdk-pipelines-github-workflowdispatchoptions"></a>
-
-
-The Workflow dispatch event accepts no options.
-
-
-## struct WorkflowRunOptions  <a id="cdk-pipelines-github-workflowrunoptions"></a>
-
-
-Workflow run options.
-
-
-
-Name | Type | Description 
------|------|-------------
-**types**? | <code>Array<string></code> | Which activity types to trigger on.<br/>__*Optional*__
 
 
 
