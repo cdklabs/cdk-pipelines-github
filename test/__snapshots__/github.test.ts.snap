@@ -536,6 +536,37 @@ jobs:
 "
 `;
 
+exports[`pipeline with runs-on override 1`] = `
+"name: deploy
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: {}
+jobs:
+  Build-Build:
+    name: Synthesize
+    permissions:
+      contents: read
+    runs-on: self-hosted
+    needs: []
+    env: {}
+    container: null
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install
+        run: yarn
+      - name: Build
+        run: yarn build
+      - name: Upload cdk.out
+        uses: actions/upload-artifact@v2.1.1
+        with:
+          name: cdk.out
+          path: cdk.out
+"
+`;
+
 exports[`single wave/stage/stack 1`] = `
 "name: deploy
 on:
