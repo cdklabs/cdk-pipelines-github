@@ -10,7 +10,7 @@ export interface Job {
    *
    * @example "ubuntu-latest"
    */
-  readonly runsOn: string;
+  readonly runsOn: unknown;
 
   /**
    * A job contains a sequence of tasks called steps. Steps can run commands,
@@ -131,7 +131,6 @@ export interface Job {
    * cycle of the service containers.
    */
   readonly services?: Record<string, ContainerOptions>;
-
 }
 
 /**
@@ -190,6 +189,49 @@ export interface JobStepOutput {
 export interface JobDefaults {
   /** Default run settings. */
   readonly run?: RunSettings;
+}
+
+/**
+ * Enum to indicate the runner type
+ */
+export enum RunnerType {
+  GITHUB_HOSTED,
+  SELF_HOSTED,
+}
+
+/**
+ * The type of runner to run the job on. Can be GitHub or Self-hosted.
+ * In case of self-hosted, a list of labels can be supplied.
+ */
+export class Runner {
+  public static readonly UBUNTU_LATEST = new Runner(
+    'ubuntu-latest',
+    RunnerType.GITHUB_HOSTED,
+  );
+
+  public static readonly WINDOWS_LATEST = new Runner(
+    'windows-latest',
+    RunnerType.GITHUB_HOSTED,
+  );
+
+  public static readonly MACOS_LATEST = new Runner(
+    'macos-latest',
+    RunnerType.GITHUB_HOSTED,
+  );
+
+  public static selfHosted(labels: string[]): Runner {
+    return new Runner('self-hosted', RunnerType.SELF_HOSTED, labels);
+  }
+
+  public readonly runsOn: string;
+  public readonly runnerType: RunnerType;
+  public readonly labels: string[];
+
+  constructor(runsOn: string, runnerType: RunnerType, labels?: string[]) {
+    this.runsOn = runsOn;
+    this.runnerType = runnerType;
+    this.labels = labels ?? [];
+  }
 }
 
 /**
@@ -391,7 +433,6 @@ export interface ContainerCredentials {
   /** The password. */
   readonly password: string;
 }
-
 
 /**
  * The set of available triggers for GitHub Workflows.
@@ -629,7 +670,9 @@ export interface CheckRunOptions {
    *
    * @defaults - all activity types
    */
-  readonly types?: Array<'create' | 'rerequested' | 'completed' | 'requested_action'>;
+  readonly types?: Array<
+  'create' | 'rerequested' | 'completed' | 'requested_action'
+  >;
 }
 
 /**
@@ -665,7 +708,24 @@ export interface IssuesOptions {
    *
    * @defaults - all activity types
    */
-  readonly types?: Array<'opened' | 'edited' | 'deleted' | 'transferred' | 'pinned' | 'unpinned' | 'closed' | 'reopened' | 'assigned' | 'unassigned' | 'labeled' | 'unlabeled' | 'locked' | 'unlocked' | 'milestoned' | 'demilestoned'>;
+  readonly types?: Array<
+  | 'opened'
+  | 'edited'
+  | 'deleted'
+  | 'transferred'
+  | 'pinned'
+  | 'unpinned'
+  | 'closed'
+  | 'reopened'
+  | 'assigned'
+  | 'unassigned'
+  | 'labeled'
+  | 'unlabeled'
+  | 'locked'
+  | 'unlocked'
+  | 'milestoned'
+  | 'demilestoned'
+  >;
 }
 
 /**
@@ -689,7 +749,9 @@ export interface MilestoneOptions {
    *
    * @defaults - all activity types
    */
-  readonly types?: Array<'created' | 'closed' | 'opened' | 'edited' | 'deleted'>;
+  readonly types?: Array<
+  'created' | 'closed' | 'opened' | 'edited' | 'deleted'
+  >;
 }
 
 /**
@@ -701,7 +763,9 @@ export interface ProjectOptions {
    *
    * @defaults - all activity types
    */
-  readonly types?: Array<'created' | 'updated' | 'closed' | 'reopened' | 'edited' | 'deleted'>;
+  readonly types?: Array<
+  'created' | 'updated' | 'closed' | 'reopened' | 'edited' | 'deleted'
+  >;
 }
 
 /**
@@ -713,7 +777,9 @@ export interface ProjectCardOptions {
    *
    * @defaults - all activity types
    */
-  readonly types?: Array<'created' | 'moved' | 'converted' | 'edited' | 'deleted'>;
+  readonly types?: Array<
+  'created' | 'moved' | 'converted' | 'edited' | 'deleted'
+  >;
 }
 
 /**
@@ -737,7 +803,22 @@ export interface PullRequestOptions {
    *
    * @defaults - all activity types
    */
-  readonly types?: Array<'assigned' | 'unassigned' | 'labeled' | 'unlabeled' | 'opened' | 'edited' | 'closed' | 'reopened' | 'synchronize' | 'ready_for_review' | 'locked' | 'unlocked' | 'review_requested' | 'review_request_removed'>;
+  readonly types?: Array<
+  | 'assigned'
+  | 'unassigned'
+  | 'labeled'
+  | 'unlabeled'
+  | 'opened'
+  | 'edited'
+  | 'closed'
+  | 'reopened'
+  | 'synchronize'
+  | 'ready_for_review'
+  | 'locked'
+  | 'unlocked'
+  | 'review_requested'
+  | 'review_request_removed'
+  >;
 }
 
 /**
@@ -773,7 +854,22 @@ export interface PullRequestTargetOptions extends PushOptions {
    *
    * @defaults - all activity types
    */
-  readonly types?: Array<'assigned' | 'unassigned' | 'labeled' | 'unlabeled' | 'opened' | 'edited' | 'closed' | 'reopened' | 'synchronize' | 'ready_for_review' | 'locked' | 'unlocked' | 'review_requested' | 'review_request_removed'>;
+  readonly types?: Array<
+  | 'assigned'
+  | 'unassigned'
+  | 'labeled'
+  | 'unlabeled'
+  | 'opened'
+  | 'edited'
+  | 'closed'
+  | 'reopened'
+  | 'synchronize'
+  | 'ready_for_review'
+  | 'locked'
+  | 'unlocked'
+  | 'review_requested'
+  | 'review_request_removed'
+  >;
 }
 
 /**
@@ -790,7 +886,6 @@ export interface PushOptions {
    * @see https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#filter-pattern-cheat-sheet
    */
   readonly branches?: string[];
-
 
   /**
    * When using the push and pull_request events, you can configure a workflow
@@ -835,7 +930,15 @@ export interface ReleaseOptions {
    *
    * @defaults - all activity types
    */
-  readonly types?: Array<'published' | 'unpublished' | 'created' | 'edited' | 'deleted' | 'prereleased' | 'released'>;
+  readonly types?: Array<
+  | 'published'
+  | 'unpublished'
+  | 'created'
+  | 'edited'
+  | 'deleted'
+  | 'prereleased'
+  | 'released'
+  >;
 }
 
 /**
@@ -866,50 +969,50 @@ export interface WorkflowRunOptions {
 /**
  * The Workflow dispatch event accepts no options.
  */
-export interface WorkflowDispatchOptions { }
+export interface WorkflowDispatchOptions {}
 
 /**
  * The Create event accepts no options.
  */
-export interface CreateOptions { }
+export interface CreateOptions {}
 
 /**
  * The Delete event accepts no options.
  */
-export interface DeleteOptions { }
+export interface DeleteOptions {}
 
 /**
  * The Deployment event accepts no options.
  */
-export interface DeploymentOptions { }
+export interface DeploymentOptions {}
 
 /**
  * The Deployment status event accepts no options.
  */
-export interface DeploymentStatusOptions { }
+export interface DeploymentStatusOptions {}
 
 /**
  * The Fork event accepts no options.
  */
-export interface ForkOptions { }
+export interface ForkOptions {}
 
 /**
  * The Gollum event accepts no options.
  */
-export interface GollumOptions { }
+export interface GollumOptions {}
 
 /**
  * The Page build event accepts no options.
  */
-export interface PageBuildOptions { }
+export interface PageBuildOptions {}
 
 /**
  * The Public event accepts no options.
  */
-export interface PublicOptions { }
+export interface PublicOptions {}
 
 /**
  * The Status event accepts no options.
  */
-export interface StatusOptions { }
+export interface StatusOptions {}
 //#endregion

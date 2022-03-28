@@ -2,14 +2,28 @@ import { mkdirSync, writeFileSync, readFileSync, existsSync } from 'fs';
 import * as path from 'path';
 import { Stage } from 'aws-cdk-lib';
 import { EnvironmentPlaceholders } from 'aws-cdk-lib/cx-api';
-import { PipelineBase, PipelineBaseProps, ShellStep, StackAsset, StackDeployment, StackOutputReference, Step } from 'aws-cdk-lib/pipelines';
-import { AGraphNode, PipelineGraph, Graph, isGraph } from 'aws-cdk-lib/pipelines/lib/helpers-internal';
+import {
+  PipelineBase,
+  PipelineBaseProps,
+  ShellStep,
+  StackAsset,
+  StackDeployment,
+  StackOutputReference,
+  Step,
+} from 'aws-cdk-lib/pipelines';
+import {
+  AGraphNode,
+  PipelineGraph,
+  Graph,
+  isGraph,
+} from 'aws-cdk-lib/pipelines/lib/helpers-internal';
 import { Construct } from 'constructs';
 import * as decamelize from 'decamelize';
 import * as YAML from 'yaml';
 import { DockerCredential } from './docker-credentials';
 import { awsCredentialStep } from './private/aws-credentials';
 import * as github from './workflows-model';
+import { Runner } from './workflows-model';
 
 const CDKOUT_ARTIFACT = 'cdk.out';
 const ASSET_HASH_NAME = 'asset-hash';
@@ -102,12 +116,11 @@ export interface GitHubWorkflowProps extends PipelineBaseProps {
   readonly dockerCredentials?: DockerCredential[];
 
   /**
-   * The type of machine to run the job on. The machine can be either a
+   * The type of runner to run the job on. The runner can be either a
    * GitHub-hosted runner or a self-hosted runner.
-   *
-   * @default "ubuntu-latest"
+   * @default Runner.UBUNTU_LATEST
    */
-  readonly runsOn?: string;
+  readonly runner?: Runner;
 }
 
 /**
@@ -129,7 +142,8 @@ export class GitHubWorkflow extends PipelineBase {
   private readonly postBuildSteps: github.JobStep[];
   private readonly jobOutputs: Record<string, github.JobStepOutput[]> = {};
   private readonly assetHashMap: Record<string, string> = {};
-  private readonly runsOn: string;
+  private readonly runner: Runner;
+  private readonly runsOn: unknown;
 
   constructor(scope: Construct, id: string, props: GitHubWorkflowProps) {
     super(scope, id, props);
@@ -150,11 +164,16 @@ export class GitHubWorkflow extends PipelineBase {
     this.dockerCredentials = props.dockerCredentials ?? [];
 
     this.workflowPath = props.workflowPath ?? '.github/workflows/deploy.yml';
-    if (!this.workflowPath.endsWith('.yml') && !this.workflowPath.endsWith('.yaml')) {
+    if (
+      !this.workflowPath.endsWith('.yml') &&
+      !this.workflowPath.endsWith('.yaml')
+    ) {
       throw new Error('workflow file is expected to be a yaml file');
     }
     if (!this.workflowPath.includes('.github/workflows/')) {
-      throw new Error('workflow files must be stored in the \'.github/workflows\' directory of your repository');
+      throw new Error(
+        "workflow files must be stored in the '.github/workflows' directory of your repository",
+      );
     }
 
     this.workflowName = props.workflowName ?? 'deploy';
@@ -162,13 +181,22 @@ export class GitHubWorkflow extends PipelineBase {
       push: { branches: ['main'] },
       workflowDispatch: {},
     };
-    this.runsOn = props.runsOn ?? 'ubuntu-latest';
+
+    this.runner = props.runner ?? Runner.UBUNTU_LATEST;
+
+    if (this.runner.runnerType == github.RunnerType.GITHUB_HOSTED) {
+      this.runsOn = this.runner.runsOn;
+    } else {
+      this.runsOn = [this.runner.runsOn, ...this.runner.labels];
+    }
   }
 
   protected doBuildPipeline() {
     const app = Stage.of(this);
     if (!app) {
-      throw new Error('The GitHub Workflow must be defined in the scope of an App');
+      throw new Error(
+        'The GitHub Workflow must be defined in the scope of an App',
+      );
     }
     const cdkoutDir = app.outdir;
 
@@ -182,7 +210,9 @@ export class GitHubWorkflow extends PipelineBase {
 
     for (const stageNode of flatten(structure.graph.sortedChildren())) {
       if (!isGraph(stageNode)) {
-        throw new Error(`Top-level children must be graphs, got '${stageNode}'`);
+        throw new Error(
+          `Top-level children must be graphs, got '${stageNode}'`,
+        );
       }
 
       const tranches = stageNode.sortedLeaves();
@@ -229,11 +259,20 @@ export class GitHubWorkflow extends PipelineBase {
 
     // GITHUB_WORKFLOW is set when GitHub Actions is running the workflow.
     // see: https://docs.github.com/en/actions/learn-github-actions/environment-variables#default-environment-variables
-    const diffProtection = this.node.tryGetContext('cdk-pipelines-github:diffProtection') ?? true;
+    const diffProtection =
+      this.node.tryGetContext('cdk-pipelines-github:diffProtection') ?? true;
     if (diffProtection && process.env.GITHUB_WORKFLOW === this.workflowName) {
       // check if workflow file has changed
-      if (!existsSync(this.workflowPath) || yaml !== readFileSync(this.workflowPath, 'utf8')) {
-        throw new Error(`Please commit the updated workflow file ${path.relative(__dirname, this.workflowPath)} when you change your pipeline definition.`);
+      if (
+        !existsSync(this.workflowPath) ||
+        yaml !== readFileSync(this.workflowPath, 'utf8')
+      ) {
+        throw new Error(
+          `Please commit the updated workflow file ${path.relative(
+            __dirname,
+            this.workflowPath,
+          )} when you change your pipeline definition.`,
+        );
       }
     }
 
@@ -257,7 +296,9 @@ export class GitHubWorkflow extends PipelineBase {
   private renderJobOutputs(outputs: github.JobStepOutput[]) {
     const renderedOutputs: Record<string, string> = {};
     for (const output of outputs) {
-      renderedOutputs[output.outputName] = `\${{ steps.${output.stepId}.outputs.${output.outputName} }}`;
+      renderedOutputs[
+        output.outputName
+      ] = `\${{ steps.${output.stepId}.outputs.${output.outputName} }}`;
     }
     return renderedOutputs;
   }
@@ -271,7 +312,9 @@ export class GitHubWorkflow extends PipelineBase {
       case 'group':
       case 'stack-group':
       case undefined:
-        throw new Error(`jobForNode: did not expect to get group nodes: ${node.data?.type}`);
+        throw new Error(
+          `jobForNode: did not expect to get group nodes: ${node.data?.type}`,
+        );
 
       case 'self-update':
         throw new Error('GitHub Workflows does not support self mutation');
@@ -283,7 +326,11 @@ export class GitHubWorkflow extends PipelineBase {
         throw new Error('"prepare" is not supported by GitHub Worflows');
 
       case 'execute':
-        return this.jobForDeploy(node, node.data.stack, node.data.captureOutputs);
+        return this.jobForDeploy(
+          node,
+          node.data.stack,
+          node.data.captureOutputs,
+        );
 
       case 'step':
         if (node.data.isBuildStep) {
@@ -291,12 +338,18 @@ export class GitHubWorkflow extends PipelineBase {
         } else if (node.data.step instanceof ShellStep) {
           return this.jobForScriptStep(node, node.data.step);
         } else {
-          throw new Error(`unsupported step type: ${node.data.step.constructor.name}`);
+          throw new Error(
+            `unsupported step type: ${node.data.step.constructor.name}`,
+          );
         }
     }
   }
 
-  private jobForAssetPublish(node: AGraphNode, assets: StackAsset[], options: Context): Job {
+  private jobForAssetPublish(
+    node: AGraphNode,
+    assets: StackAsset[],
+    options: Context,
+  ): Job {
     if (assets.length === 0) {
       throw new Error('Asset Publish step must have at least 1 asset');
     }
@@ -308,25 +361,37 @@ export class GitHubWorkflow extends PipelineBase {
 
     // check if asset is docker asset and if we have docker credentials
     const dockerLoginSteps: github.JobStep[] = [];
-    if (node.uniqueId.includes('DockerAsset') && this.dockerCredentials.length > 0) {
+    if (
+      node.uniqueId.includes('DockerAsset') &&
+      this.dockerCredentials.length > 0
+    ) {
       for (const creds of this.dockerCredentials) {
         dockerLoginSteps.push(...this.stepsToConfigureDocker(creds));
       }
     }
 
     // create one file and make one step
-    const relativeToAssembly = (p: string) => path.posix.join(cdkoutDir, path.relative(path.resolve(cdkoutDir), p));
-    const fileContents: string[] = ['set -x'].concat(assets.map((asset) => {
-      return `npx cdk-assets --path "${relativeToAssembly(asset.assetManifestPath)}" --verbose publish "${asset.assetSelector}"`;
-    }));
+    const relativeToAssembly = (p: string) =>
+      path.posix.join(cdkoutDir, path.relative(path.resolve(cdkoutDir), p));
+    const fileContents: string[] = ['set -x'].concat(
+      assets.map((asset) => {
+        return `npx cdk-assets --path "${relativeToAssembly(
+          asset.assetManifestPath,
+        )}" --verbose publish "${asset.assetSelector}"`;
+      }),
+    );
 
     // we need the jobId to reference the outputs later
     this.assetHashMap[assetId] = jobId;
-    fileContents.push(`echo '::set-output name=${ASSET_HASH_NAME}::${assetId}'`);
+    fileContents.push(
+      `echo '::set-output name=${ASSET_HASH_NAME}::${assetId}'`,
+    );
 
     const publishStepFile = path.join(cdkoutDir, `publish-${jobId}-step.sh`);
     mkdirSync(path.dirname(publishStepFile), { recursive: true });
-    writeFileSync(publishStepFile, fileContents.join('\n'), { encoding: 'utf-8' });
+    writeFileSync(publishStepFile, fileContents.join('\n'), {
+      encoding: 'utf-8',
+    });
 
     const publishStep: github.JobStep = {
       id: 'Publish',
@@ -341,7 +406,9 @@ export class GitHubWorkflow extends PipelineBase {
         needs: this.renderDependencies(node),
         permissions: {
           contents: github.JobPermission.READ,
-          idToken: this.useGitHubActionRole ? github.JobPermission.WRITE : github.JobPermission.NONE,
+          idToken: this.useGitHubActionRole
+            ? github.JobPermission.WRITE
+            : github.JobPermission.NONE,
         },
         runsOn: this.runsOn,
         outputs: {
@@ -353,7 +420,9 @@ export class GitHubWorkflow extends PipelineBase {
             name: 'Install',
             run: `npm install --no-save cdk-assets${installSuffix}`,
           },
-          ...this.stepsToConfigureAws(this.useGitHubActionRole, { region: 'us-west-2' }),
+          ...this.stepsToConfigureAws(this.useGitHubActionRole, {
+            region: 'us-west-2',
+          }),
           ...dockerLoginSteps,
           publishStep,
         ],
@@ -361,7 +430,11 @@ export class GitHubWorkflow extends PipelineBase {
     };
   }
 
-  private jobForDeploy(node: AGraphNode, stack: StackDeployment, _captureOutputs: boolean): Job {
+  private jobForDeploy(
+    node: AGraphNode,
+    stack: StackDeployment,
+    _captureOutputs: boolean,
+  ): Job {
     const region = stack.region;
     const account = stack.account;
     if (!region || !account) {
@@ -369,7 +442,9 @@ export class GitHubWorkflow extends PipelineBase {
     }
 
     if (!stack.templateUrl) {
-      throw new Error(`unable to determine template URL for stack ${stack.stackArtifactId}`);
+      throw new Error(
+        `unable to determine template URL for stack ${stack.stackArtifactId}`,
+      );
     }
 
     const resolve = (s: string): string => {
@@ -385,7 +460,10 @@ export class GitHubWorkflow extends PipelineBase {
       if (this.assetHashMap[hash] === undefined) {
         throw new Error(`Template asset hash ${hash} not found.`);
       }
-      return template.replace(hash, `\${{ needs.${this.assetHashMap[hash]}.outputs.${ASSET_HASH_NAME} }}`);
+      return template.replace(
+        hash,
+        `\${{ needs.${this.assetHashMap[hash]}.outputs.${ASSET_HASH_NAME} }}`,
+      );
     };
 
     const params: Record<string, any> = {
@@ -397,7 +475,9 @@ export class GitHubWorkflow extends PipelineBase {
     if (stack.executionRoleArn) {
       params['role-arn'] = resolve(stack.executionRoleArn);
     }
-    const assumeRoleArn = stack.assumeRoleArn ? resolve(stack.assumeRoleArn) : undefined;
+    const assumeRoleArn = stack.assumeRoleArn
+      ? resolve(stack.assumeRoleArn)
+      : undefined;
 
     return {
       id: node.uniqueId,
@@ -405,12 +485,17 @@ export class GitHubWorkflow extends PipelineBase {
         name: `Deploy ${stack.stackArtifactId}`,
         permissions: {
           contents: github.JobPermission.READ,
-          idToken: this.useGitHubActionRole ? github.JobPermission.WRITE : github.JobPermission.NONE,
+          idToken: this.useGitHubActionRole
+            ? github.JobPermission.WRITE
+            : github.JobPermission.NONE,
         },
         needs: this.renderDependencies(node),
         runsOn: this.runsOn,
         steps: [
-          ...this.stepsToConfigureAws(this.useGitHubActionRole, { region, assumeRoleArn }),
+          ...this.stepsToConfigureAws(this.useGitHubActionRole, {
+            region,
+            assumeRoleArn,
+          }),
           {
             id: 'Deploy',
             uses: 'aws-actions/aws-cloudformation-github-deploy@v1',
@@ -435,15 +520,22 @@ export class GitHubWorkflow extends PipelineBase {
     }
 
     if (!step.primaryOutput) {
-      throw new Error('synthStep requires a primaryOutput which contains cdk.out');
+      throw new Error(
+        'synthStep requires a primaryOutput which contains cdk.out',
+      );
     }
 
     const cdkOut = step.outputs[0];
 
-    const installSteps = step.installCommands.length > 0 ? [{
-      name: 'Install',
-      run: step.installCommands.join('\n'),
-    }] : [];
+    const installSteps =
+      step.installCommands.length > 0
+        ? [
+          {
+            name: 'Install',
+            run: step.installCommands.join('\n'),
+          },
+        ]
+        : [];
 
     return {
       id: node.uniqueId,
@@ -485,7 +577,9 @@ export class GitHubWorkflow extends PipelineBase {
       }
     }
     // Should never happen
-    throw new Error(`The output ${ref.outputName} is not referenced by any of the dependent stacks!`);
+    throw new Error(
+      `The output ${ref.outputName} is not referenced by any of the dependent stacks!`,
+    );
   }
 
   private addJobOutput(jobId: string, output: github.JobStepOutput) {
@@ -504,7 +598,9 @@ export class GitHubWorkflow extends PipelineBase {
         outputName: ref.outputName,
         stepId: 'Deploy',
       });
-      envVariables[envName] = `\${{ needs.${jobId}.outputs.${ref.outputName} }}`;
+      envVariables[
+        envName
+      ] = `\${{ needs.${jobId}.outputs.${ref.outputName} }}`;
     }
 
     const downloadInputs = new Array<github.JobStep>();
@@ -530,10 +626,15 @@ export class GitHubWorkflow extends PipelineBase {
       });
     }
 
-    const installSteps = step.installCommands.length > 0 ? [{
-      name: 'Install',
-      run: step.installCommands.join('\n'),
-    }] : [];
+    const installSteps =
+      step.installCommands.length > 0
+        ? [
+          {
+            name: 'Install',
+            run: step.installCommands.join('\n'),
+          },
+        ]
+        : [];
 
     return {
       id: node.uniqueId,
@@ -558,7 +659,10 @@ export class GitHubWorkflow extends PipelineBase {
     };
   }
 
-  private stepsToConfigureAws(openId: boolean, { region, assumeRoleArn }: { region: string; assumeRoleArn?: string }): github.JobStep[] {
+  private stepsToConfigureAws(
+    openId: boolean,
+    { region, assumeRoleArn }: { region: string; assumeRoleArn?: string },
+  ): github.JobStep[] {
     function getDeployRole(arn: string) {
       return arn.replace('cfn-exec', 'deploy');
     }
@@ -566,35 +670,43 @@ export class GitHubWorkflow extends PipelineBase {
     let steps: github.JobStep[] = [];
 
     if (openId) {
-      steps.push(awsCredentialStep('Authenticate Via OIDC Role', {
-        region,
-        gitHubActionRoleArn: this.gitHubActionRoleArn,
-      }));
+      steps.push(
+        awsCredentialStep('Authenticate Via OIDC Role', {
+          region,
+          gitHubActionRoleArn: this.gitHubActionRoleArn,
+        }),
+      );
 
       if (assumeRoleArn) {
         // Result of initial credentials with GitHub Action role are these environment variables
-        steps.push(awsCredentialStep('Assume CDK Deploy Role', {
-          region,
-          accessKeyId: '${{ env.AWS_ACCESS_KEY_ID }}',
-          secretAccessKey: '${{ env.AWS_SECRET_ACCESS_KEY }}',
-          sessionToken: '${{ env.AWS_SESSION_TOKEN }}',
-          roleToAssume: getDeployRole(assumeRoleArn),
-        }));
+        steps.push(
+          awsCredentialStep('Assume CDK Deploy Role', {
+            region,
+            accessKeyId: '${{ env.AWS_ACCESS_KEY_ID }}',
+            secretAccessKey: '${{ env.AWS_SECRET_ACCESS_KEY }}',
+            sessionToken: '${{ env.AWS_SESSION_TOKEN }}',
+            roleToAssume: getDeployRole(assumeRoleArn),
+          }),
+        );
       }
     } else {
-      steps.push(awsCredentialStep('Authenticate Via GitHub Secrets', {
-        region,
-        accessKeyId: `\${{ secrets.${this.awsCredentials.accessKeyId} }}`,
-        secretAccessKey: `\${{ secrets.${this.awsCredentials.secretAccessKey} }}`,
-        sessionToken: `\${{ secrets.${this.awsCredentials.sessionToken} }}`,
-        roleToAssume: assumeRoleArn,
-      }));
+      steps.push(
+        awsCredentialStep('Authenticate Via GitHub Secrets', {
+          region,
+          accessKeyId: `\${{ secrets.${this.awsCredentials.accessKeyId} }}`,
+          secretAccessKey: `\${{ secrets.${this.awsCredentials.secretAccessKey} }}`,
+          sessionToken: `\${{ secrets.${this.awsCredentials.sessionToken} }}`,
+          roleToAssume: assumeRoleArn,
+        }),
+      );
     }
 
     return steps;
   }
 
-  private stepsToConfigureDocker(dockerCredential: DockerCredential): github.JobStep[] {
+  private stepsToConfigureDocker(
+    dockerCredential: DockerCredential,
+  ): github.JobStep[] {
     let params: Record<string, any>;
 
     if (dockerCredential.name === 'docker') {
@@ -627,21 +739,25 @@ export class GitHubWorkflow extends PipelineBase {
       return this.stepsToCheckout();
     }
 
-    return [{
-      name: `Download ${CDKOUT_ARTIFACT}`,
-      uses: 'actions/download-artifact@v2',
-      with: {
-        name: CDKOUT_ARTIFACT,
-        path: targetDir,
+    return [
+      {
+        name: `Download ${CDKOUT_ARTIFACT}`,
+        uses: 'actions/download-artifact@v2',
+        with: {
+          name: CDKOUT_ARTIFACT,
+          path: targetDir,
+        },
       },
-    }];
+    ];
   }
 
   private stepsToCheckout(): github.JobStep[] {
-    return [{
-      name: 'Checkout',
-      uses: 'actions/checkout@v2',
-    }];
+    return [
+      {
+        name: 'Checkout',
+        uses: 'actions/checkout@v2',
+      },
+    ];
   }
 
   private stepsToUploadAssembly(dir: string): github.JobStep[] {
@@ -649,14 +765,16 @@ export class GitHubWorkflow extends PipelineBase {
       return [];
     }
 
-    return [{
-      name: `Upload ${CDKOUT_ARTIFACT}`,
-      uses: 'actions/upload-artifact@v2.1.1',
-      with: {
-        name: CDKOUT_ARTIFACT,
-        path: dir,
+    return [
+      {
+        name: `Upload ${CDKOUT_ARTIFACT}`,
+        uses: 'actions/upload-artifact@v2.1.1',
+        with: {
+          name: CDKOUT_ARTIFACT,
+          path: dir,
+        },
       },
-    }];
+    ];
   }
 
   private renderDependencies(node: AGraphNode) {
@@ -670,7 +788,7 @@ export class GitHubWorkflow extends PipelineBase {
       }
     }
 
-    return deps.map(x => x.uniqueId);
+    return deps.map((x) => x.uniqueId);
   }
 }
 
@@ -697,7 +815,7 @@ function snakeCaseKeys<T = unknown>(obj: T, sep = '-'): T {
   }
 
   if (Array.isArray(obj)) {
-    return obj.map(o => snakeCaseKeys(o, sep)) as any;
+    return obj.map((o) => snakeCaseKeys(o, sep)) as any;
   }
 
   const result: Record<string, unknown> = {};

@@ -381,6 +381,37 @@ jobs:
 "
 `;
 
+exports[`pipeline with GitHub hosted runner override 1`] = `
+"name: deploy
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: {}
+jobs:
+  Build-Build:
+    name: Synthesize
+    permissions:
+      contents: read
+    runs-on: windows-latest
+    needs: []
+    env: {}
+    container: null
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install
+        run: yarn
+      - name: Build
+        run: yarn build
+      - name: Upload cdk.out
+        uses: actions/upload-artifact@v2.1.1
+        with:
+          name: cdk.out
+          path: cdk.out
+"
+`;
+
 exports[`pipeline with oidc authentication 1`] = `
 "name: deploy
 on:
@@ -536,7 +567,7 @@ jobs:
 "
 `;
 
-exports[`pipeline with runs-on override 1`] = `
+exports[`pipeline with self-hosted runner override 1`] = `
 "name: deploy
 on:
   push:
@@ -548,7 +579,10 @@ jobs:
     name: Synthesize
     permissions:
       contents: read
-    runs-on: self-hosted
+    runs-on:
+      - self-hosted
+      - label1
+      - label2
     needs: []
     env: {}
     container: null
