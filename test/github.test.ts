@@ -71,6 +71,36 @@ test('pipeline with self-hosted runner override', () => {
   });
 });
 
+test('pipeline with publish asset region override', () => {
+  withTemporaryDirectory((dir) => {
+    const pipeline = new GitHubWorkflow(app, 'Pipeline', {
+      workflowPath: `${dir}/.github/workflows/deploy.yml`,
+      synth: new ShellStep('Build', {
+        commands: [],
+      }),
+      publishAssetsRegion: 'ap-southeast-2',
+    });
+
+    const stage = new Stage(app, 'MyStack', {
+      env: { account: '111111111111', region: 'us-east-1' },
+    });
+
+    const stack = new Stack(stage, 'MyStack');
+
+    new lambda.Function(stack, 'Function', {
+      code: lambda.Code.fromAsset(fixtures),
+      handler: 'index.handler',
+      runtime: lambda.Runtime.NODEJS_14_X,
+    });
+
+    pipeline.addStage(stage);
+
+    app.synth();
+
+    expect(readFileSync(pipeline.workflowPath, 'utf-8')).toMatchSnapshot();
+  });
+});
+
 test('single wave/stage/stack', () => {
   withTemporaryDirectory((dir) => {
     const pipeline = new GitHubWorkflow(app, 'Pipeline', {
