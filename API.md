@@ -7,6 +7,7 @@ Name|Description
 [DockerCredential](#cdk-pipelines-github-dockercredential)|Represents a credential used to authenticate to a docker registry.
 [GitHubActionRole](#cdk-pipelines-github-githubactionrole)|Creates or references a GitHub OIDC provider and accompanying role that trusts the provider.
 [GitHubWorkflow](#cdk-pipelines-github-githubworkflow)|CDK Pipelines for GitHub workflows.
+[Runner](#cdk-pipelines-github-runner)|The type of runner to run the job on.
 
 
 **Structs**
@@ -66,6 +67,7 @@ Name|Description
 Name|Description
 ----|-----------
 [JobPermission](#cdk-pipelines-github-jobpermission)|Access level for workflow permission scopes.
+[RunnerType](#cdk-pipelines-github-runnertype)|Enum to indicate the runner type.
 
 
 
@@ -248,6 +250,8 @@ new GitHubWorkflow(scope: Construct, id: string, props: GitHubWorkflowProps)
   * **postBuildSteps** (<code>Array<[JobStep](#cdk-pipelines-github-jobstep)></code>)  GitHub workflow steps to execute after build. __*Default*__: []
   * **preBuildSteps** (<code>Array<[JobStep](#cdk-pipelines-github-jobstep)></code>)  GitHub workflow steps to execute before build. __*Default*__: []
   * **preSynthed** (<code>boolean</code>)  Indicates if the repository already contains a synthesized `cdk.out` directory, in which case we will simply checkout the repo in jobs that require `cdk.out`. __*Default*__: false
+  * **publishAssetsRegion** (<code>string</code>)  Optional override for the region used in Publish Assets job. __*Default*__: "us-west-2"
+  * **runner** (<code>[Runner](#cdk-pipelines-github-runner)</code>)  The type of runner to run the job on. __*Default*__: Runner.UBUNTU_LATEST
   * **workflowName** (<code>string</code>)  Name of the workflow. __*Default*__: "deploy"
   * **workflowPath** (<code>string</code>)  File path for the GitHub workflow. __*Default*__: ".github/workflows/deploy.yml"
   * **workflowTriggers** (<code>[WorkflowTriggers](#cdk-pipelines-github-workflowtriggers)</code>)  GitHub workflow triggers. __*Default*__: By default, workflow is triggered on push to the `main` branch and can also be triggered manually (`workflow_dispatch`).
@@ -276,6 +280,59 @@ protected doBuildPipeline(): void
 
 
 
+
+
+
+## class Runner  <a id="cdk-pipelines-github-runner"></a>
+
+The type of runner to run the job on.
+
+Can be GitHub or Self-hosted.
+In case of self-hosted, a list of labels can be supplied.
+
+
+### Initializer
+
+
+
+
+```ts
+new Runner(runsOn: string, runnerType: RunnerType, labels?: Array<string>)
+```
+
+* **runsOn** (<code>string</code>)  *No description*
+* **runnerType** (<code>[RunnerType](#cdk-pipelines-github-runnertype)</code>)  *No description*
+* **labels** (<code>Array<string></code>)  *No description*
+
+
+
+### Properties
+
+
+Name | Type | Description 
+-----|------|-------------
+**labels** | <code>Array<string></code> | <span></span>
+**runnerType** | <code>[RunnerType](#cdk-pipelines-github-runnertype)</code> | <span></span>
+**runsOn** | <code>string</code> | <span></span>
+*static* **MACOS_LATEST** | <code>[Runner](#cdk-pipelines-github-runner)</code> | <span></span>
+*static* **UBUNTU_LATEST** | <code>[Runner](#cdk-pipelines-github-runner)</code> | <span></span>
+*static* **WINDOWS_LATEST** | <code>[Runner](#cdk-pipelines-github-runner)</code> | <span></span>
+
+### Methods
+
+
+#### *static* selfHosted(labels) <a id="cdk-pipelines-github-runner-selfhosted"></a>
+
+
+
+```ts
+static selfHosted(labels: Array<string>): Runner
+```
+
+* **labels** (<code>Array<string></code>)  *No description*
+
+__Returns__:
+* <code>[Runner](#cdk-pipelines-github-runner)</code>
 
 
 
@@ -456,6 +513,8 @@ Name | Type | Description
 **postBuildSteps**? | <code>Array<[JobStep](#cdk-pipelines-github-jobstep)></code> | GitHub workflow steps to execute after build.<br/>__*Default*__: []
 **preBuildSteps**? | <code>Array<[JobStep](#cdk-pipelines-github-jobstep)></code> | GitHub workflow steps to execute before build.<br/>__*Default*__: []
 **preSynthed**? | <code>boolean</code> | Indicates if the repository already contains a synthesized `cdk.out` directory, in which case we will simply checkout the repo in jobs that require `cdk.out`.<br/>__*Default*__: false
+**publishAssetsRegion**? | <code>string</code> | Optional override for the region used in Publish Assets job.<br/>__*Default*__: "us-west-2"
+**runner**? | <code>[Runner](#cdk-pipelines-github-runner)</code> | The type of runner to run the job on.<br/>__*Default*__: Runner.UBUNTU_LATEST
 **workflowName**? | <code>string</code> | Name of the workflow.<br/>__*Default*__: "deploy"
 **workflowPath**? | <code>string</code> | File path for the GitHub workflow.<br/>__*Default*__: ".github/workflows/deploy.yml"
 **workflowTriggers**? | <code>[WorkflowTriggers](#cdk-pipelines-github-workflowtriggers)</code> | GitHub workflow triggers.<br/>__*Default*__: By default, workflow is triggered on push to the `main` branch and can also be triggered manually (`workflow_dispatch`).
@@ -504,7 +563,7 @@ A GitHub Workflow job definition.
 Name | Type | Description 
 -----|------|-------------
 **permissions** | <code>[JobPermissions](#cdk-pipelines-github-jobpermissions)</code> | You can modify the default permissions granted to the GITHUB_TOKEN, adding or removing access as required, so that you only allow the minimum required access.
-**runsOn** | <code>string</code> | The type of machine to run the job on.
+**runsOn** | <code>any</code> | The type of machine to run the job on.
 **steps** | <code>Array<[JobStep](#cdk-pipelines-github-jobstep)></code> | A job contains a sequence of tasks called steps.
 **concurrency**?🔹 | <code>any</code> | Concurrency ensures that only a single job or workflow using the same concurrency group will run at a time.<br/>__*Optional*__
 **container**? | <code>[ContainerOptions](#cdk-pipelines-github-containeroptions)</code> | A container to run any steps in a job that don't already specify a container.<br/>__*Optional*__
@@ -921,5 +980,15 @@ Name | Description
 **READ** |Read-only access.
 **WRITE** |Read-write access.
 **NONE** |No access at all.
+
+
+## enum RunnerType  <a id="cdk-pipelines-github-runnertype"></a>
+
+Enum to indicate the runner type.
+
+Name | Description
+-----|-----
+**GITHUB_HOSTED** |
+**SELF_HOSTED** |
 
 
