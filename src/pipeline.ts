@@ -121,13 +121,6 @@ export interface GitHubWorkflowProps extends PipelineBaseProps {
    * @default Runner.UBUNTU_LATEST
    */
   readonly runner?: Runner;
-
-  /**
-   * Optional override for the region used in Publish Assets job
-   * @default "us-west-2"
-   */
-  readonly publishAssetsRegion?: string;
-
 }
 
 /**
@@ -151,7 +144,6 @@ export class GitHubWorkflow extends PipelineBase {
   private readonly assetHashMap: Record<string, string> = {};
   private readonly runner: Runner;
   private readonly runsOn: unknown;
-  private readonly publishAssetsRegion: string;
 
   constructor(scope: Construct, id: string, props: GitHubWorkflowProps) {
     super(scope, id, props);
@@ -197,13 +189,10 @@ export class GitHubWorkflow extends PipelineBase {
     } else {
       this.runsOn = [this.runner.runsOn, ...this.runner.labels];
     }
-
-    this.publishAssetsRegion = props.publishAssetsRegion ?? 'us-west-2';
   }
 
   protected doBuildPipeline() {
     const app = Stage.of(this);
-
     if (!app) {
       throw new Error(
         'The GitHub Workflow must be defined in the scope of an App',
@@ -331,7 +320,6 @@ export class GitHubWorkflow extends PipelineBase {
         throw new Error('GitHub Workflows does not support self mutation');
 
       case 'publish-assets':
-        console.log(options);
         return this.jobForAssetPublish(node, node.data.assets, options);
 
       case 'prepare':
@@ -433,7 +421,7 @@ export class GitHubWorkflow extends PipelineBase {
             run: `npm install --no-save cdk-assets${installSuffix}`,
           },
           ...this.stepsToConfigureAws(this.useGitHubActionRole, {
-            region: this.publishAssetsRegion,
+            region: 'us-west-2',
           }),
           ...dockerLoginSteps,
           publishStep,
