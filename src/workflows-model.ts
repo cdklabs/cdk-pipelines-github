@@ -10,7 +10,7 @@ export interface Job {
    *
    * @example "ubuntu-latest"
    */
-  readonly runsOn: unknown;
+  readonly runsOn: string[];
 
   /**
    * A job contains a sequence of tasks called steps. Steps can run commands,
@@ -192,45 +192,32 @@ export interface JobDefaults {
 }
 
 /**
- * Enum to indicate the runner type
- */
-export enum RunnerType {
-  GITHUB_HOSTED,
-  SELF_HOSTED,
-}
-
-/**
  * The type of runner to run the job on. Can be GitHub or Self-hosted.
  * In case of self-hosted, a list of labels can be supplied.
  */
 export class Runner {
-  public static readonly UBUNTU_LATEST = new Runner(
-    'ubuntu-latest',
-    RunnerType.GITHUB_HOSTED,
-  );
+  public static readonly UBUNTU_LATEST = new Runner(['ubuntu-latest']);
 
-  public static readonly WINDOWS_LATEST = new Runner(
-    'windows-latest',
-    RunnerType.GITHUB_HOSTED,
-  );
+  public static readonly WINDOWS_LATEST = new Runner(['windows-latest']);
 
-  public static readonly MACOS_LATEST = new Runner(
-    'macos-latest',
-    RunnerType.GITHUB_HOSTED,
-  );
+  public static readonly MACOS_LATEST = new Runner(['macos-latest']);
 
   public static selfHosted(labels: string[]): Runner {
-    return new Runner('self-hosted', RunnerType.SELF_HOSTED, labels);
+    if (labels[0] === 'self-hosted') {
+      return new Runner(labels);
+    } else {
+      return new Runner(['self-hosted', ...labels]);
+    }
   }
 
-  public readonly runsOn: string;
-  public readonly runnerType: RunnerType;
-  public readonly labels: string[];
+  public get runsOn() {
+    return this.labels;
+  }
 
-  constructor(runsOn: string, runnerType: RunnerType, labels?: string[]) {
-    this.runsOn = runsOn;
-    this.runnerType = runnerType;
-    this.labels = labels ?? [];
+  private readonly labels: string[];
+
+  private constructor(labels: string[]) {
+    this.labels = labels;
   }
 }
 
@@ -670,9 +657,7 @@ export interface CheckRunOptions {
    *
    * @defaults - all activity types
    */
-  readonly types?: Array<
-  'create' | 'rerequested' | 'completed' | 'requested_action'
-  >;
+  readonly types?: Array<'create' | 'rerequested' | 'completed' | 'requested_action'>;
 }
 
 /**
@@ -708,24 +693,7 @@ export interface IssuesOptions {
    *
    * @defaults - all activity types
    */
-  readonly types?: Array<
-  | 'opened'
-  | 'edited'
-  | 'deleted'
-  | 'transferred'
-  | 'pinned'
-  | 'unpinned'
-  | 'closed'
-  | 'reopened'
-  | 'assigned'
-  | 'unassigned'
-  | 'labeled'
-  | 'unlabeled'
-  | 'locked'
-  | 'unlocked'
-  | 'milestoned'
-  | 'demilestoned'
-  >;
+  readonly types?: Array<'opened' | 'edited' | 'deleted' | 'transferred' | 'pinned' | 'unpinned' | 'closed' | 'reopened' | 'assigned' | 'unassigned' | 'labeled' | 'unlabeled' | 'locked' | 'unlocked' | 'milestoned' | 'demilestoned'>;
 }
 
 /**
@@ -749,9 +717,7 @@ export interface MilestoneOptions {
    *
    * @defaults - all activity types
    */
-  readonly types?: Array<
-  'created' | 'closed' | 'opened' | 'edited' | 'deleted'
-  >;
+  readonly types?: Array<'created' | 'closed' | 'opened' | 'edited' | 'deleted'>;
 }
 
 /**
@@ -763,9 +729,7 @@ export interface ProjectOptions {
    *
    * @defaults - all activity types
    */
-  readonly types?: Array<
-  'created' | 'updated' | 'closed' | 'reopened' | 'edited' | 'deleted'
-  >;
+  readonly types?: Array<'created' | 'updated' | 'closed' | 'reopened' | 'edited' | 'deleted'>;
 }
 
 /**
@@ -777,9 +741,7 @@ export interface ProjectCardOptions {
    *
    * @defaults - all activity types
    */
-  readonly types?: Array<
-  'created' | 'moved' | 'converted' | 'edited' | 'deleted'
-  >;
+  readonly types?: Array<'created' | 'moved' | 'converted' | 'edited' | 'deleted'>;
 }
 
 /**
@@ -803,22 +765,7 @@ export interface PullRequestOptions {
    *
    * @defaults - all activity types
    */
-  readonly types?: Array<
-  | 'assigned'
-  | 'unassigned'
-  | 'labeled'
-  | 'unlabeled'
-  | 'opened'
-  | 'edited'
-  | 'closed'
-  | 'reopened'
-  | 'synchronize'
-  | 'ready_for_review'
-  | 'locked'
-  | 'unlocked'
-  | 'review_requested'
-  | 'review_request_removed'
-  >;
+  readonly types?: Array<'assigned' | 'unassigned' | 'labeled' | 'unlabeled' | 'opened' | 'edited' | 'closed' | 'reopened' | 'synchronize' | 'ready_for_review' | 'locked' | 'unlocked' | 'review_requested' | 'review_request_removed'>;
 }
 
 /**
@@ -854,22 +801,7 @@ export interface PullRequestTargetOptions extends PushOptions {
    *
    * @defaults - all activity types
    */
-  readonly types?: Array<
-  | 'assigned'
-  | 'unassigned'
-  | 'labeled'
-  | 'unlabeled'
-  | 'opened'
-  | 'edited'
-  | 'closed'
-  | 'reopened'
-  | 'synchronize'
-  | 'ready_for_review'
-  | 'locked'
-  | 'unlocked'
-  | 'review_requested'
-  | 'review_request_removed'
-  >;
+  readonly types?: Array<'assigned' | 'unassigned' | 'labeled' | 'unlabeled' | 'opened' | 'edited' | 'closed' | 'reopened' | 'synchronize' | 'ready_for_review' | 'locked' | 'unlocked' | 'review_requested' | 'review_request_removed'>;
 }
 
 /**
@@ -930,15 +862,7 @@ export interface ReleaseOptions {
    *
    * @defaults - all activity types
    */
-  readonly types?: Array<
-  | 'published'
-  | 'unpublished'
-  | 'created'
-  | 'edited'
-  | 'deleted'
-  | 'prereleased'
-  | 'released'
-  >;
+  readonly types?: Array<'published' | 'unpublished' | 'created' | 'edited' | 'deleted' | 'prereleased' | 'released'>;
 }
 
 /**

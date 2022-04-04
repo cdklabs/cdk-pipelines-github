@@ -12,7 +12,8 @@ jobs:
     name: Synthesize
     permissions:
       contents: read
-    runs-on: ubuntu-latest
+    runs-on:
+      - ubuntu-latest
     needs: []
     env: {}
     container:
@@ -33,7 +34,8 @@ jobs:
     permissions:
       contents: read
       id-token: none
-    runs-on: ubuntu-latest
+    runs-on:
+      - ubuntu-latest
     outputs:
       asset-hash: \${{ steps.Publish.outputs.asset-hash }}
     steps:
@@ -63,7 +65,8 @@ jobs:
     permissions:
       contents: read
       id-token: none
-    runs-on: ubuntu-latest
+    runs-on:
+      - ubuntu-latest
     outputs:
       asset-hash: \${{ steps.Publish.outputs.asset-hash }}
     steps:
@@ -90,7 +93,8 @@ jobs:
     permissions:
       contents: read
       id-token: none
-    runs-on: ubuntu-latest
+    runs-on:
+      - ubuntu-latest
     outputs:
       asset-hash: \${{ steps.Publish.outputs.asset-hash }}
     steps:
@@ -117,7 +121,8 @@ jobs:
     permissions:
       contents: read
       id-token: none
-    runs-on: ubuntu-latest
+    runs-on:
+      - ubuntu-latest
     outputs:
       asset-hash: \${{ steps.Publish.outputs.asset-hash }}
     steps:
@@ -144,7 +149,8 @@ jobs:
     permissions:
       contents: read
       id-token: none
-    runs-on: ubuntu-latest
+    runs-on:
+      - ubuntu-latest
     outputs:
       asset-hash: \${{ steps.Publish.outputs.asset-hash }}
     steps:
@@ -171,7 +177,8 @@ jobs:
     permissions:
       contents: read
       id-token: none
-    runs-on: ubuntu-latest
+    runs-on:
+      - ubuntu-latest
     outputs:
       asset-hash: \${{ steps.Publish.outputs.asset-hash }}
     steps:
@@ -198,7 +205,8 @@ jobs:
     permissions:
       contents: read
       id-token: none
-    runs-on: ubuntu-latest
+    runs-on:
+      - ubuntu-latest
     outputs:
       asset-hash: \${{ steps.Publish.outputs.asset-hash }}
     steps:
@@ -222,7 +230,8 @@ jobs:
     name: Pre
     permissions:
       contents: read
-    runs-on: ubuntu-latest
+    runs-on:
+      - ubuntu-latest
     needs:
       - Build-Build
     env: {}
@@ -238,7 +247,8 @@ jobs:
       - Assets-FileAsset1
       - Assets-FileAsset2
       - StageA-Pre
-    runs-on: ubuntu-latest
+    runs-on:
+      - ubuntu-latest
     steps:
       - name: Authenticate Via GitHub Secrets
         uses: aws-actions/configure-aws-credentials@v1
@@ -271,7 +281,8 @@ jobs:
       - Assets-DockerAsset1
       - StageA-BucketStack-Deploy
       - StageA-Pre
-    runs-on: ubuntu-latest
+    runs-on:
+      - ubuntu-latest
     steps:
       - name: Authenticate Via GitHub Secrets
         uses: aws-actions/configure-aws-credentials@v1
@@ -298,7 +309,8 @@ jobs:
     name: Post
     permissions:
       contents: read
-    runs-on: ubuntu-latest
+    runs-on:
+      - ubuntu-latest
     needs:
       - StageA-FunctionStack-Deploy
       - StageA-BucketStack-Deploy
@@ -321,7 +333,8 @@ jobs:
       - StageA-FunctionStack-Deploy
       - StageA-Pre
       - StageA-Post
-    runs-on: ubuntu-latest
+    runs-on:
+      - ubuntu-latest
     steps:
       - name: Authenticate Via GitHub Secrets
         uses: aws-actions/configure-aws-credentials@v1
@@ -357,7 +370,8 @@ jobs:
       - StageA-FunctionStack-Deploy
       - StageA-Pre
       - StageA-Post
-    runs-on: ubuntu-latest
+    runs-on:
+      - ubuntu-latest
     steps:
       - name: Authenticate Via GitHub Secrets
         uses: aws-actions/configure-aws-credentials@v1
@@ -393,7 +407,8 @@ jobs:
     name: Synthesize
     permissions:
       contents: read
-    runs-on: windows-latest
+    runs-on:
+      - windows-latest
     needs: []
     env: {}
     container: null
@@ -424,7 +439,8 @@ jobs:
     name: Synthesize
     permissions:
       contents: read
-    runs-on: ubuntu-latest
+    runs-on:
+      - ubuntu-latest
     needs: []
     env: {}
     container: null
@@ -447,7 +463,8 @@ jobs:
     permissions:
       contents: read
       id-token: write
-    runs-on: ubuntu-latest
+    runs-on:
+      - ubuntu-latest
     outputs:
       asset-hash: \${{ steps.Publish.outputs.asset-hash }}
     steps:
@@ -475,7 +492,8 @@ jobs:
     permissions:
       contents: read
       id-token: write
-    runs-on: ubuntu-latest
+    runs-on:
+      - ubuntu-latest
     outputs:
       asset-hash: \${{ steps.Publish.outputs.asset-hash }}
     steps:
@@ -505,7 +523,8 @@ jobs:
       - Build-Build
       - Assets-FileAsset1
       - Assets-FileAsset2
-    runs-on: ubuntu-latest
+    runs-on:
+      - ubuntu-latest
     steps:
       - name: Authenticate Via OIDC Role
         uses: aws-actions/configure-aws-credentials@v1
@@ -548,7 +567,8 @@ jobs:
     name: Synthesize
     permissions:
       contents: read
-    runs-on: ubuntu-latest
+    runs-on:
+      - ubuntu-latest
     needs: []
     env: {}
     container: null
@@ -613,7 +633,8 @@ jobs:
     name: Synthesize
     permissions:
       contents: read
-    runs-on: ubuntu-latest
+    runs-on:
+      - ubuntu-latest
     needs: []
     env: {}
     container: null
@@ -634,7 +655,8 @@ jobs:
     permissions:
       contents: read
       id-token: none
-    runs-on: ubuntu-latest
+    runs-on:
+      - ubuntu-latest
     outputs:
       asset-hash: \${{ steps.Publish.outputs.asset-hash }}
     steps:
@@ -664,7 +686,8 @@ jobs:
     permissions:
       contents: read
       id-token: none
-    runs-on: ubuntu-latest
+    runs-on:
+      - ubuntu-latest
     outputs:
       asset-hash: \${{ steps.Publish.outputs.asset-hash }}
     steps:
@@ -696,7 +719,8 @@ jobs:
       - Build-Build
       - Assets-FileAsset1
       - Assets-FileAsset2
-    runs-on: ubuntu-latest
+    runs-on:
+      - ubuntu-latest
     steps:
       - name: Authenticate Via GitHub Secrets
         uses: aws-actions/configure-aws-credentials@v1

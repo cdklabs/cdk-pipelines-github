@@ -143,7 +143,7 @@ export class GitHubWorkflow extends PipelineBase {
   private readonly jobOutputs: Record<string, github.JobStepOutput[]> = {};
   private readonly assetHashMap: Record<string, string> = {};
   private readonly runner: Runner;
-  private readonly runsOn: unknown;
+  private readonly runsOn: string [];
 
   constructor(scope: Construct, id: string, props: GitHubWorkflowProps) {
     super(scope, id, props);
@@ -183,12 +183,7 @@ export class GitHubWorkflow extends PipelineBase {
     };
 
     this.runner = props.runner ?? Runner.UBUNTU_LATEST;
-
-    if (this.runner.runnerType == github.RunnerType.GITHUB_HOSTED) {
-      this.runsOn = this.runner.runsOn;
-    } else {
-      this.runsOn = [this.runner.runsOn, ...this.runner.labels];
-    }
+    this.runsOn = this.runner.runsOn;
   }
 
   protected doBuildPipeline() {
