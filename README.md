@@ -118,7 +118,7 @@ With OIDC, benefits include:
 * No cloud secrets.
 * Authentication and authorization management.
 * Rotating credentials.
-
+ 
 You can read more
 [here](https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect).
 
@@ -387,7 +387,6 @@ synthesized against.
 > Do not do this in your app; you should always synth during the synth step of the GitHub
 > workflow. In the example app this is achieved through the `preSynthed: true` option.
 > It is for example purposes only and is not something you should do in your app.
-
 > ```ts
 > const pipeline = new GitHubWorkflow(new App(), 'Pipeline', {
 >   synth: new ShellStep('Build', {
