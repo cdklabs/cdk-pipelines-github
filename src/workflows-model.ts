@@ -131,6 +131,7 @@ export interface Job {
    * cycle of the service containers.
    */
   readonly services?: Record<string, ContainerOptions>;
+
 }
 
 /**
@@ -420,6 +421,7 @@ export interface ContainerCredentials {
   /** The password. */
   readonly password: string;
 }
+
 
 /**
  * The set of available triggers for GitHub Workflows.
@@ -819,6 +821,7 @@ export interface PushOptions {
    */
   readonly branches?: string[];
 
+
   /**
    * When using the push and pull_request events, you can configure a workflow
    * to run on specific branches or tags. For a pull_request event, only
@@ -893,50 +896,50 @@ export interface WorkflowRunOptions {
 /**
  * The Workflow dispatch event accepts no options.
  */
-export interface WorkflowDispatchOptions {}
+export interface WorkflowDispatchOptions { }
 
 /**
  * The Create event accepts no options.
  */
-export interface CreateOptions {}
+export interface CreateOptions { }
 
 /**
  * The Delete event accepts no options.
  */
-export interface DeleteOptions {}
+export interface DeleteOptions { }
 
 /**
  * The Deployment event accepts no options.
  */
-export interface DeploymentOptions {}
+export interface DeploymentOptions { }
 
 /**
  * The Deployment status event accepts no options.
  */
-export interface DeploymentStatusOptions {}
+export interface DeploymentStatusOptions { }
 
 /**
  * The Fork event accepts no options.
  */
-export interface ForkOptions {}
+export interface ForkOptions { }
 
 /**
  * The Gollum event accepts no options.
  */
-export interface GollumOptions {}
+export interface GollumOptions { }
 
 /**
  * The Page build event accepts no options.
  */
-export interface PageBuildOptions {}
+export interface PageBuildOptions { }
 
 /**
  * The Public event accepts no options.
  */
-export interface PublicOptions {}
+export interface PublicOptions { }
 
 /**
  * The Status event accepts no options.
  */
-export interface StatusOptions {}
+export interface StatusOptions { }
 //#endregion

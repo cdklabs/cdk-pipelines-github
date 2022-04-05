@@ -8,8 +8,8 @@ deployed via
 
 The CDK already has a CI/CD solution,
 [CDK Pipelines](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.pipelines-readme.html),
-which creates an AWS CodePipeline that deploys CDK applications. This module
-serves the same surface area, except that it is implemented with GitHub
+which creates an AWS CodePipeline that deploys CDK applications. This module 
+serves the same surface area, except that it is implemented with GitHub 
 Workflows.
 
 ## Table of Contents
@@ -76,7 +76,7 @@ documentation for more details.
 
 **NOTES:**
 
-- Environments must be bootstrapped separately using `cdk bootstrap`. See [CDK
+* Environments must be bootstrapped separately using `cdk bootstrap`. See [CDK
   Environment
   Bootstrapping](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.pipelines-readme.html#cdk-environment-bootstrapping)
   for details.
@@ -86,17 +86,17 @@ documentation for more details.
 Assuming you have your CDK app checked out on your local machine, here are the suggested steps
 to develop your GitHub Workflow.
 
-- Set up AWS Credentials your local environment. It is highly recommended to authenticate via an OpenId
+* Set up AWS Credentials your local environment. It is highly recommended to authenticate via an OpenId
   Connect IAM Role. You can set one up using the [`GithubActionRole`](#github-action-role) class provided
   in this module. For more information (and alternatives), see [AWS Credentials](#aws-credentials).
 
-- When you've updated your pipeline and are ready to deploy, run `cdk synth`. This creates a workflow file
+* When you've updated your pipeline and are ready to deploy, run `cdk synth`. This creates a workflow file
   in `.github/workflows/deploy.yml`.
 
-- When you are ready to test your pipeline, commit your code changes as well as the `deploy.yml` file to
+* When you are ready to test your pipeline, commit your code changes as well as the `deploy.yml` file to
   GitHub. GitHub will automatically try to run the workflow found under `.github/workflows/deploy.yml`.
 
-- You will be able to see the result of the run on the `Actions` tab in your repository:
+* You will be able to see the result of the run on the `Actions` tab in your repository:
 
   ![Screen Shot 2021-08-22 at 12 06 05](https://user-images.githubusercontent.com/598796/130349345-a10a2f75-0848-4de8-bc4c-f5a1418ee228.png)
 
@@ -107,24 +107,24 @@ For an in-depth run-through on creating your own GitHub Workflow, see the
 
 There are two ways to supply AWS credentials to the workflow:
 
-- GitHub Action IAM Role (recommended).
-- Long-lived AWS Credentials stored in GitHub Secrets.
+* GitHub Action IAM Role (recommended).
+* Long-lived AWS Credentials stored in GitHub Secrets.
 
 The GitHub Action IAM Role authenticates via the GitHub OpenID Connect provider
 and is recommended, but it requires preparing your AWS account beforehand. This
 approach allows your Workflow to exchange short-lived tokens directly from AWS.
 With OIDC, benefits include:
 
-- No cloud secrets.
-- Authentication and authorization management.
-- Rotating credentials.
+* No cloud secrets.
+* Authentication and authorization management.
+* Rotating credentials.
 
 You can read more
 [here](https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect).
 
 ### GitHub Action Role
 
-Authenticating via OpenId Connect means you do not need to store long-lived
+Authenticating via OpenId Connect means you do not need to store long-lived 
 credentials as GitHub Secrets. With OIDC, you provide a pre-provisioned IAM
 role to your GitHub Workflow via the `gitHubActionRoleArn` property.
 
@@ -148,8 +148,8 @@ const pipeline = new GitHubWorkflow(app, 'Pipeline', {
 
 There are two ways to create this IAM role:
 
-- Use the `GitHubActionRole` construct (recommended and described below).
-- Manually set up the role ([Guide](https://github.com/cdklabs/cdk-pipelines-github/blob/main/GITHUB_ACTION_ROLE_SETUP.md)).
+* Use the `GitHubActionRole` construct (recommended and described below).
+* Manually set up the role ([Guide](https://github.com/cdklabs/cdk-pipelines-github/blob/main/GITHUB_ACTION_ROLE_SETUP.md)).
 
 #### `GitHubActionRole` Construct
 
@@ -205,8 +205,8 @@ class MyGitHubActionRole extends Stack {
 
 Authenticating via this approach means that you will be manually creating AWS
 credentials and duplicating them in GitHub secrets. The workflow expects the
-GitHub repository to include secrets with AWS credentials under
-`AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`. You can override these defaults
+GitHub repository to include secrets with AWS credentials under 
+`AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`. You can override these defaults 
 by supplying the `awsCredentials` property to the workflow:
 
 ```ts
@@ -237,14 +237,14 @@ For a full discussion on how to use Docker in CDK Pipelines, see
 [Using Docker in the Pipeline](https://github.com/aws/aws-cdk/blob/master/packages/@aws-cdk/pipelines/README.md#using-docker-in-the-pipeline).
 
 Just like CDK Pipelines, you may need to authenticate to Docker registries to
-avoid being throttled.
+avoid being throttled. 
 
 #### Authenticating to Docker registries
 
 You can specify credentials to use for authenticating to Docker registries as
-part of the Workflow definition. This can be useful if any Docker image assets —
-in the pipeline or any of the application stages — require authentication, either
-due to being in a different environment (e.g., ECR repo) or to avoid throttling
+part of the Workflow definition. This can be useful if any Docker image assets — 
+in the pipeline or any of the application stages — require authentication, either 
+due to being in a different environment (e.g., ECR repo) or to avoid throttling 
 (e.g., DockerHub).
 
 ```ts
@@ -387,7 +387,7 @@ synthesized against.
 > Do not do this in your app; you should always synth during the synth step of the GitHub
 > workflow. In the example app this is achieved through the `preSynthed: true` option.
 > It is for example purposes only and is not something you should do in your app.
->
+
 > ```ts
 > const pipeline = new GitHubWorkflow(new App(), 'Pipeline', {
 >   synth: new ShellStep('Build', {
@@ -403,7 +403,7 @@ synthesized against.
 Most features that exist in CDK Pipelines are supported. However, as the CDK Pipelines
 feature are expands, the feature set for GitHub Workflows may lag behind. If you see a
 feature that you feel should be supported by GitHub Workflows, please open a GitHub issue
-to track it.
+to track it. 
 
 ## Contributing
 
