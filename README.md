@@ -309,7 +309,7 @@ const pipeline = new GitHubWorkflow(app, 'Pipeline', {
 
 ### Self Hosted Runner
 
-The following example shows how to configure the workflow to run on a self-hosted runner:
+The following example shows how to configure the workflow to run on a self-hosted runner. Note that you do not need to pass in `self-hosted` explicitly as a label.
 
 ```ts
 import { App } from 'aws-cdk-lib';
