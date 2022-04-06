@@ -10,7 +10,7 @@ export interface Job {
    *
    * @example ["ubuntu-latest"]
    */
-  readonly runsOn: string[];
+  readonly runsOn: string[] | string;
 
   /**
    * A job contains a sequence of tasks called steps. Steps can run commands,
@@ -224,8 +224,12 @@ export class Runner {
     }
   }
 
-  public get runsOn() {
-    return this.labels;
+  public get runsOn(): string[] | string {
+    if (this.labels[0] === 'self-hosted') {
+      return this.labels;
+    } else {
+      return this.labels[0];
+    }
   }
 
   private readonly labels: string[];
