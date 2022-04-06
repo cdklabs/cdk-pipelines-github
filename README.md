@@ -287,7 +287,7 @@ You can choose to run the workflow in either a GitHub hosted or [self-hosted](ht
 
 ### GitHub Hosted Runner
 
-The default is `ubuntu-latest`. You can override this as shown below:
+The default is `Runner.UBUNTU_LATEST`. You can override this as shown below:
 
 ```ts
 import { App } from 'aws-cdk-lib';
