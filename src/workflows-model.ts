@@ -232,11 +232,7 @@ export class Runner {
     }
   }
 
-  private readonly labels: string[];
-
-  private constructor(labels: string[]) {
-    this.labels = labels;
-  }
+  private constructor(private readonly labels: string[]) {}
 }
 
 /**
