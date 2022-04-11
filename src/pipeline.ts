@@ -109,7 +109,13 @@ export interface GitHubWorkflowProps extends PipelineBaseProps {
   readonly runner?: github.Runner;
 
   /**
-   * Optional override for the region used when assuming role to publish assets
+   * Will assume the GitHubActionRole in this region when publishing assets.
+   * This is NOT the region in which the assets are published.
+   *
+   * In most cases, you do not have to worry about this property, and can safely
+   * ignore it.
+   *
+   * @default 'us-west-2'
    * @default "us-west-2"
    */
   readonly publishAssetsAuthRegion?: string;
