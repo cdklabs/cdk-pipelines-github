@@ -8,9 +8,9 @@ export interface Job {
    * The type of machine to run the job on. The machine can be either a
    * GitHub-hosted runner or a self-hosted runner.
    *
-   * @example "ubuntu-latest"
+   * @example ["ubuntu-latest"]
    */
-  readonly runsOn: string;
+  readonly runsOn: string[] | string;
 
   /**
    * A job contains a sequence of tasks called steps. Steps can run commands,
@@ -190,6 +190,49 @@ export interface JobStepOutput {
 export interface JobDefaults {
   /** Default run settings. */
   readonly run?: RunSettings;
+}
+
+/**
+ * The type of runner to run the job on. Can be GitHub or Self-hosted.
+ * In case of self-hosted, a list of labels can be supplied.
+ */
+export class Runner {
+  /**
+   * Runner instance that sets runsOn to `ubuntu-latest`
+   */
+  public static readonly UBUNTU_LATEST = new Runner(['ubuntu-latest']);
+
+  /**
+   * Runner instance that sets runsOn to `windows-latest`
+   */
+  public static readonly WINDOWS_LATEST = new Runner(['windows-latest']);
+
+  /**
+   * Runner instance that sets runsOn to `macos-latest`
+   */
+  public static readonly MACOS_LATEST = new Runner(['macos-latest']);
+
+  /**
+   * Creates a runner instance that sets runsOn to `self-hosted`.
+   * Additional labels can be supplied. There is no need to supply `self-hosted` as a label explicitly.
+   */
+  public static selfHosted(labels: string[]): Runner {
+    if (labels[0] === 'self-hosted') {
+      return new Runner(labels);
+    } else {
+      return new Runner(['self-hosted', ...labels]);
+    }
+  }
+
+  public get runsOn(): string[] | string {
+    if (this.labels[0] === 'self-hosted') {
+      return this.labels;
+    } else {
+      return this.labels[0];
+    }
+  }
+
+  private constructor(private readonly labels: string[]) {}
 }
 
 /**

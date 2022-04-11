@@ -12,7 +12,6 @@ import { awsCredentialStep } from './private/aws-credentials';
 import * as github from './workflows-model';
 
 const CDKOUT_ARTIFACT = 'cdk.out';
-const RUNS_ON = 'ubuntu-latest';
 const ASSET_HASH_NAME = 'asset-hash';
 
 /**
@@ -101,6 +100,13 @@ export interface GitHubWorkflowProps extends PipelineBaseProps {
    * you will be logged in to docker when you upload Docker Assets.
    */
   readonly dockerCredentials?: DockerCredential[];
+
+  /**
+   * The type of runner to run the job on. The runner can be either a
+   * GitHub-hosted runner or a self-hosted runner.
+   * @default Runner.UBUNTU_LATEST
+   */
+  readonly runner?: github.Runner;
 }
 
 /**
@@ -122,6 +128,7 @@ export class GitHubWorkflow extends PipelineBase {
   private readonly postBuildSteps: github.JobStep[];
   private readonly jobOutputs: Record<string, github.JobStepOutput[]> = {};
   private readonly assetHashMap: Record<string, string> = {};
+  private readonly runner: github.Runner;
 
   constructor(scope: Construct, id: string, props: GitHubWorkflowProps) {
     super(scope, id, props);
@@ -154,6 +161,8 @@ export class GitHubWorkflow extends PipelineBase {
       push: { branches: ['main'] },
       workflowDispatch: {},
     };
+
+    this.runner = props.runner ?? github.Runner.UBUNTU_LATEST;
   }
 
   protected doBuildPipeline() {
@@ -334,7 +343,7 @@ export class GitHubWorkflow extends PipelineBase {
           contents: github.JobPermission.READ,
           idToken: this.useGitHubActionRole ? github.JobPermission.WRITE : github.JobPermission.NONE,
         },
-        runsOn: RUNS_ON,
+        runsOn: this.runner.runsOn,
         outputs: {
           [ASSET_HASH_NAME]: `\${{ steps.Publish.outputs.${ASSET_HASH_NAME} }}`,
         },
@@ -399,7 +408,7 @@ export class GitHubWorkflow extends PipelineBase {
           idToken: this.useGitHubActionRole ? github.JobPermission.WRITE : github.JobPermission.NONE,
         },
         needs: this.renderDependencies(node),
-        runsOn: RUNS_ON,
+        runsOn: this.runner.runsOn,
         steps: [
           ...this.stepsToConfigureAws(this.useGitHubActionRole, { region, assumeRoleArn }),
           {
@@ -443,7 +452,7 @@ export class GitHubWorkflow extends PipelineBase {
         permissions: {
           contents: github.JobPermission.READ,
         },
-        runsOn: RUNS_ON,
+        runsOn: this.runner.runsOn,
         needs: this.renderDependencies(node),
         env: step.env,
         container: this.buildContainer,
@@ -533,7 +542,7 @@ export class GitHubWorkflow extends PipelineBase {
         permissions: {
           contents: github.JobPermission.READ,
         },
-        runsOn: RUNS_ON,
+        runsOn: this.runner.runsOn,
         needs: this.renderDependencies(node),
         env: {
           ...step.env,

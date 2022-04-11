@@ -14,18 +14,23 @@ Workflows.
 
 ## Table of Contents
 
-- [Usage](#usage)
-- [Initial Setup](#initial-setup)
-- [AWS Credentials](#aws-credentials)
-  + [GitHub Action Role](#github-action-role)
-    - [`GitHubActionRole` Construct](#githubactionrole-construct)
-  + [GitHub Secrets](#github-secrets)
-- [Using Docker In The Pipeline](#using-docker-in-the-pipeline)
-  + [Authenticating To Docker Registries](#authenticating-to-docker-registries)
-- [Tutorial](#tutorial)
-- [Not Supported Yet](#not-supported-yet)
-- [Contributing](#contributing)
-- [License](#license)
+- [CDK Pipelines for GitHub Workflows](#cdk-pipelines-for-github-workflows)
+  - [Table of Contents](#table-of-contents)
+  - [Usage](#usage)
+  - [Initial Setup](#initial-setup)
+  - [AWS Credentials](#aws-credentials)
+    - [GitHub Action Role](#github-action-role)
+      - [`GitHubActionRole` Construct](#githubactionrole-construct)
+    - [GitHub Secrets](#github-secrets)
+    - [Using Docker in the Pipeline](#using-docker-in-the-pipeline)
+      - [Authenticating to Docker registries](#authenticating-to-docker-registries)
+  - [Runner Types](#runner-types)
+    - [GitHub Hosted Runner](#github-hosted-runner)
+    - [Self Hosted Runner](#self-hosted-runner)
+  - [Tutorial](#tutorial)
+  - [Not supported yet](#not-supported-yet)
+  - [Contributing](#contributing)
+  - [License](#license)
 
 ## Usage
 
@@ -82,7 +87,7 @@ Assuming you have your CDK app checked out on your local machine, here are the s
 to develop your GitHub Workflow.
 
 * Set up AWS Credentials your local environment. It is highly recommended to authenticate via an OpenId
-  Connect IAM Role. You can set one up using the [`GithubActionRole`](#github-action-role) class provided 
+  Connect IAM Role. You can set one up using the [`GithubActionRole`](#github-action-role) class provided
   in this module. For more information (and alternatives), see [AWS Credentials](#aws-credentials).
 
 * When you've updated your pipeline and are ready to deploy, run `cdk synth`. This creates a workflow file
@@ -273,6 +278,54 @@ const pipeline = new GitHubWorkflow(app, 'Pipeline', {
       passwordKey: 'CUSTOM_PASSWORD',
     }),
   ],
+});
+```
+
+## Runner Types
+
+You can choose to run the workflow in either a GitHub hosted or [self-hosted](https://docs.github.com/en/actions/hosting-your-own-runners/about-self-hosted-runners) runner.
+
+### GitHub Hosted Runner
+
+The default is `Runner.UBUNTU_LATEST`. You can override this as shown below:
+
+```ts
+import { App } from 'aws-cdk-lib';
+import { ShellStep } from 'aws-cdk-lib/pipelines';
+import { GitHubWorkflow } from 'cdk-pipelines-github';
+
+const app = new App();
+
+const pipeline = new GitHubWorkflow(app, 'Pipeline', {
+  synth: new ShellStep('Build', {
+    commands: [
+      'yarn install',
+      'yarn build',
+    ],
+  }),
+  runner: Runner.WINDOWS_LATEST,
+});
+```
+
+### Self Hosted Runner
+
+The following example shows how to configure the workflow to run on a self-hosted runner. Note that you do not need to pass in `self-hosted` explicitly as a label.
+
+```ts
+import { App } from 'aws-cdk-lib';
+import { ShellStep } from 'aws-cdk-lib/pipelines';
+import { GitHubWorkflow } from 'cdk-pipelines-github';
+
+const app = new App();
+
+const pipeline = new GitHubWorkflow(app, 'Pipeline', {
+  synth: new ShellStep('Build', {
+    commands: [
+      'yarn install',
+      'yarn build',
+    ],
+  }),
+  runner: Runner.selfHosted(['label1', 'label2']),
 });
 ```
 

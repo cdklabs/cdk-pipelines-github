@@ -3,7 +3,7 @@ import { join } from 'path';
 import { Stack, Stage } from 'aws-cdk-lib';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import { ShellStep } from 'aws-cdk-lib/pipelines';
-import { GitHubWorkflow } from '../src';
+import { GitHubWorkflow, Runner } from '../src';
 import { GitHubExampleApp } from './example-app';
 import { withTemporaryDirectory, TestApp } from './testutil';
 
@@ -29,6 +29,40 @@ test('pipeline with only a synth step', () => {
         installCommands: ['yarn'],
         commands: ['yarn build'],
       }),
+    });
+
+    app.synth();
+
+    expect(readFileSync(github.workflowPath, 'utf-8')).toMatchSnapshot();
+  });
+});
+
+test('pipeline with GitHub hosted runner override', () => {
+  withTemporaryDirectory((dir) => {
+    const github = new GitHubWorkflow(app, 'Pipeline', {
+      workflowPath: `${dir}/.github/workflows/deploy.yml`,
+      synth: new ShellStep('Build', {
+        installCommands: ['yarn'],
+        commands: ['yarn build'],
+      }),
+      runner: Runner.WINDOWS_LATEST,
+    });
+
+    app.synth();
+
+    expect(readFileSync(github.workflowPath, 'utf-8')).toMatchSnapshot();
+  });
+});
+
+test('pipeline with self-hosted runner override', () => {
+  withTemporaryDirectory((dir) => {
+    const github = new GitHubWorkflow(app, 'Pipeline', {
+      workflowPath: `${dir}/.github/workflows/deploy.yml`,
+      synth: new ShellStep('Build', {
+        installCommands: ['yarn'],
+        commands: ['yarn build'],
+      }),
+      runner: Runner.selfHosted(['label1', 'label2']),
     });
 
     app.synth();
