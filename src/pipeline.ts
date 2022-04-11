@@ -107,6 +107,12 @@ export interface GitHubWorkflowProps extends PipelineBaseProps {
    * @default Runner.UBUNTU_LATEST
    */
   readonly runner?: github.Runner;
+
+  /**
+   * Optional override for the region used in Publish Assets job
+   * @default "us-west-2"
+   */
+  readonly publishAssetsRegion?: string;
 }
 
 /**
@@ -129,6 +135,7 @@ export class GitHubWorkflow extends PipelineBase {
   private readonly jobOutputs: Record<string, github.JobStepOutput[]> = {};
   private readonly assetHashMap: Record<string, string> = {};
   private readonly runner: github.Runner;
+  private readonly publishAssetsRegion: string;
 
   constructor(scope: Construct, id: string, props: GitHubWorkflowProps) {
     super(scope, id, props);
@@ -163,6 +170,7 @@ export class GitHubWorkflow extends PipelineBase {
     };
 
     this.runner = props.runner ?? github.Runner.UBUNTU_LATEST;
+    this.publishAssetsRegion = props.publishAssetsRegion ?? 'us-west-2';
   }
 
   protected doBuildPipeline() {
@@ -353,7 +361,7 @@ export class GitHubWorkflow extends PipelineBase {
             name: 'Install',
             run: `npm install --no-save cdk-assets${installSuffix}`,
           },
-          ...this.stepsToConfigureAws(this.useGitHubActionRole, { region: 'us-west-2' }),
+          ...this.stepsToConfigureAws(this.useGitHubActionRole, { region: this.publishAssetsRegion }),
           ...dockerLoginSteps,
           publishStep,
         ],
