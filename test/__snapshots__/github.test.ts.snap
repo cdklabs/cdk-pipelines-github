@@ -567,6 +567,125 @@ jobs:
 "
 `;
 
+exports[`pipeline with publish asset region override 1`] = `
+"name: deploy
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: {}
+jobs:
+  Build-Build:
+    name: Synthesize
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    needs: []
+    env: {}
+    container: null
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Build
+        run: \\"\\"
+      - name: Upload cdk.out
+        uses: actions/upload-artifact@v2.1.1
+        with:
+          name: cdk.out
+          path: cdk.out
+  Assets-FileAsset1:
+    name: Publish Assets Assets-FileAsset1
+    needs:
+      - Build-Build
+    permissions:
+      contents: read
+      id-token: none
+    runs-on: ubuntu-latest
+    outputs:
+      asset-hash: \${{ steps.Publish.outputs.asset-hash }}
+    steps:
+      - name: Download cdk.out
+        uses: actions/download-artifact@v2
+        with:
+          name: cdk.out
+          path: github.out
+      - name: Install
+        run: npm install --no-save cdk-assets
+      - name: Authenticate Via GitHub Secrets
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: ap-southeast-2
+          role-duration-seconds: 1800
+          role-skip-session-tagging: true
+          aws-access-key-id: \${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: \${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: \${{ secrets.undefined }}
+      - id: Publish
+        name: Publish Assets-FileAsset1
+        run: /bin/bash ./cdk.out/publish-Assets-FileAsset1-step.sh
+  Assets-FileAsset2:
+    name: Publish Assets Assets-FileAsset2
+    needs:
+      - Build-Build
+    permissions:
+      contents: read
+      id-token: none
+    runs-on: ubuntu-latest
+    outputs:
+      asset-hash: \${{ steps.Publish.outputs.asset-hash }}
+    steps:
+      - name: Download cdk.out
+        uses: actions/download-artifact@v2
+        with:
+          name: cdk.out
+          path: github.out
+      - name: Install
+        run: npm install --no-save cdk-assets
+      - name: Authenticate Via GitHub Secrets
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: ap-southeast-2
+          role-duration-seconds: 1800
+          role-skip-session-tagging: true
+          aws-access-key-id: \${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: \${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: \${{ secrets.undefined }}
+      - id: Publish
+        name: Publish Assets-FileAsset2
+        run: /bin/bash ./cdk.out/publish-Assets-FileAsset2-step.sh
+  MyStack-MyStack-Deploy:
+    name: Deploy MyStack098574E7
+    permissions:
+      contents: read
+      id-token: none
+    needs:
+      - Build-Build
+      - Assets-FileAsset1
+      - Assets-FileAsset2
+    runs-on: ubuntu-latest
+    steps:
+      - name: Authenticate Via GitHub Secrets
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: us-east-1
+          role-duration-seconds: 1800
+          role-skip-session-tagging: true
+          aws-access-key-id: \${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: \${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: \${{ secrets.undefined }}
+          role-to-assume: arn:aws:iam::111111111111:role/cdk-hnb659fds-deploy-role-111111111111-us-east-1
+          role-external-id: Pipeline
+      - id: Deploy
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
+        with:
+          name: MyStack-MyStack
+          template: https://cdk-hnb659fds-assets-111111111111-us-east-1.s3.us-east-1.amazonaws.com/\${{
+            needs.Assets-FileAsset1.outputs.asset-hash }}.json
+          no-fail-on-empty-changeset: \\"1\\"
+          role-arn: arn:aws:iam::111111111111:role/cdk-hnb659fds-cfn-exec-role-111111111111-us-east-1
+"
+`;
+
 exports[`pipeline with self-hosted runner override 1`] = `
 "name: deploy
 on:

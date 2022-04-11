@@ -104,9 +104,21 @@ export interface GitHubWorkflowProps extends PipelineBaseProps {
   /**
    * The type of runner to run the job on. The runner can be either a
    * GitHub-hosted runner or a self-hosted runner.
+   *
    * @default Runner.UBUNTU_LATEST
    */
   readonly runner?: github.Runner;
+
+  /**
+   * Will assume the GitHubActionRole in this region when publishing assets.
+   * This is NOT the region in which the assets are published.
+   *
+   * In most cases, you do not have to worry about this property, and can safely
+   * ignore it.
+   *
+   * @default "us-west-2"
+   */
+  readonly publishAssetsAuthRegion?: string;
 }
 
 /**
@@ -129,6 +141,7 @@ export class GitHubWorkflow extends PipelineBase {
   private readonly jobOutputs: Record<string, github.JobStepOutput[]> = {};
   private readonly assetHashMap: Record<string, string> = {};
   private readonly runner: github.Runner;
+  private readonly publishAssetsAuthRegion: string;
 
   constructor(scope: Construct, id: string, props: GitHubWorkflowProps) {
     super(scope, id, props);
@@ -163,6 +176,7 @@ export class GitHubWorkflow extends PipelineBase {
     };
 
     this.runner = props.runner ?? github.Runner.UBUNTU_LATEST;
+    this.publishAssetsAuthRegion = props.publishAssetsAuthRegion ?? 'us-west-2';
   }
 
   protected doBuildPipeline() {
@@ -353,7 +367,7 @@ export class GitHubWorkflow extends PipelineBase {
             name: 'Install',
             run: `npm install --no-save cdk-assets${installSuffix}`,
           },
-          ...this.stepsToConfigureAws(this.useGitHubActionRole, { region: 'us-west-2' }),
+          ...this.stepsToConfigureAws(this.useGitHubActionRole, { region: this.publishAssetsAuthRegion }),
           ...dockerLoginSteps,
           publishStep,
         ],
