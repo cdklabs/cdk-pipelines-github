@@ -116,7 +116,6 @@ export interface GitHubWorkflowProps extends PipelineBaseProps {
    * In most cases, you do not have to worry about this property, and can safely
    * ignore it.
    *
-   * @default 'us-west-2'
    * @default "us-west-2"
    */
   readonly publishAssetsAuthRegion?: string;
