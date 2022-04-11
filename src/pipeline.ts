@@ -104,6 +104,7 @@ export interface GitHubWorkflowProps extends PipelineBaseProps {
   /**
    * The type of runner to run the job on. The runner can be either a
    * GitHub-hosted runner or a self-hosted runner.
+   *
    * @default Runner.UBUNTU_LATEST
    */
   readonly runner?: github.Runner;
