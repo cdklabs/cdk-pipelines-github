@@ -249,7 +249,7 @@ new GitHubWorkflow(scope: Construct, id: string, props: GitHubWorkflowProps)
   * **postBuildSteps** (<code>Array<[JobStep](#cdk-pipelines-github-jobstep)></code>)  GitHub workflow steps to execute after build. __*Default*__: []
   * **preBuildSteps** (<code>Array<[JobStep](#cdk-pipelines-github-jobstep)></code>)  GitHub workflow steps to execute before build. __*Default*__: []
   * **preSynthed** (<code>boolean</code>)  Indicates if the repository already contains a synthesized `cdk.out` directory, in which case we will simply checkout the repo in jobs that require `cdk.out`. __*Default*__: false
-  * **publishAssetsRegion** (<code>string</code>)  Optional override for the region used in Publish Assets job. __*Default*__: "us-west-2"
+  * **publishAssetsAuthRegion** (<code>string</code>)  Optional override for the region used when assuming role to publish assets. __*Default*__: "us-west-2"
   * **runner** (<code>[Runner](#cdk-pipelines-github-runner)</code>)  The type of runner to run the job on. __*Default*__: Runner.UBUNTU_LATEST
   * **workflowName** (<code>string</code>)  Name of the workflow. __*Default*__: "deploy"
   * **workflowPath** (<code>string</code>)  File path for the GitHub workflow. __*Default*__: ".github/workflows/deploy.yml"
@@ -498,7 +498,7 @@ Name | Type | Description
 **postBuildSteps**? | <code>Array<[JobStep](#cdk-pipelines-github-jobstep)></code> | GitHub workflow steps to execute after build.<br/>__*Default*__: []
 **preBuildSteps**? | <code>Array<[JobStep](#cdk-pipelines-github-jobstep)></code> | GitHub workflow steps to execute before build.<br/>__*Default*__: []
 **preSynthed**? | <code>boolean</code> | Indicates if the repository already contains a synthesized `cdk.out` directory, in which case we will simply checkout the repo in jobs that require `cdk.out`.<br/>__*Default*__: false
-**publishAssetsRegion**? | <code>string</code> | Optional override for the region used in Publish Assets job.<br/>__*Default*__: "us-west-2"
+**publishAssetsAuthRegion**? | <code>string</code> | Optional override for the region used when assuming role to publish assets.<br/>__*Default*__: "us-west-2"
 **runner**? | <code>[Runner](#cdk-pipelines-github-runner)</code> | The type of runner to run the job on.<br/>__*Default*__: Runner.UBUNTU_LATEST
 **workflowName**? | <code>string</code> | Name of the workflow.<br/>__*Default*__: "deploy"
 **workflowPath**? | <code>string</code> | File path for the GitHub workflow.<br/>__*Default*__: ".github/workflows/deploy.yml"

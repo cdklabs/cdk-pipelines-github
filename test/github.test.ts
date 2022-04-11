@@ -78,7 +78,7 @@ test('pipeline with publish asset region override', () => {
       synth: new ShellStep('Build', {
         commands: [],
       }),
-      publishAssetsRegion: 'ap-southeast-2',
+      publishAssetsAuthRegion: 'ap-southeast-2',
     });
 
     const stage = new Stage(app, 'MyStack', {
