@@ -229,6 +229,8 @@ jobs:
     steps:
       - run: echo hello
   StageA-BucketStack-Deploy:
+    environment:
+      name: StageA
     name: Deploy StageABucketStackEAC67DBE
     permissions:
       contents: read
@@ -260,6 +262,8 @@ jobs:
           no-fail-on-empty-changeset: \\"1\\"
           role-arn: arn:aws:iam::111111111111:role/cdk-hnb659fds-cfn-exec-role-111111111111-us-east-1
   StageA-FunctionStack-Deploy:
+    environment:
+      name: StageA
     name: Deploy StageAFunctionStackD42C27B8
     permissions:
       contents: read
@@ -309,6 +313,8 @@ jobs:
     steps:
       - run: \\"echo FN_NAME equals: $FN_NAME\\"
   StageB-BucketStack-Deploy:
+    environment:
+      name: StageB
     name: Deploy StageBBucketStackDF3FFF07
     permissions:
       contents: read
@@ -343,6 +349,8 @@ jobs:
           no-fail-on-empty-changeset: \\"1\\"
           role-arn: arn:aws:iam::222222222222:role/cdk-hnb659fds-cfn-exec-role-222222222222-eu-west-2
   StageB-FunctionStack-Deploy:
+    environment:
+      name: StageB
     name: Deploy StageBFunctionStack18098DCD
     permissions:
       contents: read
@@ -497,6 +505,8 @@ jobs:
         name: Publish Assets-FileAsset2
         run: /bin/bash ./cdk.out/publish-Assets-FileAsset2-step.sh
   MyStack-MyStack-Deploy:
+    environment:
+      name: MyStack
     name: Deploy MyStack098574E7
     permissions:
       contents: read
@@ -654,6 +664,8 @@ jobs:
         name: Publish Assets-FileAsset2
         run: /bin/bash ./cdk.out/publish-Assets-FileAsset2-step.sh
   MyStack-MyStack-Deploy:
+    environment:
+      name: MyStack
     name: Deploy MyStack098574E7
     permissions:
       contents: read
@@ -807,6 +819,8 @@ jobs:
         name: Publish Assets-FileAsset2
         run: /bin/bash ./cdk.out/publish-Assets-FileAsset2-step.sh
   MyStack-MyStack-Deploy:
+    environment:
+      name: MyStack
     name: Deploy MyStack098574E7
     permissions:
       contents: read
