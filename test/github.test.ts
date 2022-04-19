@@ -1,6 +1,6 @@
 import { readFileSync } from 'fs';
 import { join } from 'path';
-import { Stack, Stage } from 'aws-cdk-lib';
+import { App, Stack, Stage, StageProps } from 'aws-cdk-lib';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import { ShellStep } from 'aws-cdk-lib/pipelines';
 import { GitHubWorkflow, Runner } from '../src';
@@ -8,6 +8,20 @@ import { GitHubExampleApp } from './example-app';
 import { withTemporaryDirectory, TestApp } from './testutil';
 
 const fixtures = join(__dirname, 'fixtures');
+
+class GithubStage extends Stage {
+  constructor(scope: App, id: string, props?: StageProps) {
+    super(scope, id, props);
+
+    const stack = new Stack(this, 'Stack', {
+      env: {
+        region: 'us-east-1',
+        account: '1234',
+      },
+    });
+    stack.tags.setTag('github-env', 'Development');
+  }
+}
 
 let app: TestApp;
 beforeEach(() => {
@@ -47,6 +61,25 @@ test('pipeline with GitHub hosted runner override', () => {
       }),
       runner: Runner.WINDOWS_LATEST,
     });
+
+    app.synth();
+
+    expect(readFileSync(github.workflowPath, 'utf-8')).toMatchSnapshot();
+  });
+});
+
+test('pipeline with GitHub environment', () => {
+  withTemporaryDirectory((dir) => {
+    const github = new GitHubWorkflow(app, 'Pipeline', {
+      workflowPath: `${dir}/.github/workflows/deploy.yml`,
+      synth: new ShellStep('Build', {
+        installCommands: ['yarn'],
+        commands: ['yarn build'],
+      }),
+      runner: Runner.WINDOWS_LATEST,
+    });
+
+    github.addStage(new GithubStage(app, 'StageA'));
 
     app.synth();
 

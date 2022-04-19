@@ -416,9 +416,11 @@ export class GitHubWorkflow extends PipelineBase {
     return {
       id: node.uniqueId,
       definition: {
-        environment: {
-          name: stack.stackName.split('-', 1).join(),
-        },
+        ...(stack.tags['github-env'] && {
+          environment: {
+            name: stack.tags['github-env'],
+          },
+        }),
         name: `Deploy ${stack.stackArtifactId}`,
         permissions: {
           contents: github.JobPermission.READ,

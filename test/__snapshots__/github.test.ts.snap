@@ -229,8 +229,6 @@ jobs:
     steps:
       - run: echo hello
   StageA-BucketStack-Deploy:
-    environment:
-      name: StageA
     name: Deploy StageABucketStackEAC67DBE
     permissions:
       contents: read
@@ -262,8 +260,6 @@ jobs:
           no-fail-on-empty-changeset: \\"1\\"
           role-arn: arn:aws:iam::111111111111:role/cdk-hnb659fds-cfn-exec-role-111111111111-us-east-1
   StageA-FunctionStack-Deploy:
-    environment:
-      name: StageA
     name: Deploy StageAFunctionStackD42C27B8
     permissions:
       contents: read
@@ -313,8 +309,6 @@ jobs:
     steps:
       - run: \\"echo FN_NAME equals: $FN_NAME\\"
   StageB-BucketStack-Deploy:
-    environment:
-      name: StageB
     name: Deploy StageBBucketStackDF3FFF07
     permissions:
       contents: read
@@ -349,8 +343,6 @@ jobs:
           no-fail-on-empty-changeset: \\"1\\"
           role-arn: arn:aws:iam::222222222222:role/cdk-hnb659fds-cfn-exec-role-222222222222-eu-west-2
   StageB-FunctionStack-Deploy:
-    environment:
-      name: StageB
     name: Deploy StageBFunctionStack18098DCD
     permissions:
       contents: read
@@ -386,6 +378,98 @@ jobs:
             needs.Assets-FileAsset6.outputs.asset-hash }}.json
           no-fail-on-empty-changeset: \\"1\\"
           role-arn: arn:aws:iam::222222222222:role/cdk-hnb659fds-cfn-exec-role-222222222222-eu-west-2
+"
+`;
+
+exports[`pipeline with GitHub environment 1`] = `
+"name: deploy
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: {}
+jobs:
+  Build-Build:
+    name: Synthesize
+    permissions:
+      contents: read
+    runs-on: windows-latest
+    needs: []
+    env: {}
+    container: null
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install
+        run: yarn
+      - name: Build
+        run: yarn build
+      - name: Upload cdk.out
+        uses: actions/upload-artifact@v2.1.1
+        with:
+          name: cdk.out
+          path: cdk.out
+  Assets-FileAsset1:
+    name: Publish Assets Assets-FileAsset1
+    needs:
+      - Build-Build
+    permissions:
+      contents: read
+      id-token: none
+    runs-on: windows-latest
+    outputs:
+      asset-hash: \${{ steps.Publish.outputs.asset-hash }}
+    steps:
+      - name: Download cdk.out
+        uses: actions/download-artifact@v2
+        with:
+          name: cdk.out
+          path: github.out
+      - name: Install
+        run: npm install --no-save cdk-assets
+      - name: Authenticate Via GitHub Secrets
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: us-west-2
+          role-duration-seconds: 1800
+          role-skip-session-tagging: true
+          aws-access-key-id: \${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: \${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: \${{ secrets.undefined }}
+      - id: Publish
+        name: Publish Assets-FileAsset1
+        run: /bin/bash ./cdk.out/publish-Assets-FileAsset1-step.sh
+  StageA-Stack-Deploy:
+    environment:
+      name: Development
+    name: Deploy StageAStackA748C95F
+    permissions:
+      contents: read
+      id-token: none
+    needs:
+      - Build-Build
+      - Assets-FileAsset1
+    runs-on: windows-latest
+    steps:
+      - name: Authenticate Via GitHub Secrets
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: us-east-1
+          role-duration-seconds: 1800
+          role-skip-session-tagging: true
+          aws-access-key-id: \${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: \${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: \${{ secrets.undefined }}
+          role-to-assume: arn:aws:iam::1234:role/cdk-hnb659fds-deploy-role-1234-us-east-1
+          role-external-id: Pipeline
+      - id: Deploy
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
+        with:
+          name: StageA-Stack
+          template: https://cdk-hnb659fds-assets-1234-us-east-1.s3.us-east-1.amazonaws.com/\${{
+            needs.Assets-FileAsset1.outputs.asset-hash }}.json
+          no-fail-on-empty-changeset: \\"1\\"
+          role-arn: arn:aws:iam::1234:role/cdk-hnb659fds-cfn-exec-role-1234-us-east-1
 "
 `;
 
@@ -505,8 +589,6 @@ jobs:
         name: Publish Assets-FileAsset2
         run: /bin/bash ./cdk.out/publish-Assets-FileAsset2-step.sh
   MyStack-MyStack-Deploy:
-    environment:
-      name: MyStack
     name: Deploy MyStack098574E7
     permissions:
       contents: read
@@ -664,8 +746,6 @@ jobs:
         name: Publish Assets-FileAsset2
         run: /bin/bash ./cdk.out/publish-Assets-FileAsset2-step.sh
   MyStack-MyStack-Deploy:
-    environment:
-      name: MyStack
     name: Deploy MyStack098574E7
     permissions:
       contents: read
@@ -819,8 +899,6 @@ jobs:
         name: Publish Assets-FileAsset2
         run: /bin/bash ./cdk.out/publish-Assets-FileAsset2-step.sh
   MyStack-MyStack-Deploy:
-    environment:
-      name: MyStack
     name: Deploy MyStack098574E7
     permissions:
       contents: read
