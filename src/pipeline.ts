@@ -465,6 +465,7 @@ export class GitHubWorkflow extends PipelineBase {
         name: 'Synthesize',
         permissions: {
           contents: github.JobPermission.READ,
+          idToken: this.useGitHubActionRole ? github.JobPermission.WRITE : github.JobPermission.NONE,
         },
         runsOn: this.runner.runsOn,
         needs: this.renderDependencies(node),
