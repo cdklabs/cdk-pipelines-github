@@ -1110,10 +1110,10 @@ available-typed-arrays@^1.0.5:
   resolved "https://registry.yarnpkg.com/available-typed-arrays/-/available-typed-arrays-1.0.5.tgz#92f95616501069d07d10edb2fc37d3e1c65123b7"
   integrity sha512-DMD0KiN46eipeziST1LPP/STfDU0sufISXmjSgvVsoU2tqxctQeASejWcfNtxYKqETM1UxQ8sp2OrSBWpHY6sw==
 
-aws-cdk-lib@2.21.0:
-  version "2.21.0"
-  resolved "https://registry.yarnpkg.com/aws-cdk-lib/-/aws-cdk-lib-2.21.0.tgz#3b326288c27179dae56e57448295c0c796fa9d90"
-  integrity sha512-ctwEOjkpp2DFfMiPQjRUC/OHnZBTprKcJ1sxHNEsOnMmN4w2Vqe22tiAXXmxThfdv0WdBKUdRuiYQybbsTb37g==
+aws-cdk-lib@2.21.1:
+  version "2.21.1"
+  resolved "https://registry.yarnpkg.com/aws-cdk-lib/-/aws-cdk-lib-2.21.1.tgz#f83d5ccf8865ffe07d93428f8b21f632fec82dbb"
+  integrity sha512-dhJUZ50EfhV67Pq7oED3rwyg3eKebxR7LTHQXf52YAxmBSKkE2L6hPAshCyaP49uv4QmyAW14T41o+aVSgyHHw==
   dependencies:
     "@balena/dockerignore" "^1.0.2"
     case "1.6.3"
@@ -4827,10 +4827,10 @@ progress@^2.0.3:
   resolved "https://registry.yarnpkg.com/progress/-/progress-2.0.3.tgz#7e8cf8d8f5b8f239c1bc68beb4eb78567d572ef8"
   integrity sha512-7PiHtLll5LdnKIMw100I+8xJXR5gW2QwWYkT6iJva0bXitZKa/XMrSbdmg3r2Xnaidz9Qumd0VPaMrZlF9V9sA==
 
-projen@^0.54.40:
-  version "0.54.40"
-  resolved "https://registry.yarnpkg.com/projen/-/projen-0.54.40.tgz#e1541d4be828bfde0a2403718956d3db5c3ac3c3"
-  integrity sha512-aX4qlQXTm31u993kPOmkG6ftOUHJ2d22DZa/t56dKOCUgdQE0Q5r7vc17b2M/S+lE2ocDT8yQQxRvu/zgdVCCg==
+projen@^0.54.41:
+  version "0.54.41"
+  resolved "https://registry.yarnpkg.com/projen/-/projen-0.54.41.tgz#201f6df95ad13a76c350267d2b39a82d1ae4861d"
+  integrity sha512-torOVO0ouIyD6Ge2dZys1wJOpPWAUPeOcRpxglQU960lHuaaxD8YuOR18wd9MJB+Gr6DsJOQLGFaUdi+IHVDEQ==
   dependencies:
     "@iarna/toml" "^2.2.5"
     case "^1.6.3"
