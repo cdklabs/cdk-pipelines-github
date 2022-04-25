@@ -161,6 +161,38 @@ test('pipeline with oidc authentication', () => {
   });
 });
 
+test('pipeline with github environment', () => {
+  withTemporaryDirectory((dir) => {
+    const pipeline = new GitHubWorkflow(app, 'Pipeline', {
+      workflowPath: `${dir}/.github/workflows/deploy.yml`,
+      synth: new ShellStep('Build', {
+        installCommands: ['yarn'],
+        commands: ['yarn build'],
+      }),
+    });
+
+    const stage = new Stage(app, 'MyStack', {
+      env: { account: '111111111111', region: 'us-east-1' },
+    });
+
+    const stack = new Stack(stage, 'MyStack');
+
+    new lambda.Function(stack, 'Function', {
+      code: lambda.Code.fromAsset(fixtures),
+      handler: 'index.handler',
+      runtime: lambda.Runtime.NODEJS_14_X,
+    });
+
+    pipeline.addStageWithGitHubOpts(stage, {
+      gitHubEnvName: 'test',
+    });
+
+    app.synth();
+
+    expect(readFileSync(pipeline.workflowPath, 'utf-8')).toMatchSnapshot();
+  });
+});
+
 test('example app', () => {
   withTemporaryDirectory((dir) => {
     const repoDir = dir;
