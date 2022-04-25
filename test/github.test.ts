@@ -189,7 +189,7 @@ test('pipeline with github environment', () => {
 
     app.synth();
 
-    expect(readFileSync(pipeline.workflowPath, 'utf-8')).toMatchSnapshot();
+    expect(readFileSync(pipeline.workflowPath, 'utf-8')).toContain('environment: test\n');
   });
 });
 
