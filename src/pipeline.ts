@@ -766,10 +766,6 @@ function snakeCaseKeys<T = unknown>(obj: T, sep = '-'): T {
   return result as any;
 }
 
-// function removeUndefined(definition: github.Job): github.Job {
-
-// }
-
 /**
  * Names of secrets for AWS credentials.
  */
