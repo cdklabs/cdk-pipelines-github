@@ -12,6 +12,7 @@ jobs:
     name: Synthesize
     permissions:
       contents: read
+      id-token: none
     runs-on: ubuntu-latest
     needs: []
     env: {}
@@ -393,6 +394,7 @@ jobs:
     name: Synthesize
     permissions:
       contents: read
+      id-token: none
     runs-on: windows-latest
     needs: []
     env: {}
@@ -424,6 +426,7 @@ jobs:
     name: Synthesize
     permissions:
       contents: read
+      id-token: write
     runs-on: ubuntu-latest
     needs: []
     env: {}
@@ -548,6 +551,7 @@ jobs:
     name: Synthesize
     permissions:
       contents: read
+      id-token: none
     runs-on: ubuntu-latest
     needs: []
     env: {}
@@ -579,6 +583,7 @@ jobs:
     name: Synthesize
     permissions:
       contents: read
+      id-token: none
     runs-on: ubuntu-latest
     needs: []
     env: {}
@@ -698,6 +703,7 @@ jobs:
     name: Synthesize
     permissions:
       contents: read
+      id-token: none
     runs-on:
       - self-hosted
       - label1
@@ -732,6 +738,7 @@ jobs:
     name: Synthesize
     permissions:
       contents: read
+      id-token: none
     runs-on: ubuntu-latest
     needs: []
     env: {}

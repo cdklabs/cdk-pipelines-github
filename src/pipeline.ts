@@ -465,6 +465,9 @@ export class GitHubWorkflow extends PipelineBase {
         name: 'Synthesize',
         permissions: {
           contents: github.JobPermission.READ,
+          // The Synthesize job does not use the GitHub Action Role on its own, but it's possible
+          // that it is being used in the preBuildSteps.
+          idToken: this.useGitHubActionRole ? github.JobPermission.WRITE : github.JobPermission.NONE,
         },
         runsOn: this.runner.runsOn,
         needs: this.renderDependencies(node),
