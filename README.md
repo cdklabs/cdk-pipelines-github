@@ -342,7 +342,7 @@ You can run your GitHub Workflow in select
 [GitHub Environments](https://docs.github.com/en/actions/deployment/targeting-different-environments/using-environments-for-deployment).
 Via the GitHub UI, you can configure environments with protection rules and secrets, and reference
 those environments in your CDK app. A workflow that references an environment must follow any
-protection rules for the environment before running or accessing the environmnet's secrets.
+protection rules for the environment before running or accessing the environment's secrets.
 
 Assuming (just like in the main [example](#usage)) you have a
 [`Stage`](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.Stage.html)
@@ -367,13 +367,13 @@ const pipeline = new GitHubWorkflow(app, 'Pipeline', {
   gitHubActionRoleArn: 'arn:aws:iam::<account-id>:role/GitHubActionRole',
 });
 
-pipeline.addStageWithGitHubOpts(new MyStage(this, 'Beta', {
+pipeline.addStageWithGitHubOptions(new MyStage(this, 'Beta', {
   env: BETA_ENV,
-  gitHubEnvName: 'beta',
+  gitHubEnvironment: 'beta',
 }));
-pipeline.addStageWithGitHubOpts(new MyStage(this, 'Prod', {
+pipeline.addStageWithGitHubOptions(new MyStage(this, 'Prod', {
   env: PROD_ENV,
-  gitHubEnvName: 'prod',
+  gitHubEnvironment: 'prod',
 }));
 
 app.synth();
