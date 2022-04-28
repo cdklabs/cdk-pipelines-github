@@ -161,6 +161,73 @@ test('pipeline with oidc authentication', () => {
   });
 });
 
+test('pipeline with github environment', () => {
+  withTemporaryDirectory((dir) => {
+    const pipeline = new GitHubWorkflow(app, 'Pipeline', {
+      workflowPath: `${dir}/.github/workflows/deploy.yml`,
+      synth: new ShellStep('Build', {
+        installCommands: ['yarn'],
+        commands: ['yarn build'],
+      }),
+    });
+
+    const stage = new Stage(app, 'MyStack', {
+      env: { account: '111111111111', region: 'us-east-1' },
+    });
+
+    const stack = new Stack(stage, 'MyStack');
+
+    new lambda.Function(stack, 'Function', {
+      code: lambda.Code.fromAsset(fixtures),
+      handler: 'index.handler',
+      runtime: lambda.Runtime.NODEJS_14_X,
+    });
+
+    pipeline.addStageWithGitHubOptions(stage, {
+      gitHubEnvironment: 'test',
+    });
+
+    app.synth();
+
+    expect(readFileSync(pipeline.workflowPath, 'utf-8')).toContain('environment: test\n');
+  });
+});
+
+test('pipeline with multiple github environments', () => {
+  withTemporaryDirectory((dir) => {
+    const pipeline = new GitHubWorkflow(app, 'Pipeline', {
+      workflowPath: `${dir}/.github/workflows/deploy.yml`,
+      synth: new ShellStep('Build', {
+        installCommands: ['yarn'],
+        commands: ['yarn build'],
+      }),
+    });
+
+    // Two stages
+    const testStage = new Stage(app, 'MyStage1', {
+      env: { account: '111111111111', region: 'us-east-1' },
+    });
+    const prodStage = new Stage(app, 'MyStage2', {
+      env: { account: '222222222222', region: 'us-west-2' },
+    });
+
+    // Two stacks
+    new Stack(testStage, 'MyStack');
+    new Stack(prodStage, 'MyStack');
+
+    pipeline.addStageWithGitHubOptions(testStage, {
+      gitHubEnvironment: 'test',
+    });
+    pipeline.addStageWithGitHubOptions(prodStage, {
+      gitHubEnvironment: 'prod',
+    });
+
+    app.synth();
+
+    expect(readFileSync(pipeline.workflowPath, 'utf-8')).toMatchSnapshot();
+  });
+});
+
 test('example app', () => {
   withTemporaryDirectory((dir) => {
     const repoDir = dir;

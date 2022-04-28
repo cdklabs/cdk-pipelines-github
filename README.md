@@ -33,6 +33,9 @@ Workflows.
   - [Runner Types](#runner-types)
     - [GitHub Hosted Runner](#github-hosted-runner)
     - [Self Hosted Runner](#self-hosted-runner)
+  - [Additional Features](#additional-features)
+    - [Configure GitHub Environment](#configure-github-environment)
+      - [Manual Approval Step](#manual-approval-step)
   - [Tutorial](#tutorial)
   - [Not supported yet](#not-supported-yet)
   - [Contributing](#contributing)
@@ -334,6 +337,65 @@ const pipeline = new GitHubWorkflow(app, 'Pipeline', {
   runner: Runner.selfHosted(['label1', 'label2']),
 });
 ```
+
+## Additional Features
+
+Below is a compilation of additional features available for GitHub Workflows.
+
+### Configure GitHub Environment
+
+You can run your GitHub Workflow in select
+[GitHub Environments](https://docs.github.com/en/actions/deployment/targeting-different-environments/using-environments-for-deployment).
+Via the GitHub UI, you can configure environments with protection rules and secrets, and reference
+those environments in your CDK app. A workflow that references an environment must follow any
+protection rules for the environment before running or accessing the environment's secrets.
+
+Assuming (just like in the main [example](#usage)) you have a
+[`Stage`](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.Stage.html)
+called `MyStage` that includes CDK stacks for your app and you want to deploy it
+to two AWS environments (`BETA_ENV` and `PROD_ENV`) as well as GitHub Environments
+`beta` and `prod`:
+
+```ts
+import { App } from 'aws-cdk-lib';
+import { ShellStep } from 'aws-cdk-lib/pipelines';
+import { GitHubWorkflow } from 'cdk-pipelines-github';
+
+const app = new App();
+
+const pipeline = new GitHubWorkflow(app, 'Pipeline', {
+  synth: new ShellStep('Build', {
+    commands: [
+      'yarn install',
+      'yarn build',
+    ],
+  }),
+  gitHubActionRoleArn: 'arn:aws:iam::<account-id>:role/GitHubActionRole',
+});
+
+pipeline.addStageWithGitHubOptions(new MyStage(this, 'Beta', {
+  env: BETA_ENV,
+  gitHubEnvironment: 'beta',
+}));
+pipeline.addStageWithGitHubOptions(new MyStage(this, 'Prod', {
+  env: PROD_ENV,
+  gitHubEnvironment: 'prod',
+}));
+
+app.synth();
+```
+
+#### Manual Approval Step
+
+One use case for using GitHub Environments with your CDK Pipeline is to create a
+manual approval step for specific environments via Environment protection rules.
+From the GitHub UI, you can specify up to 5 required reviewers that must approve
+before the deployment can proceed:
+
+<img width="1134" alt="require-reviewers" src="https://user-images.githubusercontent.com/7248260/163494925-627f5ca7-a34e-48fa-bec7-1e4924ab6c0c.png">
+
+For more information and a tutorial for how to set this up, see this
+[discussion](https://github.com/cdklabs/cdk-pipelines-github/issues/162).
 
 ## Tutorial
 

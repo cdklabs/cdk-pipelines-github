@@ -2,7 +2,7 @@ import { mkdirSync, writeFileSync, readFileSync, existsSync } from 'fs';
 import * as path from 'path';
 import { Stage } from 'aws-cdk-lib';
 import { EnvironmentPlaceholders } from 'aws-cdk-lib/cx-api';
-import { PipelineBase, PipelineBaseProps, ShellStep, StackAsset, StackDeployment, StackOutputReference, Step } from 'aws-cdk-lib/pipelines';
+import { AddStageOpts, PipelineBase, PipelineBaseProps, ShellStep, StackAsset, StackDeployment, StackOutputReference, StageDeployment, Step } from 'aws-cdk-lib/pipelines';
 import { AGraphNode, PipelineGraph, Graph, isGraph } from 'aws-cdk-lib/pipelines/lib/helpers-internal';
 import { Construct } from 'constructs';
 import * as decamelize from 'decamelize';
@@ -13,6 +13,26 @@ import * as github from './workflows-model';
 
 const CDKOUT_ARTIFACT = 'cdk.out';
 const ASSET_HASH_NAME = 'asset-hash';
+
+/**
+ * Options to pass to `addStageWithGitHubOpts`.
+ */
+export interface AddGitHubStageOptions extends AddStageOpts {
+  /**
+   * Run the stage in a specific GitHub Environment. If specified,
+   * any protection rules configured for the environment must pass
+   * before the job is set to a runner. For example, if the environment
+   * has a manual approval rule configured, then the workflow will
+   * wait for the approval before sending the job to the runner.
+   *
+   * Running a workflow that references an environment that does not
+   * exist will create an environment with the referenced name.
+   * @see https://docs.github.com/en/actions/deployment/targeting-different-environments/using-environments-for-deployment
+   *
+   * @default - no GitHub environment
+   */
+  readonly gitHubEnvironment?: string;
+}
 
 /**
  * Props for `GitHubWorkflow`.
@@ -142,6 +162,7 @@ export class GitHubWorkflow extends PipelineBase {
   private readonly assetHashMap: Record<string, string> = {};
   private readonly runner: github.Runner;
   private readonly publishAssetsAuthRegion: string;
+  private readonly stackEnvs: Record<string, string> = {};
 
   constructor(scope: Construct, id: string, props: GitHubWorkflowProps) {
     super(scope, id, props);
@@ -177,6 +198,25 @@ export class GitHubWorkflow extends PipelineBase {
 
     this.runner = props.runner ?? github.Runner.UBUNTU_LATEST;
     this.publishAssetsAuthRegion = props.publishAssetsAuthRegion ?? 'us-west-2';
+  }
+
+  /**
+   * Deploy a single Stage by itself with options for further GitHub configuration.
+   *
+   * Add a Stage to the pipeline, to be deployed in sequence with other Stages added to the pipeline.
+   * All Stacks in the stage will be deployed in an order automatically determined by their relative dependencies.
+   */
+  public addStageWithGitHubOptions(stage: Stage, options?: AddGitHubStageOptions): StageDeployment {
+    const stageDeployment = this.addStage(stage, options);
+
+    // keep track of GitHub specific options
+    if (options?.gitHubEnvironment) {
+      for (const stack of stageDeployment.stacks) {
+        this.stackEnvs[stack.stackArtifactId] = options.gitHubEnvironment;
+      }
+    }
+
+    return stageDeployment;
   }
 
   protected doBuildPipeline() {
@@ -421,6 +461,7 @@ export class GitHubWorkflow extends PipelineBase {
           contents: github.JobPermission.READ,
           idToken: this.useGitHubActionRole ? github.JobPermission.WRITE : github.JobPermission.NONE,
         },
+        environment: this.stackEnvs[stack.stackArtifactId],
         needs: this.renderDependencies(node),
         runsOn: this.runner.runsOn,
         steps: [
