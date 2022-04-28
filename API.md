@@ -14,7 +14,7 @@ Name|Description
 
 Name|Description
 ----|-----------
-[AddGitHubStageOpts](#cdk-pipelines-github-addgithubstageopts)|Options to pass to `addStageWithGitHubOpts`.
+[AddGitHubStageOptions](#cdk-pipelines-github-addgithubstageoptions)|Options to pass to `addStageWithGitHubOpts`.
 [AwsCredentialsSecrets](#cdk-pipelines-github-awscredentialssecrets)|Names of secrets for AWS credentials.
 [CheckRunOptions](#cdk-pipelines-github-checkrunoptions)|Check run options.
 [CheckSuiteOptions](#cdk-pipelines-github-checksuiteoptions)|Check suite options.
@@ -269,7 +269,7 @@ Name | Type | Description
 ### Methods
 
 
-#### addStageWithGitHubOpts(stage, options?) <a id="cdk-pipelines-github-githubworkflow-addstagewithgithubopts"></a>
+#### addStageWithGitHubOptions(stage, options?) <a id="cdk-pipelines-github-githubworkflow-addstagewithgithuboptions"></a>
 
 Deploy a single Stage by itself with options for further GitHub configuration.
 
@@ -277,15 +277,15 @@ Add a Stage to the pipeline, to be deployed in sequence with other Stages added 
 All Stacks in the stage will be deployed in an order automatically determined by their relative dependencies.
 
 ```ts
-addStageWithGitHubOpts(stage: Stage, options?: AddGitHubStageOpts): StageDeployment
+addStageWithGitHubOptions(stage: Stage, options?: AddGitHubStageOptions): StageDeployment
 ```
 
 * **stage** (<code>[Stage](#aws-cdk-lib-stage)</code>)  *No description*
-* **options** (<code>[AddGitHubStageOpts](#cdk-pipelines-github-addgithubstageopts)</code>)  *No description*
+* **options** (<code>[AddGitHubStageOptions](#cdk-pipelines-github-addgithubstageoptions)</code>)  *No description*
   * **post** (<code>Array<[pipelines.Step](#aws-cdk-lib-pipelines-step)></code>)  Additional steps to run after all of the stacks in the stage. __*Default*__: No additional steps
   * **pre** (<code>Array<[pipelines.Step](#aws-cdk-lib-pipelines-step)></code>)  Additional steps to run before any of the stacks in the stage. __*Default*__: No additional steps
   * **stackSteps** (<code>Array<[pipelines.StackSteps](#aws-cdk-lib-pipelines-stacksteps)></code>)  Instructions for stack level steps. __*Default*__: No additional instructions
-  * **gitHubEnvName** (<code>string</code>)  Run the stage in a specific GitHub Environment. __*Default*__: no GitHub environment
+  * **gitHubEnvironment** (<code>string</code>)  Run the stage in a specific GitHub Environment. __*Default*__: no GitHub environment
 
 __Returns__:
 * <code>[pipelines.StageDeployment](#aws-cdk-lib-pipelines-stagedeployment)</code>
@@ -343,7 +343,7 @@ __Returns__:
 
 
 
-## struct AddGitHubStageOpts  <a id="cdk-pipelines-github-addgithubstageopts"></a>
+## struct AddGitHubStageOptions  <a id="cdk-pipelines-github-addgithubstageoptions"></a>
 
 
 Options to pass to `addStageWithGitHubOpts`.
@@ -352,7 +352,7 @@ Options to pass to `addStageWithGitHubOpts`.
 
 Name | Type | Description 
 -----|------|-------------
-**gitHubEnvName**? | <code>string</code> | Run the stage in a specific GitHub Environment.<br/>__*Default*__: no GitHub environment
+**gitHubEnvironment**? | <code>string</code> | Run the stage in a specific GitHub Environment.<br/>__*Default*__: no GitHub environment
 **post**? | <code>Array<[pipelines.Step](#aws-cdk-lib-pipelines-step)></code> | Additional steps to run after all of the stacks in the stage.<br/>__*Default*__: No additional steps
 **pre**? | <code>Array<[pipelines.Step](#aws-cdk-lib-pipelines-step)></code> | Additional steps to run before any of the stacks in the stage.<br/>__*Default*__: No additional steps
 **stackSteps**? | <code>Array<[pipelines.StackSteps](#aws-cdk-lib-pipelines-stacksteps)></code> | Instructions for stack level steps.<br/>__*Default*__: No additional instructions

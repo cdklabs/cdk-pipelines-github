@@ -17,7 +17,7 @@ const ASSET_HASH_NAME = 'asset-hash';
 /**
  * Options to pass to `addStageWithGitHubOpts`.
  */
-export interface AddGitHubStageOpts extends AddStageOpts {
+export interface AddGitHubStageOptions extends AddStageOpts {
   /**
    * Run the stage in a specific GitHub Environment. If specified,
    * any protection rules configured for the environment must pass
@@ -31,7 +31,7 @@ export interface AddGitHubStageOpts extends AddStageOpts {
    *
    * @default - no GitHub environment
    */
-  readonly gitHubEnvName?: string;
+  readonly gitHubEnvironment?: string;
 }
 
 /**
@@ -206,13 +206,13 @@ export class GitHubWorkflow extends PipelineBase {
    * Add a Stage to the pipeline, to be deployed in sequence with other Stages added to the pipeline.
    * All Stacks in the stage will be deployed in an order automatically determined by their relative dependencies.
    */
-  public addStageWithGitHubOpts(stage: Stage, options?: AddGitHubStageOpts): StageDeployment {
+  public addStageWithGitHubOptions(stage: Stage, options?: AddGitHubStageOptions): StageDeployment {
     const stageDeployment = this.addStage(stage, options);
 
     // keep track of GitHub specific options
-    if (options?.gitHubEnvName) {
+    if (options?.gitHubEnvironment) {
       for (const stack of stageDeployment.stacks) {
-        this.stackEnvs[stack.stackName] = options.gitHubEnvName;
+        this.stackEnvs[stack.stackArtifactId] = options.gitHubEnvironment;
       }
     }
 
@@ -461,7 +461,7 @@ export class GitHubWorkflow extends PipelineBase {
           contents: github.JobPermission.READ,
           idToken: this.useGitHubActionRole ? github.JobPermission.WRITE : github.JobPermission.NONE,
         },
-        environment: this.stackEnvs[stack.stackName],
+        environment: this.stackEnvs[stack.stackArtifactId],
         needs: this.renderDependencies(node),
         runsOn: this.runner.runsOn,
         steps: [
