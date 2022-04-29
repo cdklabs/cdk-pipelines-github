@@ -1,4 +1,4 @@
-import { AddStageOpts } from "aws-cdk-lib/pipelines";
+import { AddStageOpts } from 'aws-cdk-lib/pipelines';
 
 /**
  * Options to pass to `addStageWithGitHubOpts`.
@@ -26,7 +26,7 @@ export interface AddGitHubStageOptions extends AddStageOpts {
    *
    * If insufficiently specified, CloudFormation returns an `InsufficientCapabilities`
    * error.
-   * 
+   *
    * @default ['CAPABILITY_IAM']
    */
   readonly stackCapabilities?: StackCapabilities[];

@@ -8,8 +8,8 @@ import { Construct } from 'constructs';
 import * as decamelize from 'decamelize';
 import * as YAML from 'yaml';
 import { DockerCredential } from './docker-credentials';
-import { AddGitHubStageOptions } from './stage-options';
 import { awsCredentialStep } from './private/aws-credentials';
+import { AddGitHubStageOptions } from './stage-options';
 import * as github from './workflows-model';
 
 const CDKOUT_ARTIFACT = 'cdk.out';
@@ -208,7 +208,7 @@ export class GitHubWorkflow extends PipelineBase {
       this.stackProperties[stack.stackArtifactId] = {
         ...this.stackProperties[stack.stackArtifactId],
         [key]: value,
-      }
+      };
     }
   }
 
@@ -285,7 +285,7 @@ export class GitHubWorkflow extends PipelineBase {
     }
 
     // eslint-disable-next-line no-console
-    console.log(`writing ${this.workflowPath}`);
+    // console.log(`writing ${this.workflowPath}`);
     writeFileSync(this.workflowPath, yaml);
   }
 
@@ -441,6 +441,11 @@ export class GitHubWorkflow extends PipelineBase {
       'no-fail-on-empty-changeset': '1',
     };
 
+    const capabilities = this.stackProperties[stack.stackArtifactId]?.capabilities;
+    if (capabilities) {
+      params.capabilities = Array(capabilities).join(',');
+    }
+
     if (stack.executionRoleArn) {
       params['role-arn'] = resolve(stack.executionRoleArn);
     }
@@ -454,8 +459,8 @@ export class GitHubWorkflow extends PipelineBase {
           contents: github.JobPermission.READ,
           idToken: this.useGitHubActionRole ? github.JobPermission.WRITE : github.JobPermission.NONE,
         },
-        ...(this.stackEnvs[stack.stackArtifactId] ? {
-          environment: this.stackEnvs[stack.stackArtifactId],
+        ...(this.stackProperties[stack.stackArtifactId]?.environment ? {
+          environment: this.stackProperties[stack.stackArtifactId].environment,
         } : {}),
         needs: this.renderDependencies(node),
         runsOn: this.runner.runsOn,
