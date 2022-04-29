@@ -234,7 +234,6 @@ jobs:
     permissions:
       contents: read
       id-token: none
-    environment: null
     needs:
       - Build-Build
       - Assets-FileAsset1
@@ -266,7 +265,6 @@ jobs:
     permissions:
       contents: read
       id-token: none
-    environment: null
     needs:
       - Build-Build
       - Assets-FileAsset3
@@ -316,7 +314,6 @@ jobs:
     permissions:
       contents: read
       id-token: none
-    environment: null
     needs:
       - Build-Build
       - Assets-FileAsset5
@@ -351,7 +348,6 @@ jobs:
     permissions:
       contents: read
       id-token: none
-    environment: null
     needs:
       - Build-Build
       - Assets-FileAsset6
@@ -631,7 +627,6 @@ jobs:
     permissions:
       contents: read
       id-token: write
-    environment: null
     needs:
       - Build-Build
       - Assets-FileAsset1
@@ -791,7 +786,6 @@ jobs:
     permissions:
       contents: read
       id-token: none
-    environment: null
     needs:
       - Build-Build
       - Assets-FileAsset1
@@ -947,7 +941,6 @@ jobs:
     permissions:
       contents: read
       id-token: none
-    environment: null
     needs:
       - Build-Build
       - Assets-FileAsset1
