@@ -454,7 +454,9 @@ export class GitHubWorkflow extends PipelineBase {
           contents: github.JobPermission.READ,
           idToken: this.useGitHubActionRole ? github.JobPermission.WRITE : github.JobPermission.NONE,
         },
-        environment: this.stackProperties[stack.stackArtifactId],
+        ...(this.stackEnvs[stack.stackArtifactId] ? {
+          environment: this.stackEnvs[stack.stackArtifactId],
+        } : {}),
         needs: this.renderDependencies(node),
         runsOn: this.runner.runsOn,
         steps: [
