@@ -37,6 +37,37 @@ test('pipeline with only a synth step', () => {
   });
 });
 
+test('pipeline with aws credentials', () => {
+  withTemporaryDirectory((dir) => {
+    const github = new GitHubWorkflow(app, 'Pipeline', {
+      workflowPath: `${dir}/.github/workflows/deploy.yml`,
+      synth: new ShellStep('Build', {
+        installCommands: ['yarn'],
+        commands: ['yarn build'],
+      }),
+      awsCredentials: {
+        accessKeyId: 'MY_ACCESS_KEY_ID',
+        secretAccessKey: 'MY_SECRET_ACCESS_KEY',
+        sessionToken: 'MY_SESSION_TOKEN',
+      },
+    });
+
+    const stage = new Stage(app, 'MyStack', {
+      env: { account: '111111111111', region: 'us-east-1' },
+    });
+
+    new Stack(stage, 'MyStack');
+
+    github.addStage(stage);
+
+    app.synth();
+
+    expect(readFileSync(github.workflowPath, 'utf-8')).toContain('aws-access-key-id: \${{ secrets.MY_ACCESS_KEY_ID }}\n');
+    expect(readFileSync(github.workflowPath, 'utf-8')).toContain('aws-secret-access-key: \${{ secrets.MY_SECRET_ACCESS_KEY }}\n');
+    expect(readFileSync(github.workflowPath, 'utf-8')).toContain('aws-session-token: \${{ secrets.MY_SESSION_TOKEN }}\n');
+  });
+});
+
 test('pipeline with GitHub hosted runner override', () => {
   withTemporaryDirectory((dir) => {
     const github = new GitHubWorkflow(app, 'Pipeline', {
