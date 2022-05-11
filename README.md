@@ -65,8 +65,8 @@ const pipeline = new GitHubWorkflow(app, 'Pipeline', {
   gitHubActionRoleArn: 'arn:aws:iam::<account-id>:role/GitHubActionRole',
 });
 
-pipeline.addStage(new MyStage(this, 'Beta', { env: BETA_ENV }));
-pipeline.addStage(new MyStage(this, 'Prod', { env: PROD_ENV }));
+pipeline.addStage(new MyStage(app, 'Beta', { env: BETA_ENV }));
+pipeline.addStage(new MyStage(app, 'Prod', { env: PROD_ENV }));
 
 app.synth();
 ```
