@@ -284,8 +284,6 @@ export class GitHubWorkflow extends PipelineBase {
       }
     }
 
-    // eslint-disable-next-line no-console
-    // console.log(`writing ${this.workflowPath}`);
     writeFileSync(this.workflowPath, yaml);
   }
 
