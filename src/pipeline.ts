@@ -642,7 +642,9 @@ export class GitHubWorkflow extends PipelineBase {
         region,
         accessKeyId: `\${{ secrets.${this.awsCredentials.accessKeyId} }}`,
         secretAccessKey: `\${{ secrets.${this.awsCredentials.secretAccessKey} }}`,
-        sessionToken: `\${{ secrets.${this.awsCredentials.sessionToken} }}`,
+        ...(this.awsCredentials.sessionToken ? {
+          sessionToken: `\${{ secrets.${this.awsCredentials.sessionToken} }}`,
+        } : undefined),
         roleToAssume: assumeRoleArn,
       }));
     }
