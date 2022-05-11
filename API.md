@@ -68,6 +68,7 @@ Name|Description
 Name|Description
 ----|-----------
 [JobPermission](#cdk-pipelines-github-jobpermission)|Access level for workflow permission scopes.
+[StackCapabilities](#cdk-pipelines-github-stackcapabilities)|Acknowledge IAM resources in AWS CloudFormation templates.
 
 
 
@@ -286,6 +287,7 @@ addStageWithGitHubOptions(stage: Stage, options?: AddGitHubStageOptions): StageD
   * **pre** (<code>Array<[pipelines.Step](#aws-cdk-lib-pipelines-step)></code>)  Additional steps to run before any of the stacks in the stage. __*Default*__: No additional steps
   * **stackSteps** (<code>Array<[pipelines.StackSteps](#aws-cdk-lib-pipelines-stacksteps)></code>)  Instructions for stack level steps. __*Default*__: No additional instructions
   * **gitHubEnvironment** (<code>string</code>)  Run the stage in a specific GitHub Environment. __*Default*__: no GitHub environment
+  * **stackCapabilities** (<code>Array<[StackCapabilities](#cdk-pipelines-github-stackcapabilities)></code>)  In some cases, you must explicitly acknowledge that your CloudFormation stack template contains certain capabilities in order for CloudFormation to create the stack. __*Default*__: ['CAPABILITY_IAM']
 
 __Returns__:
 * <code>[pipelines.StageDeployment](#aws-cdk-lib-pipelines-stagedeployment)</code>
@@ -355,6 +357,7 @@ Name | Type | Description
 **gitHubEnvironment**? | <code>string</code> | Run the stage in a specific GitHub Environment.<br/>__*Default*__: no GitHub environment
 **post**? | <code>Array<[pipelines.Step](#aws-cdk-lib-pipelines-step)></code> | Additional steps to run after all of the stacks in the stage.<br/>__*Default*__: No additional steps
 **pre**? | <code>Array<[pipelines.Step](#aws-cdk-lib-pipelines-step)></code> | Additional steps to run before any of the stacks in the stage.<br/>__*Default*__: No additional steps
+**stackCapabilities**? | <code>Array<[StackCapabilities](#cdk-pipelines-github-stackcapabilities)></code> | In some cases, you must explicitly acknowledge that your CloudFormation stack template contains certain capabilities in order for CloudFormation to create the stack.<br/>__*Default*__: ['CAPABILITY_IAM']
 **stackSteps**? | <code>Array<[pipelines.StackSteps](#aws-cdk-lib-pipelines-stacksteps)></code> | Instructions for stack level steps.<br/>__*Default*__: No additional instructions
 
 
@@ -1003,5 +1006,16 @@ Name | Description
 **READ** |Read-only access.
 **WRITE** |Read-write access.
 **NONE** |No access at all.
+
+
+## enum StackCapabilities  <a id="cdk-pipelines-github-stackcapabilities"></a>
+
+Acknowledge IAM resources in AWS CloudFormation templates.
+
+Name | Description
+-----|-----
+**IAM** |Acknowledge your stack includes IAM resources.
+**NAMED_IAM** |Acknowledge your stack includes custom names for IAM resources.
+**AUTO_EXPAND** |Acknowledge your stack contains one or more macros.
 
 

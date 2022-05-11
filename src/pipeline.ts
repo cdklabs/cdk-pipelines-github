@@ -2,37 +2,18 @@ import { mkdirSync, writeFileSync, readFileSync, existsSync } from 'fs';
 import * as path from 'path';
 import { Stage } from 'aws-cdk-lib';
 import { EnvironmentPlaceholders } from 'aws-cdk-lib/cx-api';
-import { AddStageOpts, PipelineBase, PipelineBaseProps, ShellStep, StackAsset, StackDeployment, StackOutputReference, StageDeployment, Step } from 'aws-cdk-lib/pipelines';
+import { PipelineBase, PipelineBaseProps, ShellStep, StackAsset, StackDeployment, StackOutputReference, StageDeployment, Step } from 'aws-cdk-lib/pipelines';
 import { AGraphNode, PipelineGraph, Graph, isGraph } from 'aws-cdk-lib/pipelines/lib/helpers-internal';
 import { Construct } from 'constructs';
 import * as decamelize from 'decamelize';
 import * as YAML from 'yaml';
 import { DockerCredential } from './docker-credentials';
 import { awsCredentialStep } from './private/aws-credentials';
+import { AddGitHubStageOptions } from './stage-options';
 import * as github from './workflows-model';
 
 const CDKOUT_ARTIFACT = 'cdk.out';
 const ASSET_HASH_NAME = 'asset-hash';
-
-/**
- * Options to pass to `addStageWithGitHubOpts`.
- */
-export interface AddGitHubStageOptions extends AddStageOpts {
-  /**
-   * Run the stage in a specific GitHub Environment. If specified,
-   * any protection rules configured for the environment must pass
-   * before the job is set to a runner. For example, if the environment
-   * has a manual approval rule configured, then the workflow will
-   * wait for the approval before sending the job to the runner.
-   *
-   * Running a workflow that references an environment that does not
-   * exist will create an environment with the referenced name.
-   * @see https://docs.github.com/en/actions/deployment/targeting-different-environments/using-environments-for-deployment
-   *
-   * @default - no GitHub environment
-   */
-  readonly gitHubEnvironment?: string;
-}
 
 /**
  * Props for `GitHubWorkflow`.
@@ -162,7 +143,7 @@ export class GitHubWorkflow extends PipelineBase {
   private readonly assetHashMap: Record<string, string> = {};
   private readonly runner: github.Runner;
   private readonly publishAssetsAuthRegion: string;
-  private readonly stackEnvs: Record<string, string> = {};
+  private readonly stackProperties: Record<string, Record<string, any>> = {};
 
   constructor(scope: Construct, id: string, props: GitHubWorkflowProps) {
     super(scope, id, props);
@@ -210,13 +191,25 @@ export class GitHubWorkflow extends PipelineBase {
     const stageDeployment = this.addStage(stage, options);
 
     // keep track of GitHub specific options
+    const stacks = stageDeployment.stacks;
     if (options?.gitHubEnvironment) {
-      for (const stack of stageDeployment.stacks) {
-        this.stackEnvs[stack.stackArtifactId] = options.gitHubEnvironment;
-      }
+      this.addStackProps(stacks, 'environment', options.gitHubEnvironment);
+    }
+
+    if (options?.stackCapabilities) {
+      this.addStackProps(stacks, 'capabilities', options.stackCapabilities);
     }
 
     return stageDeployment;
+  }
+
+  private addStackProps(stacks: StackDeployment[], key: string, value: any) {
+    for (const stack of stacks) {
+      this.stackProperties[stack.stackArtifactId] = {
+        ...this.stackProperties[stack.stackArtifactId],
+        [key]: value,
+      };
+    }
   }
 
   protected doBuildPipeline() {
@@ -291,8 +284,6 @@ export class GitHubWorkflow extends PipelineBase {
       }
     }
 
-    // eslint-disable-next-line no-console
-    console.log(`writing ${this.workflowPath}`);
     writeFileSync(this.workflowPath, yaml);
   }
 
@@ -448,6 +439,11 @@ export class GitHubWorkflow extends PipelineBase {
       'no-fail-on-empty-changeset': '1',
     };
 
+    const capabilities = this.stackProperties[stack.stackArtifactId]?.capabilities;
+    if (capabilities) {
+      params.capabilities = Array(capabilities).join(',');
+    }
+
     if (stack.executionRoleArn) {
       params['role-arn'] = resolve(stack.executionRoleArn);
     }
@@ -461,8 +457,8 @@ export class GitHubWorkflow extends PipelineBase {
           contents: github.JobPermission.READ,
           idToken: this.useGitHubActionRole ? github.JobPermission.WRITE : github.JobPermission.NONE,
         },
-        ...(this.stackEnvs[stack.stackArtifactId] ? {
-          environment: this.stackEnvs[stack.stackArtifactId],
+        ...(this.stackProperties[stack.stackArtifactId]?.environment ? {
+          environment: this.stackProperties[stack.stackArtifactId].environment,
         } : {}),
         needs: this.renderDependencies(node),
         runsOn: this.runner.runsOn,
