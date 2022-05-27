@@ -136,3 +136,64 @@ describe('cloudformation stack capabilities', () => {
     });
   });
 });
+
+describe('job settings', () => {
+  test('can specify job settings at stage level', () => {
+    withTemporaryDirectory((dir) => {
+      const pipeline = new GitHubWorkflow(app, 'Pipeline', {
+        workflowPath: `${dir}/.github/workflows/deploy.yml`,
+        synth: new ShellStep('Build', {
+          installCommands: ['yarn'],
+          commands: ['yarn build'],
+        }),
+      });
+
+      const stage = new Stage(app, 'MyStack', {
+        env: { account: '111111111111', region: 'us-east-1' },
+      });
+
+      new Stack(stage, 'MyStack');
+
+      pipeline.addStageWithGitHubOptions(stage, {
+        jobSettings: {
+          if: 'github.repository == \'github/repo\'',
+        },
+      });
+
+      app.synth();
+
+      expect(readFileSync(pipeline.workflowPath, 'utf-8')).toMatchSnapshot();
+    });
+  });
+
+  test('stage-level job settings override app-level settings', () => {
+    withTemporaryDirectory((dir) => {
+      const pipeline = new GitHubWorkflow(app, 'Pipeline', {
+        workflowPath: `${dir}/.github/workflows/deploy.yml`,
+        synth: new ShellStep('Build', {
+          installCommands: ['yarn'],
+          commands: ['yarn build'],
+        }),
+        jobSettings: {
+          if: 'github.repository == \'another/repo\'',
+        },
+      });
+
+      const stage = new Stage(app, 'MyStack', {
+        env: { account: '111111111111', region: 'us-east-1' },
+      });
+
+      new Stack(stage, 'MyStack');
+
+      pipeline.addStageWithGitHubOptions(stage, {
+        jobSettings: {
+          if: 'github.repository == \'github/repo\'',
+        },
+      });
+
+      app.synth();
+
+      expect(readFileSync(pipeline.workflowPath, 'utf-8')).toContain('if: github.repository == \'github/repo\'\n');
+    });
+  });
+});
