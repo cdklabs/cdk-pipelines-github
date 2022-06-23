@@ -2,6 +2,8 @@
 
 ![cdk-constructs: Experimental](https://img.shields.io/badge/cdk--constructs-experimental-important.svg?style=for-the-badge)
 
+[![View on Construct Hub](https://constructs.dev/badge?package=cdk-pipelines-github)](https://constructs.dev/packages/cdk-pipelines-github)
+
 > The APIs in this module are experimental and under active development.
 > They are subject to non-backward compatible changes or removal in any future version. These are
 > not subject to the [Semantic Versioning](https://semver.org/) model and breaking changes will be
