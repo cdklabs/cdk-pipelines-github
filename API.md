@@ -37,6 +37,7 @@ Name|Description
 [JobDefaults](#cdk-pipelines-github-jobdefaults)|Default settings for all steps in the job.
 [JobMatrix](#cdk-pipelines-github-jobmatrix)|A job matrix.
 [JobPermissions](#cdk-pipelines-github-jobpermissions)|The available scopes and access values for workflow permissions.
+[JobSettings](#cdk-pipelines-github-jobsettings)|Job level settings applied to all jobs in the workflow.
 [JobStep](#cdk-pipelines-github-jobstep)|A job step.
 [JobStepOutput](#cdk-pipelines-github-jobstepoutput)|An output binding for a job.
 [JobStrategy](#cdk-pipelines-github-jobstrategy)|A strategy creates a build matrix for your jobs.
@@ -248,6 +249,7 @@ new GitHubWorkflow(scope: Construct, id: string, props: GitHubWorkflowProps)
   * **cdkCliVersion** (<code>string</code>)  Version of the CDK CLI to use. __*Default*__: automatic
   * **dockerCredentials** (<code>Array<[DockerCredential](#cdk-pipelines-github-dockercredential)></code>)  The Docker Credentials to use to login. __*Optional*__
   * **gitHubActionRoleArn** (<code>string</code>)  A role that utilizes the GitHub OIDC Identity Provider in your AWS account. __*Default*__: GitHub repository secrets are used instead of OpenId Connect role.
+  * **jobSettings** (<code>[JobSettings](#cdk-pipelines-github-jobsettings)</code>)  Job level settings that will be applied to all jobs in the workflow, including synth and asset deploy jobs. __*Optional*__
   * **postBuildSteps** (<code>Array<[JobStep](#cdk-pipelines-github-jobstep)></code>)  GitHub workflow steps to execute after build. __*Default*__: []
   * **preBuildSteps** (<code>Array<[JobStep](#cdk-pipelines-github-jobstep)></code>)  GitHub workflow steps to execute before build. __*Default*__: []
   * **preSynthed** (<code>boolean</code>)  Indicates if the repository already contains a synthesized `cdk.out` directory, in which case we will simply checkout the repo in jobs that require `cdk.out`. __*Default*__: false
@@ -287,6 +289,7 @@ addStageWithGitHubOptions(stage: Stage, options?: AddGitHubStageOptions): StageD
   * **pre** (<code>Array<[pipelines.Step](#aws-cdk-lib-pipelines-step)></code>)  Additional steps to run before any of the stacks in the stage. __*Default*__: No additional steps
   * **stackSteps** (<code>Array<[pipelines.StackSteps](#aws-cdk-lib-pipelines-stacksteps)></code>)  Instructions for stack level steps. __*Default*__: No additional instructions
   * **gitHubEnvironment** (<code>string</code>)  Run the stage in a specific GitHub Environment. __*Default*__: no GitHub environment
+  * **jobSettings** (<code>[JobSettings](#cdk-pipelines-github-jobsettings)</code>)  Job level settings that will be applied to all jobs in the stage. __*Optional*__
   * **stackCapabilities** (<code>Array<[StackCapabilities](#cdk-pipelines-github-stackcapabilities)></code>)  In some cases, you must explicitly acknowledge that your CloudFormation stack template contains certain capabilities in order for CloudFormation to create the stack. __*Default*__: ['CAPABILITY_IAM']
 
 __Returns__:
@@ -355,6 +358,7 @@ Options to pass to `addStageWithGitHubOpts`.
 Name | Type | Description 
 -----|------|-------------
 **gitHubEnvironment**? | <code>string</code> | Run the stage in a specific GitHub Environment.<br/>__*Default*__: no GitHub environment
+**jobSettings**? | <code>[JobSettings](#cdk-pipelines-github-jobsettings)</code> | Job level settings that will be applied to all jobs in the stage.<br/>__*Optional*__
 **post**? | <code>Array<[pipelines.Step](#aws-cdk-lib-pipelines-step)></code> | Additional steps to run after all of the stacks in the stage.<br/>__*Default*__: No additional steps
 **pre**? | <code>Array<[pipelines.Step](#aws-cdk-lib-pipelines-step)></code> | Additional steps to run before any of the stacks in the stage.<br/>__*Default*__: No additional steps
 **stackCapabilities**? | <code>Array<[StackCapabilities](#cdk-pipelines-github-stackcapabilities)></code> | In some cases, you must explicitly acknowledge that your CloudFormation stack template contains certain capabilities in order for CloudFormation to create the stack.<br/>__*Default*__: ['CAPABILITY_IAM']
@@ -536,6 +540,7 @@ Name | Type | Description
 **cdkCliVersion**? | <code>string</code> | Version of the CDK CLI to use.<br/>__*Default*__: automatic
 **dockerCredentials**? | <code>Array<[DockerCredential](#cdk-pipelines-github-dockercredential)></code> | The Docker Credentials to use to login.<br/>__*Optional*__
 **gitHubActionRoleArn**? | <code>string</code> | A role that utilizes the GitHub OIDC Identity Provider in your AWS account.<br/>__*Default*__: GitHub repository secrets are used instead of OpenId Connect role.
+**jobSettings**? | <code>[JobSettings](#cdk-pipelines-github-jobsettings)</code> | Job level settings that will be applied to all jobs in the workflow, including synth and asset deploy jobs.<br/>__*Optional*__
 **postBuildSteps**? | <code>Array<[JobStep](#cdk-pipelines-github-jobstep)></code> | GitHub workflow steps to execute after build.<br/>__*Default*__: []
 **preBuildSteps**? | <code>Array<[JobStep](#cdk-pipelines-github-jobstep)></code> | GitHub workflow steps to execute before build.<br/>__*Default*__: []
 **preSynthed**? | <code>boolean</code> | Indicates if the repository already contains a synthesized `cdk.out` directory, in which case we will simply checkout the repo in jobs that require `cdk.out`.<br/>__*Default*__: false
@@ -661,6 +666,19 @@ Name | Type | Description
 **repositoryProjects**? | <code>[JobPermission](#cdk-pipelines-github-jobpermission)</code> | __*Optional*__
 **securityEvents**? | <code>[JobPermission](#cdk-pipelines-github-jobpermission)</code> | __*Optional*__
 **statuses**? | <code>[JobPermission](#cdk-pipelines-github-jobpermission)</code> | __*Optional*__
+
+
+
+## struct JobSettings  <a id="cdk-pipelines-github-jobsettings"></a>
+
+
+Job level settings applied to all jobs in the workflow.
+
+
+
+Name | Type | Description 
+-----|------|-------------
+**if**? | <code>string</code> | jobs.<job_id>.if.<br/>__*Optional*__
 
 
 

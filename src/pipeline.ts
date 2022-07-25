@@ -16,6 +16,18 @@ const CDKOUT_ARTIFACT = 'cdk.out';
 const ASSET_HASH_NAME = 'asset-hash';
 
 /**
+ * Job level settings applied to all jobs in the workflow.
+ */
+export interface JobSettings {
+  /**
+   * jobs.<job_id>.if.
+   *
+   * @see https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idif
+   */
+  readonly if?: string;
+}
+
+/**
  * Props for `GitHubWorkflow`.
  */
 export interface GitHubWorkflowProps extends PipelineBaseProps {
@@ -120,6 +132,15 @@ export interface GitHubWorkflowProps extends PipelineBaseProps {
    * @default "us-west-2"
    */
   readonly publishAssetsAuthRegion?: string;
+
+  /**
+   * Job level settings that will be applied to all jobs in the workflow,
+   * including synth and asset deploy jobs. Currently the only valid setting
+   * is 'if'. You can use this to run jobs only in specific repositories.
+   *
+   * @see https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#example-only-run-job-for-specific-repository
+   */
+  readonly jobSettings?: JobSettings;
 }
 
 /**
@@ -144,6 +165,7 @@ export class GitHubWorkflow extends PipelineBase {
   private readonly runner: github.Runner;
   private readonly publishAssetsAuthRegion: string;
   private readonly stackProperties: Record<string, Record<string, any>> = {};
+  private readonly jobSettings?: JobSettings;
 
   constructor(scope: Construct, id: string, props: GitHubWorkflowProps) {
     super(scope, id, props);
@@ -155,6 +177,7 @@ export class GitHubWorkflow extends PipelineBase {
     this.postBuildSteps = props.postBuildSteps ?? [];
     this.gitHubActionRoleArn = props.gitHubActionRoleArn;
     this.useGitHubActionRole = this.gitHubActionRoleArn ? true : false;
+    this.jobSettings = props.jobSettings;
 
     this.awsCredentials = props.awsCredentials ?? {
       accessKeyId: 'AWS_ACCESS_KEY_ID',
@@ -192,18 +215,15 @@ export class GitHubWorkflow extends PipelineBase {
 
     // keep track of GitHub specific options
     const stacks = stageDeployment.stacks;
-    if (options?.gitHubEnvironment) {
-      this.addStackProps(stacks, 'environment', options.gitHubEnvironment);
-    }
-
-    if (options?.stackCapabilities) {
-      this.addStackProps(stacks, 'capabilities', options.stackCapabilities);
-    }
+    this.addStackProps(stacks, 'environment', options?.gitHubEnvironment);
+    this.addStackProps(stacks, 'capabilities', options?.stackCapabilities);
+    this.addStackProps(stacks, 'settings', options?.jobSettings);
 
     return stageDeployment;
   }
 
   private addStackProps(stacks: StackDeployment[], key: string, value: any) {
+    if (value === undefined) { return; }
     for (const stack of stacks) {
       this.stackProperties[stack.stackArtifactId] = {
         ...this.stackProperties[stack.stackArtifactId],
@@ -383,6 +403,7 @@ export class GitHubWorkflow extends PipelineBase {
       id: jobId,
       definition: {
         name: `Publish Assets ${jobId}`,
+        ...this.jobSettings,
         needs: this.renderDependencies(node),
         permissions: {
           contents: github.JobPermission.READ,
@@ -453,6 +474,8 @@ export class GitHubWorkflow extends PipelineBase {
       id: node.uniqueId,
       definition: {
         name: `Deploy ${stack.stackArtifactId}`,
+        ...this.jobSettings,
+        ...this.stackProperties[stack.stackArtifactId]?.settings,
         permissions: {
           contents: github.JobPermission.READ,
           idToken: this.useGitHubActionRole ? github.JobPermission.WRITE : github.JobPermission.NONE,
@@ -502,6 +525,7 @@ export class GitHubWorkflow extends PipelineBase {
       id: node.uniqueId,
       definition: {
         name: 'Synthesize',
+        ...this.jobSettings,
         permissions: {
           contents: github.JobPermission.READ,
           // The Synthesize job does not use the GitHub Action Role on its own, but it's possible
@@ -595,6 +619,7 @@ export class GitHubWorkflow extends PipelineBase {
       id: node.uniqueId,
       definition: {
         name: step.id,
+        ...this.jobSettings,
         permissions: {
           contents: github.JobPermission.READ,
         },
