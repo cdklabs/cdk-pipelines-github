@@ -1,4 +1,5 @@
 import { AddStageOpts } from 'aws-cdk-lib/pipelines';
+import { JobSettings } from './pipeline';
 
 /**
  * Options to pass to `addStageWithGitHubOpts`.
@@ -30,6 +31,12 @@ export interface AddGitHubStageOptions extends AddStageOpts {
    * @default ['CAPABILITY_IAM']
    */
   readonly stackCapabilities?: StackCapabilities[];
+
+  /**
+   * Job level settings that will be applied to all jobs in the stage.
+   * Currently the only valid setting is 'if'.
+   */
+  readonly jobSettings?: JobSettings;
 }
 
 /**
