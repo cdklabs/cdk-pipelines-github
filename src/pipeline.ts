@@ -10,6 +10,7 @@ import * as YAML from 'yaml';
 import { DockerCredential } from './docker-credentials';
 import { awsCredentialStep } from './private/aws-credentials';
 import { AddGitHubStageOptions } from './stage-options';
+import { GithubActionStep } from './steps/GithubActionStep';
 import * as github from './workflows-model';
 
 const CDKOUT_ARTIFACT = 'cdk.out';
@@ -355,6 +356,8 @@ export class GitHubWorkflow extends PipelineBase {
           return this.jobForBuildStep(node, node.data.step);
         } else if (node.data.step instanceof ShellStep) {
           return this.jobForScriptStep(node, node.data.step);
+        } else if (node.data.step instanceof GithubActionStep) {
+          return this.jobForGithubActionStep(node, node.data.step);
         } else {
           throw new Error(`unsupported step type: ${node.data.step.constructor.name}`);
         }
@@ -634,6 +637,25 @@ export class GitHubWorkflow extends PipelineBase {
           ...installSteps,
           { run: step.commands.join('\n') },
           ...uploadOutputs,
+        ],
+      },
+    };
+  }
+
+  private jobForGithubActionStep(node: AGraphNode, step: GithubActionStep): Job {
+    return {
+      id: node.uniqueId,
+      definition: {
+        name: step.id,
+        ...this.jobSettings,
+        permissions: {
+          contents: github.JobPermission.WRITE,
+        },
+        runsOn: this.runner.runsOn,
+        needs: this.renderDependencies(node),
+        env: step.env,
+        steps: [
+          step.jobStep,
         ],
       },
     };
