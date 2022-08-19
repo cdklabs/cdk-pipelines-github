@@ -218,6 +218,7 @@ export class GitHubWorkflow extends PipelineBase {
     this.addStackProps(stacks, 'environment', options?.gitHubEnvironment);
     this.addStackProps(stacks, 'capabilities', options?.stackCapabilities);
     this.addStackProps(stacks, 'settings', options?.jobSettings);
+    this.addStackProps(stacks, 'role', options?.role);
 
     return stageDeployment;
   }
@@ -370,6 +371,7 @@ export class GitHubWorkflow extends PipelineBase {
     const cdkoutDir = options.assemblyDir;
     const jobId = node.uniqueId;
     const assetId = assets[0].assetId;
+    const stageRoleArn = this.ghaStageRoleArn();
 
     // check if asset is docker asset and if we have docker credentials
     const dockerLoginSteps: github.JobStep[] = [];
@@ -419,7 +421,7 @@ export class GitHubWorkflow extends PipelineBase {
             name: 'Install',
             run: `npm install --no-save cdk-assets${installSuffix}`,
           },
-          ...this.stepsToConfigureAws(this.useGitHubActionRole, { region: this.publishAssetsAuthRegion }),
+          ...this.stepsToConfigureAws(this.useGitHubActionRole, { region: this.publishAssetsAuthRegion, stageRoleArn: stageRoleArn }),
           ...dockerLoginSteps,
           publishStep,
         ],
@@ -470,6 +472,8 @@ export class GitHubWorkflow extends PipelineBase {
     }
     const assumeRoleArn = stack.assumeRoleArn ? resolve(stack.assumeRoleArn) : undefined;
 
+    const stageRoleArn = this.ghaStageRoleArn();
+
     return {
       id: node.uniqueId,
       definition: {
@@ -486,7 +490,7 @@ export class GitHubWorkflow extends PipelineBase {
         needs: this.renderDependencies(node),
         runsOn: this.runner.runsOn,
         steps: [
-          ...this.stepsToConfigureAws(this.useGitHubActionRole, { region, assumeRoleArn }),
+          ...this.stepsToConfigureAws(this.useGitHubActionRole, { region, assumeRoleArn, stageRoleArn }),
           {
             id: 'Deploy',
             uses: 'aws-actions/aws-cloudformation-github-deploy@v1',
@@ -639,7 +643,16 @@ export class GitHubWorkflow extends PipelineBase {
     };
   }
 
-  private stepsToConfigureAws(openId: boolean, { region, assumeRoleArn }: { region: string; assumeRoleArn?: string }): github.JobStep[] {
+  private ghaStageRoleArn(): string {
+    const stageRoleArn = Object.entries(this.stackProperties)[0][1].role;
+    return stageRoleArn || this.gitHubActionRoleArn;
+  }
+
+  private stepsToConfigureAws(openId: boolean, {
+    region,
+    assumeRoleArn,
+    stageRoleArn,
+  }: { region: string; assumeRoleArn?: string; stageRoleArn?: string }): github.JobStep[] {
     function getDeployRole(arn: string) {
       return arn.replace('cfn-exec', 'deploy');
     }
@@ -649,7 +662,7 @@ export class GitHubWorkflow extends PipelineBase {
     if (openId) {
       steps.push(awsCredentialStep('Authenticate Via OIDC Role', {
         region,
-        gitHubActionRoleArn: this.gitHubActionRoleArn,
+        gitHubActionRoleArn: stageRoleArn,
       }));
 
       if (assumeRoleArn) {

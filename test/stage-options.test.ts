@@ -197,3 +197,64 @@ describe('job settings', () => {
     });
   });
 });
+
+describe('role settings', () => {
+  test('can specify gha role', () => {
+    withTemporaryDirectory((dir) => {
+      const pipeline = new GitHubWorkflow(app, 'Pipeline', {
+        workflowPath: `${dir}/.github/workflows/deploy.yml`,
+        synth: new ShellStep('Build', {
+          installCommands: ['yarn'],
+          commands: ['yarn build'],
+        }),
+        gitHubActionRoleArn: 'my-pipeline-role',
+      });
+
+      const stage = new Stage(app, 'MyStack', {
+        env: { account: '111111111111', region: 'us-east-1' },
+      });
+
+      new Stack(stage, 'MyStack');
+
+      pipeline.addStageWithGitHubOptions(stage, {
+        jobSettings: {
+          if: 'github.repository == \'github/repo\'',
+        },
+      });
+
+      app.synth();
+
+      expect(readFileSync(pipeline.workflowPath, 'utf-8')).toContain('if: github.repository == \'github/repo\'\n');
+    });
+  });
+
+  test('can specify role override settings at stage level', () => {
+    withTemporaryDirectory((dir) => {
+      const pipeline = new GitHubWorkflow(app, 'Pipeline', {
+        workflowPath: `${dir}/.github/workflows/deploy.yml`,
+        synth: new ShellStep('Build', {
+          installCommands: ['yarn'],
+          commands: ['yarn build'],
+        }),
+        gitHubActionRoleArn: 'my-pipeline-role',
+      });
+
+      const stage = new Stage(app, 'MyStack', {
+        env: { account: '111111111111', region: 'us-east-1' },
+      });
+
+      new Stack(stage, 'MyStack');
+
+      pipeline.addStageWithGitHubOptions(stage, {
+        jobSettings: {
+          if: 'github.repository == \'github/repo\'',
+        },
+        role: 'my-stage-role',
+      });
+
+      app.synth();
+
+      expect(readFileSync(pipeline.workflowPath, 'utf-8')).toMatchSnapshot();
+    });
+  });
+});

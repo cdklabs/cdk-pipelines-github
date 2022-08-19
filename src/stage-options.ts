@@ -37,6 +37,13 @@ export interface AddGitHubStageOptions extends AddStageOpts {
    * Currently the only valid setting is 'if'.
    */
   readonly jobSettings?: JobSettings;
+
+  /**
+   * Role used by stage
+   *
+   * @default - The pipeline role
+   */
+  readonly role?: string;
 }
 
 /**
