@@ -218,7 +218,7 @@ export class GitHubWorkflow extends PipelineBase {
     this.addStackProps(stacks, 'environment', options?.gitHubEnvironment);
     this.addStackProps(stacks, 'capabilities', options?.stackCapabilities);
     this.addStackProps(stacks, 'settings', options?.jobSettings);
-    this.addStackProps(stacks, 'role', options?.role);
+    this.addStackProps(stacks, 'role', options?.gitHubActionsRoleArn);
 
     return stageDeployment;
   }

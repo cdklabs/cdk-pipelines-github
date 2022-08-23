@@ -249,7 +249,7 @@ describe('role settings', () => {
         jobSettings: {
           if: 'github.repository == \'github/repo\'',
         },
-        role: 'my-stage-role',
+        gitHubActionsRoleArn: 'my-stage-role',
       });
 
       app.synth();

@@ -39,11 +39,16 @@ export interface AddGitHubStageOptions extends AddStageOpts {
   readonly jobSettings?: JobSettings;
 
   /**
-   * Role used by stage
+   * A role that utilizes the GitHub OIDC Identity Provider in your AWS account.
+   * If supplied, this will be used instead of `awsCredentials`.
    *
-   * @default - The pipeline role
+   * You can create your own role in the console with the necessary trust policy
+   * to allow gitHub actions from your gitHub repository to assume the role, or
+   * you can utilize the `GitHubActionRole` construct to create a role for you.
+   *
+   * @default - GitHub repository secrets are used instead of OpenId Connect role.
    */
-  readonly role?: string;
+  readonly gitHubActionsRoleArn?: string;
 }
 
 /**
