@@ -62,9 +62,10 @@ test('pipeline with aws credentials', () => {
 
     app.synth();
 
-    expect(readFileSync(github.workflowPath, 'utf-8')).toContain('aws-access-key-id: \${{ secrets.MY_ACCESS_KEY_ID }}\n');
-    expect(readFileSync(github.workflowPath, 'utf-8')).toContain('aws-secret-access-key: \${{ secrets.MY_SECRET_ACCESS_KEY }}\n');
-    expect(readFileSync(github.workflowPath, 'utf-8')).toContain('aws-session-token: \${{ secrets.MY_SESSION_TOKEN }}\n');
+    const file = readFileSync(github.workflowPath, 'utf-8');
+    expect(file).toContain('aws-access-key-id: \${{ secrets.MY_ACCESS_KEY_ID }}\n');
+    expect(file).toContain('aws-secret-access-key: \${{ secrets.MY_SECRET_ACCESS_KEY }}\n');
+    expect(file).toContain('aws-session-token: \${{ secrets.MY_SESSION_TOKEN }}\n');
   });
 });
 
@@ -330,12 +331,15 @@ test('can escape hatch into workflow file', () => {
     github.workflowFile.patch(
       JsonPatch.add('/on/workflow_call', {}),
       JsonPatch.remove('/on/workflow_dispatch'),
+      JsonPatch.replace('/jobs/Build-Build/runs-on', 'macos-latest'),
     );
 
     app.synth();
 
-    expect(readFileSync(github.workflowPath, 'utf-8')).toContain('workflow_call: {}\n');
-    expect(readFileSync(github.workflowPath, 'utf-8')).not.toContain('workflow_dispatch: {}\n');
+    const file = readFileSync(github.workflowPath, 'utf-8');
+    expect(file).toContain('workflow_call: {}\n');
+    expect(file).not.toContain('workflow_dispatch: {}\n');
+    expect(file).toContain('runs-on: macos-latest\n');
   });
 });
 
