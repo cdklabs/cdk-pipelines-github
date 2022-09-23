@@ -35,6 +35,7 @@ Workflows.
   - [Runner Types](#runner-types)
     - [GitHub Hosted Runner](#github-hosted-runner)
     - [Self Hosted Runner](#self-hosted-runner)
+  - [Escape Hatches](#escape-hatches)
   - [Additional Features](#additional-features)
     - [Configure GitHub Environment](#configure-github-environment)
       - [Manual Approval Step](#manual-approval-step)
@@ -338,6 +339,33 @@ const pipeline = new GitHubWorkflow(app, 'Pipeline', {
   }),
   runner: Runner.selfHosted(['label1', 'label2']),
 });
+```
+
+## Escape Hatches
+
+You can override the `deploy.yml` workflow file post-synthesis however you like.
+
+```ts
+import { App } from 'aws-cdk-lib';
+import { ShellStep } from 'aws-cdk-lib/pipelines';
+import { GitHubWorkflow, JsonPatch } from 'cdk-pipelines-github';
+
+const app = new App();
+
+const pipeline = new GitHubWorkflow(app, 'Pipeline', {
+  synth: new ShellStep('Build', {
+    commands: [
+      'yarn install',
+      'yarn build',
+    ],
+  }),
+});
+
+const deployWorkflow = pipeline.workflowFile;
+// add `on: workflow_call: {}` to deploy.yml
+deployWorkflow.patch(JsonPatch.add('/on/workflow_call', '{}'));
+// remove `on: workflow_dispatch` from deploy.yml
+deployWorkflow.patch(JsonPatch.remove('/on/workflow_dispatch'));
 ```
 
 ## Additional Features
