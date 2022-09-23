@@ -3,7 +3,7 @@ import { join } from 'path';
 import { Stack, Stage } from 'aws-cdk-lib';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import { ShellStep } from 'aws-cdk-lib/pipelines';
-import { GitHubWorkflow, Runner } from '../src';
+import { GitHubWorkflow, JsonPatch, Runner } from '../src';
 import { GitHubExampleApp } from './example-app';
 import { withTemporaryDirectory, TestApp } from './testutil';
 
@@ -305,6 +305,37 @@ describe('diff protection when GITHUB_WORKFLOW set', () => {
       });
       expect(() => app.synth()).not.toThrowError();
     }));
+  });
+});
+
+test('can escape hatch into workflow file', () => {
+  withTemporaryDirectory((dir) => {
+    const github = new GitHubWorkflow(app, 'Pipeline', {
+      workflowPath: `${dir}/.github/workflows/deploy.yml`,
+      synth: new ShellStep('Build', {
+        installCommands: ['yarn'],
+        commands: ['yarn build'],
+      }),
+    });
+
+    const stage = new Stage(app, 'MyStack', {
+      env: { account: '111111111111', region: 'us-east-1' },
+    });
+
+    new Stack(stage, 'MyStack');
+
+    github.addStage(stage);
+
+    // escape hatch
+    github.workflowFile.patch(
+      JsonPatch.add('/on/workflow_call', {}),
+      JsonPatch.remove('/on/workflow_dispatch'),
+    );
+
+    app.synth();
+
+    expect(readFileSync(github.workflowPath, 'utf-8')).toContain('workflow_call: {}\n');
+    expect(readFileSync(github.workflowPath, 'utf-8')).not.toContain('workflow_dispatch: {}\n');
   });
 });
 
