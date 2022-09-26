@@ -87,13 +87,10 @@ export class YamlFile {
     this.patchOperations.push(...patches);
   }
 
+  /**
+   * Returns the patched yaml file.
+   */
   public toYaml(): string {
-    return YAML.stringify(this.obj, {
-      indent: 2,
-    });
-  }
-
-  private patchedYaml(): string {
     const patched = JsonPatch.apply(this.obj, ...this.patchOperations);
 
     return YAML.stringify(patched, {
@@ -101,7 +98,10 @@ export class YamlFile {
     });
   }
 
+  /**
+   * Write the patched yaml file to the specified location.
+   */
   public writeFile() {
-    writeFileSync(this.filePath, this.patchedYaml());
+    writeFileSync(this.filePath, this.toYaml());
   }
 }
