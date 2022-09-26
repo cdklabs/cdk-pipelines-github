@@ -293,6 +293,25 @@ describe('diff protection when GITHUB_WORKFLOW set', () => {
     });
   });
 
+  test('synth succeeds with no diff and escape hatches', () => {
+    withTemporaryDirectory((dir) => {
+      const repoDir = dir;
+      const githubApp = new GitHubExampleApp({
+        repoDir: repoDir,
+        envA: 'aws://111111111111/us-east-1',
+        envB: 'aws://222222222222/eu-west-2',
+      });
+
+      githubApp.workflowFile.patch(JsonPatch.replace('/jobs/Build-Build/runs-on', 'macos-latest'));
+
+      // synth to write the deploy.yml the first time
+      githubApp.synth();
+
+      // simulate GitHub environment with the same deploy.yml
+      wrapEnv('GITHUB_WORKFLOW', 'deploy', () => githubApp.synth());
+    });
+  });
+
   test('turn off diff protection', () => {
     // set GITHUB_WORKFLOW env variable to simulate GitHub environment
     wrapEnv('GITHUB_WORKFLOW', 'deploy', () => withTemporaryDirectory((dir) => {
