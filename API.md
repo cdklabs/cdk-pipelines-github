@@ -546,7 +546,7 @@ patch(...patches: JsonPatch[]): void
 
 #### toYaml() <a id="cdk-pipelines-github-yamlfile-toyaml"></a>
 
-
+Returns the patched yaml file.
 
 ```ts
 toYaml(): string
@@ -571,7 +571,7 @@ update(obj: any): void
 
 #### writeFile() <a id="cdk-pipelines-github-yamlfile-writefile"></a>
 
-
+Write the patched yaml file to the specified location.
 
 ```ts
 writeFile(): void
