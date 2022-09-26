@@ -363,7 +363,7 @@ const pipeline = new GitHubWorkflow(app, 'Pipeline', {
 
 const deployWorkflow = pipeline.workflowFile;
 // add `on: workflow_call: {}` to deploy.yml
-deployWorkflow.patch(JsonPatch.add('/on/workflow_call', '{}'));
+deployWorkflow.patch(JsonPatch.add('/on/workflow_call', {}));
 // remove `on: workflow_dispatch` from deploy.yml
 deployWorkflow.patch(JsonPatch.remove('/on/workflow_dispatch'));
 ```
