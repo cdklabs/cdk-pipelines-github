@@ -3,7 +3,7 @@ import { join } from 'path';
 import { Stack, Stage } from 'aws-cdk-lib';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import { ShellStep } from 'aws-cdk-lib/pipelines';
-import { GitHubWorkflow, Runner } from '../src';
+import { GitHubWorkflow, JsonPatch, Runner } from '../src';
 import { GitHubExampleApp } from './example-app';
 import { withTemporaryDirectory, TestApp } from './testutil';
 
@@ -62,9 +62,10 @@ test('pipeline with aws credentials', () => {
 
     app.synth();
 
-    expect(readFileSync(github.workflowPath, 'utf-8')).toContain('aws-access-key-id: \${{ secrets.MY_ACCESS_KEY_ID }}\n');
-    expect(readFileSync(github.workflowPath, 'utf-8')).toContain('aws-secret-access-key: \${{ secrets.MY_SECRET_ACCESS_KEY }}\n');
-    expect(readFileSync(github.workflowPath, 'utf-8')).toContain('aws-session-token: \${{ secrets.MY_SESSION_TOKEN }}\n');
+    const file = readFileSync(github.workflowPath, 'utf-8');
+    expect(file).toContain('aws-access-key-id: \${{ secrets.MY_ACCESS_KEY_ID }}\n');
+    expect(file).toContain('aws-secret-access-key: \${{ secrets.MY_SECRET_ACCESS_KEY }}\n');
+    expect(file).toContain('aws-session-token: \${{ secrets.MY_SESSION_TOKEN }}\n');
   });
 });
 
@@ -292,6 +293,25 @@ describe('diff protection when GITHUB_WORKFLOW set', () => {
     });
   });
 
+  test('synth succeeds with no diff and escape hatches', () => {
+    withTemporaryDirectory((dir) => {
+      const repoDir = dir;
+      const githubApp = new GitHubExampleApp({
+        repoDir: repoDir,
+        envA: 'aws://111111111111/us-east-1',
+        envB: 'aws://222222222222/eu-west-2',
+      });
+
+      githubApp.workflowFile.patch(JsonPatch.replace('/jobs/Build-Build/runs-on', 'macos-latest'));
+
+      // synth to write the deploy.yml the first time
+      githubApp.synth();
+
+      // simulate GitHub environment with the same deploy.yml
+      wrapEnv('GITHUB_WORKFLOW', 'deploy', () => githubApp.synth());
+    });
+  });
+
   test('turn off diff protection', () => {
     // set GITHUB_WORKFLOW env variable to simulate GitHub environment
     wrapEnv('GITHUB_WORKFLOW', 'deploy', () => withTemporaryDirectory((dir) => {
@@ -305,6 +325,40 @@ describe('diff protection when GITHUB_WORKFLOW set', () => {
       });
       expect(() => app.synth()).not.toThrowError();
     }));
+  });
+});
+
+test('can escape hatch into workflow file', () => {
+  withTemporaryDirectory((dir) => {
+    const github = new GitHubWorkflow(app, 'Pipeline', {
+      workflowPath: `${dir}/.github/workflows/deploy.yml`,
+      synth: new ShellStep('Build', {
+        installCommands: ['yarn'],
+        commands: ['yarn build'],
+      }),
+    });
+
+    const stage = new Stage(app, 'MyStack', {
+      env: { account: '111111111111', region: 'us-east-1' },
+    });
+
+    new Stack(stage, 'MyStack');
+
+    github.addStage(stage);
+
+    // escape hatch
+    github.workflowFile.patch(
+      JsonPatch.add('/on/workflow_call', {}),
+      JsonPatch.remove('/on/workflow_dispatch'),
+      JsonPatch.replace('/jobs/Build-Build/runs-on', 'macos-latest'),
+    );
+
+    app.synth();
+
+    const file = readFileSync(github.workflowPath, 'utf-8');
+    expect(file).toContain('workflow_call: {}\n');
+    expect(file).not.toContain('workflow_dispatch: {}\n');
+    expect(file).toContain('runs-on: macos-latest\n');
   });
 });
 

@@ -7,7 +7,9 @@ Name|Description
 [DockerCredential](#cdk-pipelines-github-dockercredential)|Represents a credential used to authenticate to a docker registry.
 [GitHubActionRole](#cdk-pipelines-github-githubactionrole)|Creates or references a GitHub OIDC provider and accompanying role that trusts the provider.
 [GitHubWorkflow](#cdk-pipelines-github-githubworkflow)|CDK Pipelines for GitHub workflows.
+[JsonPatch](#cdk-pipelines-github-jsonpatch)|Utility for applying RFC-6902 JSON-Patch to a document.
 [Runner](#cdk-pipelines-github-runner)|The type of runner to run the job on.
+[YamlFile](#cdk-pipelines-github-yamlfile)|Represents a Yaml File.
 
 
 **Structs**
@@ -62,6 +64,7 @@ Name|Description
 [WorkflowDispatchOptions](#cdk-pipelines-github-workflowdispatchoptions)|The Workflow dispatch event accepts no options.
 [WorkflowRunOptions](#cdk-pipelines-github-workflowrunoptions)|Workflow run options.
 [WorkflowTriggers](#cdk-pipelines-github-workflowtriggers)|The set of available triggers for GitHub Workflows.
+[YamlFileOptions](#cdk-pipelines-github-yamlfileoptions)|Options for `YamlFile`.
 
 
 **Enums**
@@ -266,6 +269,7 @@ new GitHubWorkflow(scope: Construct, id: string, props: GitHubWorkflowProps)
 
 Name | Type | Description 
 -----|------|-------------
+**workflowFile** | <code>[YamlFile](#cdk-pipelines-github-yamlfile)</code> | <span></span>
 **workflowName** | <code>string</code> | <span></span>
 **workflowPath** | <code>string</code> | <span></span>
 
@@ -309,6 +313,133 @@ protected doBuildPipeline(): void
 
 
 
+## class JsonPatch  <a id="cdk-pipelines-github-jsonpatch"></a>
+
+Utility for applying RFC-6902 JSON-Patch to a document.
+
+Use the the `JsonPatch.apply(doc, ...ops)` function to apply a set of
+operations to a JSON document and return the result.
+
+Operations can be created using the factory methods `JsonPatch.add()`,
+`JsonPatch.remove()`, etc.
+
+
+### Methods
+
+
+#### *static* add(path, value) <a id="cdk-pipelines-github-jsonpatch-add"></a>
+
+Adds a value to an object or inserts it into an array.
+
+In the case of an
+array, the value is inserted before the given index. The - character can be
+used instead of an index to insert at the end of an array.
+
+```ts
+static add(path: string, value: any): JsonPatch
+```
+
+* **path** (<code>string</code>)  *No description*
+* **value** (<code>any</code>)  *No description*
+
+__Returns__:
+* <code>[JsonPatch](#cdk-pipelines-github-jsonpatch)</code>
+
+#### *static* apply(document, ...ops) <a id="cdk-pipelines-github-jsonpatch-apply"></a>
+
+Applies a set of JSON-Patch (RFC-6902) operations to `document` and returns the result.
+
+```ts
+static apply(document: any, ...ops: JsonPatch[]): any
+```
+
+* **document** (<code>any</code>)  The document to patch.
+* **ops** (<code>[JsonPatch](#cdk-pipelines-github-jsonpatch)</code>)  The operations to apply.
+
+__Returns__:
+* <code>any</code>
+
+#### *static* copy(from, path) <a id="cdk-pipelines-github-jsonpatch-copy"></a>
+
+Copies a value from one location to another within the JSON document.
+
+Both
+from and path are JSON Pointers.
+
+```ts
+static copy(from: string, path: string): JsonPatch
+```
+
+* **from** (<code>string</code>)  *No description*
+* **path** (<code>string</code>)  *No description*
+
+__Returns__:
+* <code>[JsonPatch](#cdk-pipelines-github-jsonpatch)</code>
+
+#### *static* move(from, path) <a id="cdk-pipelines-github-jsonpatch-move"></a>
+
+Moves a value from one location to the other.
+
+Both from and path are JSON Pointers.
+
+```ts
+static move(from: string, path: string): JsonPatch
+```
+
+* **from** (<code>string</code>)  *No description*
+* **path** (<code>string</code>)  *No description*
+
+__Returns__:
+* <code>[JsonPatch](#cdk-pipelines-github-jsonpatch)</code>
+
+#### *static* remove(path) <a id="cdk-pipelines-github-jsonpatch-remove"></a>
+
+Removes a value from an object or array.
+
+```ts
+static remove(path: string): JsonPatch
+```
+
+* **path** (<code>string</code>)  *No description*
+
+__Returns__:
+* <code>[JsonPatch](#cdk-pipelines-github-jsonpatch)</code>
+
+#### *static* replace(path, value) <a id="cdk-pipelines-github-jsonpatch-replace"></a>
+
+Replaces a value.
+
+Equivalent to a “remove” followed by an “add”.
+
+```ts
+static replace(path: string, value: any): JsonPatch
+```
+
+* **path** (<code>string</code>)  *No description*
+* **value** (<code>any</code>)  *No description*
+
+__Returns__:
+* <code>[JsonPatch](#cdk-pipelines-github-jsonpatch)</code>
+
+#### *static* test(path, value) <a id="cdk-pipelines-github-jsonpatch-test"></a>
+
+Tests that the specified value is set in the document.
+
+If the test fails,
+then the patch as a whole should not apply.
+
+```ts
+static test(path: string, value: any): JsonPatch
+```
+
+* **path** (<code>string</code>)  *No description*
+* **value** (<code>any</code>)  *No description*
+
+__Returns__:
+* <code>[JsonPatch](#cdk-pipelines-github-jsonpatch)</code>
+
+
+
 ## class Runner  <a id="cdk-pipelines-github-runner"></a>
 
 The type of runner to run the job on.
@@ -345,6 +476,110 @@ static selfHosted(labels: Array<string>): Runner
 
 __Returns__:
 * <code>[Runner](#cdk-pipelines-github-runner)</code>
+
+
+
+## class YamlFile  <a id="cdk-pipelines-github-yamlfile"></a>
+
+Represents a Yaml File.
+
+
+### Initializer
+
+
+
+
+```ts
+new YamlFile(filePath: string, options?: YamlFileOptions)
+```
+
+* **filePath** (<code>string</code>)  *No description*
+* **options** (<code>[YamlFileOptions](#cdk-pipelines-github-yamlfileoptions)</code>)  *No description*
+  * **obj** (<code>any</code>)  The object that will be serialized. __*Default*__: {} an empty object
+
+
+### Methods
+
+
+#### patch(...patches) <a id="cdk-pipelines-github-yamlfile-patch"></a>
+
+Applies an RFC 6902 JSON-patch to the synthesized object file. See https://datatracker.ietf.org/doc/html/rfc6902 for more information.
+
+For example, with the following yaml file
+```yaml
+name: deploy
+on:
+   push:
+     branches:
+       - main
+   workflow_dispatch: {}
+...
+```
+
+modified in the following way:
+
+```ts
+pipeline.workflowFile.patch(JsonPatch.add("/on/workflow_call", "{}"));
+pipeline.workflowFile.patch(JsonPatch.remove("/on/workflow_dispatch"));
+```
+
+would result in the following yaml file:
+
+```yaml
+name: deploy
+on:
+   push:
+     branches:
+       - main
+   workflow_call: {}
+...
+```
+
+```ts
+patch(...patches: JsonPatch[]): void
+```
+
+* **patches** (<code>[JsonPatch](#cdk-pipelines-github-jsonpatch)</code>)  - The patch operations to apply.
+
+
+
+
+#### toYaml() <a id="cdk-pipelines-github-yamlfile-toyaml"></a>
+
+Returns the patched yaml file.
+
+```ts
+toYaml(): string
+```
+
+
+__Returns__:
+* <code>string</code>
+
+#### update(obj) <a id="cdk-pipelines-github-yamlfile-update"></a>
+
+Update the output object.
+
+```ts
+update(obj: any): void
+```
+
+* **obj** (<code>any</code>)  *No description*
+
+
+
+
+#### writeFile() <a id="cdk-pipelines-github-yamlfile-writefile"></a>
+
+Write the patched yaml file to the specified location.
+
+```ts
+writeFile(): void
+```
+
+
+
+
 
 
 
@@ -1012,6 +1247,19 @@ Name | Type | Description
 **watch**? | <code>[WatchOptions](#cdk-pipelines-github-watchoptions)</code> | Runs your workflow anytime the watch event occurs.<br/>__*Optional*__
 **workflowDispatch**? | <code>[WorkflowDispatchOptions](#cdk-pipelines-github-workflowdispatchoptions)</code> | You can configure custom-defined input properties, default input values, and required inputs for the event directly in your workflow.<br/>__*Optional*__
 **workflowRun**? | <code>[WorkflowRunOptions](#cdk-pipelines-github-workflowrunoptions)</code> | This event occurs when a workflow run is requested or completed, and allows you to execute a workflow based on the finished result of another workflow.<br/>__*Optional*__
+
+
+
+## struct YamlFileOptions  <a id="cdk-pipelines-github-yamlfileoptions"></a>
+
+
+Options for `YamlFile`.
+
+
+
+Name | Type | Description 
+-----|------|-------------
+**obj**? | <code>any</code> | The object that will be serialized.<br/>__*Default*__: {} an empty object
 
 
 
