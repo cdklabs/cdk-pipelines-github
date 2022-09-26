@@ -358,6 +358,10 @@ export class GitHubWorkflow extends PipelineBase {
         } else {
           throw new Error(`unsupported step type: ${node.data.step.constructor.name}`);
         }
+
+      default:
+        // The 'as any' is temporary, until the change upstream rolls out
+        throw new Error(`GitHubWorfklow does not support graph nodes of type '${(node.data as any)?.type}'. You are probably using a feature this CDK Pipelines implementation does not support.`);
     }
   }
 
