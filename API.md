@@ -7,6 +7,7 @@ Name|Description
 [DockerCredential](#cdk-pipelines-github-dockercredential)|Represents a credential used to authenticate to a docker registry.
 [GitHubActionRole](#cdk-pipelines-github-githubactionrole)|Creates or references a GitHub OIDC provider and accompanying role that trusts the provider.
 [GitHubWorkflow](#cdk-pipelines-github-githubworkflow)|CDK Pipelines for GitHub workflows.
+[GithubActionStep](#cdk-pipelines-github-githubactionstep)|Creates a Github action job that can be used in pre/post deploy step.
 [JsonPatch](#cdk-pipelines-github-jsonpatch)|Utility for applying RFC-6902 JSON-Patch to a document.
 [Runner](#cdk-pipelines-github-runner)|The type of runner to run the job on.
 [YamlFile](#cdk-pipelines-github-yamlfile)|Represents a Yaml File.
@@ -316,7 +317,7 @@ protected doBuildPipeline(): void
 
 ## class GithubActionStep  <a id="cdk-pipelines-github-githubactionstep"></a>
 
-
+Creates a Github action job that can be used in pre/post deploy step.
 
 __Implements__: [pipelines.IFileSetProducer](#aws-cdk-lib-pipelines-ifilesetproducer)
 __Extends__: [pipelines.Step](#aws-cdk-lib-pipelines-step)
