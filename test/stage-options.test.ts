@@ -1,8 +1,7 @@
 import { readFileSync } from 'fs';
 import { Stack, Stage } from 'aws-cdk-lib';
 import { ShellStep } from 'aws-cdk-lib/pipelines';
-import { GitHubWorkflow, StackCapabilities } from '../src';
-import { GithubActionStep } from '../src/steps/GithubActionStep';
+import { GitHubWorkflow, StackCapabilities, GithubActionStep } from '../src';
 import { withTemporaryDirectory, TestApp } from './testutil';
 
 let app: TestApp;
@@ -239,6 +238,7 @@ describe('job settings', () => {
 
       app.synth();
 
+      expect(readFileSync(pipeline.workflowPath, 'utf-8')).toMatchSnapshot();
       expect(readFileSync(pipeline.workflowPath, 'utf-8')).toContain('my-pre-deploy-action\@1\.0\.0');
       expect(readFileSync(pipeline.workflowPath, 'utf-8')).toContain('my-post-deploy-action\@1\.0\.0');
     });

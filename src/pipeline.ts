@@ -9,7 +9,7 @@ import * as decamelize from 'decamelize';
 import { DockerCredential } from './docker-credentials';
 import { awsCredentialStep } from './private/aws-credentials';
 import { AddGitHubStageOptions } from './stage-options';
-import { GithubActionStep } from './steps/GithubActionStep';
+import { GithubActionStep } from './steps/github-action-step';
 import * as github from './workflows-model';
 import { YamlFile } from './yaml-file';
 

@@ -17,9 +17,9 @@ export class GithubActionStep extends Step {
   readonly env: Record<string, string>;
   readonly jobStep: JobStep;
 
-  constructor(id: string, { env, jobStep }: GithubActionStepProps) {
+  constructor(id: string, props: GithubActionStepProps) {
     super(id);
-    this.jobStep = jobStep;
-    this.env = env ?? {};
+    this.jobStep = props.jobStep;
+    this.env = props.env ?? {};
   }
 }

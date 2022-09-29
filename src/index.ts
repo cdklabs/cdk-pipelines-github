@@ -5,3 +5,4 @@ export * from './docker-credentials';
 export * from './stage-options';
 export * from './yaml-file';
 export * from './json-patch';
+export * from './steps/github-action-step';
