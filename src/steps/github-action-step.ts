@@ -13,6 +13,9 @@ export interface GithubActionStepProps {
   readonly env?: Record<string, string>;
 }
 
+/**
+ * Creates a Github action job that can be used in pre/post deploy step.
+ */
 export class GithubActionStep extends Step {
   readonly env: Record<string, string>;
   readonly jobStep: JobStep;
