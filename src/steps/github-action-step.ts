@@ -1,16 +1,16 @@
 import { Step } from 'aws-cdk-lib/pipelines';
 import { JobStep } from '../workflows-model';
 
-interface GithubActionStepProps {
+export interface GithubActionStepProps {
   /**
    * The Job step.
    */
-  jobStep: JobStep;
+  readonly jobStep: JobStep;
 
   /**
    * Environment variables to set.
    */
-  env?: Record<string, string>;
+  readonly env?: Record<string, string>;
 }
 
 export class GithubActionStep extends Step {

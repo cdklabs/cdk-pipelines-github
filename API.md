@@ -7,6 +7,7 @@ Name|Description
 [DockerCredential](#cdk-pipelines-github-dockercredential)|Represents a credential used to authenticate to a docker registry.
 [GitHubActionRole](#cdk-pipelines-github-githubactionrole)|Creates or references a GitHub OIDC provider and accompanying role that trusts the provider.
 [GitHubWorkflow](#cdk-pipelines-github-githubworkflow)|CDK Pipelines for GitHub workflows.
+[GithubActionStep](#cdk-pipelines-github-githubactionstep)|Creates a github action job that can be used in pre/post deploy step
 [JsonPatch](#cdk-pipelines-github-jsonpatch)|Utility for applying RFC-6902 JSON-Patch to a document.
 [Runner](#cdk-pipelines-github-runner)|The type of runner to run the job on.
 [YamlFile](#cdk-pipelines-github-yamlfile)|Represents a Yaml File.
@@ -32,6 +33,7 @@ Name|Description
 [ForkOptions](#cdk-pipelines-github-forkoptions)|The Fork event accepts no options.
 [GitHubActionRoleProps](#cdk-pipelines-github-githubactionroleprops)|Properties for the GitHubActionRole construct.
 [GitHubWorkflowProps](#cdk-pipelines-github-githubworkflowprops)|Props for `GitHubWorkflow`.
+[GithubActionStepProps](#cdk-pipelines-github-githubactionstepprops)|*No description*
 [GollumOptions](#cdk-pipelines-github-gollumoptions)|The Gollum event accepts no options.
 [IssueCommentOptions](#cdk-pipelines-github-issuecommentoptions)|Issue comment options.
 [IssuesOptions](#cdk-pipelines-github-issuesoptions)|Issues options.
@@ -310,6 +312,39 @@ protected doBuildPipeline(): void
 
 
 
+
+
+
+## class GithubActionStep  <a id="cdk-pipelines-github-githubactionstep"></a>
+
+
+
+__Implements__: [pipelines.IFileSetProducer](#aws-cdk-lib-pipelines-ifilesetproducer)
+__Extends__: [pipelines.Step](#aws-cdk-lib-pipelines-step)
+
+### Initializer
+
+
+
+
+```ts
+new GithubActionStep(id: string, props: GithubActionStepProps)
+```
+
+* **id** (<code>string</code>)  *No description*
+* **props** (<code>[GithubActionStepProps](#cdk-pipelines-github-githubactionstepprops)</code>)  *No description*
+  * **jobStep** (<code>[JobStep](#cdk-pipelines-github-jobstep)</code>)  The Job step. 
+  * **env** (<code>Map<string, string></code>)  Environment variables to set. __*Optional*__
+
+
+
+### Properties
+
+
+Name | Type | Description 
+-----|------|-------------
+**env** | <code>Map<string, string></code> | <span></span>
+**jobStep** | <code>[JobStep](#cdk-pipelines-github-jobstep)</code> | <span></span>
 
 
 
@@ -784,6 +819,20 @@ Name | Type | Description
 **workflowName**? | <code>string</code> | Name of the workflow.<br/>__*Default*__: "deploy"
 **workflowPath**? | <code>string</code> | File path for the GitHub workflow.<br/>__*Default*__: ".github/workflows/deploy.yml"
 **workflowTriggers**? | <code>[WorkflowTriggers](#cdk-pipelines-github-workflowtriggers)</code> | GitHub workflow triggers.<br/>__*Default*__: By default, workflow is triggered on push to the `main` branch and can also be triggered manually (`workflow_dispatch`).
+
+
+
+## struct GithubActionStepProps  <a id="cdk-pipelines-github-githubactionstepprops"></a>
+
+
+
+
+
+
+Name | Type | Description 
+-----|------|-------------
+**jobStep** | <code>[JobStep](#cdk-pipelines-github-jobstep)</code> | The Job step.
+**env**? | <code>Map<string, string></code> | Environment variables to set.<br/>__*Optional*__
 
 
 
