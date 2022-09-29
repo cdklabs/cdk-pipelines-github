@@ -6,12 +6,12 @@ import { PipelineBase, PipelineBaseProps, ShellStep, StackAsset, StackDeployment
 import { AGraphNode, PipelineGraph, Graph, isGraph } from 'aws-cdk-lib/pipelines/lib/helpers-internal';
 import { Construct } from 'constructs';
 import * as decamelize from 'decamelize';
-import * as YAML from 'yaml';
 import { DockerCredential } from './docker-credentials';
 import { awsCredentialStep } from './private/aws-credentials';
 import { AddGitHubStageOptions } from './stage-options';
 import { GithubActionStep } from './steps/GithubActionStep';
 import * as github from './workflows-model';
+import { YamlFile } from './yaml-file';
 
 const CDKOUT_ARTIFACT = 'cdk.out';
 const ASSET_HASH_NAME = 'asset-hash';
@@ -150,6 +150,7 @@ export interface GitHubWorkflowProps extends PipelineBaseProps {
 export class GitHubWorkflow extends PipelineBase {
   public readonly workflowPath: string;
   public readonly workflowName: string;
+  public readonly workflowFile: YamlFile;
 
   private readonly workflowTriggers: github.WorkflowTriggers;
   private readonly preSynthed: boolean;
@@ -195,6 +196,7 @@ export class GitHubWorkflow extends PipelineBase {
       throw new Error('workflow files must be stored in the \'.github/workflows\' directory of your repository');
     }
 
+    this.workflowFile = new YamlFile(this.workflowPath);
     this.workflowName = props.workflowName ?? 'deploy';
     this.workflowTriggers = props.workflowTriggers ?? {
       push: { branches: ['main'] },
@@ -288,9 +290,7 @@ export class GitHubWorkflow extends PipelineBase {
     };
 
     // write as a yaml file
-    const yaml = YAML.stringify(workflow, {
-      indent: 2,
-    });
+    this.workflowFile.update(workflow);
 
     // create directory if it does not exist
     mkdirSync(path.dirname(this.workflowPath), { recursive: true });
@@ -300,12 +300,12 @@ export class GitHubWorkflow extends PipelineBase {
     const diffProtection = this.node.tryGetContext('cdk-pipelines-github:diffProtection') ?? true;
     if (diffProtection && process.env.GITHUB_WORKFLOW === this.workflowName) {
       // check if workflow file has changed
-      if (!existsSync(this.workflowPath) || yaml !== readFileSync(this.workflowPath, 'utf8')) {
+      if (!existsSync(this.workflowPath) || this.workflowFile.toYaml() !== readFileSync(this.workflowPath, 'utf8')) {
         throw new Error(`Please commit the updated workflow file ${path.relative(__dirname, this.workflowPath)} when you change your pipeline definition.`);
       }
     }
 
-    writeFileSync(this.workflowPath, yaml);
+    this.workflowFile.writeFile();
   }
 
   private insertJobOutputs(jobmap: Record<string, github.Job>) {
@@ -361,6 +361,10 @@ export class GitHubWorkflow extends PipelineBase {
         } else {
           throw new Error(`unsupported step type: ${node.data.step.constructor.name}`);
         }
+
+      default:
+        // The 'as any' is temporary, until the change upstream rolls out
+        throw new Error(`GitHubWorfklow does not support graph nodes of type '${(node.data as any)?.type}'. You are probably using a feature this CDK Pipelines implementation does not support.`);
     }
   }
 

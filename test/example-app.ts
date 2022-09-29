@@ -7,7 +7,7 @@ import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import { EnvironmentUtils } from 'aws-cdk-lib/cx-api';
 import { ShellStep } from 'aws-cdk-lib/pipelines';
-import { GitHubWorkflow, DockerCredential } from '../src';
+import { GitHubWorkflow, DockerCredential, YamlFile } from '../src';
 
 export interface GitHubExampleAppProps {
   /**
@@ -45,6 +45,8 @@ export interface GitHubExampleAppProps {
  * You will need to bootstrap (with `CDK_NEW_BOOTSTRAP=1`) two environments
  */
 export class GitHubExampleApp extends App {
+  public workflowFile: YamlFile;
+
   constructor(props: GitHubExampleAppProps) {
     const repoDir = props.repoDir ?? fs.mkdtempSync(path.join(os.tmpdir(), 'github-engine.'));
 
@@ -81,6 +83,7 @@ export class GitHubExampleApp extends App {
         DockerCredential.ecr('000000000000.dkr.ecr.us-east-1.amazonaws.com'),
       ],
     });
+    this.workflowFile = pipeline.workflowFile;
 
     const myStage = new MyStage(this, 'StageA', { env: EnvironmentUtils.parse(props.envA) });
     pipeline.addStage(myStage, {
