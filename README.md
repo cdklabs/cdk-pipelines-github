@@ -37,6 +37,7 @@ Workflows.
     - [Self Hosted Runner](#self-hosted-runner)
   - [Escape Hatches](#escape-hatches)
   - [Additional Features](#additional-features)
+    - [GitHub Action Step](#github-action-step)
     - [Configure GitHub Environment](#configure-github-environment)
       - [Manual Approval Step](#manual-approval-step)
   - [Tutorial](#tutorial)
@@ -371,6 +372,44 @@ deployWorkflow.patch(JsonPatch.remove('/on/workflow_dispatch'));
 ## Additional Features
 
 Below is a compilation of additional features available for GitHub Workflows.
+
+### GitHub Action Step
+
+If you want to call a GitHub Action in a step, you can utilize the `GitHubActionStep`.
+`GitHubActionStep` extends `Step` and can be used anywhere a `Step` type is allowed.
+
+```ts
+import { App } from 'aws-cdk-lib';
+import { ShellStep } from 'aws-cdk-lib/pipelines';
+import { GitHubWorkflow, JsonPatch } from 'cdk-pipelines-github';
+
+const app = new App();
+
+const pipeline = new GitHubWorkflow(app, 'Pipeline', {
+  synth: new ShellStep('Build', {
+    commands: [
+      'yarn install',
+      'yarn build',
+    ],
+  }),
+});
+
+const stage = new MyStage(app, 'Beta', { env: BETA_ENV });
+pipeline.addStage(stage, {
+  pre: [new GitHubActionStep('PreDeployAction', {
+    jobStep: {
+      name: 'pre deploy action',
+      uses: 'my-pre-deploy-action@1.0.0',
+      with: {
+        'app-id': 1234,
+        'secrets': 'my-secrets',
+      },
+    },
+  })],
+});
+
+app.synth();
+```
 
 ### Configure GitHub Environment
 

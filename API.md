@@ -6,6 +6,7 @@ Name|Description
 ----|-----------
 [DockerCredential](#cdk-pipelines-github-dockercredential)|Represents a credential used to authenticate to a docker registry.
 [GitHubActionRole](#cdk-pipelines-github-githubactionrole)|Creates or references a GitHub OIDC provider and accompanying role that trusts the provider.
+[GitHubActionStep](#cdk-pipelines-github-githubactionstep)|Specifies a GitHub Action as a step in the pipeline.
 [GitHubWorkflow](#cdk-pipelines-github-githubworkflow)|CDK Pipelines for GitHub workflows.
 [JsonPatch](#cdk-pipelines-github-jsonpatch)|Utility for applying RFC-6902 JSON-Patch to a document.
 [Runner](#cdk-pipelines-github-runner)|The type of runner to run the job on.
@@ -31,6 +32,7 @@ Name|Description
 [ExternalDockerCredentialSecrets](#cdk-pipelines-github-externaldockercredentialsecrets)|Generic structure to supply the locations of GitHub Secrets used to authenticate to a docker registry.
 [ForkOptions](#cdk-pipelines-github-forkoptions)|The Fork event accepts no options.
 [GitHubActionRoleProps](#cdk-pipelines-github-githubactionroleprops)|Properties for the GitHubActionRole construct.
+[GitHubActionStepProps](#cdk-pipelines-github-githubactionstepprops)|*No description*
 [GitHubWorkflowProps](#cdk-pipelines-github-githubworkflowprops)|Props for `GitHubWorkflow`.
 [GollumOptions](#cdk-pipelines-github-gollumoptions)|The Gollum event accepts no options.
 [IssueCommentOptions](#cdk-pipelines-github-issuecommentoptions)|Issue comment options.
@@ -224,6 +226,39 @@ static existingGitHubActionsProvider(scope: Construct): IOpenIdConnectProvider
 
 __Returns__:
 * <code>[aws_iam.IOpenIdConnectProvider](#aws-cdk-lib-aws-iam-iopenidconnectprovider)</code>
+
+
+
+## class GitHubActionStep  <a id="cdk-pipelines-github-githubactionstep"></a>
+
+Specifies a GitHub Action as a step in the pipeline.
+
+__Implements__: [pipelines.IFileSetProducer](#aws-cdk-lib-pipelines-ifilesetproducer)
+__Extends__: [pipelines.Step](#aws-cdk-lib-pipelines-step)
+
+### Initializer
+
+
+
+
+```ts
+new GitHubActionStep(id: string, props: GitHubActionStepProps)
+```
+
+* **id** (<code>string</code>)  *No description*
+* **props** (<code>[GitHubActionStepProps](#cdk-pipelines-github-githubactionstepprops)</code>)  *No description*
+  * **jobStep** (<code>[JobStep](#cdk-pipelines-github-jobstep)</code>)  The Job step. 
+  * **env** (<code>Map<string, string></code>)  Environment variables to set. __*Optional*__
+
+
+
+### Properties
+
+
+Name | Type | Description 
+-----|------|-------------
+**env** | <code>Map<string, string></code> | <span></span>
+**jobStep** | <code>[JobStep](#cdk-pipelines-github-jobstep)</code> | <span></span>
 
 
 
@@ -757,6 +792,20 @@ Name | Type | Description
 **repos** | <code>Array<string></code> | A list of GitHub repositories you want to be able to access the IAM role.
 **provider**? | <code>[aws_iam.IOpenIdConnectProvider](#aws-cdk-lib-aws-iam-iopenidconnectprovider)</code> | The GitHub OpenId Connect Provider. Must have provider url `https://token.actions.githubusercontent.com`. The audience must be `sts:amazonaws.com`.<br/>__*Default*__: a provider is created for you.
 **roleName**? | <code>string</code> | The name of the Oidc role.<br/>__*Default*__: 'GitHubActionRole'
+
+
+
+## struct GitHubActionStepProps  <a id="cdk-pipelines-github-githubactionstepprops"></a>
+
+
+
+
+
+
+Name | Type | Description 
+-----|------|-------------
+**jobStep** | <code>[JobStep](#cdk-pipelines-github-jobstep)</code> | The Job step.
+**env**? | <code>Map<string, string></code> | Environment variables to set.<br/>__*Optional*__
 
 
 
