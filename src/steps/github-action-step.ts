@@ -1,7 +1,7 @@
 import { Step } from 'aws-cdk-lib/pipelines';
 import { JobStep } from '../workflows-model';
 
-export interface GithubActionStepProps {
+export interface GitHubActionStepProps {
   /**
    * The Job step.
    */
@@ -14,13 +14,13 @@ export interface GithubActionStepProps {
 }
 
 /**
- * Creates a Github action job that can be used in pre/post deploy step.
+ * Specifies a GitHub Action as a step in the pipeline.
  */
-export class GithubActionStep extends Step {
-  readonly env: Record<string, string>;
-  readonly jobStep: JobStep;
+export class GitHubActionStep extends Step {
+  public readonly env: Record<string, string>;
+  public readonly jobStep: JobStep;
 
-  constructor(id: string, props: GithubActionStepProps) {
+  constructor(id: string, props: GitHubActionStepProps) {
     super(id);
     this.jobStep = props.jobStep;
     this.env = props.env ?? {};

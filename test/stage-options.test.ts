@@ -1,7 +1,7 @@
 import { readFileSync } from 'fs';
 import { Stack, Stage } from 'aws-cdk-lib';
 import { ShellStep } from 'aws-cdk-lib/pipelines';
-import { GitHubWorkflow, StackCapabilities, GithubActionStep } from '../src';
+import { GitHubWorkflow, StackCapabilities, GitHubActionStep } from '../src';
 import { withTemporaryDirectory, TestApp } from './testutil';
 
 let app: TestApp;
@@ -196,51 +196,51 @@ describe('job settings', () => {
       expect(readFileSync(pipeline.workflowPath, 'utf-8')).toContain('if: github.repository == \'github/repo\'\n');
     });
   });
+});
 
-  test('can set pre/post github action job step', () => {
-    withTemporaryDirectory((dir) => {
-      const pipeline = new GitHubWorkflow(app, 'Pipeline', {
-        workflowPath: `${dir}/.github/workflows/deploy.yml`,
-        synth: new ShellStep('Build', {
-          installCommands: ['yarn'],
-          commands: ['yarn build'],
-        }),
-      });
-
-      const stage = new Stage(app, 'MyStack', {
-        env: { account: '111111111111', region: 'us-east-1' },
-      });
-
-      new Stack(stage, 'MyStack');
-
-      pipeline.addStageWithGitHubOptions(stage, {
-        pre: [new GithubActionStep('PreDeployAction', {
-          jobStep: {
-            name: 'pre deploy action',
-            uses: 'my-pre-deploy-action@1.0.0',
-            with: {
-              'app-id': 1234,
-              'secrets': 'my-secrets',
-            },
-          },
-        })],
-        post: [new GithubActionStep('PostDeployAction', {
-          jobStep: {
-            name: 'post deploy action',
-            uses: 'my-post-deploy-action@1.0.0',
-            with: {
-              'app-id': 4321,
-              'secrets': 'secrets',
-            },
-          },
-        })],
-      });
-
-      app.synth();
-
-      expect(readFileSync(pipeline.workflowPath, 'utf-8')).toMatchSnapshot();
-      expect(readFileSync(pipeline.workflowPath, 'utf-8')).toContain('my-pre-deploy-action\@1\.0\.0');
-      expect(readFileSync(pipeline.workflowPath, 'utf-8')).toContain('my-post-deploy-action\@1\.0\.0');
+test('can set pre/post github action job step', () => {
+  withTemporaryDirectory((dir) => {
+    const pipeline = new GitHubWorkflow(app, 'Pipeline', {
+      workflowPath: `${dir}/.github/workflows/deploy.yml`,
+      synth: new ShellStep('Build', {
+        installCommands: ['yarn'],
+        commands: ['yarn build'],
+      }),
     });
+
+    const stage = new Stage(app, 'MyStack', {
+      env: { account: '111111111111', region: 'us-east-1' },
+    });
+
+    new Stack(stage, 'MyStack');
+
+    pipeline.addStageWithGitHubOptions(stage, {
+      pre: [new GitHubActionStep('PreDeployAction', {
+        jobStep: {
+          name: 'pre deploy action',
+          uses: 'my-pre-deploy-action@1.0.0',
+          with: {
+            'app-id': 1234,
+            'secrets': 'my-secrets',
+          },
+        },
+      })],
+      post: [new GitHubActionStep('PostDeployAction', {
+        jobStep: {
+          name: 'post deploy action',
+          uses: 'my-post-deploy-action@1.0.0',
+          with: {
+            'app-id': 4321,
+            'secrets': 'secrets',
+          },
+        },
+      })],
+    });
+
+    app.synth();
+
+    expect(readFileSync(pipeline.workflowPath, 'utf-8')).toMatchSnapshot();
+    expect(readFileSync(pipeline.workflowPath, 'utf-8')).toContain('my-pre-deploy-action\@1\.0\.0');
+    expect(readFileSync(pipeline.workflowPath, 'utf-8')).toContain('my-post-deploy-action\@1\.0\.0');
   });
 });

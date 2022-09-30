@@ -9,7 +9,7 @@ import * as decamelize from 'decamelize';
 import { DockerCredential } from './docker-credentials';
 import { awsCredentialStep } from './private/aws-credentials';
 import { AddGitHubStageOptions } from './stage-options';
-import { GithubActionStep } from './steps/github-action-step';
+import { GitHubActionStep } from './steps/github-action-step';
 import * as github from './workflows-model';
 import { YamlFile } from './yaml-file';
 
@@ -356,8 +356,8 @@ export class GitHubWorkflow extends PipelineBase {
           return this.jobForBuildStep(node, node.data.step);
         } else if (node.data.step instanceof ShellStep) {
           return this.jobForScriptStep(node, node.data.step);
-        } else if (node.data.step instanceof GithubActionStep) {
-          return this.jobForGithubActionStep(node, node.data.step);
+        } else if (node.data.step instanceof GitHubActionStep) {
+          return this.jobForGitHubActionStep(node, node.data.step);
         } else {
           throw new Error(`unsupported step type: ${node.data.step.constructor.name}`);
         }
@@ -646,7 +646,7 @@ export class GitHubWorkflow extends PipelineBase {
     };
   }
 
-  private jobForGithubActionStep(node: AGraphNode, step: GithubActionStep): Job {
+  private jobForGitHubActionStep(node: AGraphNode, step: GitHubActionStep): Job {
     return {
       id: node.uniqueId,
       definition: {
