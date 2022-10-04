@@ -1,0 +1,55 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`yaml file comments comment at bottom works: commentAtBottomTest.yml 1`] = `
+"first:
+  second:
+    array:
+      - \\"0\\"
+
+# Comment after
+"
+`;
+
+exports[`yaml file comments comment at top works: commentAtTopTest.yml 1`] = `
+"# Comment before
+
+first:
+  second:
+    array:
+      - \\"0\\"
+"
+`;
+
+exports[`yaml file comments comments at both top and bottom work: commentAtTopAndBottomTest.yml 1`] = `
+"# Comment before
+
+first:
+  second:
+    array:
+      - \\"0\\"
+
+# Comment after
+"
+`;
+
+exports[`yaml file comments multi-line comments work: multilineCommentAtTopAndBottomTest.yml 1`] = `
+"# Comment before:
+
+#  - A
+#  - B
+#  - C
+
+
+first:
+  second:
+    array:
+      - \\"0\\"
+
+# Comment after:
+
+#  - X
+#  - Y
+#  - Z
+
+"
+`;
