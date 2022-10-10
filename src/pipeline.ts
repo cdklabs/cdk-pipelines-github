@@ -658,9 +658,7 @@ export class GitHubWorkflow extends PipelineBase {
         runsOn: this.runner.runsOn,
         needs: this.renderDependencies(node),
         env: step.env,
-        steps: [
-          step.jobStep,
-        ],
+        steps: step.jobSteps,
       },
     };
   }

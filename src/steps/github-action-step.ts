@@ -3,26 +3,26 @@ import { JobStep } from '../workflows-model';
 
 export interface GitHubActionStepProps {
   /**
-   * The Job step.
+   * The Job steps.
    */
-  readonly jobStep: JobStep;
+  readonly jobSteps: JobStep[];
 
   /**
    * Environment variables to set.
    */
   readonly env?: Record<string, string>;
-}
+};
 
 /**
  * Specifies a GitHub Action as a step in the pipeline.
  */
 export class GitHubActionStep extends Step {
   public readonly env: Record<string, string>;
-  public readonly jobStep: JobStep;
+  public readonly jobSteps: JobStep[];
 
   constructor(id: string, props: GitHubActionStepProps) {
     super(id);
-    this.jobStep = props.jobStep;
+    this.jobSteps = props.jobSteps;
     this.env = props.env ?? {};
   }
 }
