@@ -175,7 +175,7 @@ describe('job settings', () => {
           commands: ['yarn build'],
         }),
         jobSettings: {
-          if: 'github.repository == \'another/repo\'',
+          if: 'github.repository == \'another/repoA\'',
         },
       });
 
@@ -187,13 +187,14 @@ describe('job settings', () => {
 
       pipeline.addStageWithGitHubOptions(stage, {
         jobSettings: {
-          if: 'github.repository == \'github/repo\'',
+          if: 'github.repository == \'github/repoB\'',
         },
       });
 
       app.synth();
 
-      expect(readFileSync(pipeline.workflowPath, 'utf-8')).toContain('if: github.repository == \'github/repo\'\n');
+      expect(readFileSync(pipeline.workflowPath, 'utf-8')).toContain('if: github.repository == \'another/repoA\'\n');
+      expect(readFileSync(pipeline.workflowPath, 'utf-8')).toContain('if: github.repository == \'github/repoB\'\n');
     });
   });
 });
@@ -206,6 +207,7 @@ test('can set pre/post github action job step', () => {
         installCommands: ['yarn'],
         commands: ['yarn build'],
       }),
+      jobSettings: { if: 'check on Synthesize and Publish Assets' },
     });
 
     const stage = new Stage(app, 'MyStack', {
@@ -224,6 +226,7 @@ test('can set pre/post github action job step', () => {
             'secrets': 'my-secrets',
           },
         }],
+        if: '', // remove the if statement
       })],
       post: [new GitHubActionStep('PostDeployAction', {
         jobSteps: [{
@@ -237,7 +240,9 @@ test('can set pre/post github action job step', () => {
             'secrets': 'secrets',
           },
         }],
+        if: 'check on PostDeployAction only',
       })],
+      jobSettings: { if: 'check on Deploy MyStackXYZ only' },
     });
 
     app.synth();
@@ -246,5 +251,7 @@ test('can set pre/post github action job step', () => {
     expect(readFileSync(pipeline.workflowPath, 'utf-8')).toContain('my-pre-deploy-action\@1\.0\.0');
     expect(readFileSync(pipeline.workflowPath, 'utf-8')).toContain('my-post-deploy-action\@1\.0\.0');
     expect(readFileSync(pipeline.workflowPath, 'utf-8')).toContain('actions/checkout@v2');
+    expect(readFileSync(pipeline.workflowPath, 'utf-8')).toContain('check on Synthesize and Publish Assets');
+    expect(readFileSync(pipeline.workflowPath, 'utf-8')).toContain('check on Deploy MyStackXYZ only');
   });
 });

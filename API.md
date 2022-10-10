@@ -249,6 +249,7 @@ new GitHubActionStep(id: string, props: GitHubActionStepProps)
 * **props** (<code>[GitHubActionStepProps](#cdk-pipelines-github-githubactionstepprops)</code>)  *No description*
   * **jobSteps** (<code>Array<[JobStep](#cdk-pipelines-github-jobstep)></code>)  The Job steps. 
   * **env** (<code>Map<string, string></code>)  Environment variables to set. __*Optional*__
+  * **if** (<code>string</code>)  jobs.<job_id>.if. - overrides the JobSettings if provided, empty string (`''`) will remove the `if` clause. __*Optional*__
 
 
 
@@ -259,6 +260,7 @@ Name | Type | Description
 -----|------|-------------
 **env** | <code>Map<string, string></code> | <span></span>
 **jobSteps** | <code>Array<[JobStep](#cdk-pipelines-github-jobstep)></code> | <span></span>
+**if**? | <code>string</code> | __*Optional*__
 
 
 
@@ -806,6 +808,7 @@ Name | Type | Description
 -----|------|-------------
 **jobSteps** | <code>Array<[JobStep](#cdk-pipelines-github-jobstep)></code> | The Job steps.
 **env**? | <code>Map<string, string></code> | Environment variables to set.<br/>__*Optional*__
+**if**? | <code>string</code> | jobs.<job_id>.if. - overrides the JobSettings if provided, empty string (`''`) will remove the `if` clause.<br/>__*Optional*__
 
 
 

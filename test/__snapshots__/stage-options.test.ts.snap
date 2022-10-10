@@ -10,6 +10,7 @@ on:
 jobs:
   Build-Build:
     name: Synthesize
+    if: check on Synthesize and Publish Assets
     permissions:
       contents: read
       id-token: none
@@ -30,6 +31,7 @@ jobs:
           path: cdk.out
   Assets-FileAsset1:
     name: Publish Assets Assets-FileAsset1
+    if: check on Synthesize and Publish Assets
     needs:
       - Build-Build
     permissions:
@@ -73,6 +75,7 @@ jobs:
           secrets: my-secrets
   MyStack-MyStack-Deploy:
     name: Deploy MyStack098574E7
+    if: check on Deploy MyStackXYZ only
     permissions:
       contents: read
       id-token: none
@@ -102,6 +105,7 @@ jobs:
           role-arn: arn:aws:iam::111111111111:role/cdk-hnb659fds-cfn-exec-role-111111111111-us-east-1
   MyStack-PostDeployAction:
     name: PostDeployAction
+    if: check on PostDeployAction only
     permissions:
       contents: write
     runs-on: ubuntu-latest

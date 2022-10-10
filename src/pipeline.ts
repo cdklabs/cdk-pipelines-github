@@ -346,7 +346,7 @@ export class GitHubWorkflow extends PipelineBase {
         return this.jobForAssetPublish(node, node.data.assets, options);
 
       case 'prepare':
-        throw new Error('"prepare" is not supported by GitHub Worflows');
+        throw new Error('"prepare" is not supported by GitHub Workflows');
 
       case 'execute':
         return this.jobForDeploy(node, node.data.stack, node.data.captureOutputs);
@@ -651,7 +651,7 @@ export class GitHubWorkflow extends PipelineBase {
       id: node.uniqueId,
       definition: {
         name: step.id,
-        ...this.jobSettings,
+        if: step.if === '' ? undefined : (step.if ?? this.jobSettings?.if),
         permissions: {
           contents: github.JobPermission.WRITE,
         },
