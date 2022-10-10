@@ -6,7 +6,7 @@ import { YamlFile } from '../src/yaml-file';
 import { withTemporaryDirectory } from './testutil';
 
 describe('patch', () => {
-  function patchTest(patches: JsonPatch[], initialObj: unknown, assertObj: unknown, updateObj?: unknown) {
+  function patchTest(patches: JsonPatch[], initialObj: any, assertObj: any, updateObj?: any) {
     withTemporaryDirectory((dir) => {
       const fileName = path.join(dir, 'file.yml');
       const yamlFile = new YamlFile(fileName, {
@@ -65,7 +65,7 @@ describe('patch', () => {
 
 
 describe('yaml file comments', () => {
-  function commentTest(commentAtTop: string | undefined, commentAtBottom: string | undefined, initialObj: unknown, assetDoc: string) {
+  function commentTest(commentAtTop: string | undefined, commentAtBottom: string | undefined, initialObj: any, assetDoc: string) {
     withTemporaryDirectory((dir) => {
       const fileName = path.join(dir, 'file.yml');
       const yamlFile = new YamlFile(fileName, {
