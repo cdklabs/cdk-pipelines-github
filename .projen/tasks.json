@@ -246,6 +246,15 @@
         }
       ]
     },
+    "test:update": {
+      "name": "test:update",
+      "description": "Update jest snapshots",
+      "steps": [
+        {
+          "exec": "jest --updateSnapshot --passWithNoTests --all"
+        }
+      ]
+    },
     "test:watch": {
       "name": "test:watch",
       "description": "Run jest in watch mode",
