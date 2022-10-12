@@ -8,9 +8,9 @@ on:
       - main
   workflow_dispatch: {}
 jobs:
-  Build-Build:
+  Build-Synth:
     name: Synthesize
-    if: check on Synthesize and Publish Assets
+    if: contains(fromJson('[\\"push\\", \\"pull_request\\"]'), github.event_name)
     permissions:
       contents: read
       id-token: none
@@ -31,9 +31,8 @@ jobs:
           path: cdk.out
   Assets-FileAsset1:
     name: Publish Assets Assets-FileAsset1
-    if: check on Synthesize and Publish Assets
     needs:
-      - Build-Build
+      - Build-Synth
     permissions:
       contents: read
       id-token: none
@@ -65,7 +64,7 @@ jobs:
       contents: write
     runs-on: ubuntu-latest
     needs:
-      - Build-Build
+      - Build-Synth
     env: {}
     steps:
       - name: pre deploy action
@@ -75,12 +74,12 @@ jobs:
           secrets: my-secrets
   MyStack-MyStack-Deploy:
     name: Deploy MyStack098574E7
-    if: check on Deploy MyStackXYZ only
+    if: success() && contains(github.event.issue.labels.*.name, 'deploy')
     permissions:
       contents: read
       id-token: none
     needs:
-      - Build-Build
+      - Build-Synth
       - Assets-FileAsset1
       - MyStack-PreDeployAction
     runs-on: ubuntu-latest
@@ -105,13 +104,13 @@ jobs:
           role-arn: arn:aws:iam::111111111111:role/cdk-hnb659fds-cfn-exec-role-111111111111-us-east-1
   MyStack-PostDeployAction:
     name: PostDeployAction
-    if: check on PostDeployAction only
+    if: failure() && contains(github.event.issue.labels.*.name, 'cleanupFailure')
     permissions:
       contents: write
     runs-on: ubuntu-latest
     needs:
       - MyStack-MyStack-Deploy
-      - Build-Build
+      - Build-Synth
     env: {}
     steps:
       - name: Checkout

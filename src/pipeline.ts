@@ -410,7 +410,7 @@ export class GitHubWorkflow extends PipelineBase {
       id: jobId,
       definition: {
         name: `Publish Assets ${jobId}`,
-        ...this.jobSettings,
+        ...this.renderJobSettingParameters(),
         needs: this.renderDependencies(node),
         permissions: {
           contents: github.JobPermission.READ,
@@ -481,7 +481,7 @@ export class GitHubWorkflow extends PipelineBase {
       id: node.uniqueId,
       definition: {
         name: `Deploy ${stack.stackArtifactId}`,
-        ...this.jobSettings,
+        ...this.renderJobSettingParameters(),
         ...this.stackProperties[stack.stackArtifactId]?.settings,
         permissions: {
           contents: github.JobPermission.READ,
@@ -532,7 +532,7 @@ export class GitHubWorkflow extends PipelineBase {
       id: node.uniqueId,
       definition: {
         name: 'Synthesize',
-        ...this.jobSettings,
+        ...this.renderJobSettingParameters(true),
         permissions: {
           contents: github.JobPermission.READ,
           // The Synthesize job does not use the GitHub Action Role on its own, but it's possible
@@ -626,7 +626,7 @@ export class GitHubWorkflow extends PipelineBase {
       id: node.uniqueId,
       definition: {
         name: step.id,
-        ...this.jobSettings,
+        ...this.renderJobSettingParameters(),
         permissions: {
           contents: github.JobPermission.READ,
         },
@@ -651,7 +651,8 @@ export class GitHubWorkflow extends PipelineBase {
       id: node.uniqueId,
       definition: {
         name: step.id,
-        if: step.if === '' ? undefined : (step.if ?? this.jobSettings?.if),
+        ...this.renderJobSettingParameters(),
+        if: step.if,
         permissions: {
           contents: github.JobPermission.WRITE,
         },
@@ -778,6 +779,15 @@ export class GitHubWorkflow extends PipelineBase {
     }
 
     return deps.map(x => x.uniqueId);
+  }
+
+  private renderJobSettingParameters(isBuildStep = false) {
+    if (isBuildStep) {
+      return {
+        if: this.jobSettings?.if,
+      };
+    }
+    return {};
   }
 }
 

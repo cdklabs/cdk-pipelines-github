@@ -203,11 +203,11 @@ test('can set pre/post github action job step', () => {
   withTemporaryDirectory((dir) => {
     const pipeline = new GitHubWorkflow(app, 'Pipeline', {
       workflowPath: `${dir}/.github/workflows/deploy.yml`,
-      synth: new ShellStep('Build', {
+      synth: new ShellStep('Synth', {
         installCommands: ['yarn'],
         commands: ['yarn build'],
       }),
-      jobSettings: { if: 'check on Synthesize and Publish Assets' },
+      jobSettings: { if: 'contains(fromJson(\'["push", "pull_request"]\'), github.event_name)' },
     });
 
     const stage = new Stage(app, 'MyStack', {
@@ -217,32 +217,38 @@ test('can set pre/post github action job step', () => {
     new Stack(stage, 'MyStack');
 
     pipeline.addStageWithGitHubOptions(stage, {
+      jobSettings: { if: "success() && contains(github.event.issue.labels.*.name, 'deploy')" },
+
       pre: [new GitHubActionStep('PreDeployAction', {
-        jobSteps: [{
-          name: 'pre deploy action',
-          uses: 'my-pre-deploy-action@1.0.0',
-          with: {
-            'app-id': 1234,
-            'secrets': 'my-secrets',
+        jobSteps: [
+          {
+            name: 'pre deploy action',
+            uses: 'my-pre-deploy-action@1.0.0',
+            with: {
+              'app-id': 1234,
+              'secrets': 'my-secrets',
+            },
           },
-        }],
-        if: '', // remove the if statement
+        ],
       })],
+
       post: [new GitHubActionStep('PostDeployAction', {
-        jobSteps: [{
-          name: 'Checkout',
-          uses: 'actions/checkout@v2',
-        }, {
-          name: 'post deploy action',
-          uses: 'my-post-deploy-action@1.0.0',
-          with: {
-            'app-id': 4321,
-            'secrets': 'secrets',
+        jobSteps: [
+          {
+            name: 'Checkout',
+            uses: 'actions/checkout@v2',
           },
-        }],
-        if: 'check on PostDeployAction only',
+          {
+            name: 'post deploy action',
+            uses: 'my-post-deploy-action@1.0.0',
+            with: {
+              'app-id': 4321,
+              'secrets': 'secrets',
+            },
+          },
+        ],
+        if: "failure() && contains(github.event.issue.labels.*.name, 'cleanupFailure')",
       })],
-      jobSettings: { if: 'check on Deploy MyStackXYZ only' },
     });
 
     app.synth();
@@ -251,7 +257,8 @@ test('can set pre/post github action job step', () => {
     expect(readFileSync(pipeline.workflowPath, 'utf-8')).toContain('my-pre-deploy-action\@1\.0\.0');
     expect(readFileSync(pipeline.workflowPath, 'utf-8')).toContain('my-post-deploy-action\@1\.0\.0');
     expect(readFileSync(pipeline.workflowPath, 'utf-8')).toContain('actions/checkout@v2');
-    expect(readFileSync(pipeline.workflowPath, 'utf-8')).toContain('check on Synthesize and Publish Assets');
-    expect(readFileSync(pipeline.workflowPath, 'utf-8')).toContain('check on Deploy MyStackXYZ only');
+    expect(readFileSync(pipeline.workflowPath, 'utf-8')).toContain('contains(fromJson(\'["push", "pull_request"]\'), github.event_name)');
+    expect(readFileSync(pipeline.workflowPath, 'utf-8')).toContain("success() && contains(github.event.issue.labels.*.name, 'deploy')");
+    expect(readFileSync(pipeline.workflowPath, 'utf-8')).toContain("failure() && contains(github.event.issue.labels.*.name, 'cleanupFailure')");
   });
 });
