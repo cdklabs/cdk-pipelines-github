@@ -539,7 +539,6 @@ new YamlFile(filePath: string, options?: YamlFileOptions)
 
 Name | Type | Description 
 -----|------|-------------
-**commentAtBottom**? | <code>string</code> | A comment to be added to the bottom of the YAML file.<br/>__*Optional*__
 **commentAtTop**? | <code>string</code> | A comment to be added to the top of the YAML file.<br/>__*Optional*__
 
 ### Methods

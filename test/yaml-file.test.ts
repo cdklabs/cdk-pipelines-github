@@ -65,19 +65,17 @@ describe('patch', () => {
 
 
 describe('yaml file comments', () => {
-  function commentTest(commentAtTop: string | undefined, commentAtBottom: string | undefined, initialObj: any, assetDoc: string) {
+  function commentTest(commentAtTop: string | undefined, initialObj: any, assetDoc: string) {
     withTemporaryDirectory((dir) => {
       const fileName = path.join(dir, 'file.yml');
       const yamlFile = new YamlFile(fileName, {
         obj: initialObj,
       });
       yamlFile.commentAtTop = commentAtTop;
-      yamlFile.commentAtBottom = commentAtBottom;
       yamlFile.writeFile();
 
       expect(readFileSync(fileName, 'utf-8')).toMatchSnapshot(assetDoc);
       expect(yamlFile.commentAtTop).toStrictEqual(commentAtTop);
-      expect(yamlFile.commentAtBottom).toStrictEqual(commentAtBottom);
     });
   }
 
@@ -85,29 +83,8 @@ describe('yaml file comments', () => {
     const commentBeforeYaml = 'commentAtTopTest.yml';
     commentTest(
       'Comment before',
-      undefined,
       { first: { second: { array: ['0'] } } },
       commentBeforeYaml,
-    );
-  });
-
-  test('comment at bottom works', () => {
-    const commentAfterYaml = 'commentAtBottomTest.yml';
-    commentTest(
-      undefined,
-      'Comment after',
-      { first: { second: { array: ['0'] } } },
-      commentAfterYaml,
-    );
-  });
-
-  test('comments at both top and bottom work', () => {
-    const commentAfterYaml = 'commentAtTopAndBottomTest.yml';
-    commentTest(
-      'Comment before',
-      'Comment after',
-      { first: { second: { array: ['0'] } } },
-      commentAfterYaml,
     );
   });
 
@@ -115,7 +92,6 @@ describe('yaml file comments', () => {
     const commentAfterYaml = 'multilineCommentAtTopAndBottomTest.yml';
     commentTest(
       `Comment before:\n\n${['A', 'B', 'C'].map((x) => ` - ${x}\n`).join('')}`,
-      `Comment after:\n\n${['X', 'Y', 'Z'].map((x) => ` - ${x}\n`).join('')}`,
       { first: { second: { array: ['0'] } } },
       commentAfterYaml,
     );
