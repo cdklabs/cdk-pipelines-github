@@ -418,9 +418,9 @@ pipeline.addStage(stage, {
       },
       {
         name: 'pre beta-deploy check',
-        run: npm run preDeployCheck
-      }
-    ]
+        run: 'npm run preDeployCheck',
+      },
+    ],
   })],
 });
 
