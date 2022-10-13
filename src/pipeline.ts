@@ -672,6 +672,11 @@ export class GitHubWorkflow extends PipelineBase {
 
     let steps: github.JobStep[] = [];
 
+    const awsAuthentication = this.node.tryGetContext('cdk-pipelines-github:awsAuthentication') ?? true;
+    if (!awsAuthentication) {
+      return steps;
+    }
+
     if (openId) {
       steps.push(awsCredentialStep('Authenticate Via OIDC Role', {
         region,
