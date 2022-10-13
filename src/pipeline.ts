@@ -410,7 +410,7 @@ export class GitHubWorkflow extends PipelineBase {
       id: jobId,
       definition: {
         name: `Publish Assets ${jobId}`,
-        ...this.renderJobSettingParameters(),
+        ...this.jobSettings,
         needs: this.renderDependencies(node),
         permissions: {
           contents: github.JobPermission.READ,
@@ -481,7 +481,7 @@ export class GitHubWorkflow extends PipelineBase {
       id: node.uniqueId,
       definition: {
         name: `Deploy ${stack.stackArtifactId}`,
-        ...this.renderJobSettingParameters(),
+        ...this.jobSettings,
         ...this.stackProperties[stack.stackArtifactId]?.settings,
         permissions: {
           contents: github.JobPermission.READ,
@@ -532,7 +532,7 @@ export class GitHubWorkflow extends PipelineBase {
       id: node.uniqueId,
       definition: {
         name: 'Synthesize',
-        ...this.renderJobSettingParameters(true),
+        ...this.jobSettings,
         permissions: {
           contents: github.JobPermission.READ,
           // The Synthesize job does not use the GitHub Action Role on its own, but it's possible
@@ -626,7 +626,7 @@ export class GitHubWorkflow extends PipelineBase {
       id: node.uniqueId,
       definition: {
         name: step.id,
-        ...this.renderJobSettingParameters(),
+        ...this.jobSettings,
         permissions: {
           contents: github.JobPermission.READ,
         },
@@ -651,8 +651,7 @@ export class GitHubWorkflow extends PipelineBase {
       id: node.uniqueId,
       definition: {
         name: step.id,
-        ...this.renderJobSettingParameters(),
-        if: step.if,
+        ...this.jobSettings,
         permissions: {
           contents: github.JobPermission.WRITE,
         },
@@ -779,16 +778,6 @@ export class GitHubWorkflow extends PipelineBase {
     }
 
     return deps.map(x => x.uniqueId);
-  }
-
-  private renderJobSettingParameters(isBuildStep = false) {
-    if (isBuildStep) {
-      return {
-        if: this.jobSettings?.if,
-      };
-    }
-    // in the future, additional job settings may be rendered here
-    return {};
   }
 }
 

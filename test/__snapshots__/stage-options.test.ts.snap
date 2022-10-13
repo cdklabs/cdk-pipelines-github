@@ -11,9 +11,8 @@ on:
       - main
   workflow_dispatch: {}
 jobs:
-  Build-Synth:
+  Build-Build:
     name: Synthesize
-    if: contains(fromJson('[\\"push\\", \\"pull_request\\"]'), github.event_name)
     permissions:
       contents: read
       id-token: none
@@ -35,7 +34,7 @@ jobs:
   Assets-FileAsset1:
     name: Publish Assets Assets-FileAsset1
     needs:
-      - Build-Synth
+      - Build-Build
     permissions:
       contents: read
       id-token: none
@@ -67,7 +66,7 @@ jobs:
       contents: write
     runs-on: ubuntu-latest
     needs:
-      - Build-Synth
+      - Build-Build
     env: {}
     steps:
       - name: pre deploy action
@@ -77,12 +76,11 @@ jobs:
           secrets: my-secrets
   MyStack-MyStack-Deploy:
     name: Deploy MyStack098574E7
-    if: success() && contains(github.event.issue.labels.*.name, 'deploy')
     permissions:
       contents: read
       id-token: none
     needs:
-      - Build-Synth
+      - Build-Build
       - Assets-FileAsset1
       - MyStack-PreDeployAction
     runs-on: ubuntu-latest
@@ -107,13 +105,12 @@ jobs:
           role-arn: arn:aws:iam::111111111111:role/cdk-hnb659fds-cfn-exec-role-111111111111-us-east-1
   MyStack-PostDeployAction:
     name: PostDeployAction
-    if: failure() && contains(github.event.issue.labels.*.name, 'cleanupFailure')
     permissions:
       contents: write
     runs-on: ubuntu-latest
     needs:
       - MyStack-MyStack-Deploy
-      - Build-Synth
+      - Build-Build
     env: {}
     steps:
       - name: Checkout

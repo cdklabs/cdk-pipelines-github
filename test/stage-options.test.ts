@@ -175,7 +175,7 @@ describe('job settings', () => {
           commands: ['yarn build'],
         }),
         jobSettings: {
-          if: 'github.repository == \'another/repoA\'',
+          if: 'github.repository == \'another/repo\'',
         },
       });
 
@@ -187,14 +187,13 @@ describe('job settings', () => {
 
       pipeline.addStageWithGitHubOptions(stage, {
         jobSettings: {
-          if: 'github.repository == \'github/repoB\'',
+          if: 'github.repository == \'github/repo\'',
         },
       });
 
       app.synth();
 
-      expect(readFileSync(pipeline.workflowPath, 'utf-8')).toContain('if: github.repository == \'another/repoA\'\n');
-      expect(readFileSync(pipeline.workflowPath, 'utf-8')).toContain('if: github.repository == \'github/repoB\'\n');
+      expect(readFileSync(pipeline.workflowPath, 'utf-8')).toContain('if: github.repository == \'github/repo\'\n');
     });
   });
 });
@@ -203,11 +202,10 @@ test('can set pre/post github action job step', () => {
   withTemporaryDirectory((dir) => {
     const pipeline = new GitHubWorkflow(app, 'Pipeline', {
       workflowPath: `${dir}/.github/workflows/deploy.yml`,
-      synth: new ShellStep('Synth', {
+      synth: new ShellStep('Build', {
         installCommands: ['yarn'],
         commands: ['yarn build'],
       }),
-      jobSettings: { if: 'contains(fromJson(\'["push", "pull_request"]\'), github.event_name)' },
     });
 
     const stage = new Stage(app, 'MyStack', {
@@ -217,8 +215,6 @@ test('can set pre/post github action job step', () => {
     new Stack(stage, 'MyStack');
 
     pipeline.addStageWithGitHubOptions(stage, {
-      jobSettings: { if: "success() && contains(github.event.issue.labels.*.name, 'deploy')" },
-
       pre: [new GitHubActionStep('PreDeployAction', {
         jobSteps: [
           {
@@ -247,18 +243,15 @@ test('can set pre/post github action job step', () => {
             },
           },
         ],
-        if: "failure() && contains(github.event.issue.labels.*.name, 'cleanupFailure')",
       })],
     });
 
     app.synth();
 
-    expect(readFileSync(pipeline.workflowPath, 'utf-8')).toMatchSnapshot();
-    expect(readFileSync(pipeline.workflowPath, 'utf-8')).toContain('my-pre-deploy-action\@1\.0\.0');
-    expect(readFileSync(pipeline.workflowPath, 'utf-8')).toContain('my-post-deploy-action\@1\.0\.0');
-    expect(readFileSync(pipeline.workflowPath, 'utf-8')).toContain('actions/checkout@v2');
-    expect(readFileSync(pipeline.workflowPath, 'utf-8')).toContain('contains(fromJson(\'["push", "pull_request"]\'), github.event_name)');
-    expect(readFileSync(pipeline.workflowPath, 'utf-8')).toContain("success() && contains(github.event.issue.labels.*.name, 'deploy')");
-    expect(readFileSync(pipeline.workflowPath, 'utf-8')).toContain("failure() && contains(github.event.issue.labels.*.name, 'cleanupFailure')");
+    const workflowFileContents = readFileSync(pipeline.workflowPath, 'utf-8');
+    expect(workflowFileContents).toMatchSnapshot();
+    expect(workflowFileContents).toContain('my-pre-deploy-action\@1\.0\.0');
+    expect(workflowFileContents).toContain('my-post-deploy-action\@1\.0\.0');
+    expect(workflowFileContents).toContain('actions/checkout@v2');
   });
 });

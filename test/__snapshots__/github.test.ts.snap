@@ -440,6 +440,7 @@ jobs:
           path: cdk.out
   Assets-FileAsset1:
     name: Publish Assets Assets-FileAsset1
+    if: github.repository == 'account/repo'
     needs:
       - Build-Build
     permissions:
@@ -469,6 +470,7 @@ jobs:
         run: /bin/bash ./cdk.out/publish-Assets-FileAsset1-step.sh
   Assets-FileAsset2:
     name: Publish Assets Assets-FileAsset2
+    if: github.repository == 'account/repo'
     needs:
       - Build-Build
     permissions:
@@ -498,6 +500,7 @@ jobs:
         run: /bin/bash ./cdk.out/publish-Assets-FileAsset2-step.sh
   MyStack-MyStack-Deploy:
     name: Deploy MyStack098574E7
+    if: github.repository == 'account/repo'
     permissions:
       contents: read
       id-token: none
