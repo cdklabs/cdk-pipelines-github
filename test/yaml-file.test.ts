@@ -43,7 +43,7 @@ describe('patch', () => {
         JsonPatch.add('/first/second/array/-', '2'),
         JsonPatch.add('/first/second/array/1', '3'),
       ],
-      { first: { second: { array: ['?'] } } }, // shound't use
+      { first: { second: { array: ['?'] } } }, // shouldn't use
       { first: { second: { array: ['0', '3', '1', '2'] } } },
       { first: { second: { array: ['0'] } } }, // should use
     );
