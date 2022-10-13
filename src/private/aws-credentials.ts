@@ -56,36 +56,23 @@ interface AwsCredentialsStepProps {
 export function awsCredentialStep(stepName: string, props: AwsCredentialsStepProps): github.JobStep {
   const params: Record<string, any> = {};
 
-  // Neither of these checks should occur, since this method is internal,
-  // but they are here just in case.
-  if (!props.gitHubActionRoleArn && !(props.accessKeyId && props.secretAccessKey)) {
-    throw new Error('AWS authentication not found via OIDC or GitHub secrets');
-  }
-
-  if (props.gitHubActionRoleArn && (props.accessKeyId || props.secretAccessKey)) {
-    throw new Error('Please provide one method of authentication, not both');
-  }
-
   params['aws-region'] = props.region;
   params['role-duration-seconds'] = 30 * 60;
   // Session tagging requires the role to have `sts:TagSession` permissions,
   // which CDK bootstrapped roles do not currently have.
   params['role-skip-session-tagging'] = props.roleSkipSessionTagging ?? true;
 
-  if (props.gitHubActionRoleArn) {
-    params['role-to-assume'] = props.gitHubActionRoleArn;
-  } else {
-    params['aws-access-key-id'] = props.accessKeyId;
-    params['aws-secret-access-key'] = props.secretAccessKey;
+  params['aws-access-key-id'] = props.accessKeyId;
+  params['aws-secret-access-key'] = props.secretAccessKey;
+  if (props.sessionToken) {
+    params['aws-session-token'] = props.sessionToken;
+  }
 
-    if (props.sessionToken) {
-      params['aws-session-token'] = props.sessionToken;
-    }
-
-    if (props.roleToAssume) {
-      params['role-to-assume'] = props.roleToAssume;
-      params['role-external-id'] = 'Pipeline';
-    }
+  if (props.roleToAssume) {
+    params['role-to-assume'] = props.roleToAssume;
+  }
+  if (props.roleExternalId) {
+    params['role-external-id'] = props.roleExternalId;
   }
 
   return {

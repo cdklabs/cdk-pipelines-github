@@ -4,6 +4,8 @@
 
 Name|Description
 ----|-----------
+[AwsCredentials](#cdk-pipelines-github-awscredentials)|Provides AWS credenitals to the pipeline jobs.
+[AwsCredentialsProvider](#cdk-pipelines-github-awscredentialsprovider)|AWS credential provider.
 [DockerCredential](#cdk-pipelines-github-dockercredential)|Represents a credential used to authenticate to a docker registry.
 [GitHubActionRole](#cdk-pipelines-github-githubactionrole)|Creates or references a GitHub OIDC provider and accompanying role that trusts the provider.
 [GitHubActionStep](#cdk-pipelines-github-githubactionstep)|Specifies a GitHub Action as a step in the pipeline.
@@ -33,6 +35,7 @@ Name|Description
 [ForkOptions](#cdk-pipelines-github-forkoptions)|The Fork event accepts no options.
 [GitHubActionRoleProps](#cdk-pipelines-github-githubactionroleprops)|Properties for the GitHubActionRole construct.
 [GitHubActionStepProps](#cdk-pipelines-github-githubactionstepprops)|*No description*
+[GitHubSecretsProviderProps](#cdk-pipelines-github-githubsecretsproviderprops)|Locations of GitHub Secrets used to authenticate to AWS.
 [GitHubWorkflowProps](#cdk-pipelines-github-githubworkflowprops)|Props for `GitHubWorkflow`.
 [GollumOptions](#cdk-pipelines-github-gollumoptions)|The Gollum event accepts no options.
 [IssueCommentOptions](#cdk-pipelines-github-issuecommentoptions)|Issue comment options.
@@ -47,6 +50,7 @@ Name|Description
 [JobStrategy](#cdk-pipelines-github-jobstrategy)|A strategy creates a build matrix for your jobs.
 [LabelOptions](#cdk-pipelines-github-labeloptions)|label options.
 [MilestoneOptions](#cdk-pipelines-github-milestoneoptions)|Milestone options.
+[OpenIdConnectProviderProps](#cdk-pipelines-github-openidconnectproviderprops)|Role to assume using OpenId Connect.
 [PageBuildOptions](#cdk-pipelines-github-pagebuildoptions)|The Page build event accepts no options.
 [ProjectCardOptions](#cdk-pipelines-github-projectcardoptions)|Project card options.
 [ProjectColumnOptions](#cdk-pipelines-github-projectcolumnoptions)|Probject column options.
@@ -75,6 +79,119 @@ Name|Description
 ----|-----------
 [JobPermission](#cdk-pipelines-github-jobpermission)|Access level for workflow permission scopes.
 [StackCapabilities](#cdk-pipelines-github-stackcapabilities)|Acknowledge IAM resources in AWS CloudFormation templates.
+
+
+
+## class AwsCredentials  <a id="cdk-pipelines-github-awscredentials"></a>
+
+Provides AWS credenitals to the pipeline jobs.
+
+
+### Initializer
+
+
+
+
+```ts
+new AwsCredentials()
+```
+
+
+
+### Methods
+
+
+#### *static* fromGitHubSecrets(props?) <a id="cdk-pipelines-github-awscredentials-fromgithubsecrets"></a>
+
+Reference credential secrets to authenticate with AWS.
+
+This method assumes
+that your credentials will be stored as long-lived GitHub Secrets.
+
+```ts
+static fromGitHubSecrets(props?: GitHubSecretsProviderProps): AwsCredentialsProvider
+```
+
+* **props** (<code>[GitHubSecretsProviderProps](#cdk-pipelines-github-githubsecretsproviderprops)</code>)  *No description*
+  * **accessKeyId** (<code>string</code>)  *No description* 
+  * **secretAccessKey** (<code>string</code>)  *No description* 
+  * **sessionToken** (<code>string</code>)  *No description* __*Default*__: no session token is used
+
+__Returns__:
+* <code>[AwsCredentialsProvider](#cdk-pipelines-github-awscredentialsprovider)</code>
+
+#### *static* fromOpenIdConnect(props) <a id="cdk-pipelines-github-awscredentials-fromopenidconnect"></a>
+
+
+
+```ts
+static fromOpenIdConnect(props: OpenIdConnectProviderProps): AwsCredentialsProvider
+```
+
+* **props** (<code>[OpenIdConnectProviderProps](#cdk-pipelines-github-openidconnectproviderprops)</code>)  *No description*
+  * **gitHubActionRoleArn** (<code>string</code>)  A role that utilizes the GitHub OIDC Identity Provider in your AWS account. 
+
+__Returns__:
+* <code>[AwsCredentialsProvider](#cdk-pipelines-github-awscredentialsprovider)</code>
+
+#### *static* runnerHasPreconfiguredCreds() <a id="cdk-pipelines-github-awscredentials-runnerhaspreconfiguredcreds"></a>
+
+
+
+```ts
+static runnerHasPreconfiguredCreds(): AwsCredentialsProvider
+```
+
+
+__Returns__:
+* <code>[AwsCredentialsProvider](#cdk-pipelines-github-awscredentialsprovider)</code>
+
+
+
+## class AwsCredentialsProvider  <a id="cdk-pipelines-github-awscredentialsprovider"></a>
+
+AWS credential provider.
+
+
+### Initializer
+
+
+
+
+```ts
+new AwsCredentialsProvider()
+```
+
+
+
+### Methods
+
+
+#### credentialSteps(_region, _assumeRoleArn?) <a id="cdk-pipelines-github-awscredentialsprovider-credentialsteps"></a>
+
+
+
+```ts
+credentialSteps(_region: string, _assumeRoleArn?: string): Array<JobStep>
+```
+
+* **_region** (<code>string</code>)  *No description*
+* **_assumeRoleArn** (<code>string</code>)  *No description*
+
+__Returns__:
+* <code>Array<[JobStep](#cdk-pipelines-github-jobstep)></code>
+
+#### jobPermission() <a id="cdk-pipelines-github-awscredentialsprovider-jobpermission"></a>
+
+
+
+```ts
+jobPermission(): JobPermission
+```
+
+
+__Returns__:
+* <code>[JobPermission](#cdk-pipelines-github-jobpermission)</code>
 
 
 
@@ -283,6 +400,7 @@ new GitHubWorkflow(scope: Construct, id: string, props: GitHubWorkflowProps)
 * **props** (<code>[GitHubWorkflowProps](#cdk-pipelines-github-githubworkflowprops)</code>)  *No description*
   * **synth** (<code>[pipelines.IFileSetProducer](#aws-cdk-lib-pipelines-ifilesetproducer)</code>)  The build step that produces the CDK Cloud Assembly. 
   * **awsCredentials** (<code>[AwsCredentialsSecrets](#cdk-pipelines-github-awscredentialssecrets)</code>)  Names of GitHub repository secrets that include AWS credentials for deployment. __*Default*__: `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.
+  * **awsCreds** (<code>[AwsCredentialsProvider](#cdk-pipelines-github-awscredentialsprovider)</code>)  Configure provider for AWS credentials used for deployment. __*Default*__: Get AWS credentials from GitHub secrets `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.
   * **buildContainer** (<code>[ContainerOptions](#cdk-pipelines-github-containeroptions)</code>)  Build container options. __*Default*__: GitHub defaults
   * **cdkCliVersion** (<code>string</code>)  Version of the CDK CLI to use. __*Default*__: automatic
   * **dockerCredentials** (<code>Array<[DockerCredential](#cdk-pipelines-github-dockercredential)></code>)  The Docker Credentials to use to login. __*Optional*__
@@ -817,6 +935,21 @@ Name | Type | Description
 
 
 
+## struct GitHubSecretsProviderProps  <a id="cdk-pipelines-github-githubsecretsproviderprops"></a>
+
+
+Locations of GitHub Secrets used to authenticate to AWS.
+
+
+
+Name | Type | Description 
+-----|------|-------------
+**accessKeyId** | <code>string</code> | <span></span>
+**secretAccessKey** | <code>string</code> | <span></span>
+**sessionToken**? | <code>string</code> | __*Default*__: no session token is used
+
+
+
 ## struct GitHubWorkflowProps  <a id="cdk-pipelines-github-githubworkflowprops"></a>
 
 
@@ -827,11 +960,12 @@ Props for `GitHubWorkflow`.
 Name | Type | Description 
 -----|------|-------------
 **synth** | <code>[pipelines.IFileSetProducer](#aws-cdk-lib-pipelines-ifilesetproducer)</code> | The build step that produces the CDK Cloud Assembly.
-**awsCredentials**? | <code>[AwsCredentialsSecrets](#cdk-pipelines-github-awscredentialssecrets)</code> | Names of GitHub repository secrets that include AWS credentials for deployment.<br/>__*Default*__: `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.
+**awsCredentials**?⚠️ | <code>[AwsCredentialsSecrets](#cdk-pipelines-github-awscredentialssecrets)</code> | Names of GitHub repository secrets that include AWS credentials for deployment.<br/>__*Default*__: `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.
+**awsCreds**? | <code>[AwsCredentialsProvider](#cdk-pipelines-github-awscredentialsprovider)</code> | Configure provider for AWS credentials used for deployment.<br/>__*Default*__: Get AWS credentials from GitHub secrets `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.
 **buildContainer**? | <code>[ContainerOptions](#cdk-pipelines-github-containeroptions)</code> | Build container options.<br/>__*Default*__: GitHub defaults
 **cdkCliVersion**? | <code>string</code> | Version of the CDK CLI to use.<br/>__*Default*__: automatic
 **dockerCredentials**? | <code>Array<[DockerCredential](#cdk-pipelines-github-dockercredential)></code> | The Docker Credentials to use to login.<br/>__*Optional*__
-**gitHubActionRoleArn**? | <code>string</code> | A role that utilizes the GitHub OIDC Identity Provider in your AWS account.<br/>__*Default*__: GitHub repository secrets are used instead of OpenId Connect role.
+**gitHubActionRoleArn**?⚠️ | <code>string</code> | A role that utilizes the GitHub OIDC Identity Provider in your AWS account.<br/>__*Default*__: GitHub repository secrets are used instead of OpenId Connect role.
 **jobSettings**? | <code>[JobSettings](#cdk-pipelines-github-jobsettings)</code> | Job level settings that will be applied to all jobs in the workflow, including synth and asset deploy jobs.<br/>__*Optional*__
 **postBuildSteps**? | <code>Array<[JobStep](#cdk-pipelines-github-jobstep)></code> | GitHub workflow steps to execute after build.<br/>__*Default*__: []
 **preBuildSteps**? | <code>Array<[JobStep](#cdk-pipelines-github-jobstep)></code> | GitHub workflow steps to execute before build.<br/>__*Default*__: []
@@ -1050,6 +1184,19 @@ Milestone options.
 Name | Type | Description 
 -----|------|-------------
 **types**? | <code>Array<string></code> | Which activity types to trigger on.<br/>__*Optional*__
+
+
+
+## struct OpenIdConnectProviderProps  <a id="cdk-pipelines-github-openidconnectproviderprops"></a>
+
+
+Role to assume using OpenId Connect.
+
+
+
+Name | Type | Description 
+-----|------|-------------
+**gitHubActionRoleArn** | <code>string</code> | A role that utilizes the GitHub OIDC Identity Provider in your AWS account.
 
 
 
