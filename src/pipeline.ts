@@ -787,6 +787,7 @@ export class GitHubWorkflow extends PipelineBase {
         if: this.jobSettings?.if,
       };
     }
+    // in the future, additional job settings may be rendered here
     return {};
   }
 }
