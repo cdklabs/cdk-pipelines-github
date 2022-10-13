@@ -239,10 +239,19 @@
       "description": "Run tests",
       "steps": [
         {
-          "exec": "jest --passWithNoTests --all --updateSnapshot"
+          "exec": "jest --passWithNoTests --all"
         },
         {
           "spawn": "eslint"
+        }
+      ]
+    },
+    "test:update": {
+      "name": "test:update",
+      "description": "Update jest snapshots",
+      "steps": [
+        {
+          "exec": "jest --updateSnapshot --passWithNoTests --all"
         }
       ]
     },

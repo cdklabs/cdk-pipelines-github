@@ -1,4 +1,5 @@
 const { awscdk } = require('projen');
+const { UpdateSnapshot } = require('projen/lib/javascript');
 
 const project = new awscdk.AwsCdkConstructLibrary({
   name: 'cdk-pipelines-github',
@@ -10,6 +11,9 @@ const project = new awscdk.AwsCdkConstructLibrary({
   defaultReleaseBranch: 'main',
   repositoryUrl: 'https://github.com/cdklabs/cdk-pipelines-github.git',
   bundledDeps: ['decamelize', 'yaml', 'fast-json-patch'],
+  jestOptions: {
+    updateSnapshot: UpdateSnapshot.NEVER,
+  },
 
   publishToPypi: {
     distName: 'cdk-pipelines-github',

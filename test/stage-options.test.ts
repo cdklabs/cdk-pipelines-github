@@ -216,31 +216,42 @@ test('can set pre/post github action job step', () => {
 
     pipeline.addStageWithGitHubOptions(stage, {
       pre: [new GitHubActionStep('PreDeployAction', {
-        jobStep: {
-          name: 'pre deploy action',
-          uses: 'my-pre-deploy-action@1.0.0',
-          with: {
-            'app-id': 1234,
-            'secrets': 'my-secrets',
+        jobSteps: [
+          {
+            name: 'pre deploy action',
+            uses: 'my-pre-deploy-action@1.0.0',
+            with: {
+              'app-id': 1234,
+              'secrets': 'my-secrets',
+            },
           },
-        },
+        ],
       })],
+
       post: [new GitHubActionStep('PostDeployAction', {
-        jobStep: {
-          name: 'post deploy action',
-          uses: 'my-post-deploy-action@1.0.0',
-          with: {
-            'app-id': 4321,
-            'secrets': 'secrets',
+        jobSteps: [
+          {
+            name: 'Checkout',
+            uses: 'actions/checkout@v2',
           },
-        },
+          {
+            name: 'post deploy action',
+            uses: 'my-post-deploy-action@1.0.0',
+            with: {
+              'app-id': 4321,
+              'secrets': 'secrets',
+            },
+          },
+        ],
       })],
     });
 
     app.synth();
 
-    expect(readFileSync(pipeline.workflowPath, 'utf-8')).toMatchSnapshot();
-    expect(readFileSync(pipeline.workflowPath, 'utf-8')).toContain('my-pre-deploy-action\@1\.0\.0');
-    expect(readFileSync(pipeline.workflowPath, 'utf-8')).toContain('my-post-deploy-action\@1\.0\.0');
+    const workflowFileContents = readFileSync(pipeline.workflowPath, 'utf-8');
+    expect(workflowFileContents).toMatchSnapshot();
+    expect(workflowFileContents).toContain('my-pre-deploy-action\@1\.0\.0');
+    expect(workflowFileContents).toContain('my-post-deploy-action\@1\.0\.0');
+    expect(workflowFileContents).toContain('actions/checkout@v2');
   });
 });

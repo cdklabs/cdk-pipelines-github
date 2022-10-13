@@ -247,7 +247,7 @@ new GitHubActionStep(id: string, props: GitHubActionStepProps)
 
 * **id** (<code>string</code>)  *No description*
 * **props** (<code>[GitHubActionStepProps](#cdk-pipelines-github-githubactionstepprops)</code>)  *No description*
-  * **jobStep** (<code>[JobStep](#cdk-pipelines-github-jobstep)</code>)  The Job step. 
+  * **jobSteps** (<code>Array<[JobStep](#cdk-pipelines-github-jobstep)></code>)  The Job steps. 
   * **env** (<code>Map<string, string></code>)  Environment variables to set. __*Optional*__
 
 
@@ -258,7 +258,7 @@ new GitHubActionStep(id: string, props: GitHubActionStepProps)
 Name | Type | Description 
 -----|------|-------------
 **env** | <code>Map<string, string></code> | <span></span>
-**jobStep** | <code>[JobStep](#cdk-pipelines-github-jobstep)</code> | <span></span>
+**jobSteps** | <code>Array<[JobStep](#cdk-pipelines-github-jobstep)></code> | <span></span>
 
 
 
@@ -812,7 +812,7 @@ Name | Type | Description
 
 Name | Type | Description 
 -----|------|-------------
-**jobStep** | <code>[JobStep](#cdk-pipelines-github-jobstep)</code> | The Job step.
+**jobSteps** | <code>Array<[JobStep](#cdk-pipelines-github-jobstep)></code> | The Job steps.
 **env**? | <code>Map<string, string></code> | Environment variables to set.<br/>__*Optional*__
 
 
