@@ -379,6 +379,10 @@ Below is a compilation of additional features available for GitHub Workflows.
 If you want to call a GitHub Action in a step, you can utilize the `GitHubActionStep`.
 `GitHubActionStep` extends `Step` and can be used anywhere a `Step` type is allowed.
 
+The `jobSteps` array is placed into the pipeline job at the relevant `jobs.<job_id>.steps` as [documented here](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idsteps).
+
+In this example, 
+
 ```ts
 import { App } from 'aws-cdk-lib';
 import { ShellStep } from 'aws-cdk-lib/pipelines';
@@ -395,17 +399,28 @@ const pipeline = new GitHubWorkflow(app, 'Pipeline', {
   }),
 });
 
+// "Beta" stage with a pre-check that uses code from the repo and an action
 const stage = new MyStage(app, 'Beta', { env: BETA_ENV });
 pipeline.addStage(stage, {
-  pre: [new GitHubActionStep('PreDeployAction', {
-    jobStep: {
-      name: 'pre deploy action',
-      uses: 'my-pre-deploy-action@1.0.0',
-      with: {
-        'app-id': 1234,
-        'secrets': 'my-secrets',
+  pre: [new GitHubActionStep('PreBetaDeployAction', {
+    jobSteps: [
+      {
+        name: 'Checkout',
+        uses: 'actions/checkout@v2',
       },
-    },
+      {
+        name: 'pre beta-deploy action',
+        uses: 'my-pre-deploy-action@1.0.0',
+        with: {
+          'app-id': 1234,
+          'secrets': 'my-secrets',
+        },
+      },
+      {
+        name: 'pre beta-deploy check',
+        run: npm run preDeployCheck
+      }
+    ]
   })],
 });
 
