@@ -388,7 +388,7 @@ export class GitHubWorkflow extends PipelineBase {
 
     // create one file and make one step
     const relativeToAssembly = (p: string) => path.posix.join(cdkoutDir, path.relative(path.resolve(cdkoutDir), p));
-    const fileContents: string[] = ['set -x'].concat(assets.map((asset) => {
+    const fileContents: string[] = ['set -ex'].concat(assets.map((asset) => {
       return `npx cdk-assets --path "${relativeToAssembly(asset.assetManifestPath)}" --verbose publish "${asset.assetSelector}"`;
     }));
 
