@@ -533,6 +533,14 @@ new YamlFile(filePath: string, options?: YamlFileOptions)
   * **obj** (<code>any</code>)  The object that will be serialized. __*Default*__: {} an empty object
 
 
+
+### Properties
+
+
+Name | Type | Description 
+-----|------|-------------
+**commentAtTop**? | <code>string</code> | A comment to be added to the top of the YAML file.<br/>__*Optional*__
+
 ### Methods
 
 
