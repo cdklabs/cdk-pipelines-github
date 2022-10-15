@@ -2,12 +2,13 @@ import { mkdirSync, writeFileSync, readFileSync, existsSync } from 'fs';
 import * as path from 'path';
 import { Stage } from 'aws-cdk-lib';
 import { EnvironmentPlaceholders } from 'aws-cdk-lib/cx-api';
-import { PipelineBase, PipelineBaseProps, ShellStep, StackAsset, StackDeployment, StackOutputReference, StageDeployment, Step } from 'aws-cdk-lib/pipelines';
+import { AddStageOpts, PipelineBase, PipelineBaseProps, ShellStep, StackAsset, StackDeployment, StackOutputReference, StageDeployment, Step, Wave, WaveOptions, WaveProps } from 'aws-cdk-lib/pipelines';
 import { AGraphNode, PipelineGraph, Graph, isGraph } from 'aws-cdk-lib/pipelines/lib/helpers-internal';
 import { Construct } from 'constructs';
 import * as decamelize from 'decamelize';
 import { DockerCredential } from './docker-credentials';
 import { awsCredentialStep } from './private/aws-credentials';
+import { GitHubStage } from './stage';
 import { AddGitHubStageOptions } from './stage-options';
 import { GitHubActionStep } from './steps/github-action-step';
 import * as github from './workflows-model';
@@ -166,8 +167,13 @@ export class GitHubWorkflow extends PipelineBase {
   private readonly assetHashMap: Record<string, string> = {};
   private readonly runner: github.Runner;
   private readonly publishAssetsAuthRegion: string;
-  private readonly stackProperties: Record<string, Record<string, any>> = {};
+  private readonly stackProperties: Record<string, {
+    environment: AddGitHubStageOptions['gitHubEnvironment'];
+    capabilities: AddGitHubStageOptions['stackCapabilities'];
+    settings: AddGitHubStageOptions['jobSettings'];
+  }> = {};
   private readonly jobSettings?: JobSettings;
+  private builtGH = false; // cannot be `built` since that's defined in the parent as private
 
   constructor(scope: Construct, id: string, props: GitHubWorkflowProps) {
     super(scope, id, props);
@@ -225,6 +231,57 @@ export class GitHubWorkflow extends PipelineBase {
     return stageDeployment;
   }
 
+
+  /**
+   * Add a Wave to the pipeline, for deploying multiple Stages in parallel
+   *
+   * Use the return object of this method to deploy multiple stages in parallel.
+   *
+   * Example:
+   *
+   * ```ts
+   * declare const pipeline: pipelines.CodePipeline;
+   *
+   * const wave = pipeline.addWave('MyWave');
+   * wave.addStage(new MyApplicationStage(this, 'Stage1'));
+   * wave.addStage(new MyApplicationStage(this, 'Stage2'));
+   * ```
+   */
+  public addWave(id: string, options?: WaveOptions): Wave {
+    return this.addGitHubWave(id, options);
+  }
+
+  public addGitHubWave(id: string, options?: WaveOptions): GitHubWave {
+    if (this.builtGH) {
+      throw new Error('addWave: can\'t add Waves anymore after buildPipeline() has been called');
+    }
+
+    const wave = new GitHubWave(id, this, options);
+    this.waves.push(wave);
+    return wave;
+  }
+
+  /**
+   * Support adding stages with GitHub options to waves - should ONLY be called internally.
+   *
+   * Use `pipeline.addWave()` and it'll call this when `wave.addStage()` is called.
+   *
+   * `pipeline.addStage()` will also call this, since it calls `pipeline.addWave().addStage()`.
+   */
+  public addingStageFromWave(stage: Stage, stageDeployment: StageDeployment, options?: AddGitHubStageOptions) {
+    if (!(stage instanceof GitHubStage) && options === undefined) {
+      return;
+    }
+
+    const ghStage = stage instanceof GitHubStage ? stage : undefined;
+
+    // keep track of GitHub specific options
+    const stacks = stageDeployment.stacks;
+    this.addStackProps(stacks, 'environment', ghStage?.props?.gitHubEnvironment ?? options?.gitHubEnvironment);
+    this.addStackProps(stacks, 'capabilities', ghStage?.props?.stackCapabilities ?? options?.stackCapabilities);
+    this.addStackProps(stacks, 'settings', ghStage?.props?.jobSettings ?? options?.jobSettings);
+  }
+
   private addStackProps(stacks: StackDeployment[], key: string, value: any) {
     if (value === undefined) { return; }
     for (const stack of stacks) {
@@ -236,6 +293,7 @@ export class GitHubWorkflow extends PipelineBase {
   }
 
   protected doBuildPipeline() {
+    this.builtGH = true;
     const app = Stage.of(this);
     if (!app) {
       throw new Error('The GitHub Workflow must be defined in the scope of an App');
@@ -828,6 +886,63 @@ function snakeCaseKeys<T = unknown>(obj: T, sep = '-'): T {
   }
   return result as any;
 }
+
+/**
+ * Multiple stages that are deployed in parallel
+ *
+ * A `Wave`, but with addition GitHub options - created by `GitHubWorkflow.addWave()` or
+ * `GitHubWorkflow.addGitHubWave()` - DO NOT CREATE DIRECTLY
+ */
+export class GitHubWave extends Wave {
+  constructor(
+    /** Identifier for this Wave */
+    public readonly id: string,
+    /** GitHubWorkflow that this wave is part of  */
+    private pipeline: GitHubWorkflow,
+    props: WaveProps = {},
+  ) {
+    super(id, props);
+  }
+
+  /**
+   * Add a Stage to this wave
+   *
+   * It will be deployed in parallel with all other stages in this
+   * wave.
+   */
+  public addStage(stage: Stage, options: AddStageOpts = {}) {
+    const stageDeployment = super.addStage(stage, options);
+    this.pipeline.addingStageFromWave(stage, stageDeployment);
+    return stageDeployment;
+  }
+
+  /**
+   * Add a Stage to this wave
+   *
+   * It will be deployed in parallel with all other stages in this
+   * wave.
+   */
+  public addStageWithGitHubOptions(stage: Stage, options?: AddGitHubStageOptions): StageDeployment {
+    const stageDeployment = super.addStage(stage, options);
+    this.pipeline.addingStageFromWave(stage, stageDeployment, options);
+    return stageDeployment;
+  }
+
+  // /**
+  //  * Add an additional step to run before any of the stages in this wave
+  //  */
+  // public addPre(...steps: Step[]) {
+  //   this.pre.push(...steps);
+  // }
+
+  // /**
+  //  * Add an additional step to run after all of the stages in this wave
+  //  */
+  // public addPost(...steps: Step[]) {
+  //   this.post.push(...steps);
+  // }
+}
+
 
 /**
  * Names of secrets for AWS credentials.

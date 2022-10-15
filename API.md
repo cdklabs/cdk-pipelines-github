@@ -7,6 +7,7 @@ Name|Description
 [DockerCredential](#cdk-pipelines-github-dockercredential)|Represents a credential used to authenticate to a docker registry.
 [GitHubActionRole](#cdk-pipelines-github-githubactionrole)|Creates or references a GitHub OIDC provider and accompanying role that trusts the provider.
 [GitHubActionStep](#cdk-pipelines-github-githubactionstep)|Specifies a GitHub Action as a step in the pipeline.
+[GitHubWave](#cdk-pipelines-github-githubwave)|Multiple stages that are deployed in parallel.
 [GitHubWorkflow](#cdk-pipelines-github-githubworkflow)|CDK Pipelines for GitHub workflows.
 [JsonPatch](#cdk-pipelines-github-jsonpatch)|Utility for applying RFC-6902 JSON-Patch to a document.
 [Runner](#cdk-pipelines-github-runner)|The type of runner to run the job on.
@@ -264,6 +265,87 @@ Name | Type | Description
 
 
 
+## class GitHubWave  <a id="cdk-pipelines-github-githubwave"></a>
+
+Multiple stages that are deployed in parallel.
+
+A `Wave`, but with addition GitHub options - created by `GitHubWorkflow.addWave()` or
+`GitHubWorkflow.addGitHubWave()` - DO NOT CREATE DIRECTLY
+
+__Extends__: [pipelines.Wave](#aws-cdk-lib-pipelines-wave)
+
+### Initializer
+
+
+
+
+```ts
+new GitHubWave(id: string, pipeline: GitHubWorkflow, props?: WaveProps)
+```
+
+* **id** (<code>string</code>)  Identifier for this Wave.
+* **pipeline** (<code>[GitHubWorkflow](#cdk-pipelines-github-githubworkflow)</code>)  GitHubWorkflow that this wave is part of.
+* **props** (<code>[pipelines.WaveProps](#aws-cdk-lib-pipelines-waveprops)</code>)  *No description*
+  * **post** (<code>Array<[pipelines.Step](#aws-cdk-lib-pipelines-step)></code>)  Additional steps to run after all of the stages in the wave. __*Default*__: No additional steps
+  * **pre** (<code>Array<[pipelines.Step](#aws-cdk-lib-pipelines-step)></code>)  Additional steps to run before any of the stages in the wave. __*Default*__: No additional steps
+
+
+
+### Properties
+
+
+Name | Type | Description 
+-----|------|-------------
+**id** | <code>string</code> | Identifier for this Wave.
+
+### Methods
+
+
+#### addStage(stage, options?) <a id="cdk-pipelines-github-githubwave-addstage"></a>
+
+Add a Stage to this wave.
+
+It will be deployed in parallel with all other stages in this
+wave.
+
+```ts
+addStage(stage: Stage, options?: AddStageOpts): StageDeployment
+```
+
+* **stage** (<code>[Stage](#aws-cdk-lib-stage)</code>)  *No description*
+* **options** (<code>[pipelines.AddStageOpts](#aws-cdk-lib-pipelines-addstageopts)</code>)  *No description*
+  * **post** (<code>Array<[pipelines.Step](#aws-cdk-lib-pipelines-step)></code>)  Additional steps to run after all of the stacks in the stage. __*Default*__: No additional steps
+  * **pre** (<code>Array<[pipelines.Step](#aws-cdk-lib-pipelines-step)></code>)  Additional steps to run before any of the stacks in the stage. __*Default*__: No additional steps
+  * **stackSteps** (<code>Array<[pipelines.StackSteps](#aws-cdk-lib-pipelines-stacksteps)></code>)  Instructions for stack level steps. __*Default*__: No additional instructions
+
+__Returns__:
+* <code>[pipelines.StageDeployment](#aws-cdk-lib-pipelines-stagedeployment)</code>
+
+#### addStageWithGitHubOptions(stage, options?) <a id="cdk-pipelines-github-githubwave-addstagewithgithuboptions"></a>
+
+Add a Stage to this wave.
+
+It will be deployed in parallel with all other stages in this
+wave.
+
+```ts
+addStageWithGitHubOptions(stage: Stage, options?: AddGitHubStageOptions): StageDeployment
+```
+
+* **stage** (<code>[Stage](#aws-cdk-lib-stage)</code>)  *No description*
+* **options** (<code>[AddGitHubStageOptions](#cdk-pipelines-github-addgithubstageoptions)</code>)  *No description*
+  * **post** (<code>Array<[pipelines.Step](#aws-cdk-lib-pipelines-step)></code>)  Additional steps to run after all of the stacks in the stage. __*Default*__: No additional steps
+  * **pre** (<code>Array<[pipelines.Step](#aws-cdk-lib-pipelines-step)></code>)  Additional steps to run before any of the stacks in the stage. __*Default*__: No additional steps
+  * **stackSteps** (<code>Array<[pipelines.StackSteps](#aws-cdk-lib-pipelines-stacksteps)></code>)  Instructions for stack level steps. __*Default*__: No additional instructions
+  * **gitHubEnvironment** (<code>string</code>)  Run the stage in a specific GitHub Environment. __*Default*__: no GitHub environment
+  * **jobSettings** (<code>[JobSettings](#cdk-pipelines-github-jobsettings)</code>)  Job level settings that will be applied to all jobs in the stage. __*Optional*__
+  * **stackCapabilities** (<code>Array<[StackCapabilities](#cdk-pipelines-github-stackcapabilities)></code>)  In some cases, you must explicitly acknowledge that your CloudFormation stack template contains certain capabilities in order for CloudFormation to create the stack. __*Default*__: ['CAPABILITY_IAM']
+
+__Returns__:
+* <code>[pipelines.StageDeployment](#aws-cdk-lib-pipelines-stagedeployment)</code>
+
+
+
 ## class GitHubWorkflow  <a id="cdk-pipelines-github-githubworkflow"></a>
 
 CDK Pipelines for GitHub workflows.
@@ -313,6 +395,22 @@ Name | Type | Description
 ### Methods
 
 
+#### addGitHubWave(id, options?) <a id="cdk-pipelines-github-githubworkflow-addgithubwave"></a>
+
+
+
+```ts
+addGitHubWave(id: string, options?: WaveOptions): GitHubWave
+```
+
+* **id** (<code>string</code>)  *No description*
+* **options** (<code>[pipelines.WaveOptions](#aws-cdk-lib-pipelines-waveoptions)</code>)  *No description*
+  * **post** (<code>Array<[pipelines.Step](#aws-cdk-lib-pipelines-step)></code>)  Additional steps to run after all of the stages in the wave. __*Default*__: No additional steps
+  * **pre** (<code>Array<[pipelines.Step](#aws-cdk-lib-pipelines-step)></code>)  Additional steps to run before any of the stages in the wave. __*Default*__: No additional steps
+
+__Returns__:
+* <code>[GitHubWave](#cdk-pipelines-github-githubwave)</code>
+
 #### addStageWithGitHubOptions(stage, options?) <a id="cdk-pipelines-github-githubworkflow-addstagewithgithuboptions"></a>
 
 Deploy a single Stage by itself with options for further GitHub configuration.
@@ -335,6 +433,59 @@ addStageWithGitHubOptions(stage: Stage, options?: AddGitHubStageOptions): StageD
 
 __Returns__:
 * <code>[pipelines.StageDeployment](#aws-cdk-lib-pipelines-stagedeployment)</code>
+
+#### addWave(id, options?) <a id="cdk-pipelines-github-githubworkflow-addwave"></a>
+
+Add a Wave to the pipeline, for deploying multiple Stages in parallel.
+
+Use the return object of this method to deploy multiple stages in parallel.
+
+Example:
+
+```ts
+declare const pipeline: pipelines.CodePipeline;
+
+const wave = pipeline.addWave('MyWave');
+wave.addStage(new MyApplicationStage(this, 'Stage1'));
+wave.addStage(new MyApplicationStage(this, 'Stage2'));
+```
+
+```ts
+addWave(id: string, options?: WaveOptions): Wave
+```
+
+* **id** (<code>string</code>)  *No description*
+* **options** (<code>[pipelines.WaveOptions](#aws-cdk-lib-pipelines-waveoptions)</code>)  *No description*
+  * **post** (<code>Array<[pipelines.Step](#aws-cdk-lib-pipelines-step)></code>)  Additional steps to run after all of the stages in the wave. __*Default*__: No additional steps
+  * **pre** (<code>Array<[pipelines.Step](#aws-cdk-lib-pipelines-step)></code>)  Additional steps to run before any of the stages in the wave. __*Default*__: No additional steps
+
+__Returns__:
+* <code>[pipelines.Wave](#aws-cdk-lib-pipelines-wave)</code>
+
+#### addingStageFromWave(stage, stageDeployment, options?) <a id="cdk-pipelines-github-githubworkflow-addingstagefromwave"></a>
+
+Support adding stages with GitHub options to waves - should ONLY be called internally.
+
+Use `pipeline.addWave()` and it'll call this when `wave.addStage()` is called.
+
+`pipeline.addStage()` will also call this, since it calls `pipeline.addWave().addStage()`.
+
+```ts
+addingStageFromWave(stage: Stage, stageDeployment: StageDeployment, options?: AddGitHubStageOptions): void
+```
+
+* **stage** (<code>[Stage](#aws-cdk-lib-stage)</code>)  *No description*
+* **stageDeployment** (<code>[pipelines.StageDeployment](#aws-cdk-lib-pipelines-stagedeployment)</code>)  *No description*
+* **options** (<code>[AddGitHubStageOptions](#cdk-pipelines-github-addgithubstageoptions)</code>)  *No description*
+  * **post** (<code>Array<[pipelines.Step](#aws-cdk-lib-pipelines-step)></code>)  Additional steps to run after all of the stacks in the stage. __*Default*__: No additional steps
+  * **pre** (<code>Array<[pipelines.Step](#aws-cdk-lib-pipelines-step)></code>)  Additional steps to run before any of the stacks in the stage. __*Default*__: No additional steps
+  * **stackSteps** (<code>Array<[pipelines.StackSteps](#aws-cdk-lib-pipelines-stacksteps)></code>)  Instructions for stack level steps. __*Default*__: No additional instructions
+  * **gitHubEnvironment** (<code>string</code>)  Run the stage in a specific GitHub Environment. __*Default*__: no GitHub environment
+  * **jobSettings** (<code>[JobSettings](#cdk-pipelines-github-jobsettings)</code>)  Job level settings that will be applied to all jobs in the stage. __*Optional*__
+  * **stackCapabilities** (<code>Array<[StackCapabilities](#cdk-pipelines-github-stackcapabilities)></code>)  In some cases, you must explicitly acknowledge that your CloudFormation stack template contains certain capabilities in order for CloudFormation to create the stack. __*Default*__: ['CAPABILITY_IAM']
+
+
+
 
 #### protected doBuildPipeline() <a id="cdk-pipelines-github-githubworkflow-dobuildpipeline"></a>
 
