@@ -326,6 +326,21 @@ describe('diff protection when GITHUB_WORKFLOW set', () => {
       expect(() => app.synth()).not.toThrowError();
     }));
   });
+
+  test('turn off diff protection using string', () => {
+    // set GITHUB_WORKFLOW env variable to simulate GitHub environment
+    wrapEnv('GITHUB_WORKFLOW', 'deploy', () => withTemporaryDirectory((dir) => {
+      app.node.setContext('cdk-pipelines-github:diffProtection', 'false');
+      new GitHubWorkflow(app, 'Pipeline', {
+        workflowPath: `${dir}/.github/workflows/deploy.yml`,
+        synth: new ShellStep('Build', {
+          installCommands: ['yarn'],
+          commands: ['yarn build'],
+        }),
+      });
+      expect(() => app.synth()).not.toThrowError();
+    }));
+  });
 });
 
 test('can escape hatch into workflow file', () => {
