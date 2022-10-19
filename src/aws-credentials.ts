@@ -4,14 +4,9 @@ import * as github from './workflows-model';
 /**
  * AWS credential provider
  */
-export class AwsCredentialsProvider {
-  public jobPermission() {
-    return github.JobPermission.NONE;
-  }
-
-  public credentialSteps(_region: string, _assumeRoleArn?: string): github.JobStep[] {
-    return [];
-  }
+export abstract class AwsCredentialsProvider {
+  public abstract jobPermission(): github.JobPermission;
+  public abstract credentialSteps(region: string, assumeRoleArn?: string): github.JobStep[];
 }
 
 /**
@@ -47,6 +42,10 @@ class GitHubSecretsProvider extends AwsCredentialsProvider {
     this.accessKeyId = props?.accessKeyId ?? 'AWS_ACCESS_KEY_ID';
     this.secretAccessKey = props?.secretAccessKey ?? 'AWS_SECRET_ACCESS_KEY';
     this.sessionToken = props?.sessionToken;
+  }
+
+  public jobPermission(): github.JobPermission {
+    return github.JobPermission.NONE;
   }
 
   public credentialSteps(region: string, assumeRoleArn?: string): github.JobStep[] {
@@ -92,7 +91,7 @@ class OpenIdConnectProvider extends AwsCredentialsProvider {
     this.gitHubActionRoleArn = props.gitHubActionRoleArn;
   }
 
-  public jobPermission() {
+  public jobPermission(): github.JobPermission {
     return github.JobPermission.WRITE;
   }
 
@@ -129,6 +128,18 @@ class OpenIdConnectProvider extends AwsCredentialsProvider {
 }
 
 /**
+ * Dummy AWS credential provider
+ */
+class NoCredentialsProvider extends AwsCredentialsProvider {
+  public jobPermission(): github.JobPermission {
+    return github.JobPermission.NONE;
+  }
+  public credentialSteps(_region: string, _assumeRoleArn?: string): github.JobStep[] {
+    return [];
+  }
+}
+
+/**
  * Provides AWS credenitals to the pipeline jobs
  */
 export class AwsCredentials {
@@ -139,10 +150,18 @@ export class AwsCredentials {
   static fromGitHubSecrets(props?: GitHubSecretsProviderProps): AwsCredentialsProvider {
     return new GitHubSecretsProvider(props);
   }
+
+  /**
+   * Provide AWS credentials using OpenID Connect.
+   */
   static fromOpenIdConnect(props: OpenIdConnectProviderProps): AwsCredentialsProvider {
     return new OpenIdConnectProvider(props);
   }
+
+  /**
+   * Don't provide any AWS credentials, use this if runners have preconfigured credentials.
+   */
   static runnerHasPreconfiguredCreds(): AwsCredentialsProvider {
-    return new AwsCredentialsProvider();
+    return new NoCredentialsProvider();
   }
 }

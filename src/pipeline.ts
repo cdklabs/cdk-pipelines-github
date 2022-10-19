@@ -81,7 +81,7 @@ export interface GitHubWorkflowProps extends PipelineBaseProps {
    *
    * @default - `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.
    *
-   * @deprecated Use `awsCreds` instead.
+   * @deprecated Use `awsCreds.fromGitHubSecrets()` instead.
    */
   readonly awsCredentials?: AwsCredentialsSecrets;
 
@@ -95,7 +95,7 @@ export interface GitHubWorkflowProps extends PipelineBaseProps {
    *
    * @default - GitHub repository secrets are used instead of OpenId Connect role.
    *
-   * @deprecated Use `awsCreds` instead.
+   * @deprecated Use `awsCreds.fromOpenIdConnect()` instead.
    */
   readonly gitHubActionRoleArn?: string;
 
@@ -216,11 +216,18 @@ export class GitHubWorkflow extends PipelineBase {
    */
   private getAwsCredentials(props: GitHubWorkflowProps) {
     if (props.gitHubActionRoleArn) {
+      if (props.awsCreds) {
+        throw new Error('Please provide only one method of authentication (remove githubActionRoleArn)');
+      }
       return AwsCredentials.fromOpenIdConnect({
         gitHubActionRoleArn: props.gitHubActionRoleArn,
       });
     }
+
     if (props.awsCredentials) {
+      if (props.awsCreds) {
+        throw new Error('Please provide only one method of authentication (remove awsCredentials)');
+      }
       return AwsCredentials.fromGitHubSecrets({
         accessKeyId: 'AWS_ACCESS_KEY_ID',
         secretAccessKey: 'AWS_SECRET_ACCESS_KEY',
