@@ -122,7 +122,7 @@ __Returns__:
 
 #### *static* fromOpenIdConnect(props) <a id="cdk-pipelines-github-awscredentials-fromopenidconnect"></a>
 
-
+Provide AWS credentials using OpenID Connect.
 
 ```ts
 static fromOpenIdConnect(props: OpenIdConnectProviderProps): AwsCredentialsProvider
@@ -136,7 +136,7 @@ __Returns__:
 
 #### *static* runnerHasPreconfiguredCreds() <a id="cdk-pipelines-github-awscredentials-runnerhaspreconfiguredcreds"></a>
 
-
+Don't provide any AWS credentials, use this if runners have preconfigured credentials.
 
 ```ts
 static runnerHasPreconfiguredCreds(): AwsCredentialsProvider
@@ -152,6 +152,7 @@ __Returns__:
 
 AWS credential provider.
 
+__Obtainable from__: [AwsCredentials](#cdk-pipelines-github-awscredentials).[fromGitHubSecrets](#cdk-pipelines-github-awscredentials#cdk-pipelines-github-awscredentials-fromgithubsecrets)(), [AwsCredentials](#cdk-pipelines-github-awscredentials).[fromOpenIdConnect](#cdk-pipelines-github-awscredentials#cdk-pipelines-github-awscredentials-fromopenidconnect)(), [AwsCredentials](#cdk-pipelines-github-awscredentials).[runnerHasPreconfiguredCreds](#cdk-pipelines-github-awscredentials#cdk-pipelines-github-awscredentials-runnerhaspreconfiguredcreds)()
 
 ### Initializer
 
@@ -167,16 +168,16 @@ new AwsCredentialsProvider()
 ### Methods
 
 
-#### credentialSteps(_region, _assumeRoleArn?) <a id="cdk-pipelines-github-awscredentialsprovider-credentialsteps"></a>
+#### credentialSteps(region, assumeRoleArn?) <a id="cdk-pipelines-github-awscredentialsprovider-credentialsteps"></a>
 
 
 
 ```ts
-credentialSteps(_region: string, _assumeRoleArn?: string): Array<JobStep>
+credentialSteps(region: string, assumeRoleArn?: string): Array<JobStep>
 ```
 
-* **_region** (<code>string</code>)  *No description*
-* **_assumeRoleArn** (<code>string</code>)  *No description*
+* **region** (<code>string</code>)  *No description*
+* **assumeRoleArn** (<code>string</code>)  *No description*
 
 __Returns__:
 * <code>Array<[JobStep](#cdk-pipelines-github-jobstep)></code>
