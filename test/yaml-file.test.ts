@@ -61,6 +61,19 @@ describe('patch', () => {
       { first: { second: {} } }, // should use
     );
   });
+
+  test('toYaml is idempotent', () => {
+    const yamlFile = new YamlFile('/dev/null', {
+      obj: {
+        array: [1, 2, 3],
+      },
+    });
+
+    yamlFile.patch(JsonPatch.remove('/array/1'));
+
+    expect(YAML.parse(yamlFile.toYaml())).toEqual({ array: [1, 3] });
+    expect(YAML.parse(yamlFile.toYaml())).toEqual({ array: [1, 3] });
+  });
 });
 
 
