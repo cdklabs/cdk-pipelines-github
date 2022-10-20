@@ -3,7 +3,7 @@ import { join } from 'path';
 import { Stack, Stage } from 'aws-cdk-lib';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import { ShellStep } from 'aws-cdk-lib/pipelines';
-import { GitHubWorkflow, JsonPatch, Runner } from '../src';
+import { GitHubWorkflow, JsonPatch, Runner, AwsCredentials } from '../src';
 import { GitHubExampleApp } from './example-app';
 import { withTemporaryDirectory, TestApp } from './testutil';
 
@@ -50,6 +50,65 @@ test('pipeline with aws credentials', () => {
         secretAccessKey: 'MY_SECRET_ACCESS_KEY',
         sessionToken: 'MY_SESSION_TOKEN',
       },
+    });
+
+    const stage = new Stage(app, 'MyStack', {
+      env: { account: '111111111111', region: 'us-east-1' },
+    });
+
+    new Stack(stage, 'MyStack');
+
+    github.addStage(stage);
+
+    app.synth();
+
+    const file = readFileSync(github.workflowPath, 'utf-8');
+    expect(file).toContain('aws-access-key-id: \${{ secrets.MY_ACCESS_KEY_ID }}\n');
+    expect(file).toContain('aws-secret-access-key: \${{ secrets.MY_SECRET_ACCESS_KEY }}\n');
+    expect(file).toContain('aws-session-token: \${{ secrets.MY_SESSION_TOKEN }}\n');
+  });
+});
+
+test('pipeline with aws credentials using awsCreds', () => {
+  withTemporaryDirectory((dir) => {
+    const github = new GitHubWorkflow(app, 'Pipeline', {
+      workflowPath: `${dir}/.github/workflows/deploy.yml`,
+      synth: new ShellStep('Build', {
+        installCommands: ['yarn'],
+        commands: ['yarn build'],
+      }),
+      awsCreds: AwsCredentials.fromGitHubSecrets(),
+    });
+
+    const stage = new Stage(app, 'MyStack', {
+      env: { account: '111111111111', region: 'us-east-1' },
+    });
+
+    new Stack(stage, 'MyStack');
+
+    github.addStage(stage);
+
+    app.synth();
+
+    const file = readFileSync(github.workflowPath, 'utf-8');
+    expect(file).toContain('aws-access-key-id: \${{ secrets.AWS_ACCESS_KEY_ID }}\n');
+    expect(file).toContain('aws-secret-access-key: \${{ secrets.AWS_SECRET_ACCESS_KEY }}\n');
+  });
+});
+
+test('pipeline with aws credentials in custom secrets', () => {
+  withTemporaryDirectory((dir) => {
+    const github = new GitHubWorkflow(app, 'Pipeline', {
+      workflowPath: `${dir}/.github/workflows/deploy.yml`,
+      synth: new ShellStep('Build', {
+        installCommands: ['yarn'],
+        commands: ['yarn build'],
+      }),
+      awsCreds: AwsCredentials.fromGitHubSecrets({
+        accessKeyId: 'MY_ACCESS_KEY_ID',
+        secretAccessKey: 'MY_SECRET_ACCESS_KEY',
+        sessionToken: 'MY_SESSION_TOKEN',
+      }),
     });
 
     const stage = new Stage(app, 'MyStack', {
