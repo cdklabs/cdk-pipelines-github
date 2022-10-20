@@ -143,7 +143,7 @@ You can read more
 
 Authenticating via OpenId Connect means you do not need to store long-lived 
 credentials as GitHub Secrets. With OIDC, you provide a pre-provisioned IAM
-role to your GitHub Workflow via the `awsCreds` property.
+role to your GitHub Workflow via the `awsCreds.fromOpenIdConnect` API:
 
 ```ts
 import { App } from 'aws-cdk-lib';
@@ -226,7 +226,7 @@ Authenticating via this approach means that you will be manually creating AWS
 credentials and duplicating them in GitHub secrets. The workflow expects the
 GitHub repository to include secrets with AWS credentials under 
 `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`. You can override these defaults 
-by supplying the `awsCreds` property to the workflow:
+by supplying the `awsCreds.fromGitHubSecrets` API to the workflow:
 
 ```ts
 import { App } from 'aws-cdk-lib';
@@ -268,7 +268,7 @@ const pipeline = new GitHubWorkflow(app, 'Pipeline', {
       'yarn build',
     ],
   }),
-  awsCreds: AwsCredentials.runnerHasPreconfiguredCreds(),
+  awsCreds: AwsCredentials.runnerHasPreconfiguredCreds(), // NO credentials will be provided.
 });
 ```
 
