@@ -328,7 +328,8 @@ export class GitHubWorkflow extends PipelineBase {
 
     // GITHUB_WORKFLOW is set when GitHub Actions is running the workflow.
     // see: https://docs.github.com/en/actions/learn-github-actions/environment-variables#default-environment-variables
-    const diffProtection = this.node.tryGetContext('cdk-pipelines-github:diffProtection') ?? true;
+    const contextValue = this.node.tryGetContext('cdk-pipelines-github:diffProtection');
+    const diffProtection = contextValue === 'false' ? false : contextValue ?? true;
     if (diffProtection && process.env.GITHUB_WORKFLOW === this.workflowName) {
       // check if workflow file has changed
       if (!existsSync(this.workflowPath) || this.workflowFile.toYaml() !== readFileSync(this.workflowPath, 'utf8')) {
