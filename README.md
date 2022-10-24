@@ -30,6 +30,7 @@ Workflows.
     - [GitHub Action Role](#github-action-role)
       - [`GitHubActionRole` Construct](#githubactionrole-construct)
     - [GitHub Secrets](#github-secrets)
+    - [Runners with Preconfigured Credentials](#runners-with-preconfigured-credentials)
     - [Using Docker in the Pipeline](#using-docker-in-the-pipeline)
       - [Authenticating to Docker registries](#authenticating-to-docker-registries)
   - [Runner Types](#runner-types)
@@ -67,7 +68,9 @@ const pipeline = new GitHubWorkflow(app, 'Pipeline', {
       'yarn build',
     ],
   }),
-  gitHubActionRoleArn: 'arn:aws:iam::<account-id>:role/GitHubActionRole',
+  awsCreds: AwsCredentials.fromOpenIdConnect({
+    gitHubActionRoleArn: 'arn:aws:iam::<account-id>:role/GitHubActionRole',
+  }),
 });
 
 pipeline.addStage(new MyStage(app, 'Beta', { env: BETA_ENV }));
@@ -140,7 +143,7 @@ You can read more
 
 Authenticating via OpenId Connect means you do not need to store long-lived 
 credentials as GitHub Secrets. With OIDC, you provide a pre-provisioned IAM
-role to your GitHub Workflow via the `gitHubActionRoleArn` property.
+role to your GitHub Workflow via the `awsCreds.fromOpenIdConnect` API:
 
 ```ts
 import { App } from 'aws-cdk-lib';
@@ -156,7 +159,9 @@ const pipeline = new GitHubWorkflow(app, 'Pipeline', {
       'yarn build',
     ],
   }),
-  gitHubActionRoleArn: 'arn:aws:iam::<account-id>:role/GitHubActionRole',
+  awsCreds: AwsCredentials.fromOpenIdConnect({
+    gitHubActionRoleArn: 'arn:aws:iam::<account-id>:role/GitHubActionRole',
+  }),
 });
 ```
 
@@ -221,7 +226,7 @@ Authenticating via this approach means that you will be manually creating AWS
 credentials and duplicating them in GitHub secrets. The workflow expects the
 GitHub repository to include secrets with AWS credentials under 
 `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`. You can override these defaults 
-by supplying the `awsCredentials` property to the workflow:
+by supplying the `awsCreds.fromGitHubSecrets` API to the workflow:
 
 ```ts
 import { App } from 'aws-cdk-lib';
@@ -237,10 +242,33 @@ const pipeline = new GitHubWorkflow(app, 'Pipeline', {
       'yarn build',
     ],
   }),
-  awsCredentials: {
+  awsCreds: AwsCredentials.fromGitHubSecrets({
     accessKeyId: 'MY_ID', // GitHub will look for the access key id under the secret `MY_ID`
     secretAccessKey: 'MY_KEY', // GitHub will look for the secret access key under the secret `MY_KEY`
-  },
+  }),
+});
+```
+
+### Runners with Preconfigured Credentials
+
+If your runners provide credentials themselves, you can configure `awsCreds` to
+skip passing credentials:
+
+```ts
+import { App } from 'aws-cdk-lib';
+import { ShellStep } from 'aws-cdk-lib/pipelines';
+import { GitHubWorkflow } from 'cdk-pipelines-github';
+
+const app = new App();
+
+const pipeline = new GitHubWorkflow(app, 'Pipeline', {
+  synth: new ShellStep('Build', {
+    commands: [
+      'yarn install',
+      'yarn build',
+    ],
+  }),
+  awsCreds: AwsCredentials.runnerHasPreconfiguredCreds(), // NO credentials will be provided.
 });
 ```
 
@@ -455,7 +483,9 @@ const pipeline = new GitHubWorkflow(app, 'Pipeline', {
       'yarn build',
     ],
   }),
-  gitHubActionRoleArn: 'arn:aws:iam::<account-id>:role/GitHubActionRole',
+  awsCreds: AwsCredentials.fromOpenIdConnect({
+    gitHubActionRoleArn: 'arn:aws:iam::<account-id>:role/GitHubActionRole',
+  }),
 });
 
 pipeline.addStageWithGitHubOptions(new MyStage(this, 'Beta', {

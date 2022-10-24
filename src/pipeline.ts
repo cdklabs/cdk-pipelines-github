@@ -6,8 +6,8 @@ import { AddStageOpts, PipelineBase, PipelineBaseProps, ShellStep, StackAsset, S
 import { AGraphNode, PipelineGraph, Graph, isGraph } from 'aws-cdk-lib/pipelines/lib/helpers-internal';
 import { Construct } from 'constructs';
 import * as decamelize from 'decamelize';
+import { AwsCredentials, AwsCredentialsProvider } from './aws-credentials';
 import { DockerCredential } from './docker-credentials';
-import { awsCredentialStep } from './private/aws-credentials';
 import { GitHubStage } from './stage';
 import { AddGitHubStageOptions } from './stage-options';
 import { GitHubActionStep } from './steps/github-action-step';
@@ -70,10 +70,19 @@ export interface GitHubWorkflowProps extends PipelineBaseProps {
   readonly preSynthed?: boolean;
 
   /**
+   * Configure provider for AWS credentials used for deployment.
+   *
+   * @default - Get AWS credentials from GitHub secrets `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.
+   */
+  readonly awsCreds?: AwsCredentialsProvider;
+
+  /**
    * Names of GitHub repository secrets that include AWS credentials for
    * deployment.
    *
    * @default - `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.
+   *
+   * @deprecated Use `awsCreds.fromGitHubSecrets()` instead.
    */
   readonly awsCredentials?: AwsCredentialsSecrets;
 
@@ -86,6 +95,8 @@ export interface GitHubWorkflowProps extends PipelineBaseProps {
    * you can utilize the `GitHubActionRole` construct to create a role for you.
    *
    * @default - GitHub repository secrets are used instead of OpenId Connect role.
+   *
+   * @deprecated Use `awsCreds.fromOpenIdConnect()` instead.
    */
   readonly gitHubActionRoleArn?: string;
 
@@ -155,9 +166,7 @@ export class GitHubWorkflow extends PipelineBase {
 
   private readonly workflowTriggers: github.WorkflowTriggers;
   private readonly preSynthed: boolean;
-  private readonly awsCredentials: AwsCredentialsSecrets;
-  private readonly gitHubActionRoleArn?: string;
-  private readonly useGitHubActionRole: boolean;
+  private readonly awsCredentials: AwsCredentialsProvider;
   private readonly dockerCredentials: DockerCredential[];
   private readonly cdkCliVersion?: string;
   private readonly buildContainer?: github.ContainerOptions;
@@ -183,14 +192,9 @@ export class GitHubWorkflow extends PipelineBase {
     this.buildContainer = props.buildContainer;
     this.preBuildSteps = props.preBuildSteps ?? [];
     this.postBuildSteps = props.postBuildSteps ?? [];
-    this.gitHubActionRoleArn = props.gitHubActionRoleArn;
-    this.useGitHubActionRole = this.gitHubActionRoleArn ? true : false;
     this.jobSettings = props.jobSettings;
 
-    this.awsCredentials = props.awsCredentials ?? {
-      accessKeyId: 'AWS_ACCESS_KEY_ID',
-      secretAccessKey: 'AWS_SECRET_ACCESS_KEY',
-    };
+    this.awsCredentials = this.getAwsCredentials(props);
 
     this.dockerCredentials = props.dockerCredentials ?? [];
 
@@ -211,6 +215,33 @@ export class GitHubWorkflow extends PipelineBase {
 
     this.runner = props.runner ?? github.Runner.UBUNTU_LATEST;
     this.publishAssetsAuthRegion = props.publishAssetsAuthRegion ?? 'us-west-2';
+  }
+
+  /**
+   * Parse AWS credential configuration from deprecated properties For backwards compatibility.
+   */
+  private getAwsCredentials(props: GitHubWorkflowProps) {
+    if (props.gitHubActionRoleArn) {
+      if (props.awsCreds) {
+        throw new Error('Please provide only one method of authentication (remove githubActionRoleArn)');
+      }
+      return AwsCredentials.fromOpenIdConnect({
+        gitHubActionRoleArn: props.gitHubActionRoleArn,
+      });
+    }
+
+    if (props.awsCredentials) {
+      if (props.awsCreds) {
+        throw new Error('Please provide only one method of authentication (remove awsCredentials)');
+      }
+      return AwsCredentials.fromGitHubSecrets({
+        accessKeyId: 'AWS_ACCESS_KEY_ID',
+        secretAccessKey: 'AWS_SECRET_ACCESS_KEY',
+        ...props.awsCredentials,
+      });
+    }
+
+    return props.awsCreds ?? AwsCredentials.fromGitHubSecrets();
   }
 
   /**
@@ -355,7 +386,8 @@ export class GitHubWorkflow extends PipelineBase {
 
     // GITHUB_WORKFLOW is set when GitHub Actions is running the workflow.
     // see: https://docs.github.com/en/actions/learn-github-actions/environment-variables#default-environment-variables
-    const diffProtection = this.node.tryGetContext('cdk-pipelines-github:diffProtection') ?? true;
+    const contextValue = this.node.tryGetContext('cdk-pipelines-github:diffProtection');
+    const diffProtection = contextValue === 'false' ? false : contextValue ?? true;
     if (diffProtection && process.env.GITHUB_WORKFLOW === this.workflowName) {
       // check if workflow file has changed
       if (!existsSync(this.workflowPath) || this.workflowFile.toYaml() !== readFileSync(this.workflowPath, 'utf8')) {
@@ -472,7 +504,7 @@ export class GitHubWorkflow extends PipelineBase {
         needs: this.renderDependencies(node),
         permissions: {
           contents: github.JobPermission.READ,
-          idToken: this.useGitHubActionRole ? github.JobPermission.WRITE : github.JobPermission.NONE,
+          idToken: this.awsCredentials.jobPermission(),
         },
         runsOn: this.runner.runsOn,
         outputs: {
@@ -484,7 +516,7 @@ export class GitHubWorkflow extends PipelineBase {
             name: 'Install',
             run: `npm install --no-save cdk-assets${installSuffix}`,
           },
-          ...this.stepsToConfigureAws(this.useGitHubActionRole, { region: this.publishAssetsAuthRegion }),
+          ...this.stepsToConfigureAws(this.publishAssetsAuthRegion),
           ...dockerLoginSteps,
           publishStep,
         ],
@@ -543,7 +575,7 @@ export class GitHubWorkflow extends PipelineBase {
         ...this.stackProperties[stack.stackArtifactId]?.settings,
         permissions: {
           contents: github.JobPermission.READ,
-          idToken: this.useGitHubActionRole ? github.JobPermission.WRITE : github.JobPermission.NONE,
+          idToken: this.awsCredentials.jobPermission(),
         },
         ...(this.stackProperties[stack.stackArtifactId]?.environment ? {
           environment: this.stackProperties[stack.stackArtifactId].environment,
@@ -551,7 +583,7 @@ export class GitHubWorkflow extends PipelineBase {
         needs: this.renderDependencies(node),
         runsOn: this.runner.runsOn,
         steps: [
-          ...this.stepsToConfigureAws(this.useGitHubActionRole, { region, assumeRoleArn }),
+          ...this.stepsToConfigureAws(region, assumeRoleArn),
           {
             id: 'Deploy',
             uses: 'aws-actions/aws-cloudformation-github-deploy@v1',
@@ -595,7 +627,7 @@ export class GitHubWorkflow extends PipelineBase {
           contents: github.JobPermission.READ,
           // The Synthesize job does not use the GitHub Action Role on its own, but it's possible
           // that it is being used in the preBuildSteps.
-          idToken: this.useGitHubActionRole ? github.JobPermission.WRITE : github.JobPermission.NONE,
+          idToken: this.awsCredentials.jobPermission(),
         },
         runsOn: this.runner.runsOn,
         needs: this.renderDependencies(node),
@@ -722,42 +754,8 @@ export class GitHubWorkflow extends PipelineBase {
     };
   }
 
-  private stepsToConfigureAws(openId: boolean, { region, assumeRoleArn }: { region: string; assumeRoleArn?: string }): github.JobStep[] {
-    function getDeployRole(arn: string) {
-      return arn.replace('cfn-exec', 'deploy');
-    }
-
-    let steps: github.JobStep[] = [];
-
-    if (openId) {
-      steps.push(awsCredentialStep('Authenticate Via OIDC Role', {
-        region,
-        gitHubActionRoleArn: this.gitHubActionRoleArn,
-      }));
-
-      if (assumeRoleArn) {
-        // Result of initial credentials with GitHub Action role are these environment variables
-        steps.push(awsCredentialStep('Assume CDK Deploy Role', {
-          region,
-          accessKeyId: '${{ env.AWS_ACCESS_KEY_ID }}',
-          secretAccessKey: '${{ env.AWS_SECRET_ACCESS_KEY }}',
-          sessionToken: '${{ env.AWS_SESSION_TOKEN }}',
-          roleToAssume: getDeployRole(assumeRoleArn),
-        }));
-      }
-    } else {
-      steps.push(awsCredentialStep('Authenticate Via GitHub Secrets', {
-        region,
-        accessKeyId: `\${{ secrets.${this.awsCredentials.accessKeyId} }}`,
-        secretAccessKey: `\${{ secrets.${this.awsCredentials.secretAccessKey} }}`,
-        ...(this.awsCredentials.sessionToken ? {
-          sessionToken: `\${{ secrets.${this.awsCredentials.sessionToken} }}`,
-        } : undefined),
-        roleToAssume: assumeRoleArn,
-      }));
-    }
-
-    return steps;
+  private stepsToConfigureAws(region: string, assumeRoleArn?: string): github.JobStep[] {
+    return this.awsCredentials.credentialSteps(region, assumeRoleArn);
   }
 
   private stepsToConfigureDocker(dockerCredential: DockerCredential): github.JobStep[] {
