@@ -59,7 +59,7 @@ jobs:
           aws-secret-access-key: \${{ secrets.AWS_SECRET_ACCESS_KEY }}
       - id: Publish
         name: Publish Assets-FileAsset1
-        run: /bin/bash ./cdk.out/publish-Assets-FileAsset1-step.sh
+        run: /bin/bash ./cdk.out/assembly-MyStack/publish-Assets-FileAsset1-step.sh
   MyStack-PreDeployAction:
     name: PreDeployAction
     permissions:
@@ -182,7 +182,7 @@ jobs:
           aws-secret-access-key: \${{ secrets.AWS_SECRET_ACCESS_KEY }}
       - id: Publish
         name: Publish Assets-FileAsset1
-        run: /bin/bash ./cdk.out/publish-Assets-FileAsset1-step.sh
+        run: /bin/bash ./cdk.out/assembly-MyStack/publish-Assets-FileAsset1-step.sh
   MyStack-MyStack-Deploy:
     name: Deploy MyStack098574E7
     permissions:
@@ -274,7 +274,7 @@ jobs:
           aws-secret-access-key: \${{ secrets.AWS_SECRET_ACCESS_KEY }}
       - id: Publish
         name: Publish Assets-FileAsset1
-        run: /bin/bash ./cdk.out/publish-Assets-FileAsset1-step.sh
+        run: /bin/bash ./cdk.out/assembly-MyStack/publish-Assets-FileAsset1-step.sh
   MyStack-MyStack-Deploy:
     name: Deploy MyStack098574E7
     permissions:
@@ -366,7 +366,7 @@ jobs:
           aws-secret-access-key: \${{ secrets.AWS_SECRET_ACCESS_KEY }}
       - id: Publish
         name: Publish Assets-FileAsset1
-        run: /bin/bash ./cdk.out/publish-Assets-FileAsset1-step.sh
+        run: /bin/bash ./cdk.out/assembly-MyStage1/publish-Assets-FileAsset1-step.sh
   MyStage1-MyStack-Deploy:
     name: Deploy MyStage1MyStack61AF4CC5
     permissions:
@@ -488,7 +488,7 @@ jobs:
           aws-secret-access-key: \${{ secrets.AWS_SECRET_ACCESS_KEY }}
       - id: Publish
         name: Publish Assets-FileAsset1
-        run: /bin/bash ./cdk.out/publish-Assets-FileAsset1-step.sh
+        run: /bin/bash ./cdk.out/assembly-MyStack/publish-Assets-FileAsset1-step.sh
   MyStack-MyStack-Deploy:
     name: Deploy MyStack098574E7
     if: github.repository == 'github/repo'
