@@ -72,8 +72,8 @@ export class GitHubExampleApp extends App {
       buildContainer: { image: 'alpine' },
       preBuildSteps: [
         {
-          uses: 'actions/setup-node@v2',
-          with: { nodeVersion: '14' },
+          uses: 'actions/setup-node@v3',
+          with: { nodeVersion: '16' },
         },
       ],
       postBuildSteps: [
