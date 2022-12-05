@@ -11,9 +11,9 @@
     "@jridgewell/trace-mapping" "^0.3.9"
 
 "@aws-cdk/asset-awscli-v1@^2.2.9":
-  version "2.2.26"
-  resolved "https://registry.yarnpkg.com/@aws-cdk/asset-awscli-v1/-/asset-awscli-v1-2.2.26.tgz#4d1f36915ef6046b728a61be19d689e1128b0bf7"
-  integrity sha512-j6bp4iDIZlqAlmACpBCZuCZjLYNeJccQFAPmvgjG9edLBGvVyJZvBT7m39lVtjfEyl8EyznCv7czOFaKsZH2Zg==
+  version "2.2.27"
+  resolved "https://registry.yarnpkg.com/@aws-cdk/asset-awscli-v1/-/asset-awscli-v1-2.2.27.tgz#015f719667021f1808b3629cb7b24ef8b8b553e9"
+  integrity sha512-V2bQZNw7bWNA8MmM9OXWsnWg3xv+Puo5H04y7kSBNiv/Z/jw1M2pZI1d9bgmwdEnwD8ZaVkvpGZknYLOtb9PiQ==
 
 "@aws-cdk/asset-kubectl-v20@^2.1.1":
   version "2.1.1"
@@ -21,9 +21,9 @@
   integrity sha512-U1ntiX8XiMRRRH5J1IdC+1t5CE89015cwyt5U63Cpk0GnMlN5+h9WsWMlKlPXZR4rdq/m806JRlBMRpBUB2Dhw==
 
 "@aws-cdk/asset-node-proxy-agent-v5@^2.0.15":
-  version "2.0.32"
-  resolved "https://registry.yarnpkg.com/@aws-cdk/asset-node-proxy-agent-v5/-/asset-node-proxy-agent-v5-2.0.32.tgz#9ee62c3b709c8fc4c4e348e6a980a7d06b9290e6"
-  integrity sha512-w1MaBSyR1vT+glPBNd0smp9MPWbz1z/o3+N59MYpjtA4lW845hb8LwthzvbPUzb0YglUfrnOj64i9BFe6BXeZA==
+  version "2.0.33"
+  resolved "https://registry.yarnpkg.com/@aws-cdk/asset-node-proxy-agent-v5/-/asset-node-proxy-agent-v5-2.0.33.tgz#224e47382a41cb532a8ba2f191b64c7d47360b05"
+  integrity sha512-yTvI3NO4GFK8Mmfq4D+ndjuwjF6X1qEc/uMF8FQorcdXwDpDhRwV6wKZrQAVJUXp2vgv+r0Ic9DAbqu4i1FO+Q==
 
 "@babel/code-frame@^7.0.0", "@babel/code-frame@^7.12.13", "@babel/code-frame@^7.18.6":
   version "7.18.6"
@@ -1947,9 +1947,9 @@ decamelize@^5.0.1:
   integrity sha512-VfxadyCECXgQlkoEAjeghAr5gY3Hf+IKjKb+X8tGVDtveCjN+USwprd2q3QXBR9T1+x2DG0XZF5/w+7HAtSaXA==
 
 decimal.js@^10.2.1:
-  version "10.4.2"
-  resolved "https://registry.yarnpkg.com/decimal.js/-/decimal.js-10.4.2.tgz#0341651d1d997d86065a2ce3a441fbd0d8e8b98e"
-  integrity sha512-ic1yEvwT6GuvaYwBLLY6/aFFgjZdySKTE8en/fkU3QICTmRtgtSlFn0u0BXN06InZwtfCelR7j8LRiDI/02iGA==
+  version "10.4.3"
+  resolved "https://registry.yarnpkg.com/decimal.js/-/decimal.js-10.4.3.tgz#1044092884d245d1b7f65725fa4ad4c6f781cc23"
+  integrity sha512-VBBaLc1MgL5XpzgIP7ny5Z6Nx3UrRkIViUkPUdtl9aya5amy3De1gsUUSB1g3+3sExYNjCAsAznmukyxCb1GRA==
 
 decompress-response@^6.0.0:
   version "6.0.0"
@@ -4918,10 +4918,10 @@ progress@^2.0.3:
   resolved "https://registry.yarnpkg.com/progress/-/progress-2.0.3.tgz#7e8cf8d8f5b8f239c1bc68beb4eb78567d572ef8"
   integrity sha512-7PiHtLll5LdnKIMw100I+8xJXR5gW2QwWYkT6iJva0bXitZKa/XMrSbdmg3r2Xnaidz9Qumd0VPaMrZlF9V9sA==
 
-projen@^0.65.45:
-  version "0.65.45"
-  resolved "https://registry.yarnpkg.com/projen/-/projen-0.65.45.tgz#5a46fb8cd723a3f61acf619600583a863d966cff"
-  integrity sha512-5+ExHUZ/E7Se0T8BExfgdrZL1b8Ai1HJaSyIUsUaFd6Vwb3/6SiBYoYMcS4HRJv0Ad9EVxV0ysU6pWJGEzfDFg==
+projen@^0.65.46:
+  version "0.65.46"
+  resolved "https://registry.yarnpkg.com/projen/-/projen-0.65.46.tgz#c175c2c2ff817d173f2253cf9946ac0a966262b0"
+  integrity sha512-90bMSAPMlKMLoPlN+wK90EO2iWtDfzTkfoGYUGiruKN2keQ7NqAg6NR4iwISyE6yBporry+S46oT5xKTGDKbrg==
   dependencies:
     "@iarna/toml" "^2.2.5"
     case "^1.6.3"
