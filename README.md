@@ -434,7 +434,7 @@ pipeline.addStage(stage, {
     jobSteps: [
       {
         name: 'Checkout',
-        uses: 'actions/checkout@v2',
+        uses: 'actions/checkout@v3',
       },
       {
         name: 'pre beta-deploy action',
