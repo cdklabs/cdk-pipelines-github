@@ -426,7 +426,7 @@ export class GitHubWorkflow extends PipelineBase {
 
     // we need the jobId to reference the outputs later
     this.assetHashMap[assetId] = jobId;
-    fileContents.push(`echo '::set-output name=${ASSET_HASH_NAME}::${assetId}'`);
+    fileContents.push(`echo '${ASSET_HASH_NAME}=${assetId}' >> $GITHUB_OUTPUT`);
 
     const publishStepFile = path.join(cdkoutDir, `publish-${jobId}-step.sh`);
     mkdirSync(path.dirname(publishStepFile), { recursive: true });
