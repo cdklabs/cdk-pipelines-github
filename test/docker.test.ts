@@ -5,8 +5,8 @@ import { App, Stack, Stage, StageProps } from 'aws-cdk-lib';
 import * as codebuild from 'aws-cdk-lib/aws-codebuild';
 import { ShellStep } from 'aws-cdk-lib/pipelines';
 import * as YAML from 'yaml';
-import { DockerCredential, GitHubWorkflow } from '../src';
 import { TestApp } from './testutil';
+import { DockerCredential, GitHubWorkflow } from '../src';
 
 const dockers = join(__dirname, 'demo-image');
 
