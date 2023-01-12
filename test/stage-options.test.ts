@@ -1,8 +1,8 @@
 import { readFileSync } from 'fs';
 import { Stack, Stage } from 'aws-cdk-lib';
 import { ShellStep } from 'aws-cdk-lib/pipelines';
-import { GitHubWorkflow, StackCapabilities, GitHubActionStep } from '../src';
 import { withTemporaryDirectory, TestApp } from './testutil';
+import { GitHubWorkflow, StackCapabilities, GitHubActionStep } from '../src';
 
 let app: TestApp;
 beforeEach(() => {

@@ -1,9 +1,9 @@
 import { readFileSync } from 'fs';
 import * as path from 'path';
 import * as YAML from 'yaml';
+import { withTemporaryDirectory } from './testutil';
 import { JsonPatch } from '../src/json-patch';
 import { YamlFile } from '../src/yaml-file';
-import { withTemporaryDirectory } from './testutil';
 
 describe('patch', () => {
   function patchTest(patches: JsonPatch[], initialObj: any, assertObj: any, updateObj?: any) {

@@ -3,9 +3,9 @@ import { join } from 'path';
 import { Stack, Stage } from 'aws-cdk-lib';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import { ShellStep } from 'aws-cdk-lib/pipelines';
-import { GitHubWorkflow, JsonPatch, Runner, AwsCredentials } from '../src';
 import { GitHubExampleApp } from './example-app';
 import { withTemporaryDirectory, TestApp } from './testutil';
+import { GitHubWorkflow, JsonPatch, Runner, AwsCredentials } from '../src';
 
 const fixtures = join(__dirname, 'fixtures');
 
