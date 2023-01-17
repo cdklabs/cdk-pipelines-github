@@ -1,5 +1,5 @@
-import { JsonPatch } from 'projen';
 import { CdklabsConstructLibrary } from 'cdklabs-projen-project-types';
+import { JsonPatch } from 'projen';
 import { UpdateSnapshot } from 'projen/lib/javascript';
 
 const project = new CdklabsConstructLibrary({
