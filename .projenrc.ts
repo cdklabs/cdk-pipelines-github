@@ -1,17 +1,19 @@
-import { awscdk, JsonPatch } from 'projen';
+import { JsonPatch } from 'projen';
+import { CdklabsConstructLibrary } from 'cdklabs-projen-project-types';
 import { UpdateSnapshot } from 'projen/lib/javascript';
 
-const project = new awscdk.AwsCdkConstructLibrary({
+const project = new CdklabsConstructLibrary({
   projenrcTs: true,
   name: 'cdk-pipelines-github',
   description: 'GitHub Workflows support for CDK Pipelines',
   author: 'Amazon Web Services',
-  authorAddress: 'https://aws.amazon.com',
+  authorAddress: 'aws-cdk-dev@amazon.com',
   cdkVersion: '2.9.0',
   constructsVersion: '10.0.46',
   defaultReleaseBranch: 'main',
   repositoryUrl: 'https://github.com/cdklabs/cdk-pipelines-github.git',
   bundledDeps: ['decamelize', 'yaml', 'fast-json-patch'],
+  devDeps: ['cdklabs-projen-project-types'],
   jestOptions: {
     updateSnapshot: UpdateSnapshot.NEVER,
   },
@@ -32,9 +34,6 @@ const project = new awscdk.AwsCdkConstructLibrary({
     dotNetNamespace: 'Cdklabs.CdkPipelinesGitHub',
     packageId: 'Cdklabs.CdkPipelinesGitHub',
   },
-
-  autoApproveUpgrades: true,
-  autoApproveOptions: { allowedUsernames: ['cdklabs-automation'], secret: 'GITHUB_TOKEN' },
 });
 
 project.addPeerDeps('aws-cdk-lib');
