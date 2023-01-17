@@ -1,7 +1,8 @@
-const { awscdk } = require('projen');
-const { UpdateSnapshot } = require('projen/lib/javascript');
+import { awscdk, JsonPatch } from 'projen';
+import { UpdateSnapshot } from 'projen/lib/javascript';
 
 const project = new awscdk.AwsCdkConstructLibrary({
+  projenrcTs: true,
   name: 'cdk-pipelines-github',
   description: 'GitHub Workflows support for CDK Pipelines',
   author: 'Amazon Web Services',
@@ -32,7 +33,6 @@ const project = new awscdk.AwsCdkConstructLibrary({
     packageId: 'Cdklabs.CdkPipelinesGitHub',
   },
 
-  projenUpgradeSecret: 'PROJEN_GITHUB_TOKEN',
   autoApproveUpgrades: true,
   autoApproveOptions: { allowedUsernames: ['cdklabs-automation'], secret: 'GITHUB_TOKEN' },
 });
@@ -43,6 +43,7 @@ project.addPeerDeps('aws-cdk-lib');
 project.addDevDeps('aws-cdk-lib');
 
 // JSII sets this to `false` so we need to be compatible
-project.tsconfigDev.compilerOptions.esModuleInterop = false;
+const tsConfigDev = project.tryFindObjectFile('tsconfig.dev.json');
+tsConfigDev?.patch(JsonPatch.replace('/compilerOptions/esModuleInterop', false));
 
 project.synth();
