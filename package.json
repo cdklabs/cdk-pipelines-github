@@ -45,7 +45,7 @@
     "@typescript-eslint/eslint-plugin": "^5",
     "@typescript-eslint/parser": "^5",
     "aws-cdk-lib": "2.9.0",
-    "cdklabs-projen-project-types": "^0.0.8",
+    "cdklabs-projen-project-types": "0.0.9",
     "constructs": "10.0.46",
     "eslint": "^8",
     "eslint-import-resolver-node": "^0.3.7",
@@ -149,7 +149,7 @@
         "packageId": "Cdklabs.CdkPipelinesGitHub"
       },
       "go": {
-        "moduleName": "cdk-pipelines-github-go"
+        "moduleName": "github.com/cdklabs/cdk-pipelines-github-go"
       }
     },
     "tsc": {
