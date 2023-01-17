@@ -13,7 +13,8 @@ const project = new CdklabsConstructLibrary({
   defaultReleaseBranch: 'main',
   repositoryUrl: 'https://github.com/cdklabs/cdk-pipelines-github.git',
   bundledDeps: ['decamelize', 'yaml', 'fast-json-patch'],
-  devDeps: ['cdklabs-projen-project-types'],
+  devDeps: ['cdklabs-projen-project-types', 'aws-cdk-lib'],
+  peerDeps: ['aws-cdk-lib'],
   jestOptions: {
     updateSnapshot: UpdateSnapshot.NEVER,
   },
@@ -35,11 +36,6 @@ const project = new CdklabsConstructLibrary({
     packageId: 'Cdklabs.CdkPipelinesGitHub',
   },
 });
-
-project.addPeerDeps('aws-cdk-lib');
-
-// used in tests
-project.addDevDeps('aws-cdk-lib');
 
 // JSII sets this to `false` so we need to be compatible
 const tsConfigDev = project.tryFindObjectFile('tsconfig.dev.json');
