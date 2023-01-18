@@ -5076,6 +5076,27 @@ progress@^2.0.3:
   resolved "https://registry.yarnpkg.com/progress/-/progress-2.0.3.tgz#7e8cf8d8f5b8f239c1bc68beb4eb78567d572ef8"
   integrity sha512-7PiHtLll5LdnKIMw100I+8xJXR5gW2QwWYkT6iJva0bXitZKa/XMrSbdmg3r2Xnaidz9Qumd0VPaMrZlF9V9sA==
 
+projen@^0.67.0:
+  version "0.67.4"
+  resolved "https://registry.yarnpkg.com/projen/-/projen-0.67.4.tgz#a40fb5f25320e9f7f4acc7dcc147aa535a73e409"
+  integrity sha512-NhqLrhD/yR8r5NyXrMKtrDcj21IT7/F52c+0GREe46mNdEAZee5Fcyh+HbSUk/OL8TC3cMLLhnwj2lQ+fnP+oQ==
+  dependencies:
+    "@iarna/toml" "^2.2.5"
+    case "^1.6.3"
+    chalk "^4.1.2"
+    comment-json "4.2.2"
+    conventional-changelog-config-spec "^2.1.0"
+    fast-json-patch "^3.1.1"
+    fs-extra "^9.1.0"
+    glob "^7"
+    ini "^2.0.0"
+    semver "^7.3.8"
+    shx "^0.3.4"
+    xmlbuilder2 "^2.4.1"
+    yaml "2.0.0"
+    yargs "^16.2.0"
+    zlib "^1.0.5"
+
 projen@^0.67.3:
   version "0.67.3"
   resolved "https://registry.yarnpkg.com/projen/-/projen-0.67.3.tgz#fa42cc71c39fd565bafd9ce7c553c5d476c88a0f"
