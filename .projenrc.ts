@@ -4,6 +4,7 @@ import { UpdateSnapshot } from 'projen/lib/javascript';
 
 const project = new CdklabsConstructLibrary({
   projenrcTs: true,
+  private: false,
   name: 'cdk-pipelines-github',
   description: 'GitHub Workflows support for CDK Pipelines',
   author: 'Amazon Web Services',

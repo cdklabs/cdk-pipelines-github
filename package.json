@@ -157,7 +157,6 @@
       "rootDir": "src"
     }
   },
-  "private": true,
   "resolutions": {
     "@types/prettier": "2.6.0",
     "@types/babel__traverse": "7.18.2"
