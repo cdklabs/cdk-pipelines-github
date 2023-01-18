@@ -22,6 +22,12 @@
     },
     {
       "name": "aws-cdk-lib",
+      "version": "2.9.0",
+      "type": "build"
+    },
+    {
+      "name": "cdklabs-projen-project-types",
+      "version": "^0.0.9",
       "type": "build"
     },
     {
@@ -96,6 +102,10 @@
       "type": "build"
     },
     {
+      "name": "ts-node",
+      "type": "build"
+    },
+    {
       "name": "typescript",
       "type": "build"
     },
@@ -123,6 +133,7 @@
     },
     {
       "name": "aws-cdk-lib",
+      "version": "^2.9.0",
       "type": "peer"
     },
     {
