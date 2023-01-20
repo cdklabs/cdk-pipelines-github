@@ -36,6 +36,7 @@ Name|Description
 [ForkOptions](#cdk-pipelines-github-forkoptions)|The Fork event accepts no options.
 [GitHubActionRoleProps](#cdk-pipelines-github-githubactionroleprops)|Properties for the GitHubActionRole construct.
 [GitHubActionStepProps](#cdk-pipelines-github-githubactionstepprops)|*No description*
+[GitHubCommonProps](#cdk-pipelines-github-githubcommonprops)|Common properties to extend both StageProps and AddStageOpts.
 [GitHubSecretsProviderProps](#cdk-pipelines-github-githubsecretsproviderprops)|Locations of GitHub Secrets used to authenticate to AWS.
 [GitHubWorkflowProps](#cdk-pipelines-github-githubworkflowprops)|Props for `GitHubWorkflow`.
 [GollumOptions](#cdk-pipelines-github-gollumoptions)|The Gollum event accepts no options.
@@ -1085,6 +1086,21 @@ Name | Type | Description
 -----|------|-------------
 **jobSteps**🔹 | <code>Array<[JobStep](#cdk-pipelines-github-jobstep)></code> | The Job steps.
 **env**?🔹 | <code>Map<string, string></code> | Environment variables to set.<br/>__*Optional*__
+
+
+
+## struct GitHubCommonProps 🔹 <a id="cdk-pipelines-github-githubcommonprops"></a>
+
+
+Common properties to extend both StageProps and AddStageOpts.
+
+
+
+Name | Type | Description 
+-----|------|-------------
+**gitHubEnvironment**?🔹 | <code>string</code> | Run the stage in a specific GitHub Environment.<br/>__*Default*__: no GitHub environment
+**jobSettings**?🔹 | <code>[JobSettings](#cdk-pipelines-github-jobsettings)</code> | Job level settings that will be applied to all jobs in the stage.<br/>__*Optional*__
+**stackCapabilities**?🔹 | <code>Array<[StackCapabilities](#cdk-pipelines-github-stackcapabilities)></code> | In some cases, you must explicitly acknowledge that your CloudFormation stack template contains certain capabilities in order for CloudFormation to create the stack.<br/>__*Default*__: ['CAPABILITY_IAM']
 
 
 
