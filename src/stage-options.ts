@@ -20,6 +20,4 @@ export enum StackCapabilities {
 /**
  * Options to pass to `addStageWithGitHubOpts`.
  */
-export interface AddGitHubStageOptions
-  extends AddStageOpts,
-  GitHubCommonProps {}
+export interface AddGitHubStageOptions extends AddStageOpts, GitHubCommonProps {}
