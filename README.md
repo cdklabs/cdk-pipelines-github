@@ -40,6 +40,7 @@ Workflows.
   - [Additional Features](#additional-features)
     - [GitHub Action Step](#github-action-step)
     - [Configure GitHub Environment](#configure-github-environment)
+      - [Waves for Parallel Builds](#waves-for-parallel-builds)
       - [Manual Approval Step](#manual-approval-step)
     - [Pipeline YAML Comments](#pipeline-yaml-comments)
   - [Tutorial](#tutorial)
@@ -58,6 +59,7 @@ to two AWS environments (`BETA_ENV` and `PROD_ENV`):
 import { App } from 'aws-cdk-lib';
 import { ShellStep } from 'aws-cdk-lib/pipelines';
 import { GitHubWorkflow } from 'cdk-pipelines-github';
+import { MyStage } from './my-stage';
 
 const app = new App();
 
@@ -73,8 +75,20 @@ const pipeline = new GitHubWorkflow(app, 'Pipeline', {
   }),
 });
 
-pipeline.addStage(new MyStage(app, 'Beta', { env: BETA_ENV }));
-pipeline.addStage(new MyStage(app, 'Prod', { env: PROD_ENV }));
+// Build the stages
+const betaStage = new MyStage(app, 'Beta', { env: BETA_ENV });
+const prodStage = new MyStage(app, 'Prod', { env: PROD_ENV });
+
+// Add the stages for sequential build - earlier stages failing will stop later ones:
+
+pipeline.addStage(betaStage);
+pipeline.addStage();
+
+// OR add the stages for parallel building of multiple stages with a Wave:
+
+const wave = pipeline.addWave('Wave');
+wave.addStage(betaStage);
+wave.addStage(prodStage);
 
 app.synth();
 ```
@@ -90,6 +104,15 @@ The `Pipeline` class from `cdk-pipelines-github` is derived from the base CDK
 Pipelines class, so most features should be supported out of the box. See the
 [CDK Pipelines](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.pipelines-readme.html)
 documentation for more details.
+
+To express GitHub-specifc details, such as those outlined in [Additional Features](#additional-features), you have a few options:
+
+- Use a `GitHubStage` instead of `Stage` (or make a `GitHubStage` subclass intead of a `Stage` subclass) - this adds the `GitHubCommonProps` to the `Stage` properties
+  - With this you can use `pipeline.addStage(myGitHubStage)` or `wave.addStage(myGitHubStage)` and the properties of the 
+  stage will be used
+- Using a `Stage` (or subclass thereof) or a `GitHubStage` (or subclass thereof) you can call `pipeline.addStageWithGitHubOptions(stage, stageOptions)` or `wave.addStageWithGitHubOptions(stage, stageOptions)`
+  - In this case you're providing the same options along with the stage instead of embedded in the stage.
+  - Note that properties of a `GitHubStage` added with `addStageWithGitHubOptions()` will override the options provided to `addStageWithGitHubOptions()`
 
 **NOTES:**
 
@@ -498,6 +521,119 @@ pipeline.addStageWithGitHubOptions(new MyStage(this, 'Prod', {
 }));
 
 app.synth();
+```
+
+#### Waves for Parallel Builds
+
+You can add a Wave to a pipeline, where each stage of a wave will build in parallel.
+
+**Note**: The `pipeline.addWave()` call will return a `Wave` object that is actually a `GitHubWave` object, but due to JSII rules the return type of `addWave()` cannot be changed. If you need to use `wave.addStageWithGitHubOptions()` then you should call `pipeline.addGitHubWave()` instead, or you can use `GitHubStage`a to carry the GitHub properties.
+
+```ts
+// make a new pipeline
+import { App } from 'aws-cdk-lib';
+import { ShellStep } from 'aws-cdk-lib/pipelines';
+import { GitHubWorkflow, GitHubStage } from 'cdk-pipelines-github';
+
+const app = new App();
+
+const pipeline = new GitHubWorkflow(app, 'Pipeline', {
+  synth: new ShellStep('Build', {
+    commands: [
+      'yarn install',
+      'yarn build',
+    ],
+  }),
+  awsCreds: AwsCredentials.fromOpenIdConnect({
+    gitHubActionRoleArn: 'arn:aws:iam::<account-id>:role/GitHubActionRole',
+  }),
+});
+
+// make a stage
+const stageA = new GitHubStage(app, 'MyStageA', {
+  env: { account: '111111111111', region: 'us-east-1' },
+  {
+    jobSettings: {
+      if: "success() && contains(github.event.issue.labels.*.name, 'deployToA')",
+    },
+  }
+});
+// add a stack
+new Stack(stageA, 'MyStackA');
+
+// make a second stage
+const stageB = new GitHubStage(app, 'MyStageB', {
+  env: { account: '12345678901', region: 'us-east-1' },
+  jobSettings: {
+    if: "success() && contains(github.event.issue.labels.*.name, 'deployToB')",
+  },
+});
+// add a stack to that second stage
+new Stack(stageB, 'MyStackB');
+
+// Make a wave to have the stages run in  parallel (and not depend on each other)
+// We can also add steps to be run once before and once after ALL of the stages in this wave
+const wave = pipeline.addWave('MyWave', {
+  pre: [
+    // add a pre-wave actions
+    new GitHubActionStep('PreWaveAction', {
+      jobSteps: [
+        {
+          name: 'pre wave action',
+          uses: 'my-pre-wave-action@1.0.0',
+          with: {
+            'app-id': 1234,
+            'secrets': 'my-secrets',
+          },
+        },
+      ],
+    }),
+  ],
+
+  post: [
+    new GitHubActionStep('PostWaveAction', {
+      jobSteps: [
+        {
+          name: 'Checkout',
+          uses: 'actions/checkout@v3',
+        },
+        {
+          name: 'post wave action',
+          uses: 'my-post-wave-action@1.0.0',
+          with: {
+            'app-id': 4321,
+            'secrets': 'secrets',
+          },
+        },
+      ],
+    }),
+  ],
+});
+
+// Now add both stages to the wave - they will build in parallel
+wave.addStage(stageA);
+wave.addStage(stageB);
+
+// pre- and post-wave actions can both be added after the wave is constructed
+// with wave.addPre() and wave.addPost()
+wave.addPost([
+  new GitHubActionStep('PostWaveAction', {
+    jobSteps: [
+      {
+        name: 'Checkout',
+        uses: 'actions/checkout@v3',
+      },
+      {
+        name: 'post wave action',
+        uses: 'my-post-wave-action@1.0.0',
+        with: {
+          'app-id': 4321,
+          'secrets': 'secrets',
+        },
+      },
+    ],
+  }),
+]);
 ```
 
 #### Manual Approval Step

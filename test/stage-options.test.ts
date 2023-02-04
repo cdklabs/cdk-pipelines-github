@@ -8,8 +8,9 @@ import {
   StackCapabilities,
   GitHubActionStep,
   AddGitHubStageOptions,
+  GitHubStage,
+  GitHubStageProps,
 } from '../src';
-import { GitHubStage, GitHubStageProps } from '../src/stage';
 
 let app: TestApp;
 beforeEach(() => {

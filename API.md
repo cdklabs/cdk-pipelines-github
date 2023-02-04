@@ -9,6 +9,7 @@ Name|Description
 [DockerCredential](#cdk-pipelines-github-dockercredential)|Represents a credential used to authenticate to a docker registry.
 [GitHubActionRole](#cdk-pipelines-github-githubactionrole)|Creates or references a GitHub OIDC provider and accompanying role that trusts the provider.
 [GitHubActionStep](#cdk-pipelines-github-githubactionstep)|Specifies a GitHub Action as a step in the pipeline.
+[GitHubStage](#cdk-pipelines-github-githubstage)|*No description*
 [GitHubWave](#cdk-pipelines-github-githubwave)|Multiple stages that are deployed in parallel.
 [GitHubWorkflow](#cdk-pipelines-github-githubworkflow)|CDK Pipelines for GitHub workflows.
 [JsonPatch](#cdk-pipelines-github-jsonpatch)|Utility for applying RFC-6902 JSON-Patch to a document.
@@ -38,6 +39,7 @@ Name|Description
 [GitHubActionStepProps](#cdk-pipelines-github-githubactionstepprops)|*No description*
 [GitHubCommonProps](#cdk-pipelines-github-githubcommonprops)|Common properties to extend both StageProps and AddStageOpts.
 [GitHubSecretsProviderProps](#cdk-pipelines-github-githubsecretsproviderprops)|Locations of GitHub Secrets used to authenticate to AWS.
+[GitHubStageProps](#cdk-pipelines-github-githubstageprops)|*No description*
 [GitHubWorkflowProps](#cdk-pipelines-github-githubworkflowprops)|Props for `GitHubWorkflow`.
 [GollumOptions](#cdk-pipelines-github-gollumoptions)|The Gollum event accepts no options.
 [IssueCommentOptions](#cdk-pipelines-github-issuecommentoptions)|Issue comment options.
@@ -379,6 +381,42 @@ Name | Type | Description
 -----|------|-------------
 **env**🔹 | <code>Map<string, string></code> | <span></span>
 **jobSteps**🔹 | <code>Array<[JobStep](#cdk-pipelines-github-jobstep)></code> | <span></span>
+
+
+
+## class GitHubStage 🔹 <a id="cdk-pipelines-github-githubstage"></a>
+
+
+
+__Implements__: [IConstruct](#constructs-iconstruct), [IDependable](#constructs-idependable)
+__Extends__: [Stage](#aws-cdk-lib-stage)
+
+### Initializer
+
+
+
+
+```ts
+new GitHubStage(scope: Construct, id: string, props?: GitHubStageProps)
+```
+
+* **scope** (<code>[Construct](#constructs-construct)</code>)  *No description*
+* **id** (<code>string</code>)  *No description*
+* **props** (<code>[GitHubStageProps](#cdk-pipelines-github-githubstageprops)</code>)  *No description*
+  * **env** (<code>[Environment](#aws-cdk-lib-environment)</code>)  Default AWS environment (account/region) for `Stack`s in this `Stage`. __*Default*__: The environments should be configured on the `Stack`s.
+  * **outdir** (<code>string</code>)  The output directory into which to emit synthesized artifacts. __*Default*__: for nested stages, outdir will be determined as a relative directory to the outdir of the app. For apps, if outdir is not specified, a temporary directory will be created.
+  * **gitHubEnvironment** (<code>string</code>)  Run the stage in a specific GitHub Environment. __*Default*__: no GitHub environment
+  * **jobSettings** (<code>[JobSettings](#cdk-pipelines-github-jobsettings)</code>)  Job level settings that will be applied to all jobs in the stage. __*Optional*__
+  * **stackCapabilities** (<code>Array<[StackCapabilities](#cdk-pipelines-github-stackcapabilities)></code>)  In some cases, you must explicitly acknowledge that your CloudFormation stack template contains certain capabilities in order for CloudFormation to create the stack. __*Default*__: ['CAPABILITY_IAM']
+
+
+
+### Properties
+
+
+Name | Type | Description 
+-----|------|-------------
+**props**?🔹 | <code>[GitHubStageProps](#cdk-pipelines-github-githubstageprops)</code> | __*Optional*__
 
 
 
@@ -1116,6 +1154,23 @@ Name | Type | Description
 **accessKeyId**🔹 | <code>string</code> | <span></span>
 **secretAccessKey**🔹 | <code>string</code> | <span></span>
 **sessionToken**?🔹 | <code>string</code> | __*Default*__: no session token is used
+
+
+
+## struct GitHubStageProps 🔹 <a id="cdk-pipelines-github-githubstageprops"></a>
+
+
+
+
+
+
+Name | Type | Description 
+-----|------|-------------
+**env**?🔹 | <code>[Environment](#aws-cdk-lib-environment)</code> | Default AWS environment (account/region) for `Stack`s in this `Stage`.<br/>__*Default*__: The environments should be configured on the `Stack`s.
+**gitHubEnvironment**?🔹 | <code>string</code> | Run the stage in a specific GitHub Environment.<br/>__*Default*__: no GitHub environment
+**jobSettings**?🔹 | <code>[JobSettings](#cdk-pipelines-github-jobsettings)</code> | Job level settings that will be applied to all jobs in the stage.<br/>__*Optional*__
+**outdir**?🔹 | <code>string</code> | The output directory into which to emit synthesized artifacts.<br/>__*Default*__: for nested stages, outdir will be determined as a relative directory to the outdir of the app. For apps, if outdir is not specified, a temporary directory will be created.
+**stackCapabilities**?🔹 | <code>Array<[StackCapabilities](#cdk-pipelines-github-stackcapabilities)></code> | In some cases, you must explicitly acknowledge that your CloudFormation stack template contains certain capabilities in order for CloudFormation to create the stack.<br/>__*Default*__: ['CAPABILITY_IAM']
 
 
 
