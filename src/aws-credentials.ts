@@ -78,6 +78,10 @@ export interface OpenIdConnectProviderProps {
    * you can utilize the `GitHubActionRole` construct to create a role for you.
    */
   readonly gitHubActionRoleArn: string;
+  /**
+   * The role session name to use when assuming the role.
+   */
+  readonly roleSessionName?: string;
 }
 
 /**
@@ -85,10 +89,12 @@ export interface OpenIdConnectProviderProps {
  */
 class OpenIdConnectProvider extends AwsCredentialsProvider {
   private readonly gitHubActionRoleArn: string;
+  private readonly roleSessionName: string | undefined;
 
   constructor(props: OpenIdConnectProviderProps) {
     super();
     this.gitHubActionRoleArn = props.gitHubActionRoleArn;
+    this.roleSessionName = props.roleSessionName;
   }
 
   public jobPermission(): github.JobPermission {
@@ -106,6 +112,7 @@ class OpenIdConnectProvider extends AwsCredentialsProvider {
       awsCredentialStep('Authenticate Via OIDC Role', {
         region,
         roleToAssume: this.gitHubActionRoleArn,
+        roleSessionName: this.roleSessionName,
       }),
     );
 

@@ -25,6 +25,13 @@ interface AwsCredentialsStepProps {
   readonly gitHubActionRoleArn?: string;
 
   /**
+   * The GitHub Action role session name.
+   *
+   * @default undefined
+   */
+   readonly roleSessionName?: string;
+
+  /**
    * The AWS Region.
    */
   readonly region: string;
@@ -73,6 +80,10 @@ export function awsCredentialStep(stepName: string, props: AwsCredentialsStepPro
   }
   if (props.roleExternalId) {
     params['role-external-id'] = props.roleExternalId;
+  }
+  
+  if (props.roleSessionName) {
+    params['role-session-name'] = props.roleSessionName;
   }
 
   return {
