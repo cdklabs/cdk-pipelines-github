@@ -29,7 +29,7 @@ interface AwsCredentialsStepProps {
    *
    * @default undefined
    */
-   readonly roleSessionName?: string;
+  readonly roleSessionName?: string;
 
   /**
    * The AWS Region.
@@ -81,7 +81,7 @@ export function awsCredentialStep(stepName: string, props: AwsCredentialsStepPro
   if (props.roleExternalId) {
     params['role-external-id'] = props.roleExternalId;
   }
-  
+
   if (props.roleSessionName) {
     params['role-session-name'] = props.roleSessionName;
   }
