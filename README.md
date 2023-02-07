@@ -80,12 +80,10 @@ const betaStage = new MyStage(app, 'Beta', { env: BETA_ENV });
 const prodStage = new MyStage(app, 'Prod', { env: PROD_ENV });
 
 // Add the stages for sequential build - earlier stages failing will stop later ones:
-
 pipeline.addStage(betaStage);
-pipeline.addStage();
+pipeline.addStage(prodStage);
 
 // OR add the stages for parallel building of multiple stages with a Wave:
-
 const wave = pipeline.addWave('Wave');
 wave.addStage(betaStage);
 wave.addStage(prodStage);
