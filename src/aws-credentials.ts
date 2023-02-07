@@ -78,8 +78,11 @@ export interface OpenIdConnectProviderProps {
    * you can utilize the `GitHubActionRole` construct to create a role for you.
    */
   readonly gitHubActionRoleArn: string;
+
   /**
    * The role session name to use when assuming the role.
+   *
+   * @default - no role session name
    */
   readonly roleSessionName?: string;
 }

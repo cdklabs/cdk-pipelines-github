@@ -27,7 +27,7 @@ interface AwsCredentialsStepProps {
   /**
    * The GitHub Action role session name.
    *
-   * @default undefined
+   * @default - no role session name passed into aws creds step
    */
   readonly roleSessionName?: string;
 
