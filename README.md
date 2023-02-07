@@ -525,7 +525,10 @@ app.synth();
 
 You can add a Wave to a pipeline, where each stage of a wave will build in parallel.
 
-**Note**: The `pipeline.addWave()` call will return a `Wave` object that is actually a `GitHubWave` object, but due to JSII rules the return type of `addWave()` cannot be changed. If you need to use `wave.addStageWithGitHubOptions()` then you should call `pipeline.addGitHubWave()` instead, or you can use `GitHubStage`a to carry the GitHub properties.
+> **Note**: The `pipeline.addWave()` call will return a `Wave` object that is actually a `GitHubWave` object, but 
+> due to JSII rules the return type of `addWave()` cannot be changed. If you need to use
+> `wave.addStageWithGitHubOptions()` then you should call `pipeline.addGitHubWave()` instead, or you can
+> use `GitHubStage`a to carry the GitHub properties.
 
 ```ts
 // make a new pipeline
