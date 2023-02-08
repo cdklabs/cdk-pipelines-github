@@ -96,6 +96,37 @@ test('pipeline with aws credentials using awsCreds', () => {
   });
 });
 
+test('pipeline with aws credentials using OIDC and role-session-name', () => {
+  withTemporaryDirectory((dir) => {
+    const github = new GitHubWorkflow(app, 'Pipeline', {
+      workflowPath: `${dir}/.github/workflows/deploy.yml`,
+      synth: new ShellStep('Build', {
+        installCommands: ['yarn'],
+        commands: ['yarn build'],
+      }),
+      awsCreds: AwsCredentials.fromOpenIdConnect({
+        roleSessionName: 'my-github-actions-session',
+        gitHubActionRoleArn:
+          'arn:aws:iam::111111111111:role/my-github-actions-role',
+      }),
+    });
+
+    const stage = new Stage(app, 'MyStack', {
+      env: { account: '111111111111', region: 'us-east-1' },
+    });
+
+    new Stack(stage, 'MyStack');
+
+    github.addStage(stage);
+
+    app.synth();
+
+    const file = readFileSync(github.workflowPath, 'utf-8');
+    expect(file).toContain('role-session-name: my-github-actions-session\n');
+    expect(file).toContain('role-to-assume: arn:aws:iam::111111111111:role/my-github-actions-role\n');
+  });
+});
+
 test('pipeline with aws credentials in custom secrets', () => {
   withTemporaryDirectory((dir) => {
     const github = new GitHubWorkflow(app, 'Pipeline', {
