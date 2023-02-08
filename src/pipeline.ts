@@ -341,7 +341,7 @@ export class GitHubWorkflow extends PipelineBase {
    *
    * `pipeline.addStage()` will also call this, since it calls `pipeline.addWave().addStage()`.
    */
-  public addingStageFromWave(
+  public addStageFromWave(
     stage: Stage,
     stageDeployment: StageDeployment,
     options?: AddGitHubStageOptions,
@@ -944,8 +944,6 @@ function snakeCaseKeys<T = unknown>(obj: T, sep = '-'): T {
  * A `Wave`, but with addition GitHub options
  *
  * Create with `GitHubWorkflow.addWave()` or `GitHubWorkflow.addGitHubWave()`, do not construct directly
- *
- * @hideconstructor
  */
 export class GitHubWave extends Wave {
   constructor(
@@ -966,7 +964,7 @@ export class GitHubWave extends Wave {
    */
   public addStage(stage: Stage, options: AddStageOpts = {}) {
     const stageDeployment = super.addStage(stage, options);
-    this.pipeline.addingStageFromWave(stage, stageDeployment);
+    this.pipeline.addStageFromWave(stage, stageDeployment);
     return stageDeployment;
   }
 
@@ -981,23 +979,9 @@ export class GitHubWave extends Wave {
     options?: AddGitHubStageOptions,
   ): StageDeployment {
     const stageDeployment = super.addStage(stage, options);
-    this.pipeline.addingStageFromWave(stage, stageDeployment, options);
+    this.pipeline.addStageFromWave(stage, stageDeployment, options);
     return stageDeployment;
   }
-
-  // /**
-  //  * Add an additional step to run before any of the stages in this wave
-  //  */
-  // public addPre(...steps: Step[]) {
-  //   this.pre.push(...steps);
-  // }
-
-  // /**
-  //  * Add an additional step to run after all of the stages in this wave
-  //  */
-  // public addPost(...steps: Step[]) {
-  //   this.post.push(...steps);
-  // }
 }
 
 /**

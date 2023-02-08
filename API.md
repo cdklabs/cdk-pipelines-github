@@ -568,6 +568,31 @@ addGitHubWave(id: string, options?: WaveOptions): GitHubWave
 __Returns__:
 * <code>[GitHubWave](#cdk-pipelines-github-githubwave)</code>
 
+#### addStageFromWave(stage, stageDeployment, options?)🔹 <a id="cdk-pipelines-github-githubworkflow-addstagefromwave"></a>
+
+Support adding stages with GitHub options to waves - should ONLY be called internally.
+
+Use `pipeline.addWave()` and it'll call this when `wave.addStage()` is called.
+
+`pipeline.addStage()` will also call this, since it calls `pipeline.addWave().addStage()`.
+
+```ts
+addStageFromWave(stage: Stage, stageDeployment: StageDeployment, options?: AddGitHubStageOptions): void
+```
+
+* **stage** (<code>[Stage](#aws-cdk-lib-stage)</code>)  *No description*
+* **stageDeployment** (<code>[pipelines.StageDeployment](#aws-cdk-lib-pipelines-stagedeployment)</code>)  *No description*
+* **options** (<code>[AddGitHubStageOptions](#cdk-pipelines-github-addgithubstageoptions)</code>)  *No description*
+  * **post** (<code>Array<[pipelines.Step](#aws-cdk-lib-pipelines-step)></code>)  Additional steps to run after all of the stacks in the stage. __*Default*__: No additional steps
+  * **pre** (<code>Array<[pipelines.Step](#aws-cdk-lib-pipelines-step)></code>)  Additional steps to run before any of the stacks in the stage. __*Default*__: No additional steps
+  * **stackSteps** (<code>Array<[pipelines.StackSteps](#aws-cdk-lib-pipelines-stacksteps)></code>)  Instructions for stack level steps. __*Default*__: No additional instructions
+  * **gitHubEnvironment** (<code>string</code>)  Run the stage in a specific GitHub Environment. __*Default*__: no GitHub environment
+  * **jobSettings** (<code>[JobSettings](#cdk-pipelines-github-jobsettings)</code>)  Job level settings that will be applied to all jobs in the stage. __*Optional*__
+  * **stackCapabilities** (<code>Array<[StackCapabilities](#cdk-pipelines-github-stackcapabilities)></code>)  In some cases, you must explicitly acknowledge that your CloudFormation stack template contains certain capabilities in order for CloudFormation to create the stack. __*Default*__: ['CAPABILITY_IAM']
+
+
+
+
 #### addStageWithGitHubOptions(stage, options?)🔹 <a id="cdk-pipelines-github-githubworkflow-addstagewithgithuboptions"></a>
 
 Deploy a single Stage by itself with options for further GitHub configuration.
@@ -618,31 +643,6 @@ addWave(id: string, options?: WaveOptions): Wave
 
 __Returns__:
 * <code>[pipelines.Wave](#aws-cdk-lib-pipelines-wave)</code>
-
-#### addingStageFromWave(stage, stageDeployment, options?)🔹 <a id="cdk-pipelines-github-githubworkflow-addingstagefromwave"></a>
-
-Support adding stages with GitHub options to waves - should ONLY be called internally.
-
-Use `pipeline.addWave()` and it'll call this when `wave.addStage()` is called.
-
-`pipeline.addStage()` will also call this, since it calls `pipeline.addWave().addStage()`.
-
-```ts
-addingStageFromWave(stage: Stage, stageDeployment: StageDeployment, options?: AddGitHubStageOptions): void
-```
-
-* **stage** (<code>[Stage](#aws-cdk-lib-stage)</code>)  *No description*
-* **stageDeployment** (<code>[pipelines.StageDeployment](#aws-cdk-lib-pipelines-stagedeployment)</code>)  *No description*
-* **options** (<code>[AddGitHubStageOptions](#cdk-pipelines-github-addgithubstageoptions)</code>)  *No description*
-  * **post** (<code>Array<[pipelines.Step](#aws-cdk-lib-pipelines-step)></code>)  Additional steps to run after all of the stacks in the stage. __*Default*__: No additional steps
-  * **pre** (<code>Array<[pipelines.Step](#aws-cdk-lib-pipelines-step)></code>)  Additional steps to run before any of the stacks in the stage. __*Default*__: No additional steps
-  * **stackSteps** (<code>Array<[pipelines.StackSteps](#aws-cdk-lib-pipelines-stacksteps)></code>)  Instructions for stack level steps. __*Default*__: No additional instructions
-  * **gitHubEnvironment** (<code>string</code>)  Run the stage in a specific GitHub Environment. __*Default*__: no GitHub environment
-  * **jobSettings** (<code>[JobSettings](#cdk-pipelines-github-jobsettings)</code>)  Job level settings that will be applied to all jobs in the stage. __*Optional*__
-  * **stackCapabilities** (<code>Array<[StackCapabilities](#cdk-pipelines-github-stackcapabilities)></code>)  In some cases, you must explicitly acknowledge that your CloudFormation stack template contains certain capabilities in order for CloudFormation to create the stack. __*Default*__: ['CAPABILITY_IAM']
-
-
-
 
 #### protected doBuildPipeline()🔹 <a id="cdk-pipelines-github-githubworkflow-dobuildpipeline"></a>
 

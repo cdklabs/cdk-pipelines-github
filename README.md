@@ -107,7 +107,7 @@ documentation for more details.
 
 To express GitHub-specifc details, such as those outlined in [Additional Features](#additional-features), you have a few options:
 
-- Use a `GitHubStage` instead of `Stage` (or make a `GitHubStage` subclass intead of a `Stage` subclass) - this adds the `GitHubCommonProps` to the `Stage` properties
+- Use a `GitHubStage` instead of `Stage` (or make a `GitHubStage` subclass instead of a `Stage` subclass) - this adds the `GitHubCommonProps` to the `Stage` properties
   - With this you can use `pipeline.addStage(myGitHubStage)` or `wave.addStage(myGitHubStage)` and the properties of the 
   stage will be used
 - Using a `Stage` (or subclass thereof) or a `GitHubStage` (or subclass thereof) you can call `pipeline.addStageWithGitHubOptions(stage, stageOptions)` or `wave.addStageWithGitHubOptions(stage, stageOptions)`
@@ -527,7 +527,7 @@ app.synth();
 
 You can add a Wave to a pipeline, where each stage of a wave will build in parallel.
 
-**Note**: The `pipeline.addWave()` call will return a `Wave` object that is actually a `GitHubWave` object, but due to JSII rules the return type of `addWave()` cannot be changed. If you need to use `wave.addStageWithGitHubOptions()` then you should call `pipeline.addGitHubWave()` instead, or you can use `GitHubStage`a to carry the GitHub properties.
+**Note**: The `pipeline.addWave()` call will return a `Wave` object that is actually a `GitHubWave` object, but due to JSII rules the return type of `addWave()` cannot be changed. If you need to use `wave.addStageWithGitHubOptions()` then you should call `pipeline.addGitHubWave()` instead, or you can use `GitHubStage`s to carry the GitHub properties.
 
 ```ts
 // make a new pipeline
