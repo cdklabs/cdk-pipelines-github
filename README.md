@@ -637,6 +637,24 @@ wave.addPost([
 ]);
 ```
 
+When deploying to multiple accounts or otherwise deploying mostly-unrelated stacks, using waves can be a hug win.
+
+Here's a realatively large (but real) example, **without** a wave:
+
+<img width="1955" alt="without-waves-light-mode" src="https://user-images.githubusercontent.com/386001/217436992-d8e46c23-6295-48ec-b139-add60b1f5a14.png">
+
+You can see how dependencies get chained unnecessarily, where the `cUrl` step should be the final step (a test) for an account:
+
+<img width="1955" alt="without-waves-deps-light-mode" src="https://user-images.githubusercontent.com/386001/217437074-3c86d88e-6be7-4b10-97b1-6b51b100e4d6.png">
+
+Here's the exact same stages deploying the same stacks to the same accounts, but **with** a wave:
+
+<img width="1955" alt="with-waves" src="https://user-images.githubusercontent.com/386001/217437228-72f6c278-7e97-4a88-91fa-089628ea0381.png">
+
+And the dependency chains are reduced to only what is actually needed, with the `cUrl` calls as the final stage for each account:
+
+<img width="1955" alt="deps" src="https://user-images.githubusercontent.com/386001/217437265-1c10cd5f-3c7d-4e3a-af5c-acbdf3acff1b.png">
+
 #### Manual Approval Step
 
 One use case for using GitHub Environments with your CDK Pipeline is to create a
