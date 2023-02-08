@@ -130,6 +130,7 @@ static fromOpenIdConnect(props: OpenIdConnectProviderProps): AwsCredentialsProvi
 
 * **props** (<code>[OpenIdConnectProviderProps](#cdk-pipelines-github-openidconnectproviderprops)</code>)  *No description*
   * **gitHubActionRoleArn** (<code>string</code>)  A role that utilizes the GitHub OIDC Identity Provider in your AWS account. 
+  * **roleSessionName** (<code>string</code>)  The role session name to use when assuming the role. __*Default*__: no role session name
 
 __Returns__:
 * <code>[AwsCredentialsProvider](#cdk-pipelines-github-awscredentialsprovider)</code>
@@ -1198,6 +1199,7 @@ Role to assume using OpenId Connect.
 Name | Type | Description 
 -----|------|-------------
 **gitHubActionRoleArn**🔹 | <code>string</code> | A role that utilizes the GitHub OIDC Identity Provider in your AWS account.
+**roleSessionName**?🔹 | <code>string</code> | The role session name to use when assuming the role.<br/>__*Default*__: no role session name
 
 
 
