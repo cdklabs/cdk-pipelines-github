@@ -2,15 +2,16 @@ import { mkdirSync, writeFileSync, readFileSync, existsSync } from 'fs';
 import * as path from 'path';
 import { Stage } from 'aws-cdk-lib';
 import { EnvironmentPlaceholders } from 'aws-cdk-lib/cx-api';
-import { AddStageOpts, PipelineBase, PipelineBaseProps, ShellStep, StackAsset, StackDeployment, StackOutputReference, StageDeployment, Step, Wave, WaveOptions, WaveProps } from 'aws-cdk-lib/pipelines';
+import { PipelineBase, PipelineBaseProps, ShellStep, StackAsset, StackDeployment, StackOutputReference, StageDeployment, Step, Wave, WaveOptions } from 'aws-cdk-lib/pipelines';
 import { AGraphNode, PipelineGraph, Graph, isGraph } from 'aws-cdk-lib/pipelines/lib/helpers-internal';
 import { Construct } from 'constructs';
 import * as decamelize from 'decamelize';
 import { AwsCredentials, AwsCredentialsProvider } from './aws-credentials';
 import { DockerCredential } from './docker-credentials';
+import { AddGitHubStageOptions } from './github-common';
 import { GitHubStage } from './stage';
-import { AddGitHubStageOptions, StackCapabilities } from './stage-options';
 import { GitHubActionStep } from './steps/github-action-step';
+import { GitHubWave } from './wave';
 import * as github from './workflows-model';
 import { YamlFile } from './yaml-file';
 
@@ -157,44 +158,6 @@ export interface GitHubWorkflowProps extends PipelineBaseProps {
 }
 
 /**
- * Common properties to extend both StageProps and AddStageOpts
- */
-export interface GitHubCommonProps {
-  /**
-   * Run the stage in a specific GitHub Environment. If specified,
-   * any protection rules configured for the environment must pass
-   * before the job is set to a runner. For example, if the environment
-   * has a manual approval rule configured, then the workflow will
-   * wait for the approval before sending the job to the runner.
-   *
-   * Running a workflow that references an environment that does not
-   * exist will create an environment with the referenced name.
-   * @see https://docs.github.com/en/actions/deployment/targeting-different-environments/using-environments-for-deployment
-   *
-   * @default - no GitHub environment
-   */
-  readonly gitHubEnvironment?: string;
-
-  /**
-   * In some cases, you must explicitly acknowledge that your CloudFormation
-   * stack template contains certain capabilities in order for CloudFormation
-   * to create the stack.
-   *
-   * If insufficiently specified, CloudFormation returns an `InsufficientCapabilities`
-   * error.
-   *
-   * @default ['CAPABILITY_IAM']
-   */
-  readonly stackCapabilities?: StackCapabilities[];
-
-  /**
-   * Job level settings that will be applied to all jobs in the stage.
-   * Currently the only valid setting is 'if'.
-   */
-  readonly jobSettings?: JobSettings;
-}
-
-/**
  * CDK Pipelines for GitHub workflows.
  */
 export class GitHubWorkflow extends PipelineBase {
@@ -223,7 +186,9 @@ export class GitHubWorkflow extends PipelineBase {
   }
   > = {};
   private readonly jobSettings?: JobSettings;
-  private builtGH = false; // cannot be `built` since that's defined in the parent as private
+  // in order to keep track of if this pipeline has been built so we can
+  // catch later calls to addWave() or addStage()
+  private builtGH = false;
 
   constructor(scope: Construct, id: string, props: GitHubWorkflowProps) {
     super(scope, id, props);
@@ -340,8 +305,10 @@ export class GitHubWorkflow extends PipelineBase {
    * Use `pipeline.addWave()` and it'll call this when `wave.addStage()` is called.
    *
    * `pipeline.addStage()` will also call this, since it calls `pipeline.addWave().addStage()`.
+   *
+   *  @internal
    */
-  public addStageFromWave(
+  public _addStageFromWave(
     stage: Stage,
     stageDeployment: StageDeployment,
     options?: AddGitHubStageOptions,
@@ -936,52 +903,6 @@ function snakeCaseKeys<T = unknown>(obj: T, sep = '-'): T {
     result[decamelize(k, { separator: sep })] = v;
   }
   return result as any;
-}
-
-/**
- * Multiple stages that are deployed in parallel
- *
- * A `Wave`, but with addition GitHub options
- *
- * Create with `GitHubWorkflow.addWave()` or `GitHubWorkflow.addGitHubWave()`, do not construct directly
- */
-export class GitHubWave extends Wave {
-  constructor(
-    /** Identifier for this Wave */
-    public readonly id: string,
-    /** GitHubWorkflow that this wave is part of  */
-    private pipeline: GitHubWorkflow,
-    props: WaveProps = {},
-  ) {
-    super(id, props);
-  }
-
-  /**
-   * Add a Stage to this wave
-   *
-   * It will be deployed in parallel with all other stages in this
-   * wave.
-   */
-  public addStage(stage: Stage, options: AddStageOpts = {}) {
-    const stageDeployment = super.addStage(stage, options);
-    this.pipeline.addStageFromWave(stage, stageDeployment);
-    return stageDeployment;
-  }
-
-  /**
-   * Add a Stage to this wave
-   *
-   * It will be deployed in parallel with all other stages in this
-   * wave.
-   */
-  public addStageWithGitHubOptions(
-    stage: Stage,
-    options?: AddGitHubStageOptions,
-  ): StageDeployment {
-    const stageDeployment = super.addStage(stage, options);
-    this.pipeline.addStageFromWave(stage, stageDeployment, options);
-    return stageDeployment;
-  }
 }
 
 /**

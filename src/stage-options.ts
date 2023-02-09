@@ -1,6 +1,3 @@
-import { AddStageOpts } from 'aws-cdk-lib/pipelines';
-import { GitHubCommonProps } from './pipeline';
-
 /**
  * Acknowledge IAM resources in AWS CloudFormation templates.
  *
@@ -16,8 +13,3 @@ export enum StackCapabilities {
   /** Acknowledge your stack contains one or more macros */
   AUTO_EXPAND = 'CAPABILITY_AUTO_EXPAND',
 }
-
-/**
- * Options to pass to `addStageWithGitHubOpts`.
- */
-export interface AddGitHubStageOptions extends AddStageOpts, GitHubCommonProps {}

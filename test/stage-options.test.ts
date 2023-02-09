@@ -495,3 +495,57 @@ test('stages in pipeline works with `if`', () => {
     });
   });
 });
+
+test('stages added to a pipeline after build will fail', () => {
+  withTemporaryDirectory((dir) => {
+    const pipeline = new GitHubWorkflow(app, 'Pipeline', {
+      workflowPath: `${dir}/.github/workflows/deploy.yml`,
+      synth: new ShellStep('Build', {
+        installCommands: ['yarn'],
+        commands: ['yarn build'],
+      }),
+    });
+
+    const stageA = new Stage(app, 'MyStageA', {
+      env: { account: '111111111111', region: 'us-east-1' },
+    });
+    new Stack(stageA, 'MyStackA');
+    pipeline.addStageWithGitHubOptions(stageA, {});
+
+    const stageB = new GitHubStage(app, 'MyStageB', {});
+    new Stack(stageB, 'MyStackB');
+
+    app.synth();
+
+    expect(() => pipeline.addStage(stageB)).toThrowErrorMatchingInlineSnapshot('"addStage: can\'t add Stages anymore after buildPipeline() has been called"');
+  });
+});
+
+// cannot test adding a stage to a GitHubWave post-build, since Waves to not throw an error in that case...
+
+test('waves added to a pipeline after build will fail', () => {
+  withTemporaryDirectory((dir) => {
+    const pipeline = new GitHubWorkflow(app, 'Pipeline', {
+      workflowPath: `${dir}/.github/workflows/deploy.yml`,
+      synth: new ShellStep('Build', {
+        installCommands: ['yarn'],
+        commands: ['yarn build'],
+      }),
+    });
+
+    const wave = pipeline.addWave('wave');
+
+    const stageA = new Stage(app, 'MyStageA', {
+      env: { account: '111111111111', region: 'us-east-1' },
+    });
+    new Stack(stageA, 'MyStackA');
+    wave.addStage(stageA, {});
+
+    const stageB = new GitHubStage(app, 'MyStageB', {});
+    new Stack(stageB, 'MyStackB');
+
+    app.synth();
+
+    expect(() => pipeline.addWave('wave2')).toThrowErrorMatchingInlineSnapshot('"addWave: can\'t add Waves anymore after buildPipeline() has been called"');
+  });
+});

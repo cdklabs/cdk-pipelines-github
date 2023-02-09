@@ -1,6 +1,6 @@
 import { Stage, StageProps } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-import { GitHubCommonProps } from './pipeline';
+import { GitHubCommonProps } from './github-common';
 
 export interface GitHubStageProps extends StageProps, GitHubCommonProps {}
 
