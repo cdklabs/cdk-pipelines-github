@@ -1,8 +1,8 @@
 import { readFileSync } from 'fs';
 import { Stack, Stage } from 'aws-cdk-lib';
 import { ShellStep } from 'aws-cdk-lib/pipelines';
-import { GitHubWorkflow, StackCapabilities, GitHubActionStep } from '../src';
 import { withTemporaryDirectory, TestApp } from './testutil';
+import { GitHubWorkflow, StackCapabilities, GitHubActionStep } from '../src';
 
 let app: TestApp;
 beforeEach(() => {
@@ -232,7 +232,7 @@ test('can set pre/post github action job step', () => {
         jobSteps: [
           {
             name: 'Checkout',
-            uses: 'actions/checkout@v2',
+            uses: 'actions/checkout@v3',
           },
           {
             name: 'post deploy action',
@@ -252,6 +252,6 @@ test('can set pre/post github action job step', () => {
     expect(workflowFileContents).toMatchSnapshot();
     expect(workflowFileContents).toContain('my-pre-deploy-action\@1\.0\.0');
     expect(workflowFileContents).toContain('my-post-deploy-action\@1\.0\.0');
-    expect(workflowFileContents).toContain('actions/checkout@v2');
+    expect(workflowFileContents).toContain('actions/checkout@v3');
   });
 });

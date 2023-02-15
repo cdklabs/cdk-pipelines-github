@@ -41,7 +41,7 @@ Workflows.
     - [GitHub Action Step](#github-action-step)
     - [Configure GitHub Environment](#configure-github-environment)
       - [Manual Approval Step](#manual-approval-step)
-    - [Comments At Top Or Bottom Of Pipeline YAML](#comments-at-top-or-bottom-of-pipeline-yaml)
+    - [Pipeline YAML Comments](#pipeline-yaml-comments)
   - [Tutorial](#tutorial)
   - [Not supported yet](#not-supported-yet)
   - [Contributing](#contributing)
@@ -143,7 +143,7 @@ You can read more
 
 Authenticating via OpenId Connect means you do not need to store long-lived 
 credentials as GitHub Secrets. With OIDC, you provide a pre-provisioned IAM
-role to your GitHub Workflow via the `awsCreds.fromOpenIdConnect` API:
+role with optional role session name to your GitHub Workflow via the `awsCreds.fromOpenIdConnect` API:
 
 ```ts
 import { App } from 'aws-cdk-lib';
@@ -161,6 +161,7 @@ const pipeline = new GitHubWorkflow(app, 'Pipeline', {
   }),
   awsCreds: AwsCredentials.fromOpenIdConnect({
     gitHubActionRoleArn: 'arn:aws:iam::<account-id>:role/GitHubActionRole',
+    roleSessionName: 'optional-role-session-name',
   }),
 });
 ```
@@ -434,7 +435,7 @@ pipeline.addStage(stage, {
     jobSteps: [
       {
         name: 'Checkout',
-        uses: 'actions/checkout@v2',
+        uses: 'actions/checkout@v3',
       },
       {
         name: 'pre beta-deploy action',
@@ -512,7 +513,7 @@ before the deployment can proceed:
 For more information and a tutorial for how to set this up, see this
 [discussion](https://github.com/cdklabs/cdk-pipelines-github/issues/162).
 
-### Comments At Top Or Bottom Of Pipeline YAML
+### Pipeline YAML Comments
 
 An "AUTOMATICALLY GENERATED FILE..." comment will by default be added to the top
 of the pipeline YAML. This can be overriden as desired to add additional context

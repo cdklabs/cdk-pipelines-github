@@ -426,7 +426,7 @@ export class GitHubWorkflow extends PipelineBase {
 
     // we need the jobId to reference the outputs later
     this.assetHashMap[assetId] = jobId;
-    fileContents.push(`echo '::set-output name=${ASSET_HASH_NAME}::${assetId}'`);
+    fileContents.push(`echo '${ASSET_HASH_NAME}=${assetId}' >> $GITHUB_OUTPUT`);
 
     const publishStepFile = path.join(path.dirname(relativeToAssembly(assetManifestPath)), `publish-${jobId}-step.sh`);
     mkdirSync(path.dirname(publishStepFile), { recursive: true });
@@ -528,7 +528,7 @@ export class GitHubWorkflow extends PipelineBase {
           ...this.stepsToConfigureAws(region, assumeRoleArn),
           {
             id: 'Deploy',
-            uses: 'aws-actions/aws-cloudformation-github-deploy@v1',
+            uses: 'aws-actions/aws-cloudformation-github-deploy@v1.1.0',
             with: params,
           },
         ],
@@ -631,7 +631,7 @@ export class GitHubWorkflow extends PipelineBase {
 
     for (const input of step.inputs) {
       downloadInputs.push({
-        uses: 'actions/download-artifact@v2',
+        uses: 'actions/download-artifact@v3',
         with: {
           name: input.fileSet.id,
           path: input.directory,
@@ -641,7 +641,7 @@ export class GitHubWorkflow extends PipelineBase {
 
     for (const output of step.outputs) {
       uploadOutputs.push({
-        uses: 'actions/upload-artifact@v2.1.1',
+        uses: 'actions/upload-artifact@v3',
         with: {
           name: output.fileSet.id,
           path: output.directory,
@@ -721,7 +721,7 @@ export class GitHubWorkflow extends PipelineBase {
 
     return [
       {
-        uses: 'docker/login-action@v1',
+        uses: 'docker/login-action@v2',
         with: params,
       },
     ];
@@ -734,7 +734,7 @@ export class GitHubWorkflow extends PipelineBase {
 
     return [{
       name: `Download ${CDKOUT_ARTIFACT}`,
-      uses: 'actions/download-artifact@v2',
+      uses: 'actions/download-artifact@v3',
       with: {
         name: CDKOUT_ARTIFACT,
         path: targetDir,
@@ -745,7 +745,7 @@ export class GitHubWorkflow extends PipelineBase {
   private stepsToCheckout(): github.JobStep[] {
     return [{
       name: 'Checkout',
-      uses: 'actions/checkout@v2',
+      uses: 'actions/checkout@v3',
     }];
   }
 
@@ -756,7 +756,7 @@ export class GitHubWorkflow extends PipelineBase {
 
     return [{
       name: `Upload ${CDKOUT_ARTIFACT}`,
-      uses: 'actions/upload-artifact@v2.1.1',
+      uses: 'actions/upload-artifact@v3',
       with: {
         name: CDKOUT_ARTIFACT,
         path: dir,

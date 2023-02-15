@@ -3,9 +3,9 @@ import { join } from 'path';
 import { Stack, Stage } from 'aws-cdk-lib';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import { ShellStep } from 'aws-cdk-lib/pipelines';
-import { GitHubWorkflow, JsonPatch, Runner, AwsCredentials } from '../src';
 import { GitHubExampleApp } from './example-app';
 import { withTemporaryDirectory, TestApp } from './testutil';
+import { GitHubWorkflow, JsonPatch, Runner, AwsCredentials } from '../src';
 
 const fixtures = join(__dirname, 'fixtures');
 
@@ -93,6 +93,37 @@ test('pipeline with aws credentials using awsCreds', () => {
     const file = readFileSync(github.workflowPath, 'utf-8');
     expect(file).toContain('aws-access-key-id: \${{ secrets.AWS_ACCESS_KEY_ID }}\n');
     expect(file).toContain('aws-secret-access-key: \${{ secrets.AWS_SECRET_ACCESS_KEY }}\n');
+  });
+});
+
+test('pipeline with aws credentials using OIDC and role-session-name', () => {
+  withTemporaryDirectory((dir) => {
+    const github = new GitHubWorkflow(app, 'Pipeline', {
+      workflowPath: `${dir}/.github/workflows/deploy.yml`,
+      synth: new ShellStep('Build', {
+        installCommands: ['yarn'],
+        commands: ['yarn build'],
+      }),
+      awsCreds: AwsCredentials.fromOpenIdConnect({
+        roleSessionName: 'my-github-actions-session',
+        gitHubActionRoleArn:
+          'arn:aws:iam::111111111111:role/my-github-actions-role',
+      }),
+    });
+
+    const stage = new Stage(app, 'MyStack', {
+      env: { account: '111111111111', region: 'us-east-1' },
+    });
+
+    new Stack(stage, 'MyStack');
+
+    github.addStage(stage);
+
+    app.synth();
+
+    const file = readFileSync(github.workflowPath, 'utf-8');
+    expect(file).toContain('role-session-name: my-github-actions-session\n');
+    expect(file).toContain('role-to-assume: arn:aws:iam::111111111111:role/my-github-actions-role\n');
   });
 });
 

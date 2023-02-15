@@ -5,8 +5,8 @@ import { App, Stack, Stage, StageProps } from 'aws-cdk-lib';
 import * as codebuild from 'aws-cdk-lib/aws-codebuild';
 import { ShellStep } from 'aws-cdk-lib/pipelines';
 import * as YAML from 'yaml';
-import { DockerCredential, GitHubWorkflow } from '../src';
 import { TestApp } from './testutil';
+import { DockerCredential, GitHubWorkflow } from '../src';
 
 const dockers = join(__dirname, 'demo-image');
 
@@ -28,11 +28,11 @@ describe('correct format for docker credentials:', () => {
     const file = fs.readFileSync(github.workflowPath, 'utf-8');
     const workflow = YAML.parse(file);
 
-    const steps = findStepByJobAndUses(workflow, 'Assets-DockerAsset1', 'docker/login-action@v1');
+    const steps = findStepByJobAndUses(workflow, 'Assets-DockerAsset1', 'docker/login-action@v2');
 
     expect(steps.length).toEqual(1);
     expect(steps[0]).toEqual({
-      uses: 'docker/login-action@v1',
+      uses: 'docker/login-action@v2',
       with: {
         registry: '000000000000.dkr.ecr.us-east-1.amazonaws.com',
       },
@@ -44,11 +44,11 @@ describe('correct format for docker credentials:', () => {
     const file = fs.readFileSync(github.workflowPath, 'utf-8');
     const workflow = YAML.parse(file);
 
-    const steps = findStepByJobAndUses(workflow, 'Assets-DockerAsset1', 'docker/login-action@v1');
+    const steps = findStepByJobAndUses(workflow, 'Assets-DockerAsset1', 'docker/login-action@v2');
 
     expect(steps.length).toEqual(1);
     expect(steps[0]).toEqual({
-      uses: 'docker/login-action@v1',
+      uses: 'docker/login-action@v2',
       with: {
         username: '${{ secrets.DOCKERHUB_USERNAME }}',
         password: '${{ secrets.DOCKERHUB_TOKEN }}',
@@ -67,11 +67,11 @@ describe('correct format for docker credentials:', () => {
     const file = fs.readFileSync(github.workflowPath, 'utf-8');
     const workflow = YAML.parse(file);
 
-    const steps = findStepByJobAndUses(workflow, 'Assets-DockerAsset1', 'docker/login-action@v1');
+    const steps = findStepByJobAndUses(workflow, 'Assets-DockerAsset1', 'docker/login-action@v2');
 
     expect(steps.length).toEqual(1);
     expect(steps[0]).toEqual({
-      uses: 'docker/login-action@v1',
+      uses: 'docker/login-action@v2',
       with: {
         username: '${{ secrets.CUSTOM_USERNAME }}',
         password: '${{ secrets.CUSTOM_PASSWORD }}',
@@ -89,18 +89,18 @@ describe('correct format for docker credentials:', () => {
     const file = fs.readFileSync(github.workflowPath, 'utf-8');
     const workflow = YAML.parse(file);
 
-    const steps = findStepByJobAndUses(workflow, 'Assets-DockerAsset1', 'docker/login-action@v1');
+    const steps = findStepByJobAndUses(workflow, 'Assets-DockerAsset1', 'docker/login-action@v2');
 
     expect(steps.length).toEqual(2);
     expect(steps[0]).toEqual({
-      uses: 'docker/login-action@v1',
+      uses: 'docker/login-action@v2',
       with: {
         username: '${{ secrets.DOCKERHUB_USERNAME }}',
         password: '${{ secrets.DOCKERHUB_TOKEN }}',
       },
     });
     expect(steps[1]).toEqual({
-      uses: 'docker/login-action@v1',
+      uses: 'docker/login-action@v2',
       with: {
         registry: '000000000000.dkr.ecr.us-east-1.amazonaws.com',
       },
