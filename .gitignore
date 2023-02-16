@@ -51,3 +51,5 @@ junit.xml
 .jsii
 tsconfig.json
 !/API.md
+.jsii.tabl.json
+!/rosetta/default.ts-fixture
