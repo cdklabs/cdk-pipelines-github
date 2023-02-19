@@ -15,8 +15,6 @@
     "docgen": "npx projen docgen",
     "eject": "npx projen eject",
     "eslint": "npx projen eslint",
-    "integ": "npx projen integ",
-    "integ:update": "npx projen integ:update",
     "package": "npx projen package",
     "package-all": "npx projen package-all",
     "package:dotnet": "npx projen package:dotnet",
@@ -28,7 +26,6 @@
     "post-upgrade": "npx projen post-upgrade",
     "pre-compile": "npx projen pre-compile",
     "release": "npx projen release",
-    "rosetta:extract": "npx projen rosetta:extract",
     "test": "npx projen test",
     "test:update": "npx projen test:update",
     "test:watch": "npx projen test:watch",
@@ -43,7 +40,7 @@
     "organization": true
   },
   "devDependencies": {
-    "@aws-cdk/integ-runner": "^1.193.0",
+    "@aws-cdk/integ-runner": "^2.60.0",
     "@aws-cdk/integ-tests-alpha": "^2.65.0-alpha.0",
     "@types/jest": "^27",
     "@types/node": "^14",

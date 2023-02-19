@@ -17,7 +17,7 @@ const project = new CdklabsConstructLibrary({
   devDeps: [
     'cdklabs-projen-project-types@^0.0.9',
     'aws-cdk-lib',
-    '@aws-cdk/integ-runner',
+    '@aws-cdk/integ-runner@^2.60.0',
     '@aws-cdk/integ-tests-alpha',
   ],
   peerDeps: ['aws-cdk-lib'],
