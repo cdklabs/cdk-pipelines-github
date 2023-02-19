@@ -29,6 +29,27 @@ export interface JobSettings {
 }
 
 /**
+ * Github environment with name and url.
+ * 
+ * @see https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idenvironment
+ */
+export interface GithubEnvironment {
+  /**
+   * Name of the environment
+   * 
+   * @see https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#example-using-environment-name-and-url
+   */
+  readonly name: string;
+
+  /**
+   * The url for the environment.
+   * 
+   * @see https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#example-using-environment-name-and-url
+   */
+  readonly url: string;
+}
+
+/**
  * Props for `GitHubWorkflow`.
  */
 export interface GitHubWorkflowProps extends PipelineBaseProps {
@@ -508,7 +529,7 @@ export class GitHubWorkflow extends PipelineBase {
       params['role-arn'] = resolve(stack.executionRoleArn);
     }
     const assumeRoleArn = stack.assumeRoleArn ? resolve(stack.assumeRoleArn) : undefined;
-
+    
     return {
       id: node.uniqueId,
       definition: {
@@ -520,8 +541,8 @@ export class GitHubWorkflow extends PipelineBase {
           idToken: this.awsCredentials.jobPermission(),
         },
         ...(this.stackProperties[stack.stackArtifactId]?.environment ? {
-          environment: this.stackProperties[stack.stackArtifactId].environment,
-        } : {}),
+            environment: this.stackProperties[stack.stackArtifactId].environment,
+          } : {}),
         needs: this.renderDependencies(node),
         runsOn: this.runner.runsOn,
         steps: [

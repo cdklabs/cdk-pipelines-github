@@ -1,5 +1,5 @@
-import { AddStageOpts } from 'aws-cdk-lib/pipelines';
-import { JobSettings } from './pipeline';
+import { AddStageOpts } from "aws-cdk-lib/pipelines";
+import { GithubEnvironment, JobSettings } from "./pipeline";
 
 /**
  * Options to pass to `addStageWithGitHubOpts`.
@@ -18,7 +18,7 @@ export interface AddGitHubStageOptions extends AddStageOpts {
    *
    * @default - no GitHub environment
    */
-  readonly gitHubEnvironment?: string;
+  readonly gitHubEnvironment?: string | GithubEnvironment;
 
   /**
    * In some cases, you must explicitly acknowledge that your CloudFormation
@@ -46,11 +46,11 @@ export interface AddGitHubStageOptions extends AddStageOpts {
  */
 export enum StackCapabilities {
   /** Acknowledge your stack includes IAM resources */
-  IAM = 'CAPABILITY_IAM',
+  IAM = "CAPABILITY_IAM",
 
   /** Acknowledge your stack includes custom names for IAM resources */
-  NAMED_IAM = 'CAPABILITY_NAMED_IAM',
+  NAMED_IAM = "CAPABILITY_NAMED_IAM",
 
   /** Acknowledge your stack contains one or more macros */
-  AUTO_EXPAND = 'CAPABILITY_AUTO_EXPAND',
+  AUTO_EXPAND = "CAPABILITY_AUTO_EXPAND",
 }

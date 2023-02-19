@@ -43,6 +43,33 @@ describe('github environment', () => {
     });
   });
 
+  
+  test('can specify one github environment with url', () => {
+    withTemporaryDirectory((dir) => {
+      const pipeline = new GitHubWorkflow(app, 'Pipeline', {
+        workflowPath: `${dir}/.github/workflows/deploy.yml`,
+        synth: new ShellStep('Build', {
+          installCommands: ['yarn'],
+          commands: ['yarn build'],
+        }),
+      });
+
+      const stage = new Stage(app, 'MyStack', {
+        env: { account: '111111111111', region: 'us-east-1' },
+      });
+
+      new Stack(stage, 'MyStack');
+
+      pipeline.addStageWithGitHubOptions(stage, {
+        gitHubEnvironment: { name: 'test', url: 'test.com'},
+      });
+
+      app.synth();
+
+      expect(readFileSync(pipeline.workflowPath, 'utf-8')).toMatchSnapshot();
+    });
+  });
+
   test('can specify multiple github environments', () => {
     withTemporaryDirectory((dir) => {
       const pipeline = new GitHubWorkflow(app, 'Pipeline', {
