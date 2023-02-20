@@ -141,7 +141,7 @@ You can read more
 
 Authenticating via OpenId Connect means you do not need to store long-lived 
 credentials as GitHub Secrets. With OIDC, you provide a pre-provisioned IAM
-role with optional role session name to your GitHub Workflow via the `awsCreds.fromOpenIdConnect` API:
+role with optional role session name and role session duration to your GitHub Workflow via the `awsCreds.fromOpenIdConnect` API:
 
 ```ts
 import { ShellStep } from 'aws-cdk-lib/pipelines';
@@ -158,6 +158,7 @@ const pipeline = new GitHubWorkflow(app, 'Pipeline', {
   awsCreds: AwsCredentials.fromOpenIdConnect({
     gitHubActionRoleArn: 'arn:aws:iam::<account-id>:role/GitHubActionRole',
     roleSessionName: 'optional-role-session-name',
+    roleSessionDuration: 900,
   }),
 });
 ```

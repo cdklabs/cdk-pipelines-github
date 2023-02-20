@@ -32,6 +32,13 @@ interface AwsCredentialsStepProps {
   readonly roleSessionName?: string;
 
   /**
+   * The GitHub Action role session duration.
+   *
+   * @default - no role session duration passed into aws creds step
+   */
+  readonly roleDurationSeconds?: number;
+
+  /**
    * The AWS Region.
    */
   readonly region: string;
@@ -64,7 +71,12 @@ export function awsCredentialStep(stepName: string, props: AwsCredentialsStepPro
   const params: Record<string, any> = {};
 
   params['aws-region'] = props.region;
-  params['role-duration-seconds'] = 30 * 60;
+
+  if (props.roleDurationSeconds) {
+    params['role-duration-seconds'] = props.roleDurationSeconds;
+  } else {
+    params['role-duration-seconds'] = 30 * 60;
+  }
   // Session tagging requires the role to have `sts:TagSession` permissions,
   // which CDK bootstrapped roles do not currently have.
   params['role-skip-session-tagging'] = props.roleSkipSessionTagging ?? true;

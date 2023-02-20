@@ -85,6 +85,12 @@ export interface OpenIdConnectProviderProps {
    * @default - no role session name
    */
   readonly roleSessionName?: string;
+  /**
+   * The role session duration in seconds.
+   *
+   * @default - default duration of 1800 seconds
+   */
+  readonly roleDurationSeconds?: number;
 }
 
 /**
@@ -93,11 +99,13 @@ export interface OpenIdConnectProviderProps {
 class OpenIdConnectProvider extends AwsCredentialsProvider {
   private readonly gitHubActionRoleArn: string;
   private readonly roleSessionName: string | undefined;
+  private readonly roleDurationSeconds: number | undefined;
 
   constructor(props: OpenIdConnectProviderProps) {
     super();
     this.gitHubActionRoleArn = props.gitHubActionRoleArn;
     this.roleSessionName = props.roleSessionName;
+    this.roleDurationSeconds = props.roleDurationSeconds;
   }
 
   public jobPermission(): github.JobPermission {
@@ -116,6 +124,7 @@ class OpenIdConnectProvider extends AwsCredentialsProvider {
         region,
         roleToAssume: this.gitHubActionRoleArn,
         roleSessionName: this.roleSessionName,
+        roleDurationSeconds: this.roleDurationSeconds,
       }),
     );
 
