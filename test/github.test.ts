@@ -96,6 +96,40 @@ test('pipeline with aws credentials using awsCreds', () => {
   });
 });
 
+test('pipeline with aws credentials using OIDC and role-session-name and mask-aws-account-id', () => {
+  withTemporaryDirectory((dir) => {
+    const github = new GitHubWorkflow(app, 'Pipeline', {
+      workflowPath: `${dir}/.github/workflows/deploy.yml`,
+      synth: new ShellStep('Build', {
+        installCommands: ['yarn'],
+        commands: ['yarn build'],
+      }),
+      awsCreds: AwsCredentials.fromOpenIdConnect({
+        roleSessionName: 'my-github-actions-session',
+        maskAwsAccountId: false,
+        gitHubActionRoleArn:
+          'arn:aws:iam::111111111111:role/my-github-actions-role',
+      }),
+    });
+
+    const stage = new Stage(app, 'MyStack', {
+      env: { account: '111111111111', region: 'us-east-1' },
+    });
+
+    new Stack(stage, 'MyStack');
+
+    github.addStage(stage);
+
+    app.synth();
+
+    const file = readFileSync(github.workflowPath, 'utf-8');
+    expect(file).toContain('role-session-name: my-github-actions-session\n');
+    expect(file).toContain('role-duration-seconds: 1800\n');
+    expect(file).toContain('mask-aws-account-id: false\n');
+    expect(file).toContain('role-to-assume: arn:aws:iam::111111111111:role/my-github-actions-role\n');
+  });
+});
+
 test('pipeline with aws credentials using OIDC and role-session-name and role-session-duration', () => {
   withTemporaryDirectory((dir) => {
     const github = new GitHubWorkflow(app, 'Pipeline', {
@@ -125,6 +159,8 @@ test('pipeline with aws credentials using OIDC and role-session-name and role-se
     const file = readFileSync(github.workflowPath, 'utf-8');
     expect(file).toContain('role-session-name: my-github-actions-session\n');
     expect(file).toContain('role-duration-seconds: 900\n');
+    expect(file).not.toContain('mask-aws-account-id: false\n');
+    expect(file).not.toContain('mask-aws-account-id: true\n');
     expect(file).toContain('role-to-assume: arn:aws:iam::111111111111:role/my-github-actions-role\n');
   });
 });

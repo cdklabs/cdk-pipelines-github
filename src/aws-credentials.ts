@@ -91,6 +91,12 @@ export interface OpenIdConnectProviderProps {
    * @default - default duration of 1800 seconds
    */
   readonly roleDurationSeconds?: number;
+  /**
+   * Mask the AWS Account ID setting.
+   *
+   * @default - default not masked
+   */
+  readonly maskAwsAccountId?: boolean;
 }
 
 /**
@@ -100,12 +106,14 @@ class OpenIdConnectProvider extends AwsCredentialsProvider {
   private readonly gitHubActionRoleArn: string;
   private readonly roleSessionName: string | undefined;
   private readonly roleDurationSeconds: number | undefined;
+  private readonly maskAwsAccountId: boolean | undefined;
 
   constructor(props: OpenIdConnectProviderProps) {
     super();
     this.gitHubActionRoleArn = props.gitHubActionRoleArn;
     this.roleSessionName = props.roleSessionName;
     this.roleDurationSeconds = props.roleDurationSeconds;
+    this.maskAwsAccountId = props.maskAwsAccountId;
   }
 
   public jobPermission(): github.JobPermission {
@@ -125,6 +133,7 @@ class OpenIdConnectProvider extends AwsCredentialsProvider {
         roleToAssume: this.gitHubActionRoleArn,
         roleSessionName: this.roleSessionName,
         roleDurationSeconds: this.roleDurationSeconds,
+        maskAwsAccountId: this.maskAwsAccountId,
       }),
     );
 

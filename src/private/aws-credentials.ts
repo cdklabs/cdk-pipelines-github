@@ -39,6 +39,13 @@ interface AwsCredentialsStepProps {
   readonly roleDurationSeconds?: number;
 
   /**
+   * The GitHub Action mask AWS Account ID setting.
+   *
+   * @default - no mask AWS Account ID setting is passed into aws creds step
+   */
+  readonly maskAwsAccountId?: boolean;
+
+  /**
    * The AWS Region.
    */
   readonly region: string;
@@ -85,6 +92,10 @@ export function awsCredentialStep(stepName: string, props: AwsCredentialsStepPro
   params['aws-secret-access-key'] = props.secretAccessKey;
   if (props.sessionToken) {
     params['aws-session-token'] = props.sessionToken;
+  }
+
+  if (props.maskAwsAccountId || props.maskAwsAccountId === false) {
+    params['mask-aws-account-id'] = props.maskAwsAccountId;
   }
 
   if (props.roleToAssume) {
