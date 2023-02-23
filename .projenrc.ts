@@ -15,7 +15,7 @@ const project = new CdklabsConstructLibrary({
   repositoryUrl: 'https://github.com/cdklabs/cdk-pipelines-github.git',
   bundledDeps: ['decamelize', 'yaml', 'fast-json-patch'],
   devDeps: [
-    'cdklabs-projen-project-types@^0.0.9',
+    'cdklabs-projen-project-types',
     'aws-cdk-lib',
     '@aws-cdk/integ-runner@^2.60.0',
     '@aws-cdk/integ-tests-alpha',

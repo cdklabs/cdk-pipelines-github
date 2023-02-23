@@ -36,7 +36,6 @@
     },
     {
       "name": "cdklabs-projen-project-types",
-      "version": "^0.0.9",
       "type": "build"
     },
     {
