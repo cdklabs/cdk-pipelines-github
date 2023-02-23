@@ -126,6 +126,16 @@
       "type": "bundled"
     },
     {
+      "name": "@aws-cdk/integ-runner",
+      "version": "^2.45.0",
+      "type": "devenv"
+    },
+    {
+      "name": "@aws-cdk/integ-tests-alpha",
+      "version": "^2.45.0-alpha.0",
+      "type": "devenv"
+    },
+    {
       "name": "@types/babel__traverse",
       "version": "7.18.2",
       "type": "override"
