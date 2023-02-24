@@ -1,0 +1,37 @@
+// Fixture with packages imported, but nothing else
+import { Construct } from 'constructs';
+import {
+  App,
+  Stack,
+  StackProps,
+  Stage,
+  StageProps,
+} from 'aws-cdk-lib';
+import { 
+  AwsCredentials,
+  GitHubWorkflow,
+  GitHubActionStep,
+  GitHubActionRole,
+  JsonPatch,
+  Runner,
+  DockerCredential,
+} from './src';
+
+const BETA_ENV = {
+  account: '000000000000',
+  region: 'us-east-1',
+};
+const PROD_ENV = {
+  account: '111111111111',
+  region: 'us-east-1',
+};
+
+class MyStage extends Stage {}
+
+class Fixture extends Stack {
+  constructor(scope: Construct, id: string) {
+    super(scope, id);
+
+    /// here
+  }
+}

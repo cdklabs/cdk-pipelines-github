@@ -11,12 +11,11 @@ import { applyPatch, Operation } from 'fast-json-patch';
  * Operations can be created using the factory methods `JsonPatch.add()`,
  * `JsonPatch.remove()`, etc.
  *
- * @example
- *
- *const output = JsonPatch.apply(input,
- *  JsonPatch.replace('/world/hi/there', 'goodbye'),
- *  JsonPatch.add('/world/foo/', 'boom'),
- *  JsonPatch.remove('/hello'));
+ * const output = JsonPatch.apply(input,
+ *   JsonPatch.replace('/world/hi/there', 'goodbye'),
+ *   JsonPatch.add('/world/foo/', 'boom'),
+ *   JsonPatch.remove('/hello'),
+ * );
  *
  */
 export class JsonPatch {
