@@ -644,6 +644,12 @@ operations to a JSON document and return the result.
 Operations can be created using the factory methods `JsonPatch.add()`,
 `JsonPatch.remove()`, etc.
 
+const output = JsonPatch.apply(input,
+   JsonPatch.replace('/world/hi/there', 'goodbye'),
+   JsonPatch.add('/world/foo/', 'boom'),
+   JsonPatch.remove('/hello'),
+);
+
 
 ### Methods
 
@@ -848,6 +854,7 @@ on:
 modified in the following way:
 
 ```ts
+declare const pipeline: GitHubWorkflow;
 pipeline.workflowFile.patch(JsonPatch.add("/on/workflow_call", "{}"));
 pipeline.workflowFile.patch(JsonPatch.remove("/on/workflow_dispatch"));
 ```

@@ -56,7 +56,6 @@ called `MyStage` that includes CDK stacks for your app and you want to deploy it
 to two AWS environments (`BETA_ENV` and `PROD_ENV`):
 
 ```ts
-import { App } from 'aws-cdk-lib';
 import { ShellStep } from 'aws-cdk-lib/pipelines';
 import { GitHubWorkflow } from 'cdk-pipelines-github';
 import { MyStage } from './my-stage';
@@ -167,9 +166,7 @@ credentials as GitHub Secrets. With OIDC, you provide a pre-provisioned IAM
 role with optional role session name to your GitHub Workflow via the `awsCreds.fromOpenIdConnect` API:
 
 ```ts
-import { App } from 'aws-cdk-lib';
 import { ShellStep } from 'aws-cdk-lib/pipelines';
-import { GitHubWorkflow } from 'cdk-pipelines-github';
 
 const app = new App();
 
@@ -203,16 +200,13 @@ To utilize this construct, create a separate CDK stack with the following code
 and `cdk deploy`:
 
 ```ts
-import { GitHubActionRole } from 'cdk-pipelines-github';
-import { App, Construct, Stack, StackProps } from 'aws-cdk-lib';
-
 class MyGitHubActionRole extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
     const provider = new GitHubActionRole(this, 'github-action-role', {
-      repoString: 'myUser/myRepo',
-    };
+      repos: ['myUser/myRepo'],
+    });
   }
 }
 
@@ -251,9 +245,7 @@ GitHub repository to include secrets with AWS credentials under
 by supplying the `awsCreds.fromGitHubSecrets` API to the workflow:
 
 ```ts
-import { App } from 'aws-cdk-lib';
 import { ShellStep } from 'aws-cdk-lib/pipelines';
-import { GitHubWorkflow } from 'cdk-pipelines-github';
 
 const app = new App();
 
@@ -277,9 +269,7 @@ If your runners provide credentials themselves, you can configure `awsCreds` to
 skip passing credentials:
 
 ```ts
-import { App } from 'aws-cdk-lib';
 import { ShellStep } from 'aws-cdk-lib/pipelines';
-import { GitHubWorkflow } from 'cdk-pipelines-github';
 
 const app = new App();
 
@@ -312,9 +302,7 @@ due to being in a different environment (e.g., ECR repo) or to avoid throttling
 (e.g., DockerHub).
 
 ```ts
-import { App } from 'aws-cdk-lib';
 import { ShellStep } from 'aws-cdk-lib/pipelines';
-import { GitHubWorkflow } from 'cdk-pipelines-github';
 
 const app = new App();
 
@@ -354,9 +342,7 @@ You can choose to run the workflow in either a GitHub hosted or [self-hosted](ht
 The default is `Runner.UBUNTU_LATEST`. You can override this as shown below:
 
 ```ts
-import { App } from 'aws-cdk-lib';
 import { ShellStep } from 'aws-cdk-lib/pipelines';
-import { GitHubWorkflow } from 'cdk-pipelines-github';
 
 const app = new App();
 
@@ -376,9 +362,7 @@ const pipeline = new GitHubWorkflow(app, 'Pipeline', {
 The following example shows how to configure the workflow to run on a self-hosted runner. Note that you do not need to pass in `self-hosted` explicitly as a label.
 
 ```ts
-import { App } from 'aws-cdk-lib';
 import { ShellStep } from 'aws-cdk-lib/pipelines';
-import { GitHubWorkflow } from 'cdk-pipelines-github';
 
 const app = new App();
 
@@ -398,9 +382,7 @@ const pipeline = new GitHubWorkflow(app, 'Pipeline', {
 You can override the `deploy.yml` workflow file post-synthesis however you like.
 
 ```ts
-import { App } from 'aws-cdk-lib';
 import { ShellStep } from 'aws-cdk-lib/pipelines';
-import { GitHubWorkflow, JsonPatch } from 'cdk-pipelines-github';
 
 const app = new App();
 
@@ -434,9 +416,7 @@ The `jobSteps` array is placed into the pipeline job at the relevant `jobs.<job_
 In this example, 
 
 ```ts
-import { App } from 'aws-cdk-lib';
 import { ShellStep } from 'aws-cdk-lib/pipelines';
-import { GitHubWorkflow, JsonPatch } from 'cdk-pipelines-github';
 
 const app = new App();
 
@@ -461,10 +441,6 @@ pipeline.addStage(stage, {
       {
         name: 'pre beta-deploy action',
         uses: 'my-pre-deploy-action@1.0.0',
-        with: {
-          'app-id': 1234,
-          'secrets': 'my-secrets',
-        },
       },
       {
         name: 'pre beta-deploy check',
@@ -492,9 +468,7 @@ to two AWS environments (`BETA_ENV` and `PROD_ENV`) as well as GitHub Environmen
 `beta` and `prod`:
 
 ```ts
-import { App } from 'aws-cdk-lib';
 import { ShellStep } from 'aws-cdk-lib/pipelines';
-import { GitHubWorkflow } from 'cdk-pipelines-github';
 
 const app = new App();
 
@@ -510,14 +484,16 @@ const pipeline = new GitHubWorkflow(app, 'Pipeline', {
   }),
 });
 
-pipeline.addStageWithGitHubOptions(new MyStage(this, 'Beta', {
+pipeline.addStageWithGitHubOptions(new Stage(this, 'Beta', {
   env: BETA_ENV,
+}), {
   gitHubEnvironment: 'beta',
-}));
+});
 pipeline.addStageWithGitHubOptions(new MyStage(this, 'Prod', {
   env: PROD_ENV,
+}), {
   gitHubEnvironment: 'prod',
-}));
+});
 
 app.synth();
 ```
@@ -569,8 +545,8 @@ An "AUTOMATICALLY GENERATED FILE..." comment will by default be added to the top
 of the pipeline YAML. This can be overriden as desired to add additional context
 to the pipeline YAML.
 
-```ts
-const pipeline = new GitHubWorkflow(/* ... */);
+```
+declare const pipeline: GitHubWorkflow;
 
 pipeline.workflowFile.commentAtTop = `AUTOGENERATED FILE, DO NOT EDIT DIRECTLY!
 
@@ -653,6 +629,7 @@ synthesized against.
 > workflow. In the example app this is achieved through the `preSynthed: true` option.
 > It is for example purposes only and is not something you should do in your app.
 > ```ts
+> import { ShellStep } from 'aws-cdk-lib/pipelines';
 > const pipeline = new GitHubWorkflow(new App(), 'Pipeline', {
 >   synth: new ShellStep('Build', {
 >     commands: ['echo "nothing to do (cdk.out is committed)"'],

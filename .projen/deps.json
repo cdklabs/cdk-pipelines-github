@@ -1,6 +1,15 @@
 {
   "dependencies": [
     {
+      "name": "@aws-cdk/integ-runner",
+      "version": "^2.60.0",
+      "type": "build"
+    },
+    {
+      "name": "@aws-cdk/integ-tests-alpha",
+      "type": "build"
+    },
+    {
       "name": "@types/jest",
       "version": "^27",
       "type": "build"
@@ -27,7 +36,6 @@
     },
     {
       "name": "cdklabs-projen-project-types",
-      "version": "^0.0.9",
       "type": "build"
     },
     {
@@ -116,6 +124,16 @@
     {
       "name": "yaml",
       "type": "bundled"
+    },
+    {
+      "name": "@aws-cdk/integ-runner",
+      "version": "^2.45.0",
+      "type": "devenv"
+    },
+    {
+      "name": "@aws-cdk/integ-tests-alpha",
+      "version": "^2.45.0-alpha.0",
+      "type": "devenv"
     },
     {
       "name": "@types/babel__traverse",
