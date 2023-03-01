@@ -509,7 +509,7 @@ You can add a Wave to a pipeline, where each stage of a wave will build in paral
 
 When deploying to multiple accounts or otherwise deploying mostly-unrelated stacks, using waves can be a huge win.
 
-Here's a realatively large (but real) example, **without** a wave:
+Here's a relatively large (but real) example, **without** a wave:
 
 <img width="1955" alt="without-waves-light-mode" src="https://user-images.githubusercontent.com/386001/217436992-d8e46c23-6295-48ec-b139-add60b1f5a14.png">
 
