@@ -507,7 +507,7 @@ You can add a Wave to a pipeline, where each stage of a wave will build in paral
 > `wave.addStageWithGitHubOptions()` then you should call `pipeline.addGitHubWave()` instead, or you can
 > use `GitHubStage`s to carry the GitHub properties.
 
-When deploying to multiple accounts or otherwise deploying mostly-unrelated stacks, using waves can be a hug win.
+When deploying to multiple accounts or otherwise deploying mostly-unrelated stacks, using waves can be a huge win.
 
 Here's a realatively large (but real) example, **without** a wave:
 
