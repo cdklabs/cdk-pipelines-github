@@ -12,7 +12,7 @@ import { GitHubWorkflow } from './pipeline';
  */
 
 export class GitHubWave extends Wave {
-  constructor(
+  public constructor(
     /** Identifier for this Wave */
     public readonly id: string,
     /** GitHubWorkflow that this wave is part of  */
