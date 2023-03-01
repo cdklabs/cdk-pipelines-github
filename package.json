@@ -60,7 +60,7 @@
     "jest-junit": "^13",
     "jsii": "^1.76.0",
     "jsii-diff": "^1.76.0",
-    "jsii-docgen": "^1.8.110",
+    "jsii-docgen": "^7.1.12",
     "jsii-pacmak": "^1.76.0",
     "npm-check-updates": "^16",
     "projen": "^0.67.68",
