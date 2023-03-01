@@ -51,7 +51,7 @@ const stageB = new GitHubStage(app, 'MyStageB', {
 // add a stack to that second stage
 new Stack(stageB, 'MyStackB');
 
-// Make a wave to have the stages run in  parallel (and not depend on each other)
+// Make a wave to have the stages run in parallel (and not depend on each other)
 // We can also add steps to be run once before and once after ALL of the stages in this wave
 const wave = pipeline.addWave('MyWave', {
   pre: [
