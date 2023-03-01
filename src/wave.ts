@@ -8,7 +8,8 @@ import { GitHubWorkflow } from './pipeline';
  *
  * A `Wave`, but with addition GitHub options
  *
- * Create with `GitHubWorkflow.addWave()` or `GitHubWorkflow.addGitHubWave()`, do not construct directly
+ * Create with `GitHubWorkflow.addWave()` or `GitHubWorkflow.addGitHubWave()`.
+ * You should not have to instantiate a GitHubWave yourself.
  */
 
 export class GitHubWave extends Wave {
