@@ -1,6 +1,5 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import * as fs from 'fs';
-import { rmSync } from 'node:fs';
 import * as os from 'os';
 import * as path from 'path';
 import { App, AppProps, Stack, Stage } from 'aws-cdk-lib';
@@ -19,7 +18,7 @@ export class TestApp extends App {
   }
 
   public cleanup() {
-    rmSync(this.outdir, { recursive: true });
+    fs.rmSync(this.outdir, { recursive: true });
   }
 }
 
@@ -37,6 +36,6 @@ export function withTemporaryDirectory<T>(callback: (dir: string) => T): T {
   try {
     return callback(tmpdir);
   } finally {
-    rmSync(tmpdir, { recursive: true });
+    fs.rmSync(tmpdir, { recursive: true });
   }
 }
