@@ -150,7 +150,6 @@ property in your GitHub Workflow app.
 ---
 
 
-<<<<<<< HEAD
 ### GitHubStage <a name="GitHubStage" id="cdk-pipelines-github.GitHubStage"></a>
 
 #### Initializers <a name="Initializers" id="cdk-pipelines-github.GitHubStage.Initializer"></a>
@@ -412,15 +411,8 @@ public readonly props: GitHubStageProps;
 - *Type:* <a href="#cdk-pipelines-github.GitHubStageProps">GitHubStageProps</a>
 
 ---
-=======
-### GitHubWorkflow <a name="GitHubWorkflow" id="cdk-pipelines-github.GitHubWorkflow"></a>
 
-CDK Pipelines for GitHub workflows.
->>>>>>> c21be58fe57163f1f9afbf971f825d7b604d9c2c
 
-#### Initializers <a name="Initializers" id="cdk-pipelines-github.GitHubWorkflow.Initializer"></a>
-
-<<<<<<< HEAD
 ### GitHubWorkflow <a name="GitHubWorkflow" id="cdk-pipelines-github.GitHubWorkflow"></a>
 
 CDK Pipelines for GitHub workflows.
@@ -453,34 +445,6 @@ new GitHubWorkflow(scope: Construct, id: string, props: GitHubWorkflowProps)
 
 ---
 
-=======
-```typescript
-import { GitHubWorkflow } from 'cdk-pipelines-github'
-
-new GitHubWorkflow(scope: Construct, id: string, props: GitHubWorkflowProps)
-```
-
-| **Name** | **Type** | **Description** |
-| --- | --- | --- |
-| <code><a href="#cdk-pipelines-github.GitHubWorkflow.Initializer.parameter.scope">scope</a></code> | <code>constructs.Construct</code> | *No description.* |
-| <code><a href="#cdk-pipelines-github.GitHubWorkflow.Initializer.parameter.id">id</a></code> | <code>string</code> | *No description.* |
-| <code><a href="#cdk-pipelines-github.GitHubWorkflow.Initializer.parameter.props">props</a></code> | <code><a href="#cdk-pipelines-github.GitHubWorkflowProps">GitHubWorkflowProps</a></code> | *No description.* |
-
----
-
-##### `scope`<sup>Required</sup> <a name="scope" id="cdk-pipelines-github.GitHubWorkflow.Initializer.parameter.scope"></a>
-
-- *Type:* constructs.Construct
-
----
-
-##### `id`<sup>Required</sup> <a name="id" id="cdk-pipelines-github.GitHubWorkflow.Initializer.parameter.id"></a>
-
-- *Type:* string
-
----
-
->>>>>>> c21be58fe57163f1f9afbf971f825d7b604d9c2c
 ##### `props`<sup>Required</sup> <a name="props" id="cdk-pipelines-github.GitHubWorkflow.Initializer.parameter.props"></a>
 
 - *Type:* <a href="#cdk-pipelines-github.GitHubWorkflowProps">GitHubWorkflowProps</a>
@@ -495,10 +459,7 @@ new GitHubWorkflow(scope: Construct, id: string, props: GitHubWorkflowProps)
 | <code><a href="#cdk-pipelines-github.GitHubWorkflow.addStage">addStage</a></code> | Deploy a single Stage by itself. |
 | <code><a href="#cdk-pipelines-github.GitHubWorkflow.addWave">addWave</a></code> | Add a Wave to the pipeline, for deploying multiple Stages in parallel. |
 | <code><a href="#cdk-pipelines-github.GitHubWorkflow.buildPipeline">buildPipeline</a></code> | Send the current pipeline definition to the engine, and construct the pipeline. |
-<<<<<<< HEAD
 | <code><a href="#cdk-pipelines-github.GitHubWorkflow.addGitHubWave">addGitHubWave</a></code> | *No description.* |
-=======
->>>>>>> c21be58fe57163f1f9afbf971f825d7b604d9c2c
 | <code><a href="#cdk-pipelines-github.GitHubWorkflow.addStageWithGitHubOptions">addStageWithGitHubOptions</a></code> | Deploy a single Stage by itself with options for further GitHub configuration. |
 
 ---
@@ -548,19 +509,11 @@ Use the return object of this method to deploy multiple stages in parallel.
 Example:
 
 ```ts
-<<<<<<< HEAD
 declare const pipeline: GitHubWorkflow; // assign pipeline a value
 
 const wave = pipeline.addWave('MyWave');
 wave.addStage(new MyStage(this, 'Stage1'));
 wave.addStage(new MyStage(this, 'Stage2'));
-=======
-declare const pipeline: pipelines.CodePipeline;
-
-const wave = pipeline.addWave('MyWave');
-wave.addStage(new MyApplicationStage(this, 'Stage1'));
-wave.addStage(new MyApplicationStage(this, 'Stage2'));
->>>>>>> c21be58fe57163f1f9afbf971f825d7b604d9c2c
 ```
 
 ###### `id`<sup>Required</sup> <a name="id" id="cdk-pipelines-github.GitHubWorkflow.addWave.parameter.id"></a>
@@ -585,7 +538,6 @@ Send the current pipeline definition to the engine, and construct the pipeline.
 
 It is not possible to modify the pipeline after calling this method.
 
-<<<<<<< HEAD
 ##### `addGitHubWave` <a name="addGitHubWave" id="cdk-pipelines-github.GitHubWorkflow.addGitHubWave"></a>
 
 ```typescript
@@ -604,8 +556,6 @@ public addGitHubWave(id: string, options?: WaveOptions): GitHubWave
 
 ---
 
-=======
->>>>>>> c21be58fe57163f1f9afbf971f825d7b604d9c2c
 ##### `addStageWithGitHubOptions` <a name="addStageWithGitHubOptions" id="cdk-pipelines-github.GitHubWorkflow.addStageWithGitHubOptions"></a>
 
 ```typescript
@@ -1447,7 +1397,6 @@ Environment variables to set.
 
 ---
 
-<<<<<<< HEAD
 ### GitHubCommonProps <a name="GitHubCommonProps" id="cdk-pipelines-github.GitHubCommonProps"></a>
 
 Common properties to extend both StageProps and AddStageOpts.
@@ -1524,8 +1473,6 @@ error.
 
 ---
 
-=======
->>>>>>> c21be58fe57163f1f9afbf971f825d7b604d9c2c
 ### GitHubSecretsProviderProps <a name="GitHubSecretsProviderProps" id="cdk-pipelines-github.GitHubSecretsProviderProps"></a>
 
 Locations of GitHub Secrets used to authenticate to AWS.
@@ -1581,7 +1528,6 @@ public readonly sessionToken: string;
 
 ---
 
-<<<<<<< HEAD
 ### GitHubStageProps <a name="GitHubStageProps" id="cdk-pipelines-github.GitHubStageProps"></a>
 
 #### Initializer <a name="Initializer" id="cdk-pipelines-github.GitHubStageProps.Initializer"></a>
@@ -1716,8 +1662,6 @@ error.
 
 ---
 
-=======
->>>>>>> c21be58fe57163f1f9afbf971f825d7b604d9c2c
 ### GitHubWorkflowProps <a name="GitHubWorkflowProps" id="cdk-pipelines-github.GitHubWorkflowProps"></a>
 
 Props for `GitHubWorkflow`.
@@ -4623,7 +4567,6 @@ public readonly jobSteps: JobStep[];
 ---
 
 
-<<<<<<< HEAD
 ### GitHubWave <a name="GitHubWave" id="cdk-pipelines-github.GitHubWave"></a>
 
 Multiple stages that are deployed in parallel.
@@ -4817,8 +4760,6 @@ The stages that are deployed in this wave.
 ---
 
 
-=======
->>>>>>> c21be58fe57163f1f9afbf971f825d7b604d9c2c
 ### JsonPatch <a name="JsonPatch" id="cdk-pipelines-github.JsonPatch"></a>
 
 Utility for applying RFC-6902 JSON-Patch to a document.
