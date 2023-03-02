@@ -150,6 +150,269 @@ property in your GitHub Workflow app.
 ---
 
 
+### GitHubStage <a name="GitHubStage" id="cdk-pipelines-github.GitHubStage"></a>
+
+#### Initializers <a name="Initializers" id="cdk-pipelines-github.GitHubStage.Initializer"></a>
+
+```typescript
+import { GitHubStage } from 'cdk-pipelines-github'
+
+new GitHubStage(scope: Construct, id: string, props?: GitHubStageProps)
+```
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#cdk-pipelines-github.GitHubStage.Initializer.parameter.scope">scope</a></code> | <code>constructs.Construct</code> | *No description.* |
+| <code><a href="#cdk-pipelines-github.GitHubStage.Initializer.parameter.id">id</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#cdk-pipelines-github.GitHubStage.Initializer.parameter.props">props</a></code> | <code><a href="#cdk-pipelines-github.GitHubStageProps">GitHubStageProps</a></code> | *No description.* |
+
+---
+
+##### `scope`<sup>Required</sup> <a name="scope" id="cdk-pipelines-github.GitHubStage.Initializer.parameter.scope"></a>
+
+- *Type:* constructs.Construct
+
+---
+
+##### `id`<sup>Required</sup> <a name="id" id="cdk-pipelines-github.GitHubStage.Initializer.parameter.id"></a>
+
+- *Type:* string
+
+---
+
+##### `props`<sup>Optional</sup> <a name="props" id="cdk-pipelines-github.GitHubStage.Initializer.parameter.props"></a>
+
+- *Type:* <a href="#cdk-pipelines-github.GitHubStageProps">GitHubStageProps</a>
+
+---
+
+#### Methods <a name="Methods" id="Methods"></a>
+
+| **Name** | **Description** |
+| --- | --- |
+| <code><a href="#cdk-pipelines-github.GitHubStage.toString">toString</a></code> | Returns a string representation of this construct. |
+| <code><a href="#cdk-pipelines-github.GitHubStage.synth">synth</a></code> | Synthesize this stage into a cloud assembly. |
+
+---
+
+##### `toString` <a name="toString" id="cdk-pipelines-github.GitHubStage.toString"></a>
+
+```typescript
+public toString(): string
+```
+
+Returns a string representation of this construct.
+
+##### `synth` <a name="synth" id="cdk-pipelines-github.GitHubStage.synth"></a>
+
+```typescript
+public synth(options?: StageSynthesisOptions): CloudAssembly
+```
+
+Synthesize this stage into a cloud assembly.
+
+Once an assembly has been synthesized, it cannot be modified. Subsequent
+calls will return the same assembly.
+
+###### `options`<sup>Optional</sup> <a name="options" id="cdk-pipelines-github.GitHubStage.synth.parameter.options"></a>
+
+- *Type:* aws-cdk-lib.StageSynthesisOptions
+
+---
+
+#### Static Functions <a name="Static Functions" id="Static Functions"></a>
+
+| **Name** | **Description** |
+| --- | --- |
+| <code><a href="#cdk-pipelines-github.GitHubStage.isConstruct">isConstruct</a></code> | Checks if `x` is a construct. |
+| <code><a href="#cdk-pipelines-github.GitHubStage.isStage">isStage</a></code> | Test whether the given construct is a stage. |
+| <code><a href="#cdk-pipelines-github.GitHubStage.of">of</a></code> | Return the stage this construct is contained with, if available. |
+
+---
+
+##### ~~`isConstruct`~~ <a name="isConstruct" id="cdk-pipelines-github.GitHubStage.isConstruct"></a>
+
+```typescript
+import { GitHubStage } from 'cdk-pipelines-github'
+
+GitHubStage.isConstruct(x: any)
+```
+
+Checks if `x` is a construct.
+
+###### `x`<sup>Required</sup> <a name="x" id="cdk-pipelines-github.GitHubStage.isConstruct.parameter.x"></a>
+
+- *Type:* any
+
+Any object.
+
+---
+
+##### `isStage` <a name="isStage" id="cdk-pipelines-github.GitHubStage.isStage"></a>
+
+```typescript
+import { GitHubStage } from 'cdk-pipelines-github'
+
+GitHubStage.isStage(x: any)
+```
+
+Test whether the given construct is a stage.
+
+###### `x`<sup>Required</sup> <a name="x" id="cdk-pipelines-github.GitHubStage.isStage.parameter.x"></a>
+
+- *Type:* any
+
+---
+
+##### `of` <a name="of" id="cdk-pipelines-github.GitHubStage.of"></a>
+
+```typescript
+import { GitHubStage } from 'cdk-pipelines-github'
+
+GitHubStage.of(construct: IConstruct)
+```
+
+Return the stage this construct is contained with, if available.
+
+If called
+on a nested stage, returns its parent.
+
+###### `construct`<sup>Required</sup> <a name="construct" id="cdk-pipelines-github.GitHubStage.of.parameter.construct"></a>
+
+- *Type:* constructs.IConstruct
+
+---
+
+#### Properties <a name="Properties" id="Properties"></a>
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#cdk-pipelines-github.GitHubStage.property.node">node</a></code> | <code>constructs.Node</code> | The tree node. |
+| <code><a href="#cdk-pipelines-github.GitHubStage.property.artifactId">artifactId</a></code> | <code>string</code> | Artifact ID of the assembly if it is a nested stage. The root stage (app) will return an empty string. |
+| <code><a href="#cdk-pipelines-github.GitHubStage.property.assetOutdir">assetOutdir</a></code> | <code>string</code> | The cloud assembly asset output directory. |
+| <code><a href="#cdk-pipelines-github.GitHubStage.property.outdir">outdir</a></code> | <code>string</code> | The cloud assembly output directory. |
+| <code><a href="#cdk-pipelines-github.GitHubStage.property.stageName">stageName</a></code> | <code>string</code> | The name of the stage. |
+| <code><a href="#cdk-pipelines-github.GitHubStage.property.account">account</a></code> | <code>string</code> | The default account for all resources defined within this stage. |
+| <code><a href="#cdk-pipelines-github.GitHubStage.property.parentStage">parentStage</a></code> | <code>aws-cdk-lib.Stage</code> | The parent stage or `undefined` if this is the app. |
+| <code><a href="#cdk-pipelines-github.GitHubStage.property.region">region</a></code> | <code>string</code> | The default region for all resources defined within this stage. |
+| <code><a href="#cdk-pipelines-github.GitHubStage.property.props">props</a></code> | <code><a href="#cdk-pipelines-github.GitHubStageProps">GitHubStageProps</a></code> | *No description.* |
+
+---
+
+##### `node`<sup>Required</sup> <a name="node" id="cdk-pipelines-github.GitHubStage.property.node"></a>
+
+```typescript
+public readonly node: Node;
+```
+
+- *Type:* constructs.Node
+
+The tree node.
+
+---
+
+##### `artifactId`<sup>Required</sup> <a name="artifactId" id="cdk-pipelines-github.GitHubStage.property.artifactId"></a>
+
+```typescript
+public readonly artifactId: string;
+```
+
+- *Type:* string
+
+Artifact ID of the assembly if it is a nested stage. The root stage (app) will return an empty string.
+
+Derived from the construct path.
+
+---
+
+##### `assetOutdir`<sup>Required</sup> <a name="assetOutdir" id="cdk-pipelines-github.GitHubStage.property.assetOutdir"></a>
+
+```typescript
+public readonly assetOutdir: string;
+```
+
+- *Type:* string
+
+The cloud assembly asset output directory.
+
+---
+
+##### `outdir`<sup>Required</sup> <a name="outdir" id="cdk-pipelines-github.GitHubStage.property.outdir"></a>
+
+```typescript
+public readonly outdir: string;
+```
+
+- *Type:* string
+
+The cloud assembly output directory.
+
+---
+
+##### `stageName`<sup>Required</sup> <a name="stageName" id="cdk-pipelines-github.GitHubStage.property.stageName"></a>
+
+```typescript
+public readonly stageName: string;
+```
+
+- *Type:* string
+
+The name of the stage.
+
+Based on names of the parent stages separated by
+hypens.
+
+---
+
+##### `account`<sup>Optional</sup> <a name="account" id="cdk-pipelines-github.GitHubStage.property.account"></a>
+
+```typescript
+public readonly account: string;
+```
+
+- *Type:* string
+
+The default account for all resources defined within this stage.
+
+---
+
+##### `parentStage`<sup>Optional</sup> <a name="parentStage" id="cdk-pipelines-github.GitHubStage.property.parentStage"></a>
+
+```typescript
+public readonly parentStage: Stage;
+```
+
+- *Type:* aws-cdk-lib.Stage
+
+The parent stage or `undefined` if this is the app.
+
+*
+
+---
+
+##### `region`<sup>Optional</sup> <a name="region" id="cdk-pipelines-github.GitHubStage.property.region"></a>
+
+```typescript
+public readonly region: string;
+```
+
+- *Type:* string
+
+The default region for all resources defined within this stage.
+
+---
+
+##### `props`<sup>Optional</sup> <a name="props" id="cdk-pipelines-github.GitHubStage.property.props"></a>
+
+```typescript
+public readonly props: GitHubStageProps;
+```
+
+- *Type:* <a href="#cdk-pipelines-github.GitHubStageProps">GitHubStageProps</a>
+
+---
+
+
 ### GitHubWorkflow <a name="GitHubWorkflow" id="cdk-pipelines-github.GitHubWorkflow"></a>
 
 CDK Pipelines for GitHub workflows.
@@ -196,6 +459,7 @@ new GitHubWorkflow(scope: Construct, id: string, props: GitHubWorkflowProps)
 | <code><a href="#cdk-pipelines-github.GitHubWorkflow.addStage">addStage</a></code> | Deploy a single Stage by itself. |
 | <code><a href="#cdk-pipelines-github.GitHubWorkflow.addWave">addWave</a></code> | Add a Wave to the pipeline, for deploying multiple Stages in parallel. |
 | <code><a href="#cdk-pipelines-github.GitHubWorkflow.buildPipeline">buildPipeline</a></code> | Send the current pipeline definition to the engine, and construct the pipeline. |
+| <code><a href="#cdk-pipelines-github.GitHubWorkflow.addGitHubWave">addGitHubWave</a></code> | *No description.* |
 | <code><a href="#cdk-pipelines-github.GitHubWorkflow.addStageWithGitHubOptions">addStageWithGitHubOptions</a></code> | Deploy a single Stage by itself with options for further GitHub configuration. |
 
 ---
@@ -245,11 +509,11 @@ Use the return object of this method to deploy multiple stages in parallel.
 Example:
 
 ```ts
-declare const pipeline: pipelines.CodePipeline;
+declare const pipeline: GitHubWorkflow; // assign pipeline a value
 
 const wave = pipeline.addWave('MyWave');
-wave.addStage(new MyApplicationStage(this, 'Stage1'));
-wave.addStage(new MyApplicationStage(this, 'Stage2'));
+wave.addStage(new MyStage(this, 'Stage1'));
+wave.addStage(new MyStage(this, 'Stage2'));
 ```
 
 ###### `id`<sup>Required</sup> <a name="id" id="cdk-pipelines-github.GitHubWorkflow.addWave.parameter.id"></a>
@@ -273,6 +537,24 @@ public buildPipeline(): void
 Send the current pipeline definition to the engine, and construct the pipeline.
 
 It is not possible to modify the pipeline after calling this method.
+
+##### `addGitHubWave` <a name="addGitHubWave" id="cdk-pipelines-github.GitHubWorkflow.addGitHubWave"></a>
+
+```typescript
+public addGitHubWave(id: string, options?: WaveOptions): GitHubWave
+```
+
+###### `id`<sup>Required</sup> <a name="id" id="cdk-pipelines-github.GitHubWorkflow.addGitHubWave.parameter.id"></a>
+
+- *Type:* string
+
+---
+
+###### `options`<sup>Optional</sup> <a name="options" id="cdk-pipelines-github.GitHubWorkflow.addGitHubWave.parameter.options"></a>
+
+- *Type:* aws-cdk-lib.pipelines.WaveOptions
+
+---
 
 ##### `addStageWithGitHubOptions` <a name="addStageWithGitHubOptions" id="cdk-pipelines-github.GitHubWorkflow.addStageWithGitHubOptions"></a>
 
@@ -1115,6 +1397,82 @@ Environment variables to set.
 
 ---
 
+### GitHubCommonProps <a name="GitHubCommonProps" id="cdk-pipelines-github.GitHubCommonProps"></a>
+
+Common properties to extend both StageProps and AddStageOpts.
+
+#### Initializer <a name="Initializer" id="cdk-pipelines-github.GitHubCommonProps.Initializer"></a>
+
+```typescript
+import { GitHubCommonProps } from 'cdk-pipelines-github'
+
+const gitHubCommonProps: GitHubCommonProps = { ... }
+```
+
+#### Properties <a name="Properties" id="Properties"></a>
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#cdk-pipelines-github.GitHubCommonProps.property.gitHubEnvironment">gitHubEnvironment</a></code> | <code>string</code> | Run the stage in a specific GitHub Environment. |
+| <code><a href="#cdk-pipelines-github.GitHubCommonProps.property.jobSettings">jobSettings</a></code> | <code><a href="#cdk-pipelines-github.JobSettings">JobSettings</a></code> | Job level settings that will be applied to all jobs in the stage. |
+| <code><a href="#cdk-pipelines-github.GitHubCommonProps.property.stackCapabilities">stackCapabilities</a></code> | <code><a href="#cdk-pipelines-github.StackCapabilities">StackCapabilities</a>[]</code> | In some cases, you must explicitly acknowledge that your CloudFormation stack template contains certain capabilities in order for CloudFormation to create the stack. |
+
+---
+
+##### `gitHubEnvironment`<sup>Optional</sup> <a name="gitHubEnvironment" id="cdk-pipelines-github.GitHubCommonProps.property.gitHubEnvironment"></a>
+
+```typescript
+public readonly gitHubEnvironment: string;
+```
+
+- *Type:* string
+- *Default:* no GitHub environment
+
+Run the stage in a specific GitHub Environment.
+
+If specified,
+any protection rules configured for the environment must pass
+before the job is set to a runner. For example, if the environment
+has a manual approval rule configured, then the workflow will
+wait for the approval before sending the job to the runner.
+
+Running a workflow that references an environment that does not
+exist will create an environment with the referenced name.
+
+> [https://docs.github.com/en/actions/deployment/targeting-different-environments/using-environments-for-deployment](https://docs.github.com/en/actions/deployment/targeting-different-environments/using-environments-for-deployment)
+
+---
+
+##### `jobSettings`<sup>Optional</sup> <a name="jobSettings" id="cdk-pipelines-github.GitHubCommonProps.property.jobSettings"></a>
+
+```typescript
+public readonly jobSettings: JobSettings;
+```
+
+- *Type:* <a href="#cdk-pipelines-github.JobSettings">JobSettings</a>
+
+Job level settings that will be applied to all jobs in the stage.
+
+Currently the only valid setting is 'if'.
+
+---
+
+##### `stackCapabilities`<sup>Optional</sup> <a name="stackCapabilities" id="cdk-pipelines-github.GitHubCommonProps.property.stackCapabilities"></a>
+
+```typescript
+public readonly stackCapabilities: StackCapabilities[];
+```
+
+- *Type:* <a href="#cdk-pipelines-github.StackCapabilities">StackCapabilities</a>[]
+- *Default:* ['CAPABILITY_IAM']
+
+In some cases, you must explicitly acknowledge that your CloudFormation stack template contains certain capabilities in order for CloudFormation to create the stack.
+
+If insufficiently specified, CloudFormation returns an `InsufficientCapabilities`
+error.
+
+---
+
 ### GitHubSecretsProviderProps <a name="GitHubSecretsProviderProps" id="cdk-pipelines-github.GitHubSecretsProviderProps"></a>
 
 Locations of GitHub Secrets used to authenticate to AWS.
@@ -1167,6 +1525,140 @@ public readonly sessionToken: string;
 
 - *Type:* string
 - *Default:* no session token is used
+
+---
+
+### GitHubStageProps <a name="GitHubStageProps" id="cdk-pipelines-github.GitHubStageProps"></a>
+
+#### Initializer <a name="Initializer" id="cdk-pipelines-github.GitHubStageProps.Initializer"></a>
+
+```typescript
+import { GitHubStageProps } from 'cdk-pipelines-github'
+
+const gitHubStageProps: GitHubStageProps = { ... }
+```
+
+#### Properties <a name="Properties" id="Properties"></a>
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#cdk-pipelines-github.GitHubStageProps.property.env">env</a></code> | <code>aws-cdk-lib.Environment</code> | Default AWS environment (account/region) for `Stack`s in this `Stage`. |
+| <code><a href="#cdk-pipelines-github.GitHubStageProps.property.outdir">outdir</a></code> | <code>string</code> | The output directory into which to emit synthesized artifacts. |
+| <code><a href="#cdk-pipelines-github.GitHubStageProps.property.gitHubEnvironment">gitHubEnvironment</a></code> | <code>string</code> | Run the stage in a specific GitHub Environment. |
+| <code><a href="#cdk-pipelines-github.GitHubStageProps.property.jobSettings">jobSettings</a></code> | <code><a href="#cdk-pipelines-github.JobSettings">JobSettings</a></code> | Job level settings that will be applied to all jobs in the stage. |
+| <code><a href="#cdk-pipelines-github.GitHubStageProps.property.stackCapabilities">stackCapabilities</a></code> | <code><a href="#cdk-pipelines-github.StackCapabilities">StackCapabilities</a>[]</code> | In some cases, you must explicitly acknowledge that your CloudFormation stack template contains certain capabilities in order for CloudFormation to create the stack. |
+
+---
+
+##### `env`<sup>Optional</sup> <a name="env" id="cdk-pipelines-github.GitHubStageProps.property.env"></a>
+
+```typescript
+public readonly env: Environment;
+```
+
+- *Type:* aws-cdk-lib.Environment
+- *Default:* The environments should be configured on the `Stack`s.
+
+Default AWS environment (account/region) for `Stack`s in this `Stage`.
+
+Stacks defined inside this `Stage` with either `region` or `account` missing
+from its env will use the corresponding field given here.
+
+If either `region` or `account`is is not configured for `Stack` (either on
+the `Stack` itself or on the containing `Stage`), the Stack will be
+*environment-agnostic*.
+
+Environment-agnostic stacks can be deployed to any environment, may not be
+able to take advantage of all features of the CDK. For example, they will
+not be able to use environmental context lookups, will not automatically
+translate Service Principals to the right format based on the environment's
+AWS partition, and other such enhancements.
+
+---
+
+*Example*
+
+```typescript
+// Use a concrete account and region to deploy this Stage to
+new Stage(app, 'Stage1', {
+  env: { account: '123456789012', region: 'us-east-1' },
+});
+
+// Use the CLI's current credentials to determine the target environment
+new Stage(app, 'Stage2', {
+  env: { account: process.env.CDK_DEFAULT_ACCOUNT, region: process.env.CDK_DEFAULT_REGION },
+});
+```
+
+
+##### `outdir`<sup>Optional</sup> <a name="outdir" id="cdk-pipelines-github.GitHubStageProps.property.outdir"></a>
+
+```typescript
+public readonly outdir: string;
+```
+
+- *Type:* string
+- *Default:* for nested stages, outdir will be determined as a relative directory to the outdir of the app. For apps, if outdir is not specified, a temporary directory will be created.
+
+The output directory into which to emit synthesized artifacts.
+
+Can only be specified if this stage is the root stage (the app). If this is
+specified and this stage is nested within another stage, an error will be
+thrown.
+
+---
+
+##### `gitHubEnvironment`<sup>Optional</sup> <a name="gitHubEnvironment" id="cdk-pipelines-github.GitHubStageProps.property.gitHubEnvironment"></a>
+
+```typescript
+public readonly gitHubEnvironment: string;
+```
+
+- *Type:* string
+- *Default:* no GitHub environment
+
+Run the stage in a specific GitHub Environment.
+
+If specified,
+any protection rules configured for the environment must pass
+before the job is set to a runner. For example, if the environment
+has a manual approval rule configured, then the workflow will
+wait for the approval before sending the job to the runner.
+
+Running a workflow that references an environment that does not
+exist will create an environment with the referenced name.
+
+> [https://docs.github.com/en/actions/deployment/targeting-different-environments/using-environments-for-deployment](https://docs.github.com/en/actions/deployment/targeting-different-environments/using-environments-for-deployment)
+
+---
+
+##### `jobSettings`<sup>Optional</sup> <a name="jobSettings" id="cdk-pipelines-github.GitHubStageProps.property.jobSettings"></a>
+
+```typescript
+public readonly jobSettings: JobSettings;
+```
+
+- *Type:* <a href="#cdk-pipelines-github.JobSettings">JobSettings</a>
+
+Job level settings that will be applied to all jobs in the stage.
+
+Currently the only valid setting is 'if'.
+
+---
+
+##### `stackCapabilities`<sup>Optional</sup> <a name="stackCapabilities" id="cdk-pipelines-github.GitHubStageProps.property.stackCapabilities"></a>
+
+```typescript
+public readonly stackCapabilities: StackCapabilities[];
+```
+
+- *Type:* <a href="#cdk-pipelines-github.StackCapabilities">StackCapabilities</a>[]
+- *Default:* ['CAPABILITY_IAM']
+
+In some cases, you must explicitly acknowledge that your CloudFormation stack template contains certain capabilities in order for CloudFormation to create the stack.
+
+If insufficiently specified, CloudFormation returns an `InsufficientCapabilities`
+error.
 
 ---
 
@@ -4071,6 +4563,199 @@ public readonly jobSteps: JobStep[];
 ```
 
 - *Type:* <a href="#cdk-pipelines-github.JobStep">JobStep</a>[]
+
+---
+
+
+### GitHubWave <a name="GitHubWave" id="cdk-pipelines-github.GitHubWave"></a>
+
+Multiple stages that are deployed in parallel.
+
+A `Wave`, but with addition GitHub options
+
+Create with `GitHubWorkflow.addWave()` or `GitHubWorkflow.addGitHubWave()`.
+You should not have to instantiate a GitHubWave yourself.
+
+#### Initializers <a name="Initializers" id="cdk-pipelines-github.GitHubWave.Initializer"></a>
+
+```typescript
+import { GitHubWave } from 'cdk-pipelines-github'
+
+new GitHubWave(id: string, pipeline: GitHubWorkflow, props?: WaveProps)
+```
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#cdk-pipelines-github.GitHubWave.Initializer.parameter.id">id</a></code> | <code>string</code> | Identifier for this Wave. |
+| <code><a href="#cdk-pipelines-github.GitHubWave.Initializer.parameter.pipeline">pipeline</a></code> | <code><a href="#cdk-pipelines-github.GitHubWorkflow">GitHubWorkflow</a></code> | GitHubWorkflow that this wave is part of. |
+| <code><a href="#cdk-pipelines-github.GitHubWave.Initializer.parameter.props">props</a></code> | <code>aws-cdk-lib.pipelines.WaveProps</code> | *No description.* |
+
+---
+
+##### `id`<sup>Required</sup> <a name="id" id="cdk-pipelines-github.GitHubWave.Initializer.parameter.id"></a>
+
+- *Type:* string
+
+Identifier for this Wave.
+
+---
+
+##### `pipeline`<sup>Required</sup> <a name="pipeline" id="cdk-pipelines-github.GitHubWave.Initializer.parameter.pipeline"></a>
+
+- *Type:* <a href="#cdk-pipelines-github.GitHubWorkflow">GitHubWorkflow</a>
+
+GitHubWorkflow that this wave is part of.
+
+---
+
+##### `props`<sup>Optional</sup> <a name="props" id="cdk-pipelines-github.GitHubWave.Initializer.parameter.props"></a>
+
+- *Type:* aws-cdk-lib.pipelines.WaveProps
+
+---
+
+#### Methods <a name="Methods" id="Methods"></a>
+
+| **Name** | **Description** |
+| --- | --- |
+| <code><a href="#cdk-pipelines-github.GitHubWave.addPost">addPost</a></code> | Add an additional step to run after all of the stages in this wave. |
+| <code><a href="#cdk-pipelines-github.GitHubWave.addPre">addPre</a></code> | Add an additional step to run before any of the stages in this wave. |
+| <code><a href="#cdk-pipelines-github.GitHubWave.addStage">addStage</a></code> | Add a Stage to this wave. |
+| <code><a href="#cdk-pipelines-github.GitHubWave.addStageWithGitHubOptions">addStageWithGitHubOptions</a></code> | Add a Stage to this wave. |
+
+---
+
+##### `addPost` <a name="addPost" id="cdk-pipelines-github.GitHubWave.addPost"></a>
+
+```typescript
+public addPost(steps: Step): void
+```
+
+Add an additional step to run after all of the stages in this wave.
+
+###### `steps`<sup>Required</sup> <a name="steps" id="cdk-pipelines-github.GitHubWave.addPost.parameter.steps"></a>
+
+- *Type:* aws-cdk-lib.pipelines.Step
+
+---
+
+##### `addPre` <a name="addPre" id="cdk-pipelines-github.GitHubWave.addPre"></a>
+
+```typescript
+public addPre(steps: Step): void
+```
+
+Add an additional step to run before any of the stages in this wave.
+
+###### `steps`<sup>Required</sup> <a name="steps" id="cdk-pipelines-github.GitHubWave.addPre.parameter.steps"></a>
+
+- *Type:* aws-cdk-lib.pipelines.Step
+
+---
+
+##### `addStage` <a name="addStage" id="cdk-pipelines-github.GitHubWave.addStage"></a>
+
+```typescript
+public addStage(stage: Stage, options?: AddStageOpts): StageDeployment
+```
+
+Add a Stage to this wave.
+
+It will be deployed in parallel with all other stages in this
+wave.
+
+###### `stage`<sup>Required</sup> <a name="stage" id="cdk-pipelines-github.GitHubWave.addStage.parameter.stage"></a>
+
+- *Type:* aws-cdk-lib.Stage
+
+---
+
+###### `options`<sup>Optional</sup> <a name="options" id="cdk-pipelines-github.GitHubWave.addStage.parameter.options"></a>
+
+- *Type:* aws-cdk-lib.pipelines.AddStageOpts
+
+---
+
+##### `addStageWithGitHubOptions` <a name="addStageWithGitHubOptions" id="cdk-pipelines-github.GitHubWave.addStageWithGitHubOptions"></a>
+
+```typescript
+public addStageWithGitHubOptions(stage: Stage, options?: AddGitHubStageOptions): StageDeployment
+```
+
+Add a Stage to this wave.
+
+It will be deployed in parallel with all other stages in this
+wave.
+
+###### `stage`<sup>Required</sup> <a name="stage" id="cdk-pipelines-github.GitHubWave.addStageWithGitHubOptions.parameter.stage"></a>
+
+- *Type:* aws-cdk-lib.Stage
+
+---
+
+###### `options`<sup>Optional</sup> <a name="options" id="cdk-pipelines-github.GitHubWave.addStageWithGitHubOptions.parameter.options"></a>
+
+- *Type:* <a href="#cdk-pipelines-github.AddGitHubStageOptions">AddGitHubStageOptions</a>
+
+---
+
+
+#### Properties <a name="Properties" id="Properties"></a>
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#cdk-pipelines-github.GitHubWave.property.id">id</a></code> | <code>string</code> | Identifier for this Wave. |
+| <code><a href="#cdk-pipelines-github.GitHubWave.property.post">post</a></code> | <code>aws-cdk-lib.pipelines.Step[]</code> | Additional steps that are run after all of the stages in the wave. |
+| <code><a href="#cdk-pipelines-github.GitHubWave.property.pre">pre</a></code> | <code>aws-cdk-lib.pipelines.Step[]</code> | Additional steps that are run before any of the stages in the wave. |
+| <code><a href="#cdk-pipelines-github.GitHubWave.property.stages">stages</a></code> | <code>aws-cdk-lib.pipelines.StageDeployment[]</code> | The stages that are deployed in this wave. |
+
+---
+
+##### `id`<sup>Required</sup> <a name="id" id="cdk-pipelines-github.GitHubWave.property.id"></a>
+
+```typescript
+public readonly id: string;
+```
+
+- *Type:* string
+
+Identifier for this Wave.
+
+---
+
+##### `post`<sup>Required</sup> <a name="post" id="cdk-pipelines-github.GitHubWave.property.post"></a>
+
+```typescript
+public readonly post: Step[];
+```
+
+- *Type:* aws-cdk-lib.pipelines.Step[]
+
+Additional steps that are run after all of the stages in the wave.
+
+---
+
+##### `pre`<sup>Required</sup> <a name="pre" id="cdk-pipelines-github.GitHubWave.property.pre"></a>
+
+```typescript
+public readonly pre: Step[];
+```
+
+- *Type:* aws-cdk-lib.pipelines.Step[]
+
+Additional steps that are run before any of the stages in the wave.
+
+---
+
+##### `stages`<sup>Required</sup> <a name="stages" id="cdk-pipelines-github.GitHubWave.property.stages"></a>
+
+```typescript
+public readonly stages: StageDeployment[];
+```
+
+- *Type:* aws-cdk-lib.pipelines.StageDeployment[]
+
+The stages that are deployed in this wave.
 
 ---
 

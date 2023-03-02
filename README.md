@@ -40,6 +40,7 @@ Workflows.
   - [Additional Features](#additional-features)
     - [GitHub Action Step](#github-action-step)
     - [Configure GitHub Environment](#configure-github-environment)
+      - [Waves for Parallel Builds](#waves-for-parallel-builds)
       - [Manual Approval Step](#manual-approval-step)
     - [Pipeline YAML Comments](#pipeline-yaml-comments)
   - [Tutorial](#tutorial)
@@ -71,8 +72,18 @@ const pipeline = new GitHubWorkflow(app, 'Pipeline', {
   }),
 });
 
-pipeline.addStage(new MyStage(app, 'Beta', { env: BETA_ENV }));
-pipeline.addStage(new MyStage(app, 'Prod', { env: PROD_ENV }));
+// Build the stages
+const betaStage = new MyStage(app, 'Beta', { env: BETA_ENV });
+const prodStage = new MyStage(app, 'Prod', { env: PROD_ENV });
+
+// Add the stages for sequential build - earlier stages failing will stop later ones:
+pipeline.addStage(betaStage);
+pipeline.addStage(prodStage);
+
+// OR add the stages for parallel building of multiple stages with a Wave:
+const wave = pipeline.addWave('Wave');
+wave.addStage(betaStage);
+wave.addStage(prodStage);
 
 app.synth();
 ```
@@ -88,6 +99,15 @@ The `Pipeline` class from `cdk-pipelines-github` is derived from the base CDK
 Pipelines class, so most features should be supported out of the box. See the
 [CDK Pipelines](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.pipelines-readme.html)
 documentation for more details.
+
+To express GitHub-specifc details, such as those outlined in [Additional Features](#additional-features), you have a few options:
+
+- Use a `GitHubStage` instead of `Stage` (or make a `GitHubStage` subclass instead of a `Stage` subclass) - this adds the `GitHubCommonProps` to the `Stage` properties
+  - With this you can use `pipeline.addStage(myGitHubStage)` or `wave.addStage(myGitHubStage)` and the properties of the 
+  stage will be used
+- Using a `Stage` (or subclass thereof) or a `GitHubStage` (or subclass thereof) you can call `pipeline.addStageWithGitHubOptions(stage, stageOptions)` or `wave.addStageWithGitHubOptions(stage, stageOptions)`
+  - In this case you're providing the same options along with the stage instead of embedded in the stage.
+  - Note that properties of a `GitHubStage` added with `addStageWithGitHubOptions()` will override the options provided to `addStageWithGitHubOptions()`
 
 **NOTES:**
 
@@ -475,6 +495,35 @@ pipeline.addStageWithGitHubOptions(new MyStage(this, 'Prod', {
 
 app.synth();
 ```
+
+#### Waves for Parallel Builds
+
+You can add a Wave to a pipeline, where each stage of a wave will build in parallel.
+
+> **Note**: The `pipeline.addWave()` call will return a `Wave` object that is actually a `GitHubWave` object, but 
+> due to JSII rules the return type of `addWave()` cannot be changed. If you need to use
+> `wave.addStageWithGitHubOptions()` then you should call `pipeline.addGitHubWave()` instead, or you can
+> use `GitHubStage`s to carry the GitHub properties.
+
+When deploying to multiple accounts or otherwise deploying mostly-unrelated stacks, using waves can be a huge win.
+
+Here's a relatively large (but real) example, **without** a wave:
+
+<img width="1955" alt="without-waves-light-mode" src="https://user-images.githubusercontent.com/386001/217436992-d8e46c23-6295-48ec-b139-add60b1f5a14.png">
+
+You can see how dependencies get chained unnecessarily, where the `cUrl` step should be the final step (a test) for an account:
+
+<img width="1955" alt="without-waves-deps-light-mode" src="https://user-images.githubusercontent.com/386001/217437074-3c86d88e-6be7-4b10-97b1-6b51b100e4d6.png">
+
+Here's the exact same stages deploying the same stacks to the same accounts, but **with** a wave:
+
+<img width="1955" alt="with-waves" src="https://user-images.githubusercontent.com/386001/217437228-72f6c278-7e97-4a88-91fa-089628ea0381.png">
+
+And the dependency chains are reduced to only what is actually needed, with the `cUrl` calls as the final stage for each account:
+
+<img width="1955" alt="deps" src="https://user-images.githubusercontent.com/386001/217437265-1c10cd5f-3c7d-4e3a-af5c-acbdf3acff1b.png">
+
+For additional information and a code example see [here](docs/waves.md).
 
 #### Manual Approval Step
 
