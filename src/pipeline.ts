@@ -279,8 +279,8 @@ export class GitHubWorkflow extends PipelineBase {
    * declare const pipeline: GitHubWorkflow; // assign pipeline a value
    *
    * const wave = pipeline.addWave('MyWave');
-   * wave.addStage(new MyApplicationStage(this, 'Stage1'));
-   * wave.addStage(new MyApplicationStage(this, 'Stage2'));
+   * wave.addStage(new MyStage(this, 'Stage1'));
+   * wave.addStage(new MyStage(this, 'Stage2'));
    * ```
    */
   public addWave(id: string, options?: WaveOptions): Wave {

@@ -57,8 +57,6 @@ to two AWS environments (`BETA_ENV` and `PROD_ENV`):
 
 ```ts
 import { ShellStep } from 'aws-cdk-lib/pipelines';
-import { GitHubWorkflow } from 'cdk-pipelines-github';
-import { MyStage } from './my-stage';
 
 const app = new App();
 

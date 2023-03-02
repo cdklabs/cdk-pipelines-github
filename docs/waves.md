@@ -11,9 +11,7 @@ Example usage in TypeScript:
 
 ```ts
 // make a new pipeline
-import { App } from 'aws-cdk-lib';
 import { ShellStep } from 'aws-cdk-lib/pipelines';
-import { GitHubWorkflow, GitHubStage } from 'cdk-pipelines-github';
 
 const app = new App();
 

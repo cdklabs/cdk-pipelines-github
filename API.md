@@ -427,14 +427,15 @@ Multiple stages that are deployed in parallel.
 
 A `Wave`, but with addition GitHub options
 
-Create with `GitHubWorkflow.addWave()` or `GitHubWorkflow.addGitHubWave()`, do not construct directly
+Create with `GitHubWorkflow.addWave()` or `GitHubWorkflow.addGitHubWave()`.
+You should not have to instantiate a GitHubWave yourself.
 
 __Extends__: [pipelines.Wave](#aws-cdk-lib-pipelines-wave)
 
 ### Initializer
 
 
-
+Create with `GitHubWorkflow.addWave()` or `GitHubWorkflow.addGitHubWave()`. You should not have to instantiate a GitHubWave yourself.
 
 ```ts
 new GitHubWave(id: string, pipeline: GitHubWorkflow, props?: WaveProps)
@@ -604,8 +605,8 @@ Example:
 declare const pipeline: GitHubWorkflow; // assign pipeline a value
 
 const wave = pipeline.addWave('MyWave');
-wave.addStage(new MyApplicationStage(this, 'Stage1'));
-wave.addStage(new MyApplicationStage(this, 'Stage2'));
+wave.addStage(new MyStage(this, 'Stage1'));
+wave.addStage(new MyStage(this, 'Stage2'));
 ```
 
 ```ts

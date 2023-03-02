@@ -1,5 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import * as fs from 'fs';
+import { rmSync } from 'node:fs';
 import * as os from 'os';
 import * as path from 'path';
 import { App, AppProps, Stack, Stage } from 'aws-cdk-lib';
@@ -18,29 +19,7 @@ export class TestApp extends App {
   }
 
   public cleanup() {
-    rimraf(this.outdir);
-  }
-}
-
-
-/**
- * rm -rf reimplementation, don't want to depend on an NPM package for this
- */
-export function rimraf(fsPath: string) {
-  try {
-    const isDir = fs.lstatSync(fsPath).isDirectory();
-
-    if (isDir) {
-      for (const file of fs.readdirSync(fsPath)) {
-        rimraf(path.join(fsPath, file));
-      }
-      fs.rmdirSync(fsPath);
-    } else {
-      fs.unlinkSync(fsPath);
-    }
-  } catch (e: any) {
-    // We will survive ENOENT
-    if (e.code !== 'ENOENT') { throw e; }
+    rmSync(this.outdir, { recursive: true });
   }
 }
 
@@ -58,6 +37,6 @@ export function withTemporaryDirectory<T>(callback: (dir: string) => T): T {
   try {
     return callback(tmpdir);
   } finally {
-    fs.rmdirSync(tmpdir, { recursive: true });
+    rmSync(tmpdir, { recursive: true });
   }
 }

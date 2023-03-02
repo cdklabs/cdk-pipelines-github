@@ -381,7 +381,7 @@ test('github stages in waves works', () => {
     new Stack(stageB, 'MyStackB');
 
     // Make a wave to have the stages be parallel (not depend on each other)
-    const wave = pipeline.addWave('MyWave', {
+    const wave = pipeline.addGitHubWave('MyWave', {
       pre: [
         new GitHubActionStep('PreWaveAction', {
           jobSteps: [
@@ -533,7 +533,7 @@ test('waves added to a pipeline after build will fail', () => {
       }),
     });
 
-    const wave = pipeline.addWave('wave');
+    const wave = pipeline.addGitHubWave('wave');
 
     const stageA = new Stage(app, 'MyStageA', {
       env: { account: '111111111111', region: 'us-east-1' },
@@ -546,6 +546,6 @@ test('waves added to a pipeline after build will fail', () => {
 
     app.synth();
 
-    expect(() => pipeline.addWave('wave2')).toThrowErrorMatchingInlineSnapshot('"addWave: can\'t add Waves anymore after buildPipeline() has been called"');
+    expect(() => pipeline.addGitHubWave('wave2')).toThrowErrorMatchingInlineSnapshot('"addWave: can\'t add Waves anymore after buildPipeline() has been called"');
   });
 });

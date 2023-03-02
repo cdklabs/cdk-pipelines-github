@@ -13,6 +13,11 @@ import { GitHubWorkflow } from './pipeline';
  */
 
 export class GitHubWave extends Wave {
+
+  /**
+   * Create with `GitHubWorkflow.addWave()` or `GitHubWorkflow.addGitHubWave()`.
+   * You should not have to instantiate a GitHubWave yourself.
+   */
   public constructor(
     /** Identifier for this Wave */
     public readonly id: string,
