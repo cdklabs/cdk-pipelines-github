@@ -65,9 +65,7 @@ construct that this library provides.
   left is to send that role's arn into your GitHub Workflow, so it knows to use it:
 
   ```ts
-  import { App } from 'aws-cdk-lib';
   import { ShellStep } from 'aws-cdk-lib/pipelines';
-  import { GitHubWorkflow } from 'cdk-pipelines-github';
 
   const app = new App();
 

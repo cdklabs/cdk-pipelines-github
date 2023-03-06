@@ -2,14 +2,16 @@ import { mkdirSync, writeFileSync, readFileSync, existsSync } from 'fs';
 import * as path from 'path';
 import { Stage } from 'aws-cdk-lib';
 import { EnvironmentPlaceholders } from 'aws-cdk-lib/cx-api';
-import { PipelineBase, PipelineBaseProps, ShellStep, StackAsset, StackDeployment, StackOutputReference, StageDeployment, Step } from 'aws-cdk-lib/pipelines';
+import { PipelineBase, PipelineBaseProps, ShellStep, StackAsset, StackDeployment, StackOutputReference, StageDeployment, Step, Wave, WaveOptions } from 'aws-cdk-lib/pipelines';
 import { AGraphNode, PipelineGraph, Graph, isGraph } from 'aws-cdk-lib/pipelines/lib/helpers-internal';
 import { Construct } from 'constructs';
 import * as decamelize from 'decamelize';
 import { AwsCredentials, AwsCredentialsProvider } from './aws-credentials';
 import { DockerCredential } from './docker-credentials';
-import { AddGitHubStageOptions } from './stage-options';
+import { AddGitHubStageOptions } from './github-common';
+import { GitHubStage } from './stage';
 import { GitHubActionStep } from './steps/github-action-step';
+import { GitHubWave } from './wave';
 import * as github from './workflows-model';
 import { YamlFile } from './yaml-file';
 
@@ -175,8 +177,18 @@ export class GitHubWorkflow extends PipelineBase {
   private readonly assetHashMap: Record<string, string> = {};
   private readonly runner: github.Runner;
   private readonly publishAssetsAuthRegion: string;
-  private readonly stackProperties: Record<string, Record<string, any>> = {};
+  private readonly stackProperties: Record<
+  string,
+  {
+    environment: AddGitHubStageOptions['gitHubEnvironment'];
+    capabilities: AddGitHubStageOptions['stackCapabilities'];
+    settings: AddGitHubStageOptions['jobSettings'];
+  }
+  > = {};
   private readonly jobSettings?: JobSettings;
+  // in order to keep track of if this pipeline has been built so we can
+  // catch later calls to addWave() or addStage()
+  private builtGH = false;
 
   constructor(scope: Construct, id: string, props: GitHubWorkflowProps) {
     super(scope, id, props);
@@ -193,7 +205,7 @@ export class GitHubWorkflow extends PipelineBase {
     this.dockerCredentials = props.dockerCredentials ?? [];
 
     this.workflowPath = props.workflowPath ?? '.github/workflows/deploy.yml';
-    if (!this.workflowPath.endsWith('.yml') && !this.workflowPath.endsWith('.yaml')) {
+    if (!this.workflowPath.endsWith('.yml') &&!this.workflowPath.endsWith('.yaml')) {
       throw new Error('workflow file is expected to be a yaml file');
     }
     if (!this.workflowPath.includes('.github/workflows/')) {
@@ -256,6 +268,76 @@ export class GitHubWorkflow extends PipelineBase {
     return stageDeployment;
   }
 
+  /**
+   * Add a Wave to the pipeline, for deploying multiple Stages in parallel
+   *
+   * Use the return object of this method to deploy multiple stages in parallel.
+   *
+   * Example:
+   *
+   * ```ts
+   * declare const pipeline: GitHubWorkflow; // assign pipeline a value
+   *
+   * const wave = pipeline.addWave('MyWave');
+   * wave.addStage(new MyStage(this, 'Stage1'));
+   * wave.addStage(new MyStage(this, 'Stage2'));
+   * ```
+   */
+  public addWave(id: string, options?: WaveOptions): Wave {
+    return this.addGitHubWave(id, options);
+  }
+
+  public addGitHubWave(id: string, options?: WaveOptions): GitHubWave {
+    if (this.builtGH) {
+      throw new Error(
+        "addWave: can't add Waves anymore after buildPipeline() has been called",
+      );
+    }
+
+    const wave = new GitHubWave(id, this, options);
+    this.waves.push(wave);
+    return wave;
+  }
+
+  /**
+   * Support adding stages with GitHub options to waves - should ONLY be called internally.
+   *
+   * Use `pipeline.addWave()` and it'll call this when `wave.addStage()` is called.
+   *
+   * `pipeline.addStage()` will also call this, since it calls `pipeline.addWave().addStage()`.
+   *
+   *  @internal
+   */
+  public _addStageFromWave(
+    stage: Stage,
+    stageDeployment: StageDeployment,
+    options?: AddGitHubStageOptions,
+  ) {
+    if (!(stage instanceof GitHubStage) && options === undefined) {
+      return;
+    }
+
+    const ghStage = stage instanceof GitHubStage ? stage : undefined;
+
+    // keep track of GitHub specific options
+    const stacks = stageDeployment.stacks;
+    this.addStackProps(
+      stacks,
+      'environment',
+      ghStage?.props?.gitHubEnvironment ?? options?.gitHubEnvironment,
+    );
+    this.addStackProps(
+      stacks,
+      'capabilities',
+      ghStage?.props?.stackCapabilities ?? options?.stackCapabilities,
+    );
+    this.addStackProps(
+      stacks,
+      'settings',
+      ghStage?.props?.jobSettings ?? options?.jobSettings,
+    );
+  }
+
   private addStackProps(stacks: StackDeployment[], key: string, value: any) {
     if (value === undefined) { return; }
     for (const stack of stacks) {
@@ -267,6 +349,7 @@ export class GitHubWorkflow extends PipelineBase {
   }
 
   protected doBuildPipeline() {
+    this.builtGH = true;
     const app = Stage.of(this);
     if (!app) {
       throw new Error('The GitHub Workflow must be defined in the scope of an App');
@@ -442,7 +525,7 @@ export class GitHubWorkflow extends PipelineBase {
       id: jobId,
       definition: {
         name: `Publish Assets ${jobId}`,
-        ...this.jobSettings,
+        ...this.renderJobSettingParameters(),
         needs: this.renderDependencies(node),
         permissions: {
           contents: github.JobPermission.READ,
@@ -513,7 +596,7 @@ export class GitHubWorkflow extends PipelineBase {
       id: node.uniqueId,
       definition: {
         name: `Deploy ${stack.stackArtifactId}`,
-        ...this.jobSettings,
+        ...this.renderJobSettingParameters(),
         ...this.stackProperties[stack.stackArtifactId]?.settings,
         permissions: {
           contents: github.JobPermission.READ,
@@ -564,7 +647,7 @@ export class GitHubWorkflow extends PipelineBase {
       id: node.uniqueId,
       definition: {
         name: 'Synthesize',
-        ...this.jobSettings,
+        ...this.renderJobSettingParameters(),
         permissions: {
           contents: github.JobPermission.READ,
           // The Synthesize job does not use the GitHub Action Role on its own, but it's possible
@@ -658,7 +741,7 @@ export class GitHubWorkflow extends PipelineBase {
       id: node.uniqueId,
       definition: {
         name: step.id,
-        ...this.jobSettings,
+        ...this.renderJobSettingParameters(),
         permissions: {
           contents: github.JobPermission.READ,
         },
@@ -683,7 +766,7 @@ export class GitHubWorkflow extends PipelineBase {
       id: node.uniqueId,
       definition: {
         name: step.id,
-        ...this.jobSettings,
+        ...this.renderJobSettingParameters(),
         permissions: {
           contents: github.JobPermission.WRITE,
         },
@@ -743,10 +826,12 @@ export class GitHubWorkflow extends PipelineBase {
   }
 
   private stepsToCheckout(): github.JobStep[] {
-    return [{
-      name: 'Checkout',
-      uses: 'actions/checkout@v3',
-    }];
+    return [
+      {
+        name: 'Checkout',
+        uses: 'actions/checkout@v3',
+      },
+    ];
   }
 
   private stepsToUploadAssembly(dir: string): github.JobStep[] {
@@ -776,6 +861,10 @@ export class GitHubWorkflow extends PipelineBase {
     }
 
     return deps.map(x => x.uniqueId);
+  }
+
+  private renderJobSettingParameters() {
+    return this.jobSettings;
   }
 }
 

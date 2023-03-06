@@ -1,27 +1,27 @@
 {
   "version": "2",
-  "toolVersion": "1.75.0",
+  "toolVersion": "1.76.0",
   "snippets": {
-    "bf874d89fa16265f9e1766063d66d77aadc46a314c969fa30a9e38c9402c6f4b": {
+    "ab59212f2f3cdb1b596b8bc7acce87d51878ba64051162ef742dd58d9404a5c6": {
       "translations": {
         "python": {
-          "source": "from aws_cdk.pipelines import ShellStep\n\n\napp = App()\n\npipeline = GitHubWorkflow(app, \"Pipeline\",\n    synth=ShellStep(\"Build\",\n        commands=[\"yarn install\", \"yarn build\"\n        ]\n    ),\n    aws_creds=AwsCredentials.from_open_id_connect(\n        git_hub_action_role_arn=\"arn:aws:iam::<account-id>:role/GitHubActionRole\"\n    )\n)\n\npipeline.add_stage(MyStage(app, \"Beta\", env=BETA_ENV))\npipeline.add_stage(MyStage(app, \"Prod\", env=PROD_ENV))\n\napp.synth()",
+          "source": "from aws_cdk.pipelines import ShellStep\n\n\napp = App()\n\npipeline = GitHubWorkflow(app, \"Pipeline\",\n    synth=ShellStep(\"Build\",\n        commands=[\"yarn install\", \"yarn build\"\n        ]\n    ),\n    aws_creds=AwsCredentials.from_open_id_connect(\n        git_hub_action_role_arn=\"arn:aws:iam::<account-id>:role/GitHubActionRole\"\n    )\n)\n\n# Build the stages\nbeta_stage = MyStage(app, \"Beta\", env=BETA_ENV)\nprod_stage = MyStage(app, \"Prod\", env=PROD_ENV)\n\n# Add the stages for sequential build - earlier stages failing will stop later ones:\npipeline.add_stage(beta_stage)\npipeline.add_stage(prod_stage)\n\n# OR add the stages for parallel building of multiple stages with a Wave:\nwave = pipeline.add_wave(\"Wave\")\nwave.add_stage(beta_stage)\nwave.add_stage(prod_stage)\n\napp.synth()",
           "version": "2"
         },
         "csharp": {
-          "source": "using Amazon.CDK.Pipelines;\n\n\nvar app = new App();\n\nvar pipeline = new GitHubWorkflow(app, \"Pipeline\", new GitHubWorkflowProps {\n    Synth = new ShellStep(\"Build\", new ShellStepProps {\n        Commands = new [] { \"yarn install\", \"yarn build\" }\n    }),\n    AwsCreds = AwsCredentials.FromOpenIdConnect(new OpenIdConnectProviderProps {\n        GitHubActionRoleArn = \"arn:aws:iam::<account-id>:role/GitHubActionRole\"\n    })\n});\n\npipeline.AddStage(new MyStage(app, \"Beta\", new StageProps { Env = BETA_ENV }));\npipeline.AddStage(new MyStage(app, \"Prod\", new StageProps { Env = PROD_ENV }));\n\napp.Synth();",
+          "source": "using Amazon.CDK.Pipelines;\n\n\nvar app = new App();\n\nvar pipeline = new GitHubWorkflow(app, \"Pipeline\", new GitHubWorkflowProps {\n    Synth = new ShellStep(\"Build\", new ShellStepProps {\n        Commands = new [] { \"yarn install\", \"yarn build\" }\n    }),\n    AwsCreds = AwsCredentials.FromOpenIdConnect(new OpenIdConnectProviderProps {\n        GitHubActionRoleArn = \"arn:aws:iam::<account-id>:role/GitHubActionRole\"\n    })\n});\n\n// Build the stages\nvar betaStage = new MyStage(app, \"Beta\", new StageProps { Env = BETA_ENV });\nvar prodStage = new MyStage(app, \"Prod\", new StageProps { Env = PROD_ENV });\n\n// Add the stages for sequential build - earlier stages failing will stop later ones:\npipeline.AddStage(betaStage);\npipeline.AddStage(prodStage);\n\n// OR add the stages for parallel building of multiple stages with a Wave:\nvar wave = pipeline.AddWave(\"Wave\");\nwave.AddStage(betaStage);\nwave.AddStage(prodStage);\n\napp.Synth();",
           "version": "1"
         },
         "java": {
-          "source": "import software.amazon.awscdk.pipelines.ShellStep;\n\n\nApp app = new App();\n\nGitHubWorkflow pipeline = GitHubWorkflow.Builder.create(app, \"Pipeline\")\n        .synth(ShellStep.Builder.create(\"Build\")\n                .commands(List.of(\"yarn install\", \"yarn build\"))\n                .build())\n        .awsCreds(AwsCredentials.fromOpenIdConnect(OpenIdConnectProviderProps.builder()\n                .gitHubActionRoleArn(\"arn:aws:iam::<account-id>:role/GitHubActionRole\")\n                .build()))\n        .build();\n\npipeline.addStage(MyStage.Builder.create(app, \"Beta\").env(BETA_ENV).build());\npipeline.addStage(MyStage.Builder.create(app, \"Prod\").env(PROD_ENV).build());\n\napp.synth();",
+          "source": "import software.amazon.awscdk.pipelines.ShellStep;\n\n\nApp app = new App();\n\nGitHubWorkflow pipeline = GitHubWorkflow.Builder.create(app, \"Pipeline\")\n        .synth(ShellStep.Builder.create(\"Build\")\n                .commands(List.of(\"yarn install\", \"yarn build\"))\n                .build())\n        .awsCreds(AwsCredentials.fromOpenIdConnect(OpenIdConnectProviderProps.builder()\n                .gitHubActionRoleArn(\"arn:aws:iam::<account-id>:role/GitHubActionRole\")\n                .build()))\n        .build();\n\n// Build the stages\nMyStage betaStage = MyStage.Builder.create(app, \"Beta\").env(BETA_ENV).build();\nMyStage prodStage = MyStage.Builder.create(app, \"Prod\").env(PROD_ENV).build();\n\n// Add the stages for sequential build - earlier stages failing will stop later ones:\npipeline.addStage(betaStage);\npipeline.addStage(prodStage);\n\n// OR add the stages for parallel building of multiple stages with a Wave:\nWave wave = pipeline.addWave(\"Wave\");\nwave.addStage(betaStage);\nwave.addStage(prodStage);\n\napp.synth();",
           "version": "1"
         },
         "go": {
-          "source": "import \"github.com/aws/aws-cdk-go/awscdk\"\n\n\napp := awscdk.NewApp()\n\npipeline := src.NewGitHubWorkflow(app, jsii.String(\"Pipeline\"), &GitHubWorkflowProps{\n\tSynth: awscdk.NewShellStep(jsii.String(\"Build\"), &ShellStepProps{\n\t\tCommands: []*string{\n\t\t\tjsii.String(\"yarn install\"),\n\t\t\tjsii.String(\"yarn build\"),\n\t\t},\n\t}),\n\tAwsCreds: *src.AwsCredentials_FromOpenIdConnect(&OpenIdConnectProviderProps{\n\t\tGitHubActionRoleArn: jsii.String(\"arn:aws:iam::<account-id>:role/GitHubActionRole\"),\n\t}),\n})\n\npipeline.AddStage(NewMyStage(app, jsii.String(\"Beta\"), &StageProps{\n\tEnv: *bETA_ENV,\n}))\npipeline.AddStage(NewMyStage(app, jsii.String(\"Prod\"), &StageProps{\n\tEnv: *pROD_ENV,\n}))\n\napp.Synth()",
+          "source": "import \"github.com/aws/aws-cdk-go/awscdk\"\n\n\napp := awscdk.NewApp()\n\npipeline := src.NewGitHubWorkflow(app, jsii.String(\"Pipeline\"), &GitHubWorkflowProps{\n\tSynth: awscdk.NewShellStep(jsii.String(\"Build\"), &ShellStepProps{\n\t\tCommands: []*string{\n\t\t\tjsii.String(\"yarn install\"),\n\t\t\tjsii.String(\"yarn build\"),\n\t\t},\n\t}),\n\tAwsCreds: *src.AwsCredentials_FromOpenIdConnect(&OpenIdConnectProviderProps{\n\t\tGitHubActionRoleArn: jsii.String(\"arn:aws:iam::<account-id>:role/GitHubActionRole\"),\n\t}),\n})\n\n// Build the stages\nbetaStage := NewMyStage(app, jsii.String(\"Beta\"), &StageProps{\n\tEnv: *bETA_ENV,\n})\nprodStage := NewMyStage(app, jsii.String(\"Prod\"), &StageProps{\n\tEnv: *pROD_ENV,\n})\n\n// Add the stages for sequential build - earlier stages failing will stop later ones:\npipeline.AddStage(betaStage)\npipeline.AddStage(prodStage)\n\n// OR add the stages for parallel building of multiple stages with a Wave:\nwave := pipeline.AddWave(jsii.String(\"Wave\"))\nwave.AddStage(betaStage)\nwave.AddStage(prodStage)\n\napp.Synth()",
           "version": "1"
         },
         "$": {
-          "source": "import { ShellStep } from 'aws-cdk-lib/pipelines';\n\nconst app = new App();\n\nconst pipeline = new GitHubWorkflow(app, 'Pipeline', {\n  synth: new ShellStep('Build', {\n    commands: [\n      'yarn install',\n      'yarn build',\n    ],\n  }),\n  awsCreds: AwsCredentials.fromOpenIdConnect({\n    gitHubActionRoleArn: 'arn:aws:iam::<account-id>:role/GitHubActionRole',\n  }),\n});\n\npipeline.addStage(new MyStage(app, 'Beta', { env: BETA_ENV }));\npipeline.addStage(new MyStage(app, 'Prod', { env: PROD_ENV }));\n\napp.synth();",
+          "source": "import { ShellStep } from 'aws-cdk-lib/pipelines';\n\nconst app = new App();\n\nconst pipeline = new GitHubWorkflow(app, 'Pipeline', {\n  synth: new ShellStep('Build', {\n    commands: [\n      'yarn install',\n      'yarn build',\n    ],\n  }),\n  awsCreds: AwsCredentials.fromOpenIdConnect({\n    gitHubActionRoleArn: 'arn:aws:iam::<account-id>:role/GitHubActionRole',\n  }),\n});\n\n// Build the stages\nconst betaStage = new MyStage(app, 'Beta', { env: BETA_ENV });\nconst prodStage = new MyStage(app, 'Prod', { env: PROD_ENV });\n\n// Add the stages for sequential build - earlier stages failing will stop later ones:\npipeline.addStage(betaStage);\npipeline.addStage(prodStage);\n\n// OR add the stages for parallel building of multiple stages with a Wave:\nconst wave = pipeline.addWave('Wave');\nwave.addStage(betaStage);\nwave.addStage(prodStage);\n\napp.synth();",
           "version": "0"
         }
       },
@@ -32,7 +32,7 @@
         },
         "field": {
           "field": "markdown",
-          "line": 57
+          "line": 58
         }
       },
       "didCompile": true,
@@ -46,26 +46,29 @@
         "aws-cdk-lib.pipelines.PipelineBase#addStage",
         "aws-cdk-lib.pipelines.ShellStep",
         "aws-cdk-lib.pipelines.ShellStepProps",
+        "aws-cdk-lib.pipelines.Wave",
+        "aws-cdk-lib.pipelines.Wave#addStage",
         "cdk-pipelines-github.AwsCredentials#fromOpenIdConnect",
         "cdk-pipelines-github.AwsCredentialsProvider",
         "cdk-pipelines-github.GitHubWorkflow",
+        "cdk-pipelines-github.GitHubWorkflow#addWave",
         "cdk-pipelines-github.GitHubWorkflowProps",
         "cdk-pipelines-github.OpenIdConnectProviderProps",
         "constructs.Construct"
       ],
-      "fullSource": "// Hoisted imports begin after !show marker below\n/// !show\nimport { ShellStep } from 'aws-cdk-lib/pipelines';\n/// !hide\n// Hoisted imports ended before !hide marker above\n// Fixture with packages imported, but nothing else\nimport { Construct } from 'constructs';\nimport {\n  App,\n  Stack,\n  StackProps,\n  Stage,\n  StageProps,\n} from 'aws-cdk-lib';\nimport { \n  AwsCredentials,\n  GitHubWorkflow,\n  GitHubActionStep,\n  GitHubActionRole,\n  JsonPatch,\n  Runner,\n  DockerCredential,\n} from './src';\n\nconst BETA_ENV = {\n  account: '000000000000',\n  region: 'us-east-1',\n};\nconst PROD_ENV = {\n  account: '111111111111',\n  region: 'us-east-1',\n};\n\nclass MyStage extends Stage {}\n\nclass Fixture extends Stack {\n  constructor(scope: Construct, id: string) {\n    super(scope, id);\n\n    // Code snippet begins after !show marker below\n/// !show\n\n\nconst app = new App();\n\nconst pipeline = new GitHubWorkflow(app, 'Pipeline', {\n  synth: new ShellStep('Build', {\n    commands: [\n      'yarn install',\n      'yarn build',\n    ],\n  }),\n  awsCreds: AwsCredentials.fromOpenIdConnect({\n    gitHubActionRoleArn: 'arn:aws:iam::<account-id>:role/GitHubActionRole',\n  }),\n});\n\npipeline.addStage(new MyStage(app, 'Beta', { env: BETA_ENV }));\npipeline.addStage(new MyStage(app, 'Prod', { env: PROD_ENV }));\n\napp.synth();\n/// !hide\n// Code snippet ended before !hide marker above\n  }\n}",
+      "fullSource": "// Hoisted imports begin after !show marker below\n/// !show\nimport { ShellStep } from 'aws-cdk-lib/pipelines';\n/// !hide\n// Hoisted imports ended before !hide marker above\n// Fixture with packages imported, but nothing else\nimport { Construct } from 'constructs';\nimport {\n  App,\n  Stack,\n  StackProps,\n  Stage,\n  StageProps,\n} from 'aws-cdk-lib';\nimport { \n  AwsCredentials,\n  GitHubWorkflow,\n  GitHubActionStep,\n  GitHubActionRole,\n  JsonPatch,\n  Runner,\n  DockerCredential,\n} from './src';\n\nconst BETA_ENV = {\n  account: '000000000000',\n  region: 'us-east-1',\n};\nconst PROD_ENV = {\n  account: '111111111111',\n  region: 'us-east-1',\n};\n\nclass MyStage extends Stage {}\n\nclass Fixture extends Stack {\n  constructor(scope: Construct, id: string) {\n    super(scope, id);\n\n    // Code snippet begins after !show marker below\n/// !show\n\n\nconst app = new App();\n\nconst pipeline = new GitHubWorkflow(app, 'Pipeline', {\n  synth: new ShellStep('Build', {\n    commands: [\n      'yarn install',\n      'yarn build',\n    ],\n  }),\n  awsCreds: AwsCredentials.fromOpenIdConnect({\n    gitHubActionRoleArn: 'arn:aws:iam::<account-id>:role/GitHubActionRole',\n  }),\n});\n\n// Build the stages\nconst betaStage = new MyStage(app, 'Beta', { env: BETA_ENV });\nconst prodStage = new MyStage(app, 'Prod', { env: PROD_ENV });\n\n// Add the stages for sequential build - earlier stages failing will stop later ones:\npipeline.addStage(betaStage);\npipeline.addStage(prodStage);\n\n// OR add the stages for parallel building of multiple stages with a Wave:\nconst wave = pipeline.addWave('Wave');\nwave.addStage(betaStage);\nwave.addStage(prodStage);\n\napp.synth();\n/// !hide\n// Code snippet ended before !hide marker above\n  }\n}",
       "syntaxKindCounter": {
-        "10": 8,
-        "75": 27,
+        "10": 9,
+        "75": 40,
         "192": 1,
         "193": 5,
-        "194": 4,
-        "196": 4,
+        "194": 7,
+        "196": 7,
         "197": 5,
-        "225": 2,
-        "226": 3,
-        "242": 2,
-        "243": 2,
+        "225": 5,
+        "226": 5,
+        "242": 5,
+        "243": 5,
         "254": 1,
         "255": 1,
         "257": 1,
@@ -73,7 +76,7 @@
         "281": 6,
         "290": 1
       },
-      "fqnsFingerprint": "e3c63bb053f3cc10120ba997bf3a76ae377ae730859be1922629812f568ccc45"
+      "fqnsFingerprint": "741c28851a6cfeda526910d94e0d646b7e2f01e8d493938a127fc9ea0c3a3ee5"
     },
     "7557e5959d6eefa0ba6e4b44ee9cf9484e899ddf7365bb7923e03011abb283fa": {
       "translations": {
@@ -105,7 +108,7 @@
         },
         "field": {
           "field": "markdown",
-          "line": 146
+          "line": 168
         }
       },
       "didCompile": true,
@@ -140,7 +143,7 @@
         "281": 5,
         "290": 1
       },
-      "fqnsFingerprint": "ab983e764a690d3b056eeeb203037685c395a2739117095796eafc9e499243fb"
+      "fqnsFingerprint": "c2c4176b126f5c1f96866ba2a2e898675b1b3362813fc3f30d748e640b1011cb"
     },
     "aea88c9239a46984616f5d9a1811cd07be316b18faa87774dc5c2517ec822167": {
       "translations": {
@@ -314,7 +317,7 @@
         },
         "field": {
           "field": "markdown",
-          "line": 225
+          "line": 247
         }
       },
       "didCompile": true,
@@ -349,7 +352,7 @@
         "281": 5,
         "290": 1
       },
-      "fqnsFingerprint": "54bf6dfd81cec9fa866cb1038681d9888417ea4305200f81731d0a94ededf15a"
+      "fqnsFingerprint": "f707fa1dc0a975d107a780e0efc8939a051d4f6a95fc1b549bedb593bdc0108c"
     },
     "a350ace4a74a72b47f34dd082fa5f2389cc55eba203a7820547a354fad43edba": {
       "translations": {
@@ -381,7 +384,7 @@
         },
         "field": {
           "field": "markdown",
-          "line": 249
+          "line": 271
         }
       },
       "didCompile": true,
@@ -415,7 +418,7 @@
         "281": 3,
         "290": 1
       },
-      "fqnsFingerprint": "c30d08e5f54dfecc6aadafe32f49eec50a3bd918e4c664dde819a11169a1c8a7"
+      "fqnsFingerprint": "86409c5470b2168a85173ff235ce74b158e23842893c2dc082c7bef88c21d958"
     },
     "648ea886b1263558daa5aa2332d04490b5aa807fad8bec055e9f4bd046c46c8b": {
       "translations": {
@@ -447,7 +450,7 @@
         },
         "field": {
           "field": "markdown",
-          "line": 282
+          "line": 304
         }
       },
       "didCompile": true,
@@ -484,7 +487,7 @@
         "281": 7,
         "290": 1
       },
-      "fqnsFingerprint": "c62b72bd5199212602c9fecdc1d25b617d3f1c8091468d64a6fbb2c9c57395d5"
+      "fqnsFingerprint": "09074c5fd2c40d5ed1035ca052da437e729fb5ee67a1023f81cdd25af3b33ebc"
     },
     "e4a7eb6e0a3a54787c61fc399242c48b59836c9c94a0cd7ac01ff1a146b8a7d8": {
       "translations": {
@@ -516,7 +519,7 @@
         },
         "field": {
           "field": "markdown",
-          "line": 322
+          "line": 344
         }
       },
       "didCompile": true,
@@ -549,7 +552,7 @@
         "281": 3,
         "290": 1
       },
-      "fqnsFingerprint": "79df10f5be66df88596bc1e43e3918358f9867551a5f3b08a8bb98dccf9c8ebb"
+      "fqnsFingerprint": "ab50bbfbc474029977df35fc2e56587a0601efc5f23efe7f2139b199f040e85c"
     },
     "52ef25c2c707ac957e4a05b980495e152237e291bb0f8203d672cb2d63376f9e": {
       "translations": {
@@ -581,7 +584,7 @@
         },
         "field": {
           "field": "markdown",
-          "line": 342
+          "line": 364
         }
       },
       "didCompile": true,
@@ -615,7 +618,7 @@
         "281": 3,
         "290": 1
       },
-      "fqnsFingerprint": "aa3a8712af55b56e6b949b1b685c7168186ebf72e88c9a0e9567aaa2125ee996"
+      "fqnsFingerprint": "e2ea7b9b176cf12bbdd5cf73db3e709e08a6c63a4c0dd92673fd643c9944a24b"
     },
     "0bd2b7529e815657f2dcb8838b41736458ef29077fd1c04f3b66e8fe060a3ee7": {
       "translations": {
@@ -647,7 +650,7 @@
         },
         "field": {
           "field": "markdown",
-          "line": 362
+          "line": 384
         }
       },
       "didCompile": true,
@@ -686,7 +689,7 @@
         "281": 2,
         "290": 1
       },
-      "fqnsFingerprint": "12c632a171ff63b6a3d86869a75a9e18a1e1ab62e279ff21af7c853b58bcdac8"
+      "fqnsFingerprint": "ef3b646b1831462dc2272eba5712c4448aea151180362f20b72916c569a44959"
     },
     "334a85da8abed5328ee2d670f4dd608a8c28ceeaff0566dd376033573dd626ef": {
       "translations": {
@@ -718,7 +721,7 @@
         },
         "field": {
           "field": "markdown",
-          "line": 396
+          "line": 418
         }
       },
       "didCompile": true,
@@ -759,7 +762,7 @@
         "281": 11,
         "290": 1
       },
-      "fqnsFingerprint": "18a6c918935161a05075c9f490796838a4bcd40fc6f72f28ae26eb786ed03944"
+      "fqnsFingerprint": "8947aa20bd9fa6ae2fd6bb37d6be1a9d62f367dfde184423f898455156fe585b"
     },
     "5760d7b1f0de38d4f0d90469522a7414426a9b8d34b518326e7bcaf9aad2cf74": {
       "translations": {
@@ -791,7 +794,7 @@
         },
         "field": {
           "field": "markdown",
-          "line": 448
+          "line": 470
         }
       },
       "didCompile": true,
@@ -834,7 +837,7 @@
         "281": 8,
         "290": 1
       },
-      "fqnsFingerprint": "c973ccf351d351570a6416ae338f596eb0522bbc8b3397f4f80071b1196014e0"
+      "fqnsFingerprint": "2e0192527e5750724bbf26080b83e7c7e04943dd94a59a2aaa0d8a99620ae10b"
     },
     "9b2969057b69eef3ced424b0e831d20177f4303eadf9169ff5192b5f0b48b8c2": {
       "translations": {
@@ -866,7 +869,7 @@
         },
         "field": {
           "field": "markdown",
-          "line": 580
+          "line": 631
         }
       },
       "didCompile": true,
@@ -897,7 +900,67 @@
         "281": 3,
         "290": 1
       },
-      "fqnsFingerprint": "25651c1f7e66502a9c9f62966b6bab81ca09900ee913e558047240d37487350c"
+      "fqnsFingerprint": "af3f1f409b7fa4ebb0e1dcde353082923d567e1d0c408494a6ff6e5c961df330"
+    },
+    "b805924c15128c03bd822ee430566380eb6b561797724bcae622b15006c2afa8": {
+      "translations": {
+        "python": {
+          "source": "# pipeline: GitHubWorkflow\n# assign pipeline a value\n\nwave = pipeline.add_wave(\"MyWave\")\nwave.add_stage(MyStage(self, \"Stage1\"))\nwave.add_stage(MyStage(self, \"Stage2\"))",
+          "version": "2"
+        },
+        "csharp": {
+          "source": "GitHubWorkflow pipeline;\n// assign pipeline a value\n\nvar wave = pipeline.AddWave(\"MyWave\");\nwave.AddStage(new MyStage(this, \"Stage1\"));\nwave.AddStage(new MyStage(this, \"Stage2\"));",
+          "version": "1"
+        },
+        "java": {
+          "source": "GitHubWorkflow pipeline;\n// assign pipeline a value\n\nWave wave = pipeline.addWave(\"MyWave\");\nwave.addStage(new MyStage(this, \"Stage1\"));\nwave.addStage(new MyStage(this, \"Stage2\"));",
+          "version": "1"
+        },
+        "go": {
+          "source": "var pipeline gitHubWorkflow\n// assign pipeline a value\n\nwave := pipeline.AddWave(jsii.String(\"MyWave\"))\nwave.AddStage(NewMyStage(this, jsii.String(\"Stage1\")))\nwave.AddStage(NewMyStage(this, jsii.String(\"Stage2\")))",
+          "version": "1"
+        },
+        "$": {
+          "source": "declare const pipeline: GitHubWorkflow; // assign pipeline a value\n\nconst wave = pipeline.addWave('MyWave');\nwave.addStage(new MyStage(this, 'Stage1'));\nwave.addStage(new MyStage(this, 'Stage2'));",
+          "version": "0"
+        }
+      },
+      "location": {
+        "api": {
+          "api": "member",
+          "fqn": "cdk-pipelines-github.GitHubWorkflow",
+          "memberName": "addWave"
+        },
+        "field": {
+          "field": "markdown",
+          "line": 5
+        }
+      },
+      "didCompile": true,
+      "fqnsReferenced": [
+        "aws-cdk-lib.Stage",
+        "aws-cdk-lib.pipelines.Wave",
+        "aws-cdk-lib.pipelines.Wave#addStage",
+        "cdk-pipelines-github.GitHubWorkflow#addWave",
+        "constructs.Construct"
+      ],
+      "fullSource": "// Hoisted imports begin after !show marker below\n/// !show\ndeclare const pipeline: GitHubWorkflow;\n/// !hide\n// Hoisted imports ended before !hide marker above\n// Fixture with packages imported, but nothing else\nimport { Construct } from 'constructs';\nimport {\n  App,\n  Stack,\n  StackProps,\n  Stage,\n  StageProps,\n} from 'aws-cdk-lib';\nimport { \n  AwsCredentials,\n  GitHubWorkflow,\n  GitHubActionStep,\n  GitHubActionRole,\n  JsonPatch,\n  Runner,\n  DockerCredential,\n} from './src';\n\nconst BETA_ENV = {\n  account: '000000000000',\n  region: 'us-east-1',\n};\nconst PROD_ENV = {\n  account: '111111111111',\n  region: 'us-east-1',\n};\n\nclass MyStage extends Stage {}\n\nclass Fixture extends Stack {\n  constructor(scope: Construct, id: string) {\n    super(scope, id);\n\n    // Code snippet begins after !show marker below\n/// !show\n // assign pipeline a value\n\nconst wave = pipeline.addWave('MyWave');\nwave.addStage(new MyStage(this, 'Stage1'));\nwave.addStage(new MyStage(this, 'Stage2'));\n/// !hide\n// Code snippet ended before !hide marker above\n  }\n}",
+      "syntaxKindCounter": {
+        "10": 3,
+        "75": 11,
+        "104": 2,
+        "130": 1,
+        "169": 1,
+        "194": 3,
+        "196": 3,
+        "197": 2,
+        "225": 2,
+        "226": 2,
+        "242": 2,
+        "243": 2,
+        "290": 1
+      },
+      "fqnsFingerprint": "bb555b7bda22ccc507a933cba72955a357418a8b41b47f45e2ec344b03f50ac1"
     },
     "a19c247472aa1f33f6d60607a4f21523c1a97ccac4ca92c9b5de8c5e28503730": {
       "translations": {
