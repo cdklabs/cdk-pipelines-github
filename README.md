@@ -485,12 +485,12 @@ const pipeline = new GitHubWorkflow(app, 'Pipeline', {
 pipeline.addStageWithGitHubOptions(new Stage(this, 'Beta', {
   env: BETA_ENV,
 }), {
-  gitHubEnvironment: 'beta',
+  gitHubEnvironment: { name: 'beta' },
 });
 pipeline.addStageWithGitHubOptions(new MyStage(this, 'Prod', {
   env: PROD_ENV,
 }), {
-  gitHubEnvironment: 'prod',
+  gitHubEnvironment: { name: 'prod' },
 });
 
 app.synth();
