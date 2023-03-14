@@ -8,7 +8,7 @@ import { Construct } from 'constructs';
 import * as decamelize from 'decamelize';
 import { AwsCredentials, AwsCredentialsProvider } from './aws-credentials';
 import { DockerCredential } from './docker-credentials';
-import { AddGitHubStageOptions } from './github-common';
+import { AddGitHubStageOptions, GitHubEnvironment } from './github-common';
 import { GitHubStage } from './stage';
 import { GitHubActionStep } from './steps/github-action-step';
 import { GitHubWave } from './wave';
@@ -602,9 +602,7 @@ export class GitHubWorkflow extends PipelineBase {
           contents: github.JobPermission.READ,
           idToken: this.awsCredentials.jobPermission(),
         },
-        ...(this.stackProperties[stack.stackArtifactId]?.environment ? {
-          environment: this.stackProperties[stack.stackArtifactId].environment,
-        } : {}),
+        ...this.renderGitHubEnvironment(this.stackProperties[stack.stackArtifactId]?.environment),
         needs: this.renderDependencies(node),
         runsOn: this.runner.runsOn,
         steps: [
@@ -865,6 +863,16 @@ export class GitHubWorkflow extends PipelineBase {
 
   private renderJobSettingParameters() {
     return this.jobSettings;
+  }
+
+  private renderGitHubEnvironment(environment?: GitHubEnvironment) {
+    if (!environment) {
+      return {};
+    }
+    if (environment.url === undefined) {
+      return { environment: environment.name };
+    }
+    return { environment };
   }
 }
 

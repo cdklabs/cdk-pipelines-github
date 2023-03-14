@@ -721,7 +721,7 @@ const addGitHubStageOptions: AddGitHubStageOptions = { ... }
 | <code><a href="#cdk-pipelines-github.AddGitHubStageOptions.property.post">post</a></code> | <code>aws-cdk-lib.pipelines.Step[]</code> | Additional steps to run after all of the stacks in the stage. |
 | <code><a href="#cdk-pipelines-github.AddGitHubStageOptions.property.pre">pre</a></code> | <code>aws-cdk-lib.pipelines.Step[]</code> | Additional steps to run before any of the stacks in the stage. |
 | <code><a href="#cdk-pipelines-github.AddGitHubStageOptions.property.stackSteps">stackSteps</a></code> | <code>aws-cdk-lib.pipelines.StackSteps[]</code> | Instructions for stack level steps. |
-| <code><a href="#cdk-pipelines-github.AddGitHubStageOptions.property.gitHubEnvironment">gitHubEnvironment</a></code> | <code>string</code> | Run the stage in a specific GitHub Environment. |
+| <code><a href="#cdk-pipelines-github.AddGitHubStageOptions.property.gitHubEnvironment">gitHubEnvironment</a></code> | <code><a href="#cdk-pipelines-github.GitHubEnvironment">GitHubEnvironment</a></code> | Run the stage in a specific GitHub Environment. |
 | <code><a href="#cdk-pipelines-github.AddGitHubStageOptions.property.jobSettings">jobSettings</a></code> | <code><a href="#cdk-pipelines-github.JobSettings">JobSettings</a></code> | Job level settings that will be applied to all jobs in the stage. |
 | <code><a href="#cdk-pipelines-github.AddGitHubStageOptions.property.stackCapabilities">stackCapabilities</a></code> | <code><a href="#cdk-pipelines-github.StackCapabilities">StackCapabilities</a>[]</code> | In some cases, you must explicitly acknowledge that your CloudFormation stack template contains certain capabilities in order for CloudFormation to create the stack. |
 
@@ -769,10 +769,10 @@ Instructions for stack level steps.
 ##### `gitHubEnvironment`<sup>Optional</sup> <a name="gitHubEnvironment" id="cdk-pipelines-github.AddGitHubStageOptions.property.gitHubEnvironment"></a>
 
 ```typescript
-public readonly gitHubEnvironment: string;
+public readonly gitHubEnvironment: GitHubEnvironment;
 ```
 
-- *Type:* string
+- *Type:* <a href="#cdk-pipelines-github.GitHubEnvironment">GitHubEnvironment</a>
 - *Default:* no GitHub environment
 
 Run the stage in a specific GitHub Environment.
@@ -1413,7 +1413,7 @@ const gitHubCommonProps: GitHubCommonProps = { ... }
 
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
-| <code><a href="#cdk-pipelines-github.GitHubCommonProps.property.gitHubEnvironment">gitHubEnvironment</a></code> | <code>string</code> | Run the stage in a specific GitHub Environment. |
+| <code><a href="#cdk-pipelines-github.GitHubCommonProps.property.gitHubEnvironment">gitHubEnvironment</a></code> | <code><a href="#cdk-pipelines-github.GitHubEnvironment">GitHubEnvironment</a></code> | Run the stage in a specific GitHub Environment. |
 | <code><a href="#cdk-pipelines-github.GitHubCommonProps.property.jobSettings">jobSettings</a></code> | <code><a href="#cdk-pipelines-github.JobSettings">JobSettings</a></code> | Job level settings that will be applied to all jobs in the stage. |
 | <code><a href="#cdk-pipelines-github.GitHubCommonProps.property.stackCapabilities">stackCapabilities</a></code> | <code><a href="#cdk-pipelines-github.StackCapabilities">StackCapabilities</a>[]</code> | In some cases, you must explicitly acknowledge that your CloudFormation stack template contains certain capabilities in order for CloudFormation to create the stack. |
 
@@ -1422,10 +1422,10 @@ const gitHubCommonProps: GitHubCommonProps = { ... }
 ##### `gitHubEnvironment`<sup>Optional</sup> <a name="gitHubEnvironment" id="cdk-pipelines-github.GitHubCommonProps.property.gitHubEnvironment"></a>
 
 ```typescript
-public readonly gitHubEnvironment: string;
+public readonly gitHubEnvironment: GitHubEnvironment;
 ```
 
-- *Type:* string
+- *Type:* <a href="#cdk-pipelines-github.GitHubEnvironment">GitHubEnvironment</a>
 - *Default:* no GitHub environment
 
 Run the stage in a specific GitHub Environment.
@@ -1470,6 +1470,57 @@ In some cases, you must explicitly acknowledge that your CloudFormation stack te
 
 If insufficiently specified, CloudFormation returns an `InsufficientCapabilities`
 error.
+
+---
+
+### GitHubEnvironment <a name="GitHubEnvironment" id="cdk-pipelines-github.GitHubEnvironment"></a>
+
+Github environment with name and url.
+
+> [https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idenvironment](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idenvironment)
+
+#### Initializer <a name="Initializer" id="cdk-pipelines-github.GitHubEnvironment.Initializer"></a>
+
+```typescript
+import { GitHubEnvironment } from 'cdk-pipelines-github'
+
+const gitHubEnvironment: GitHubEnvironment = { ... }
+```
+
+#### Properties <a name="Properties" id="Properties"></a>
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#cdk-pipelines-github.GitHubEnvironment.property.name">name</a></code> | <code>string</code> | Name of the environment. |
+| <code><a href="#cdk-pipelines-github.GitHubEnvironment.property.url">url</a></code> | <code>string</code> | The url for the environment. |
+
+---
+
+##### `name`<sup>Required</sup> <a name="name" id="cdk-pipelines-github.GitHubEnvironment.property.name"></a>
+
+```typescript
+public readonly name: string;
+```
+
+- *Type:* string
+
+Name of the environment.
+
+> [https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#example-using-environment-name-and-url](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#example-using-environment-name-and-url)
+
+---
+
+##### `url`<sup>Optional</sup> <a name="url" id="cdk-pipelines-github.GitHubEnvironment.property.url"></a>
+
+```typescript
+public readonly url: string;
+```
+
+- *Type:* string
+
+The url for the environment.
+
+> [https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#example-using-environment-name-and-url](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#example-using-environment-name-and-url)
 
 ---
 
@@ -1544,7 +1595,7 @@ const gitHubStageProps: GitHubStageProps = { ... }
 | --- | --- | --- |
 | <code><a href="#cdk-pipelines-github.GitHubStageProps.property.env">env</a></code> | <code>aws-cdk-lib.Environment</code> | Default AWS environment (account/region) for `Stack`s in this `Stage`. |
 | <code><a href="#cdk-pipelines-github.GitHubStageProps.property.outdir">outdir</a></code> | <code>string</code> | The output directory into which to emit synthesized artifacts. |
-| <code><a href="#cdk-pipelines-github.GitHubStageProps.property.gitHubEnvironment">gitHubEnvironment</a></code> | <code>string</code> | Run the stage in a specific GitHub Environment. |
+| <code><a href="#cdk-pipelines-github.GitHubStageProps.property.gitHubEnvironment">gitHubEnvironment</a></code> | <code><a href="#cdk-pipelines-github.GitHubEnvironment">GitHubEnvironment</a></code> | Run the stage in a specific GitHub Environment. |
 | <code><a href="#cdk-pipelines-github.GitHubStageProps.property.jobSettings">jobSettings</a></code> | <code><a href="#cdk-pipelines-github.JobSettings">JobSettings</a></code> | Job level settings that will be applied to all jobs in the stage. |
 | <code><a href="#cdk-pipelines-github.GitHubStageProps.property.stackCapabilities">stackCapabilities</a></code> | <code><a href="#cdk-pipelines-github.StackCapabilities">StackCapabilities</a>[]</code> | In some cases, you must explicitly acknowledge that your CloudFormation stack template contains certain capabilities in order for CloudFormation to create the stack. |
 
@@ -1611,10 +1662,10 @@ thrown.
 ##### `gitHubEnvironment`<sup>Optional</sup> <a name="gitHubEnvironment" id="cdk-pipelines-github.GitHubStageProps.property.gitHubEnvironment"></a>
 
 ```typescript
-public readonly gitHubEnvironment: string;
+public readonly gitHubEnvironment: GitHubEnvironment;
 ```
 
-- *Type:* string
+- *Type:* <a href="#cdk-pipelines-github.GitHubEnvironment">GitHubEnvironment</a>
 - *Default:* no GitHub environment
 
 Run the stage in a specific GitHub Environment.

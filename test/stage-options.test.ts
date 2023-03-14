@@ -42,7 +42,7 @@ describe('github environment', () => {
       new Stack(stage, 'MyStack');
 
       pipeline.addStageWithGitHubOptions(stage, {
-        gitHubEnvironment: 'test',
+        gitHubEnvironment: { name: 'test' },
       });
 
       app.synth();
@@ -50,6 +50,32 @@ describe('github environment', () => {
       expect(readFileSync(pipeline.workflowPath, 'utf-8')).toContain(
         'environment: test\n',
       );
+    });
+  });
+
+  test('can specify one github environment with url', () => {
+    withTemporaryDirectory((dir) => {
+      const pipeline = new GitHubWorkflow(app, 'Pipeline', {
+        workflowPath: `${dir}/.github/workflows/deploy.yml`,
+        synth: new ShellStep('Build', {
+          installCommands: ['yarn'],
+          commands: ['yarn build'],
+        }),
+      });
+
+      const stage = new Stage(app, 'MyStack', {
+        env: { account: '111111111111', region: 'us-east-1' },
+      });
+
+      new Stack(stage, 'MyStack');
+
+      pipeline.addStageWithGitHubOptions(stage, {
+        gitHubEnvironment: { name: 'test', url: 'test.com' },
+      });
+
+      app.synth();
+
+      expect(readFileSync(pipeline.workflowPath, 'utf-8')).toMatch(/.*environment:\s+name: test\s+url: test\.com.*/m);
     });
   });
 
@@ -69,7 +95,7 @@ describe('github environment', () => {
       });
       const prodStage = new GitHubStage(app, 'MyStage2', {
         env: { account: '222222222222', region: 'us-west-2' },
-        gitHubEnvironment: 'prod',
+        gitHubEnvironment: { name: 'prod' },
       });
 
       // Two stacks
@@ -77,7 +103,7 @@ describe('github environment', () => {
       new Stack(prodStage, 'MyStack');
 
       pipeline.addStageWithGitHubOptions(testStage, {
-        gitHubEnvironment: 'test',
+        gitHubEnvironment: { name: 'test' },
       });
       pipeline.addStage(prodStage);
 
