@@ -18,9 +18,9 @@
     aws-cdk "2.72.1"
 
 "@aws-cdk/integ-tests-alpha@latest":
-  version "2.72.1-alpha.0"
-  resolved "https://registry.yarnpkg.com/@aws-cdk/integ-tests-alpha/-/integ-tests-alpha-2.72.1-alpha.0.tgz#afe03d0255747138df113ddf040af55c9283ce79"
-  integrity sha512-X1eHKNT6nOdSXTHs/l2RIYE0GuQ67N73z0tFTT+BX8LPjxV4BLem1tN7q8FRixV6+dTX9pQyDgtJc8oUVsqtjA==
+  version "2.73.0-alpha.0"
+  resolved "https://registry.yarnpkg.com/@aws-cdk/integ-tests-alpha/-/integ-tests-alpha-2.73.0-alpha.0.tgz#1d95741f97de3b2c650dadf33954f7939175b621"
+  integrity sha512-lKI3M7chKYt+01L3sS3AXf46e4YSRlivXyqgwh/CeWgZQa1KMsZMs4904AiPbsmOtsMNyCgcYDQ+ZahIYcnK6Q==
 
 "@babel/code-frame@^7.0.0", "@babel/code-frame@^7.12.13", "@babel/code-frame@^7.18.6", "@babel/code-frame@^7.21.4":
   version "7.21.4"
@@ -1606,12 +1606,12 @@ case@1.6.3, case@^1.6.3:
   resolved "https://registry.yarnpkg.com/case/-/case-1.6.3.tgz#0a4386e3e9825351ca2e6216c60467ff5f1ea1c9"
   integrity sha512-mzDSXIPaFwVDvZAHqZ9VlbyF4yyXRuX6IvB06WvPYkqJVO24kX1PPhv9bfpKNFZyxYFmmgo03HUiD8iklmJYRQ==
 
-cdklabs-projen-project-types@^0.1.67:
-  version "0.1.67"
-  resolved "https://registry.yarnpkg.com/cdklabs-projen-project-types/-/cdklabs-projen-project-types-0.1.67.tgz#8f1dea5768e257bb8ece745c8e739880ef0da070"
-  integrity sha512-Id9aksh7s81Qhr6u/OO4zunANauOwbvtBG9j2XOCkGVi6F7fgF85Fdm+jSumSX/+mPdkzCM+W+7PoKgYLJtlQg==
+cdklabs-projen-project-types@^0.1.69:
+  version "0.1.69"
+  resolved "https://registry.yarnpkg.com/cdklabs-projen-project-types/-/cdklabs-projen-project-types-0.1.69.tgz#58b4efe600c2fd8f6d4cce369b84648ea9ed4c0d"
+  integrity sha512-ZlX4PoQ68E3LtCrlQVRjIW/V9+uPEiAuQYbQxYkpWQX6dyMjxsucqNqgYdhdJCqcez5bc0DIpXvcB0MOvBalHg==
   dependencies:
-    projen "^0.70.11"
+    projen "^0.71.0"
     yaml "^2.2.1"
 
 chalk@^2.0.0, chalk@^2.4.2:
@@ -2235,9 +2235,9 @@ eastasianwidth@^0.2.0:
   integrity sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==
 
 electron-to-chromium@^1.4.284:
-  version "1.4.353"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.353.tgz#20e9cb4c83a08e35b3314d3fa8988764c105e6b7"
-  integrity sha512-IdJVpMHJoBT/nn0GQ02wPfbhogDVpd1ud95lP//FTf5l35wzxKJwibB4HBdY7Q+xKPA1nkZ0UDLOMyRj5U5IAQ==
+  version "1.4.355"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.355.tgz#539484310e5a94133bc3df8ba4b6a9dde7a506a4"
+  integrity sha512-056hxzEE4l667YeOccgjhRr5fTiwZ6EIJ4FpzGps4k3YcS8iAhiaBYUBrv5E2LDQJsussscv9EEUwAYKnv+ZKg==
 
 emittery@^0.8.1:
   version "0.8.1"
@@ -5188,10 +5188,10 @@ progress@^2.0.3:
   resolved "https://registry.yarnpkg.com/progress/-/progress-2.0.3.tgz#7e8cf8d8f5b8f239c1bc68beb4eb78567d572ef8"
   integrity sha512-7PiHtLll5LdnKIMw100I+8xJXR5gW2QwWYkT6iJva0bXitZKa/XMrSbdmg3r2Xnaidz9Qumd0VPaMrZlF9V9sA==
 
-projen@^0.70.11, projen@^0.70.14:
-  version "0.70.14"
-  resolved "https://registry.yarnpkg.com/projen/-/projen-0.70.14.tgz#07f29700f5d975b8b03002cc3e829880cd967b52"
-  integrity sha512-aNMfkKx2U4frRUH93BtsL2sjd8CpUSpb94fU7EgVt6VwdE70Gn3bscIdy36Csaea1q0ipb2DMv/TjeKdyMkYAQ==
+projen@^0.71.0:
+  version "0.71.0"
+  resolved "https://registry.yarnpkg.com/projen/-/projen-0.71.0.tgz#bb06a89fd6c68f02a3e58e315e9c07ba26449830"
+  integrity sha512-/0ZmTk5mT/FAQWU59Ffc3IyYmv3he1k2zx3Id1+aZ1QGVm02/Bk5YqWhSKz+FWrzP7r4QUUzzSv0Xo56BCnDxQ==
   dependencies:
     "@iarna/toml" "^2.2.5"
     case "^1.6.3"
