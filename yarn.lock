@@ -18,9 +18,9 @@
     aws-cdk "2.72.1"
 
 "@aws-cdk/integ-tests-alpha@latest":
-  version "2.75.1-alpha.0"
-  resolved "https://registry.yarnpkg.com/@aws-cdk/integ-tests-alpha/-/integ-tests-alpha-2.75.1-alpha.0.tgz#aa798ac8940a0a1b5065b8b5ffedebd449a51cc8"
-  integrity sha512-aGRSkV9PLTUOISMC+jt/vKA0D8+WQBOCDOMqMVu4EzQf8ylLqT1L5eIaGL/JeTjOwx2BXuWh6tNmo/wvzHCHsA==
+  version "2.76.0-alpha.0"
+  resolved "https://registry.yarnpkg.com/@aws-cdk/integ-tests-alpha/-/integ-tests-alpha-2.76.0-alpha.0.tgz#c30bec04faee32b958254f0e693ae2d4dfb85005"
+  integrity sha512-Au5tjg78VXWnULmb4E2PcXmd/crMnONGTSucA1aMWKtl8OlXC7dxEfM4UMUzCcempubOnNDaPw8eUPvo4q63bA==
 
 "@babel/code-frame@^7.0.0", "@babel/code-frame@^7.12.13", "@babel/code-frame@^7.18.6", "@babel/code-frame@^7.21.4":
   version "7.21.4"
@@ -1614,12 +1614,12 @@ case@1.6.3, case@^1.6.3:
   resolved "https://registry.yarnpkg.com/case/-/case-1.6.3.tgz#0a4386e3e9825351ca2e6216c60467ff5f1ea1c9"
   integrity sha512-mzDSXIPaFwVDvZAHqZ9VlbyF4yyXRuX6IvB06WvPYkqJVO24kX1PPhv9bfpKNFZyxYFmmgo03HUiD8iklmJYRQ==
 
-cdklabs-projen-project-types@^0.1.71:
-  version "0.1.71"
-  resolved "https://registry.yarnpkg.com/cdklabs-projen-project-types/-/cdklabs-projen-project-types-0.1.71.tgz#5db6834915ed6bb1e8f26cac6983171e6f5060dc"
-  integrity sha512-E+MZou5ABRo0gg4lNUPSZyzpxaTEIgVGL3ev5QY2GnzV2xTAQ0QrvyG/DLJR/5QcI01IMDWW9Sgo8ZF+yP+qdw==
+cdklabs-projen-project-types@^0.1.72:
+  version "0.1.72"
+  resolved "https://registry.yarnpkg.com/cdklabs-projen-project-types/-/cdklabs-projen-project-types-0.1.72.tgz#0bcdfb3f0c529eba72c5c869425803f62559b95f"
+  integrity sha512-r0hH/DxGNjteMivR3PQ6Kkwmq2twP4Kw64Y0z8ZjLfv14wGYneeX4fMddcMShr0uNDpaqU4yPETrbCGdSjBaqg==
   dependencies:
-    projen "^0.71.16"
+    projen "^0.71.17"
     yaml "^2.2.1"
 
 chalk@^2.0.0, chalk@^2.4.2:
@@ -4774,9 +4774,9 @@ npm-bundled@^3.0.0:
     npm-normalize-package-bin "^3.0.0"
 
 npm-check-updates@^16:
-  version "16.10.8"
-  resolved "https://registry.yarnpkg.com/npm-check-updates/-/npm-check-updates-16.10.8.tgz#a8b9cb3a7bfecad4d95e2b5a51ed2431d162478e"
-  integrity sha512-e+p3rUCvaU0iKOvi+/Xiyx+mLe9/aRTu9Zrc7+TR6H2q+uFgmXEwqbXYN9Ngqsta8gdTjpn751UD5MEOogO5cA==
+  version "16.10.9"
+  resolved "https://registry.yarnpkg.com/npm-check-updates/-/npm-check-updates-16.10.9.tgz#7f32a484a55673dd0e757df9ae0c1eb9a882d255"
+  integrity sha512-J3ggasYJIFB+XqAT9qQcAAOKehpCXGRoZWlK4/u5YAOZB6hmM4CxdrxCA7A34hBK5zaPIEBnMqWBSV7mU6nixg==
   dependencies:
     chalk "^5.2.0"
     cli-table3 "^0.6.3"
@@ -5206,10 +5206,10 @@ progress@^2.0.3:
   resolved "https://registry.yarnpkg.com/progress/-/progress-2.0.3.tgz#7e8cf8d8f5b8f239c1bc68beb4eb78567d572ef8"
   integrity sha512-7PiHtLll5LdnKIMw100I+8xJXR5gW2QwWYkT6iJva0bXitZKa/XMrSbdmg3r2Xnaidz9Qumd0VPaMrZlF9V9sA==
 
-projen@^0.71.16, projen@^0.71.17:
-  version "0.71.17"
-  resolved "https://registry.yarnpkg.com/projen/-/projen-0.71.17.tgz#ab69365bb219295e2745bc0b577f2ebb7ec877c3"
-  integrity sha512-GizuzQJ3hBXj1akrZhktE9VKpl4V/WccSbYAiiQYW1JrxDo7dDMPl5Hyf4nC0hoU+m80QmAjPoX4Jyp77Xj6iw==
+projen@^0.71.17, projen@^0.71.18:
+  version "0.71.18"
+  resolved "https://registry.yarnpkg.com/projen/-/projen-0.71.18.tgz#3ed190afbfaa4000bebcf16d1b079aca887ddf66"
+  integrity sha512-nvDaeh1JGnN+UbACZaY0unY5WqILM+7GPSM5uB6xpSPb4L+8hSolV2k8VJz+Sc2osk6ur3wF4AYYDU444a9KfQ==
   dependencies:
     "@iarna/toml" "^2.2.5"
     case "^1.6.3"
@@ -5660,9 +5660,9 @@ signal-exit@^3.0.2, signal-exit@^3.0.3, signal-exit@^3.0.7:
   integrity sha512-wnD2ZE+l+SPC/uoS0vXeE9L1+0wuaMqKlfz9AMUo38JsyLSBWSFcHR1Rri62LZc12vLr1gb3jl7iwQhgwpAbGQ==
 
 sigstore@^1.0.0:
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/sigstore/-/sigstore-1.3.0.tgz#cfcb636ff5ef3df1dafb34552ef1ee5e72be1a83"
-  integrity sha512-dhdv+jOAi1RgLHw13lxumk3rlgZtumUz9QrCNPTx9MazUnUV3BfAb74oYAMPQQ7uaeogB5vTosbz3POzKbEHUQ==
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/sigstore/-/sigstore-1.3.2.tgz#2f70ec3e1192911484d9d148ecd9c98345cd172d"
+  integrity sha512-0KT1DjpVB11FK15ep7BIsZQV6j1jBm4SnXIInbBCRvql6II39IKONOMO+j036sGsArU/+2xqa1NDJwJkic0neA==
   dependencies:
     "@sigstore/protobuf-specs" "^0.1.0"
     make-fetch-happen "^11.0.1"
