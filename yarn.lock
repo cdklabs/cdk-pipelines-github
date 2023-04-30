@@ -30,9 +30,9 @@
     "@babel/highlight" "^7.18.6"
 
 "@babel/compat-data@^7.21.5":
-  version "7.21.5"
-  resolved "https://registry.yarnpkg.com/@babel/compat-data/-/compat-data-7.21.5.tgz#887a54ebe20c9f21edf27caf4ffcf8da6fdd5bd2"
-  integrity sha512-M+XAiQ7GzQ3FDPf0KOLkugzptnIypt0X0ma0wmlTKPR3IchgNFdx2JXxZdvd18JY5s7QkaFD/qyX0dsMpog/Ug==
+  version "7.21.7"
+  resolved "https://registry.yarnpkg.com/@babel/compat-data/-/compat-data-7.21.7.tgz#61caffb60776e49a57ba61a88f02bedd8714f6bc"
+  integrity sha512-KYMqFYTaenzMK4yUtf4EW9wc4N9ef80FsbMtkwool5zpwl4YrT1SdWYSTRcT94KO4hannogdS+LxY7L+arP3gA==
 
 "@babel/core@^7.1.0", "@babel/core@^7.12.3", "@babel/core@^7.7.2", "@babel/core@^7.8.0":
   version "7.21.5"
@@ -956,9 +956,9 @@
   integrity sha512-jhuKLIRrhvCPLqwPcx6INqmKeiA5EWrsCOPhrlFSrbrmU4ZMPjj5Ul/oLCMDO98XRUIwVm78xICz4EPCektzeQ==
 
 "@types/node@*":
-  version "18.16.2"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.16.2.tgz#2f610ea71034b3971c312192377f8a7178eb57f1"
-  integrity sha512-GQW/JL/5Fz/0I8RpeBG9lKp0+aNcXEaVL71c0D2Q0QHDTFvlYKT7an0onCUXj85anv7b4/WesqdfchLc0jtsCg==
+  version "18.16.3"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.16.3.tgz#6bda7819aae6ea0b386ebc5b24bdf602f1b42b01"
+  integrity sha512-OPs5WnnT1xkCBiuQrZA4+YAV4HEJejmHneyraIaxsbev5yCEr6KMwINNFP9wQeFIw8FWcoTqF3vQsa5CDaI+8Q==
 
 "@types/node@^14":
   version "14.18.43"
@@ -1619,12 +1619,12 @@ case@1.6.3, case@^1.6.3:
   resolved "https://registry.yarnpkg.com/case/-/case-1.6.3.tgz#0a4386e3e9825351ca2e6216c60467ff5f1ea1c9"
   integrity sha512-mzDSXIPaFwVDvZAHqZ9VlbyF4yyXRuX6IvB06WvPYkqJVO24kX1PPhv9bfpKNFZyxYFmmgo03HUiD8iklmJYRQ==
 
-cdklabs-projen-project-types@^0.1.80:
-  version "0.1.80"
-  resolved "https://registry.yarnpkg.com/cdklabs-projen-project-types/-/cdklabs-projen-project-types-0.1.80.tgz#6aac8ae32452c3593339ba518a1f42436b1d7724"
-  integrity sha512-weCDajP8Lc58h26tyLsZZnJNTnRFgo6Xdp6pQQHaqujGo62w0Vt+lRuDXSiWd00GP/pb1m82f7g8Xw1bZ2eIhw==
+cdklabs-projen-project-types@^0.1.81:
+  version "0.1.81"
+  resolved "https://registry.yarnpkg.com/cdklabs-projen-project-types/-/cdklabs-projen-project-types-0.1.81.tgz#7c9b2fe5d521fba3f9b5e273d8a9caec0188713c"
+  integrity sha512-8W2dxhxpaOQ6zJVQ0u67cWxfNR/lW4dgjxKqvGI2emvFy7ZtnCIxtc3sAge3utnbZ8rE4dvVgoAnLOQJ1ipF+A==
   dependencies:
-    projen "^0.71.28"
+    projen "^0.71.31"
     yaml "^2.2.2"
 
 chalk@^2.0.0, chalk@^2.4.2:
@@ -5255,10 +5255,10 @@ progress@^2.0.3:
   resolved "https://registry.yarnpkg.com/progress/-/progress-2.0.3.tgz#7e8cf8d8f5b8f239c1bc68beb4eb78567d572ef8"
   integrity sha512-7PiHtLll5LdnKIMw100I+8xJXR5gW2QwWYkT6iJva0bXitZKa/XMrSbdmg3r2Xnaidz9Qumd0VPaMrZlF9V9sA==
 
-projen@^0.71.28, projen@^0.71.31:
-  version "0.71.31"
-  resolved "https://registry.yarnpkg.com/projen/-/projen-0.71.31.tgz#b14b8e8426c778dfe20341ae32a5ace7478ac133"
-  integrity sha512-f/gdL+NGqUebwOvfxcwsjyNMPCa67iSqJ5aVQG9StM7geZs2W7Rh8mHHyeoZ0yBVHMy0IxpLFZsUH8bmBu9t+w==
+projen@^0.71.31, projen@^0.71.32:
+  version "0.71.32"
+  resolved "https://registry.yarnpkg.com/projen/-/projen-0.71.32.tgz#9121062b5ff905edc35cf594304bf5fd3385055e"
+  integrity sha512-MnCoVz6oxGzG04w7WILwfL0fvxd9145Lq72DsCVCWZ73W1rF5nHoqBiDAMwreAHQFMfarajEg4+7HhOHZwaapA==
   dependencies:
     "@iarna/toml" "^2.2.5"
     case "^1.6.3"
