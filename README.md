@@ -496,6 +496,55 @@ pipeline.addStageWithGitHubOptions(new MyStage(this, 'Prod', {
 app.synth();
 ```
 
+You can use your Github Environment Secrets and Env variables at each stage by creating a [CFN parameter](https://docs.aws.amazon.com/cdk/v2/guide/parameters.html) and specifying the Parameter Name to override.
+
+```ts 
+import { ShellStep } from 'aws-cdk-lib/pipelines';
+
+const app = new App();
+
+const pipeline = new GitHubWorkflow(app, 'Pipeline', {
+  synth: new ShellStep('Build', {
+    commands: [
+      'yarn install',
+      'yarn build',
+    ],
+  }),
+  awsCreds: AwsCredentials.fromOpenIdConnect({
+    gitHubActionRoleArn: 'arn:aws:iam::<account-id>:role/GitHubActionRole',
+  }),
+});
+
+pipeline.addStageWithGitHubOptions(new Stage(this, 'Beta', {
+  env: BETA_ENV,
+}), {
+  stackParameters: {
+    MyParamName1: [{
+        value: 'myValue',
+        type: StackParameterType.PLAIN_TEXT,
+    }],
+    MyParamName2: [{
+      value: 'MY_SECRET_VALUE',
+      type: StackParameterType.SECRET,
+    }],
+    MyParamName3: [{
+      value: 'MY_ENV_VAR',
+      type: StackParameterType.ENV_VARIABLE,
+    }],
+    MyParamNameArray: [{
+      value: 'MY_ENV_ARR',
+      type: StackParameterType.ENV_VARIABLE,
+    },
+    {
+      value: 'MY_SECRET_ARR',
+      type: StackParameterType.SECRET,
+    }],
+  },
+  gitHubEnvironment: { name: 'beta' },
+});
+
+app.synth();
+```
 #### Waves for Parallel Builds
 
 You can add a Wave to a pipeline, where each stage of a wave will build in parallel.

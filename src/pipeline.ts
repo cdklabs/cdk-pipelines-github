@@ -8,7 +8,7 @@ import { Construct } from 'constructs';
 import * as decamelize from 'decamelize';
 import { AwsCredentials, AwsCredentialsProvider } from './aws-credentials';
 import { DockerCredential } from './docker-credentials';
-import { AddGitHubStageOptions, GitHubEnvironment } from './github-common';
+import { AddGitHubStageOptions, GitHubEnvironment, StackParameter, StackParameterType } from './github-common';
 import { GitHubStage } from './stage';
 import { GitHubActionStep } from './steps/github-action-step';
 import { GitHubWave } from './wave';
@@ -183,6 +183,7 @@ export class GitHubWorkflow extends PipelineBase {
     environment: AddGitHubStageOptions['gitHubEnvironment'];
     capabilities: AddGitHubStageOptions['stackCapabilities'];
     settings: AddGitHubStageOptions['jobSettings'];
+    stackParameters: AddGitHubStageOptions['stackParameters'];
   }
   > = {};
   private readonly jobSettings?: JobSettings;
@@ -261,9 +262,11 @@ export class GitHubWorkflow extends PipelineBase {
 
     // keep track of GitHub specific options
     const stacks = stageDeployment.stacks;
+
     this.addStackProps(stacks, 'environment', options?.gitHubEnvironment);
     this.addStackProps(stacks, 'capabilities', options?.stackCapabilities);
     this.addStackProps(stacks, 'settings', options?.jobSettings);
+    this.addStackProps(stacks, 'stackParameters', options?.stackParameters);
 
     return stageDeployment;
   }
@@ -549,6 +552,26 @@ export class GitHubWorkflow extends PipelineBase {
     };
   }
 
+  private formatStackParameter(key: string, params: StackParameter[]): string {
+    let value: string = params.map((param) => {
+      switch (param.type) {
+        case StackParameterType.SECRET:
+          return `\${{ secrets.${param.value} }}`;
+        case StackParameterType.ENV_VARIABLE:
+          return `\${{ vars.${param.value} }}`;
+        case StackParameterType.PLAIN_TEXT:
+          return param.value;
+        default:
+          throw new Error(`Unsupported parameter type: ${param.type}`);
+      }
+    }).join(',');
+
+    if (params.length > 1) {
+      value = `'${value}'`;
+    }
+    return `${key}=${value}`;
+  }
+
   private jobForDeploy(node: AGraphNode, stack: StackDeployment, _captureOutputs: boolean): Job {
     const region = stack.region;
     const account = stack.account;
@@ -581,6 +604,14 @@ export class GitHubWorkflow extends PipelineBase {
       'template': replaceAssetHash(resolve(stack.templateUrl)),
       'no-fail-on-empty-changeset': '1',
     };
+
+    const stackParameters = this.stackProperties[stack.stackArtifactId]?.stackParameters;
+    if (stackParameters) {
+      let p = Object.entries(stackParameters).map((v) => this.formatStackParameter(v[0], v[1])).join(',\n');
+      if (p) {
+        params['parameter-overrides'] = p;
+      }
+    }
 
     const capabilities = this.stackProperties[stack.stackArtifactId]?.capabilities;
     if (capabilities) {

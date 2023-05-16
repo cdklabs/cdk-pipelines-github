@@ -10,6 +10,7 @@ import {
   AddGitHubStageOptions,
   GitHubStage,
   GitHubStageProps,
+  StackParameterType,
 } from '../src';
 
 let app: TestApp;
@@ -573,5 +574,61 @@ test('waves added to a pipeline after build will fail', () => {
     app.synth();
 
     expect(() => pipeline.addGitHubWave('wave2')).toThrowErrorMatchingInlineSnapshot('"addWave: can\'t add Waves anymore after buildPipeline() has been called"');
+  });
+});
+
+test('can specify cfn parameters for deployment', () => {
+  withTemporaryDirectory((dir) => {
+    const pipeline = new GitHubWorkflow(app, 'Pipeline', {
+      workflowPath: `${dir}/.github/workflows/deploy.yml`,
+      synth: new ShellStep('Build', {
+        installCommands: ['yarn'],
+        commands: ['yarn build'],
+      }),
+    });
+
+    const stage = new Stage(app, 'MyStack', {
+      env: { account: '111111111111', region: 'us-east-1' },
+    });
+
+    new Stack(stage, 'MyStack');
+    pipeline.addStageWithGitHubOptions(stage, {
+      stackParameters: {
+        MyParam1: [
+          {
+            value: 'myValue',
+            type: StackParameterType.PLAIN_TEXT,
+          },
+        ],
+        MyParam2: [{
+          value: 'MY_SECRET_VALUE',
+          type: StackParameterType.SECRET,
+        }],
+        MyParam3: [{
+          value: 'MY_ENV_VAR',
+          type: StackParameterType.ENV_VARIABLE,
+        }],
+        MyParamArray: [{
+          value: 'MY_ENV_ARR',
+          type: StackParameterType.ENV_VARIABLE,
+        },
+        {
+          value: 'MY_SECRET_ARR',
+          type: StackParameterType.SECRET,
+        }],
+      },
+    });
+
+    app.synth();
+    expect(readFileSync(pipeline.workflowPath, 'utf-8')).toContain(
+      'parameter-overrides: |-');
+    expect(readFileSync(pipeline.workflowPath, 'utf-8')).toContain(
+      'MyParam1=myValue');
+    expect(readFileSync(pipeline.workflowPath, 'utf-8')).toContain(
+      'MyParam2=${{ secrets.MY_SECRET_VALUE }}');
+    expect(readFileSync(pipeline.workflowPath, 'utf-8')).toContain(
+      'MyParam3=${{ vars.MY_ENV_VAR }}');
+    expect(readFileSync(pipeline.workflowPath, 'utf-8')).toContain(
+      "MyParamArray=\'${{ vars.MY_ENV_ARR }},${{ secrets.MY_SECRET_ARR }}\'");
   });
 });

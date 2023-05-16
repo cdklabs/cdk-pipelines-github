@@ -2,6 +2,28 @@ import { AddStageOpts } from 'aws-cdk-lib/pipelines';
 import { JobSettings } from './pipeline';
 import { StackCapabilities } from './stage-options';
 
+export enum StackParameterType {
+  SECRET,
+  ENV_VARIABLE,
+  PLAIN_TEXT,
+}
+
+export interface StackParameter {
+  /**
+   * StackParameterType
+   *
+   * required
+   */
+  readonly type: StackParameterType;
+
+  /**
+   * Parameter value
+   *
+   * required
+   */
+  readonly value: string;
+}
+
 /**
  * Github environment with name and url.
  *
@@ -59,6 +81,12 @@ export interface GitHubCommonProps {
    * Currently the only valid setting is 'if'.
    */
   readonly jobSettings?: JobSettings;
+
+  /**
+   * Stack parameters to supply to the stack during deployment
+   * @default - No parameters
+   */
+  readonly stackParameters?: Record<string, StackParameter[]>;
 }
 
 /**
