@@ -54,3 +54,4 @@ tsconfig.json
 !/API.md
 .jsii.tabl.json
 !/rosetta/default.ts-fixture
+!/.github/workflows/upgrade-cdklabs-projen-project-types-main.yml
