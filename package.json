@@ -34,6 +34,7 @@
     "test:watch": "npx projen test:watch",
     "unbump": "npx projen unbump",
     "upgrade": "npx projen upgrade",
+    "upgrade-cdklabs-projen-project-types": "npx projen upgrade-cdklabs-projen-project-types",
     "watch": "npx projen watch",
     "projen": "npx projen"
   },
@@ -50,7 +51,7 @@
     "@typescript-eslint/eslint-plugin": "^5",
     "@typescript-eslint/parser": "^5",
     "aws-cdk-lib": "2.9.0",
-    "cdklabs-projen-project-types": "^0.1.101",
+    "cdklabs-projen-project-types": "^0.1.120",
     "constructs": "10.0.46",
     "eslint": "^8",
     "eslint-import-resolver-node": "^0.3.7",
@@ -59,11 +60,11 @@
     "jest": "^27",
     "jest-junit": "^15",
     "jsii": "1.x",
-    "jsii-diff": "^1.81.0",
+    "jsii-diff": "^1.82.0",
     "jsii-docgen": "^7.2.9",
-    "jsii-pacmak": "^1.81.0",
+    "jsii-pacmak": "^1.82.0",
     "npm-check-updates": "^16",
-    "projen": "^0.71.62",
+    "projen": "^0.71.82",
     "standard-version": "^9",
     "ts-jest": "^27",
     "ts-node": "^10.9.1",
@@ -76,7 +77,7 @@
   "dependencies": {
     "decamelize": "^5.0.1",
     "fast-json-patch": "^3.1.1",
-    "yaml": "^2.2.2"
+    "yaml": "^2.3.1"
   },
   "bundledDependencies": [
     "decamelize",
@@ -84,8 +85,8 @@
     "yaml"
   ],
   "resolutions": {
-    "@types/prettier": "2.6.0",
-    "@types/babel__traverse": "7.18.2"
+    "@types/babel__traverse": "7.18.2",
+    "@types/prettier": "2.6.0"
   },
   "keywords": [
     "cdk"
