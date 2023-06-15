@@ -25,6 +25,8 @@ const project = new CdklabsConstructLibrary({
     updateSnapshot: UpdateSnapshot.NEVER,
   },
 
+  jsiiVersion: '5.1.x',
+
   publishToPypi: {
     distName: 'cdk-pipelines-github',
     module: 'cdk_pipelines_github',
