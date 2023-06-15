@@ -47,11 +47,11 @@
     "@aws-cdk/integ-runner": "latest",
     "@aws-cdk/integ-tests-alpha": "latest",
     "@types/jest": "^27",
-    "@types/node": "^14",
+    "@types/node": "^16",
     "@typescript-eslint/eslint-plugin": "^5",
     "@typescript-eslint/parser": "^5",
     "aws-cdk-lib": "2.9.0",
-    "cdklabs-projen-project-types": "^0.1.137",
+    "cdklabs-projen-project-types": "^0.1.138",
     "constructs": "10.0.46",
     "eslint": "^8",
     "eslint-import-resolver-node": "^0.3.7",
@@ -64,7 +64,7 @@
     "jsii-docgen": "^7.2.9",
     "jsii-pacmak": "^1.83.0",
     "npm-check-updates": "^16",
-    "projen": "^0.71.94",
+    "projen": "^0.71.96",
     "standard-version": "^9",
     "ts-jest": "^27",
     "ts-node": "^10.9.1",
@@ -92,7 +92,7 @@
     "cdk"
   ],
   "engines": {
-    "node": ">= 14.18.0"
+    "node": ">= 16.13.0"
   },
   "main": "lib/index.js",
   "license": "Apache-2.0",
