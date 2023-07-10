@@ -1959,6 +1959,7 @@ const gitHubActionRoleProps: GitHubActionRoleProps = { ... }
 | <code><a href="#cdk-pipelines-github.GitHubActionRoleProps.property.repos">repos</a></code> | <code>string[]</code> | A list of GitHub repositories you want to be able to access the IAM role. |
 | <code><a href="#cdk-pipelines-github.GitHubActionRoleProps.property.provider">provider</a></code> | <code>aws-cdk-lib.aws_iam.IOpenIdConnectProvider</code> | The GitHub OpenId Connect Provider. Must have provider url `https://token.actions.githubusercontent.com`. The audience must be `sts:amazonaws.com`. |
 | <code><a href="#cdk-pipelines-github.GitHubActionRoleProps.property.roleName">roleName</a></code> | <code>string</code> | The name of the Oidc role. |
+| <code><a href="#cdk-pipelines-github.GitHubActionRoleProps.property.thumbprints">thumbprints</a></code> | <code>string[]</code> | Thumbprints of GitHub's certificates. |
 
 ---
 
@@ -2005,6 +2006,24 @@ public readonly roleName: string;
 - *Default:* 'GitHubActionRole'
 
 The name of the Oidc role.
+
+---
+
+##### `thumbprints`<sup>Optional</sup> <a name="thumbprints" id="cdk-pipelines-github.GitHubActionRoleProps.property.thumbprints"></a>
+
+```typescript
+public readonly thumbprints: string[];
+```
+
+- *Type:* string[]
+- *Default:* Use built-in keys
+
+Thumbprints of GitHub's certificates.
+
+Every time GitHub rotates their certificates, this value will need to be updated.
+
+Default value is up-to-date to June 27, 2023 as per
+https://github.blog/changelog/2023-06-27-github-actions-update-on-oidc-integration-with-aws/
 
 ---
 
