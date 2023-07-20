@@ -16,7 +16,7 @@
     },
     {
       "name": "@types/node",
-      "version": "^14",
+      "version": "^16",
       "type": "build"
     },
     {
@@ -83,6 +83,10 @@
       "type": "build"
     },
     {
+      "name": "jsii-rosetta",
+      "type": "build"
+    },
+    {
       "name": "jsii",
       "version": "1.x",
       "type": "build"
@@ -128,7 +132,7 @@
     },
     {
       "name": "@aws-cdk/integ-runner",
-      "version": "^2",
+      "version": "latest",
       "type": "devenv"
     },
     {

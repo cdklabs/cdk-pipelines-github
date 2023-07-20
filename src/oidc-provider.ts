@@ -3,6 +3,16 @@ import * as iam from 'aws-cdk-lib/aws-iam';
 import { Construct } from 'constructs';
 
 /**
+ * GitHub OIDC thumbprints updated 2023-07-27
+ *
+ * https://github.blog/changelog/2023-06-27-github-actions-update-on-oidc-integration-with-aws/
+ */
+const GITHUB_OIDC_THUMBPRINTS = [
+  '6938fd4d98bab03faadb97b34396831e3780aea1',
+  '1c58a3a8518e8759bf075b76b750d4f2df264fcd',
+];
+
+/**
  * Properties for the GitHubActionRole construct.
  */
 export interface GitHubActionRoleProps {
@@ -33,6 +43,18 @@ export interface GitHubActionRoleProps {
    * @default - a provider is created for you.
    */
   readonly provider?: iam.IOpenIdConnectProvider;
+
+  /**
+   * Thumbprints of GitHub's certificates
+   *
+   * Every time GitHub rotates their certificates, this value will need to be updated.
+   *
+   * Default value is up-to-date to June 27, 2023 as per
+   * https://github.blog/changelog/2023-06-27-github-actions-update-on-oidc-integration-with-aws/
+   *
+   * @default - Use built-in keys
+   */
+  readonly thumbprints?: string[];
 }
 
 /**
@@ -80,6 +102,7 @@ export class GitHubActionRole extends Construct {
     const provider = props.provider ?? new iam.OpenIdConnectProvider(this, 'github-provider', {
       url: providerUrl,
       clientIds: ['sts.amazonaws.com'],
+      thumbprints: props.thumbprints ?? GITHUB_OIDC_THUMBPRINTS,
     });
 
     // create a role that references the provider as a trusted entity
