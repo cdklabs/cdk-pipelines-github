@@ -23,7 +23,15 @@ export interface GitHubActionRoleProps {
    *
    * For example, `['owner/repo1', 'owner/repo2'].
    */
-  readonly repos: string[];
+  readonly repos?: string[];
+
+  /**
+   * A list of subject claims.
+   * See https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect
+   *
+   * For example, `['repo:owner/repo1:ref:refs/heads/branch1', 'repo:owner/repo1:environment:prod']`
+   */
+  readonly subjectClaims?: string[];
 
   /**
    * The name of the Oidc role.
@@ -110,7 +118,7 @@ export class GitHubActionRole extends Construct {
       provider.openIdConnectProviderArn,
       {
         StringLike: {
-          [`${rawEndpoint}:sub`]: formatRepos(props.repos),
+          [`${rawEndpoint}:sub`]: formatRepos(props.repos ?? []).concat(props.subjectClaims ?? []),
         },
       },
       'sts:AssumeRoleWithWebIdentity',
