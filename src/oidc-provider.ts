@@ -20,14 +20,17 @@ export interface GitHubActionRoleProps {
    * A list of GitHub repositories you want to be able to access the IAM role.
    * Each entry should be your GitHub username and repository passed in as a
    * single string.
+   * An entry `owner/repo` is equivalent to the subjectClaim `repo:owner/repo:*`.
    *
    * For example, `['owner/repo1', 'owner/repo2'].
    */
   readonly repos?: string[];
 
   /**
-   * A list of subject claims.
+   * A list of subject claims allowed to access the IAM role.
    * See https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect
+   * A subject claim can include `*` and `?` wildcards according to the `StringLike`
+   * condition operator.
    *
    * For example, `['repo:owner/repo1:ref:refs/heads/branch1', 'repo:owner/repo1:environment:prod']`
    */
