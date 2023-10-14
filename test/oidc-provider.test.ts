@@ -39,7 +39,7 @@ describe('GithubActionRole construct', () => {
     });
   });
 
-  test('basic configuration with multiple repos', () => {
+  test('basic configuration with multiple repos and subject claims', () => {
     // GIVEN
     const stack = new Stack();
 
@@ -49,6 +49,10 @@ describe('GithubActionRole construct', () => {
         'myuser/myrepo',
         'myuser/myrepo2',
         'myuser/myrepo3',
+      ],
+      subjectClaims: [
+        'repo:owner/repo1:ref:refs/heads/branch1',
+        'repo:owner/repo1:environment:prod',
       ],
     });
 
@@ -69,6 +73,8 @@ describe('GithubActionRole construct', () => {
                   'repo:myuser/myrepo:*',
                   'repo:myuser/myrepo2:*',
                   'repo:myuser/myrepo3:*',
+                  'repo:owner/repo1:ref:refs/heads/branch1',
+                  'repo:owner/repo1:environment:prod',
                 ],
               },
             },
