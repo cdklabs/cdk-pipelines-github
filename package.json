@@ -63,7 +63,7 @@
     "jsii-diff": "^1.90.0",
     "jsii-docgen": "^7.2.9",
     "jsii-pacmak": "^1.90.0",
-    "jsii-rosetta": "^5.1.13",
+    "jsii-rosetta": "^5.2.0",
     "npm-check-updates": "^16",
     "projen": "^0.73.45",
     "standard-version": "^9",
