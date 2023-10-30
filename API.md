@@ -213,6 +213,30 @@ new MyGitHubActionRole(app, 'MyGitHubActionRole');
 app.synth();
 ```
 
+Specifying a `repos` array grants GitHub full access to the specified repositories.
+To restrict access to specific git branch, tag, or other
+[GitHub OIDC subject claim](https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect#example-subject-claims),
+specify a `subjectClaims` array instead of a `repos` array.
+
+```ts
+class MyGitHubActionRole extends Stack {
+  constructor(scope: Construct, id: string, props?: StackProps) {
+    super(scope, id, props);
+
+    const provider = new GitHubActionRole(this, 'github-action-role', {
+      subjectClaims: [
+        'repo:owner/repo1:ref:refs/heads/main',
+        'repo:owner/repo1:environment:prod',
+      ],
+    });
+  }
+}
+
+const app = new App();
+new MyGitHubActionRole(app, 'MyGitHubActionRole');
+app.synth();
+```
+
 Note: If you have previously created the GitHub identity provider with url
 `https://token.actions.githubusercontent.com`, the above example will fail
 because you can only have one such provider defined per account. In this
@@ -1956,27 +1980,11 @@ const gitHubActionRoleProps: GitHubActionRoleProps = { ... }
 
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
-| <code><a href="#cdk-pipelines-github.GitHubActionRoleProps.property.repos">repos</a></code> | <code>string[]</code> | A list of GitHub repositories you want to be able to access the IAM role. |
 | <code><a href="#cdk-pipelines-github.GitHubActionRoleProps.property.provider">provider</a></code> | <code>aws-cdk-lib.aws_iam.IOpenIdConnectProvider</code> | The GitHub OpenId Connect Provider. Must have provider url `https://token.actions.githubusercontent.com`. The audience must be `sts:amazonaws.com`. |
+| <code><a href="#cdk-pipelines-github.GitHubActionRoleProps.property.repos">repos</a></code> | <code>string[]</code> | A list of GitHub repositories you want to be able to access the IAM role. |
 | <code><a href="#cdk-pipelines-github.GitHubActionRoleProps.property.roleName">roleName</a></code> | <code>string</code> | The name of the Oidc role. |
+| <code><a href="#cdk-pipelines-github.GitHubActionRoleProps.property.subjectClaims">subjectClaims</a></code> | <code>string[]</code> | A list of subject claims allowed to access the IAM role. |
 | <code><a href="#cdk-pipelines-github.GitHubActionRoleProps.property.thumbprints">thumbprints</a></code> | <code>string[]</code> | Thumbprints of GitHub's certificates. |
-
----
-
-##### `repos`<sup>Required</sup> <a name="repos" id="cdk-pipelines-github.GitHubActionRoleProps.property.repos"></a>
-
-```typescript
-public readonly repos: string[];
-```
-
-- *Type:* string[]
-
-A list of GitHub repositories you want to be able to access the IAM role.
-
-Each entry should be your GitHub username and repository passed in as a
-single string.
-
-For example, `['owner/repo1', 'owner/repo2'].
 
 ---
 
@@ -1996,6 +2004,24 @@ have a provider with the same url, a new provider cannot be created for you.
 
 ---
 
+##### `repos`<sup>Optional</sup> <a name="repos" id="cdk-pipelines-github.GitHubActionRoleProps.property.repos"></a>
+
+```typescript
+public readonly repos: string[];
+```
+
+- *Type:* string[]
+
+A list of GitHub repositories you want to be able to access the IAM role.
+
+Each entry should be your GitHub username and repository passed in as a
+single string.
+An entry `owner/repo` is equivalent to the subjectClaim `repo:owner/repo:*`.
+
+For example, `['owner/repo1', 'owner/repo2'].
+
+---
+
 ##### `roleName`<sup>Optional</sup> <a name="roleName" id="cdk-pipelines-github.GitHubActionRoleProps.property.roleName"></a>
 
 ```typescript
@@ -2006,6 +2032,24 @@ public readonly roleName: string;
 - *Default:* 'GitHubActionRole'
 
 The name of the Oidc role.
+
+---
+
+##### `subjectClaims`<sup>Optional</sup> <a name="subjectClaims" id="cdk-pipelines-github.GitHubActionRoleProps.property.subjectClaims"></a>
+
+```typescript
+public readonly subjectClaims: string[];
+```
+
+- *Type:* string[]
+
+A list of subject claims allowed to access the IAM role.
+
+See https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect
+A subject claim can include `*` and `?` wildcards according to the `StringLike`
+condition operator.
+
+For example, `['repo:owner/repo1:ref:refs/heads/branch1', 'repo:owner/repo1:environment:prod']`
 
 ---
 
