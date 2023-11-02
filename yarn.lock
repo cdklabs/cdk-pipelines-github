@@ -1703,12 +1703,12 @@ case@1.6.3, case@^1.6.3:
   resolved "https://registry.yarnpkg.com/case/-/case-1.6.3.tgz#0a4386e3e9825351ca2e6216c60467ff5f1ea1c9"
   integrity sha512-mzDSXIPaFwVDvZAHqZ9VlbyF4yyXRuX6IvB06WvPYkqJVO24kX1PPhv9bfpKNFZyxYFmmgo03HUiD8iklmJYRQ==
 
-cdklabs-projen-project-types@^0.1.166:
-  version "0.1.166"
-  resolved "https://registry.yarnpkg.com/cdklabs-projen-project-types/-/cdklabs-projen-project-types-0.1.166.tgz#a126e37f5dad2246833e6aa8ffc3f5d0317c20b4"
-  integrity sha512-JUBParX1rld4bZFILHq5vD3MbL7+1o4G4W7w3WyAI2wdHZ7X4rGcnoKjzcogKhQgjo88hskC+yxdbKiXw2MnAw==
+cdklabs-projen-project-types@^0.1.167:
+  version "0.1.167"
+  resolved "https://registry.yarnpkg.com/cdklabs-projen-project-types/-/cdklabs-projen-project-types-0.1.167.tgz#3916775b75c8416e2c75ceed700cd7801719e89b"
+  integrity sha512-5t+7UA5EMYqm5CX9JoltFl3jvXgfNWrqrlJs0NfXawhgJvJEg3gq9tIa76oCTXAQzNYXM5Ax7hTGOGVtW5wazg==
   dependencies:
-    projen "^0.76.15"
+    projen "^0.76.16"
     yaml "^2.3.3"
 
 chalk@^2.4.2:
@@ -2365,9 +2365,9 @@ eastasianwidth@^0.2.0:
   integrity sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==
 
 electron-to-chromium@^1.4.535:
-  version "1.4.572"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.572.tgz#ed9876658998138fe9e3aa47ecfa0bf914192a86"
-  integrity sha512-RlFobl4D3ieetbnR+2EpxdzFl9h0RAJkPK3pfiwMug2nhBin2ZCsGIAJWdpNniLz43sgXam/CgipOmvTA+rUiA==
+  version "1.4.574"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.574.tgz#6de04d7c6e244e5ffcae76d2e2a33b02cab66781"
+  integrity sha512-bg1m8L0n02xRzx4LsTTMbBPiUd9yIR+74iPtS/Ao65CuXvhVZHP0ym1kSdDG3yHFDXqHQQBKujlN1AQ8qZnyFg==
 
 emittery@^0.8.1:
   version "0.8.1"
@@ -5379,10 +5379,10 @@ progress@^2.0.3:
   resolved "https://registry.yarnpkg.com/progress/-/progress-2.0.3.tgz#7e8cf8d8f5b8f239c1bc68beb4eb78567d572ef8"
   integrity sha512-7PiHtLll5LdnKIMw100I+8xJXR5gW2QwWYkT6iJva0bXitZKa/XMrSbdmg3r2Xnaidz9Qumd0VPaMrZlF9V9sA==
 
-projen@^0.76.15:
-  version "0.76.15"
-  resolved "https://registry.yarnpkg.com/projen/-/projen-0.76.15.tgz#a3a75be65bcd4035835ae40a32b2933f7f866e23"
-  integrity sha512-Ez1w2KlmzAtiYg9aIm7NFD56hafFgnGnYcZc60GzT6AEFPEDWPX1lGrngAibDnEys3iDsIimreyVIV77KVqoAg==
+projen@^0.76.16:
+  version "0.76.16"
+  resolved "https://registry.yarnpkg.com/projen/-/projen-0.76.16.tgz#f48384dda22c2e29a53b0e53f0b9ba0fc001b785"
+  integrity sha512-+p6ZNVvDICn2lskDofSOgUSTI8Or0aAqyiKf9RhSaE2nTqwoObbf1b4wmw44hjiQWa1/pVP+IGUzCienDIA+Jw==
   dependencies:
     "@iarna/toml" "^2.2.5"
     case "^1.6.3"
@@ -6492,9 +6492,9 @@ typescript@^4.9.5:
   integrity sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==
 
 typescript@next:
-  version "5.3.0-dev.20231031"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.3.0-dev.20231031.tgz#b2c4d1c38938d74fae00ff8f3eb0cb2d56addd8c"
-  integrity sha512-+w6szmOFr7GSWj/eNFgHdYqubMux9B5ao5LFoGdn712gbDYMpLwqLNkPLpJHD9chl/2wc/W96iSfALkZs7sVXQ==
+  version "5.3.0-dev.20231101"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.3.0-dev.20231101.tgz#911f63c9428f517584bae41fd9ccae31b9a2d371"
+  integrity sha512-yt5zz7L+TBfzeJhMA/tAEO1YU8J2DWsFN3LbeMslNPXL3S0lR3yvePdl6fXCk7QFjnfaRtXH0noNdWg2imHWXg==
 
 typescript@~3.9.10:
   version "3.9.10"
@@ -6572,9 +6572,9 @@ universalify@^0.2.0:
   integrity sha512-CJ1QgKmNg3CwvAv/kOFmtnEN05f0D/cn9QntgNOQlQF9dgvVTHj3t+8JPdjqawCHk7V/KA+fbUqzZ9XWhcqPUg==
 
 universalify@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/universalify/-/universalify-2.0.0.tgz#75a4984efedc4b08975c5aeb73f530d02df25717"
-  integrity sha512-hAZsKq7Yy11Zu1DE0OzWjw7nnLZmJZYTDZZyEFHZdUhV8FkH5MCfoU1XMaxXovpyW5nq5scPqq0ZDP9Zyl04oQ==
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/universalify/-/universalify-2.0.1.tgz#168efc2180964e6386d061e094df61afe239b18d"
+  integrity sha512-gptHNQghINnc/vTGIk0SOFGFNXw7JVrlRUtConJRlvaw6DuX0wO5Jeko9sWrMBhh+PsYAZ7oXAiOnf/UKogyiw==
 
 untildify@^4.0.0:
   version "4.0.0"
