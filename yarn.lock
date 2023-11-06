@@ -1703,12 +1703,12 @@ case@1.6.3, case@^1.6.3:
   resolved "https://registry.yarnpkg.com/case/-/case-1.6.3.tgz#0a4386e3e9825351ca2e6216c60467ff5f1ea1c9"
   integrity sha512-mzDSXIPaFwVDvZAHqZ9VlbyF4yyXRuX6IvB06WvPYkqJVO24kX1PPhv9bfpKNFZyxYFmmgo03HUiD8iklmJYRQ==
 
-cdklabs-projen-project-types@^0.1.169:
-  version "0.1.169"
-  resolved "https://registry.yarnpkg.com/cdklabs-projen-project-types/-/cdklabs-projen-project-types-0.1.169.tgz#4e8670886a50c01089ce548483a225dc9ad1f803"
-  integrity sha512-TGGjLyOzJ6Os47sf4JbFOruDPxAu/TSu6n0eO8HGX/NBcQGL5zP65D1uj/iCDx9hCoJYllAVOUdnCOot2yzkQw==
+cdklabs-projen-project-types@^0.1.170:
+  version "0.1.170"
+  resolved "https://registry.yarnpkg.com/cdklabs-projen-project-types/-/cdklabs-projen-project-types-0.1.170.tgz#e8c501e23067295fe970a8b3028299a4410aadab"
+  integrity sha512-zvlJQddo9SPhlW/RXNfsaoexNDjWrAZq7AHz9ADsSY8GnzxJX4TBMK6OSqZmGBql/4xo61Aowd9wikbbNZnveA==
   dependencies:
-    projen "^0.76.18"
+    projen "^0.76.19"
     yaml "^2.3.4"
 
 chalk@^2.4.2:
@@ -4309,9 +4309,9 @@ jsii@1.x:
     yargs "^16.2.0"
 
 jsii@~5.2.5:
-  version "5.2.23"
-  resolved "https://registry.yarnpkg.com/jsii/-/jsii-5.2.23.tgz#29e9e08cc38c642e1f915b094c1552b93e9db5e2"
-  integrity sha512-OrQU4r4187z93ORCgjtMYKTomygNmIE8zMFqGohBjD4sCLqgzSB70O2KBTas8Hplz5iZULdxP3+6a8P3kr1MnQ==
+  version "5.2.24"
+  resolved "https://registry.yarnpkg.com/jsii/-/jsii-5.2.24.tgz#9cf66f66d7e12bd68d90414ebd95d99d6597fd68"
+  integrity sha512-QmFQcOHfitMgxLeyCtx3LJc46Q6uc00gjz8BTC72cGqpJebA4sfOcx6ACHJSjSAcBsGp+lck5IrthkZyYZDcew==
   dependencies:
     "@jsii/check-node" "1.91.0"
     "@jsii/spec" "^1.91.0"
@@ -4323,7 +4323,7 @@ jsii@~5.2.5:
     semver "^7.5.4"
     semver-intersect "^1.4.0"
     sort-json "^2.0.1"
-    spdx-license-list "^6.7.0"
+    spdx-license-list "^6.8.0"
     typescript "~5.2"
     yargs "^17.7.2"
 
@@ -5379,10 +5379,10 @@ progress@^2.0.3:
   resolved "https://registry.yarnpkg.com/progress/-/progress-2.0.3.tgz#7e8cf8d8f5b8f239c1bc68beb4eb78567d572ef8"
   integrity sha512-7PiHtLll5LdnKIMw100I+8xJXR5gW2QwWYkT6iJva0bXitZKa/XMrSbdmg3r2Xnaidz9Qumd0VPaMrZlF9V9sA==
 
-projen@^0.76.18:
-  version "0.76.18"
-  resolved "https://registry.yarnpkg.com/projen/-/projen-0.76.18.tgz#938f1a36ad7846fdb8726ed798828c9690df78e5"
-  integrity sha512-nzDhs4GUuiKjgkhDrMA/QFjlBnYUstuth3AfLgp2C5rUofDzLHu3cWVnIq2E/qXxE9FS9VP4bTlQgBZV3C3+/Q==
+projen@^0.76.19, projen@^0.76.20:
+  version "0.76.20"
+  resolved "https://registry.yarnpkg.com/projen/-/projen-0.76.20.tgz#f6abaada4cb0b7846c5a304e099c185dcbb70830"
+  integrity sha512-mdDeLrTa8shJFh5J7WEjTwrQxmsORgRuvNzCUkUR/exMc3WSIS+kuwdAHzuX5l9y+tZdA/kauX6EpzjfaCY+FA==
   dependencies:
     "@iarna/toml" "^2.2.5"
     case "^1.6.3"
@@ -5975,7 +5975,7 @@ spdx-license-list@^6.6.0:
   resolved "https://registry.yarnpkg.com/spdx-license-list/-/spdx-license-list-6.7.0.tgz#dd8c6aba00e7a3f9549e473d0be2b83c4cae081f"
   integrity sha512-NFqavuJxNsHdwSy/0PjmUpcc76XwlmHQRPjVVtE62qmSLhKJUnzSvJCkU9nrY6TsChfGU1xqGePriBkNtNRMiA==
 
-spdx-license-list@^6.7.0:
+spdx-license-list@^6.7.0, spdx-license-list@^6.8.0:
   version "6.8.0"
   resolved "https://registry.yarnpkg.com/spdx-license-list/-/spdx-license-list-6.8.0.tgz#92a99cd6c8b97fe98ae83c54deaffd4d9d503f74"
   integrity sha512-5UdM7r9yJ1EvsPQZWfa41AZjLQngl9iMMysm9XBW7Lqhq7aF8cllfqjS+rFCHB8FFMGSM0yFWue2LUV9mR0QzQ==
@@ -6492,9 +6492,9 @@ typescript@^4.9.5:
   integrity sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==
 
 typescript@next:
-  version "5.4.0-dev.20231104"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.4.0-dev.20231104.tgz#8039d52c0dfda5e2e3ed975c30b3f1fce8f96c55"
-  integrity sha512-D+2hisYDB+vxSVJaZQYh+/jhBtJMsMbCPFshfsGbyp/OeHtkMyYtJ7+/EeclHcuUVui6IjRfKZ0lhvTEck278w==
+  version "5.4.0-dev.20231105"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.4.0-dev.20231105.tgz#a416d439f7f8d488f141a311759ba8e92915b54f"
+  integrity sha512-TN7QRSjarOvoxvHuZdVmofCnXJYklxsiZ1tyJKiKkghPWXwrkQ68R3NN3vhtS8B+jIeZoETKssmfbmhCl8rwxQ==
 
 typescript@~3.9.10:
   version "3.9.10"
