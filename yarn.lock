@@ -16,18 +16,18 @@
     "@jridgewell/trace-mapping" "^0.3.9"
 
 "@aws-cdk/integ-runner@latest":
-  version "2.104.0-alpha.0"
-  resolved "https://registry.yarnpkg.com/@aws-cdk/integ-runner/-/integ-runner-2.104.0-alpha.0.tgz#1a622da12b282f2d26d1717f13dc802c51c36de2"
-  integrity sha512-fS46bYDKZC5JFnci/gERot18XYajf4hRtMPyPJ6rmZLdK8e7xGVUsxzWH5x8KKZFKPUY1moH+ooygup3EXFbkw==
+  version "2.105.0-alpha.0"
+  resolved "https://registry.yarnpkg.com/@aws-cdk/integ-runner/-/integ-runner-2.105.0-alpha.0.tgz#86812c9192afac3adcace7f26374c9f0d34bea17"
+  integrity sha512-aTZDsOxZac5GyO9j0VqqHL+P7mgM4k/ugOtUfWg1XWdGQyNe03gmGGkYSWzX2j9pFoBhbIj1z4SQIa5VwgY0tA==
   dependencies:
-    aws-cdk "2.104.0"
+    aws-cdk "2.105.0"
   optionalDependencies:
     fsevents "2.3.2"
 
 "@aws-cdk/integ-tests-alpha@latest":
-  version "2.104.0-alpha.0"
-  resolved "https://registry.yarnpkg.com/@aws-cdk/integ-tests-alpha/-/integ-tests-alpha-2.104.0-alpha.0.tgz#d73b500864394c27356db00b53d6071ba9c186fd"
-  integrity sha512-w9GcHM0dfOK8YXxKloxyIIrzW7KS7MQGNDTGEcvDuOtm2E15hm2bITldwInoULaIzPbs/P5qteVh6ZGeZiLGuQ==
+  version "2.105.0-alpha.0"
+  resolved "https://registry.yarnpkg.com/@aws-cdk/integ-tests-alpha/-/integ-tests-alpha-2.105.0-alpha.0.tgz#f55384f29f9540e09a91fc0347789a045b957b03"
+  integrity sha512-aKu4ZlUbUWkfoFC47jHcPTtYssDpcxzFS2QvJhZE2ZJbzQYdUF8+SpSnjd/AZiVMzIJ9PycXyJ+94zU9isXrAw==
 
 "@babel/code-frame@^7.0.0", "@babel/code-frame@^7.12.13", "@babel/code-frame@^7.22.13":
   version "7.22.13"
@@ -1437,10 +1437,10 @@ aws-cdk-lib@2.9.0:
     semver "^7.3.5"
     yaml "1.10.2"
 
-aws-cdk@2.104.0:
-  version "2.104.0"
-  resolved "https://registry.yarnpkg.com/aws-cdk/-/aws-cdk-2.104.0.tgz#67bda59aae58837b88f9923938d664a78076e2b8"
-  integrity sha512-JuCafR5D1lnMKA88JUYhvRYeguozAWneC/n6kR1FUG+kXtXxpEqOxP91118dfJZYRw7FMIkHW8ewddvLwaCy5g==
+aws-cdk@2.105.0:
+  version "2.105.0"
+  resolved "https://registry.yarnpkg.com/aws-cdk/-/aws-cdk-2.105.0.tgz#748d2d08e3d78de2752fcb1d7a6c7d8bed6ad042"
+  integrity sha512-3ji+HNlCJUJ3o9h430gdRhocmeQrpM49fibXpvj3rvzBwuyWSTe2t8uohMPScSMETv59sHOlZpOdAEd+WwkuHQ==
   optionalDependencies:
     fsevents "2.3.2"
 
@@ -3639,9 +3639,9 @@ isexe@^2.0.0:
   integrity sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==
 
 istanbul-lib-coverage@^3.0.0, istanbul-lib-coverage@^3.2.0:
-  version "3.2.1"
-  resolved "https://registry.yarnpkg.com/istanbul-lib-coverage/-/istanbul-lib-coverage-3.2.1.tgz#c680fd1544600460367af5811866c34c44c6f3b1"
-  integrity sha512-opCrKqbthmq3SKZ10mFMQG9dk3fTa3quaOLD35kJa5ejwZHd9xAr+kLuziiZz2cG32s4lMZxNdmdcEQnTDP4+g==
+  version "3.2.2"
+  resolved "https://registry.yarnpkg.com/istanbul-lib-coverage/-/istanbul-lib-coverage-3.2.2.tgz#2d166c4b0644d43a39f04bf6c2edd1e585f31756"
+  integrity sha512-O8dpsF+r0WV/8MNRKfnmrtCWhuKjxrq2w+jpzBL5UZKTi2LeVWnWOmWRxFlesJONmc+wLAGvKQZEOanko0LFTg==
 
 istanbul-lib-instrument@^5.0.4, istanbul-lib-instrument@^5.1.0:
   version "5.2.1"
@@ -6484,9 +6484,9 @@ typescript@^4.9.5:
   integrity sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==
 
 typescript@next:
-  version "5.4.0-dev.20231107"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.4.0-dev.20231107.tgz#0adf8a770e56a85ed42d7d493cb55c2253042a34"
-  integrity sha512-4bQlfsyFjzZMo1bSLEkFJEcvuQ64pgE0S/BpdWu16lYsQOfJZtntZIyWdED3h+e96IMtVgrC6sxzfPZhj4J/dw==
+  version "5.4.0-dev.20231108"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.4.0-dev.20231108.tgz#d6c05b1ad5a447d4135fa7e87a9fd3b0645774b9"
+  integrity sha512-/DNtrqpbir9XaRxE6qwjhB94pCZzw/9R/PhB8309frJBEBGZ5qSDqstl7YYbhWbqs+zWpCCbwBjWDGlz8wn8GA==
 
 typescript@~3.9.10:
   version "3.9.10"
