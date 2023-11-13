@@ -2793,9 +2793,9 @@ find-up@^4.0.0, find-up@^4.1.0:
     path-exists "^4.0.0"
 
 flat-cache@^3.0.4:
-  version "3.1.1"
-  resolved "https://registry.yarnpkg.com/flat-cache/-/flat-cache-3.1.1.tgz#a02a15fdec25a8f844ff7cc658f03dd99eb4609b"
-  integrity sha512-/qM2b3LUIaIgviBQovTLvijfyOQXPtSRnRK26ksj2J7rzPIecePUIpJsZ4T02Qg+xiAEKIs5K8dsHEd+VaKa/Q==
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/flat-cache/-/flat-cache-3.2.0.tgz#2c0c2d5040c99b1632771a9d105725c0115363ee"
+  integrity sha512-CYcENa+FtcUKLmhhqyctpclsq7QF38pKjZHsGNiSQF5r4FtoKDWabFDl3hzaEQMvT1LHEysw5twgLvpYYb4vbw==
   dependencies:
     flatted "^3.2.9"
     keyv "^4.5.3"
@@ -4301,9 +4301,9 @@ jsii@1.x:
     yargs "^16.2.0"
 
 jsii@~5.2.5:
-  version "5.2.26"
-  resolved "https://registry.yarnpkg.com/jsii/-/jsii-5.2.26.tgz#44e1829f025838f051be9e8644910d04055428d3"
-  integrity sha512-R5R2mKKMVVs6a8nWJEtMWZXFr845visS4b4q4TK/xBQD7fmI2pylJftCJlePskwlv8W3hFlqSoQ2yp+Hbm8fZg==
+  version "5.2.27"
+  resolved "https://registry.yarnpkg.com/jsii/-/jsii-5.2.27.tgz#0249c0eec3897674dcbc427ca54cc1e87d3e9274"
+  integrity sha512-4zelloV4KhEMWqOS7PLcfqAK+zy0BRxikE2JgilUxUG7te/O0uHDIPfy6VJj6h2rLF4dMKovbges4Xk3HDYrJA==
   dependencies:
     "@jsii/check-node" "1.91.0"
     "@jsii/spec" "^1.91.0"
@@ -6486,9 +6486,9 @@ typescript@^4.9.5:
   integrity sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==
 
 typescript@next:
-  version "5.4.0-dev.20231111"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.4.0-dev.20231111.tgz#3317689150db75a46330fa202533f75f5db51200"
-  integrity sha512-/ebfj4mLRvOEfuewrM6DrZOxBXosLKqFVUU6NPZuOiy0XtMDt0KRfaLhLLZXEoyNNyQd9P6bmZTnNYeTs9hlyA==
+  version "5.4.0-dev.20231112"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.4.0-dev.20231112.tgz#be39b23eec8f22e2057ccc8459b94c21be8fb789"
+  integrity sha512-K7RH4eFyxJG7LkKWU0m7WdQrNRNz8yVkt2zW2tT2zfiUzIN2jbh2JLuztSqCsfqMNU5KduO7NvKaKK4QIvGY/Q==
 
 typescript@~3.9.10:
   version "3.9.10"
