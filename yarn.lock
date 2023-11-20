@@ -1393,12 +1393,11 @@ case@1.6.3, case@^1.6.3:
   resolved "https://registry.yarnpkg.com/case/-/case-1.6.3.tgz#0a4386e3e9825351ca2e6216c60467ff5f1ea1c9"
   integrity sha512-mzDSXIPaFwVDvZAHqZ9VlbyF4yyXRuX6IvB06WvPYkqJVO24kX1PPhv9bfpKNFZyxYFmmgo03HUiD8iklmJYRQ==
 
-cdklabs-projen-project-types@^0.1.176:
-  version "0.1.176"
-  resolved "https://registry.yarnpkg.com/cdklabs-projen-project-types/-/cdklabs-projen-project-types-0.1.176.tgz#3ef3abfb35b65af4d730657ac74d46bc51d3f501"
-  integrity sha512-3QcO4i6s+7KjGlQEPqmID5lTlpoCtM7FrPSPmC3g53Q+S95+tOoqBTnY6IAfH+1CXVZ1Qn6vVCR/xBcgb5Tbtw==
+cdklabs-projen-project-types@^0.1.179:
+  version "0.1.179"
+  resolved "https://registry.yarnpkg.com/cdklabs-projen-project-types/-/cdklabs-projen-project-types-0.1.179.tgz#861daf0643a1f940237dcd802c3c85733bc79598"
+  integrity sha512-/DUazy6UzdDHRt08zh+mgyoVOxe5vKLW08wMOgNk/JkSfN8nmUBfop1bcP0PoYii6scfwAYf2yyP837zV3snIw==
   dependencies:
-    projen "^0.76.28"
     yaml "^2.3.4"
 
 chalk@^2.4.2:
@@ -4299,10 +4298,10 @@ process-nextick-args@~2.0.0:
   resolved "https://registry.yarnpkg.com/process-nextick-args/-/process-nextick-args-2.0.1.tgz#7820d9b16120cc55ca9ae7792680ae7dba6d7fe2"
   integrity sha512-3ouUOpQhtgrbOa17J7+uxOTpITYWaGP7/AhoR3+A+/1e9skrzelGi/dXzEYyvbxubEF6Wn2ypscTKiKJFFn1ag==
 
-projen@^0.76.28:
-  version "0.76.28"
-  resolved "https://registry.yarnpkg.com/projen/-/projen-0.76.28.tgz#8dbdb0dbf92a2507ee13604701fe0d898a8c7cec"
-  integrity sha512-7CeCRXhBT9mDe1h2lse9RJDH1ZBdQ27pqkVSrTTor4JdiKYumn4NqRF8/ANw0xyKUrXzvFvpXkuRTyBHrGKbCg==
+projen@^0.76.29:
+  version "0.76.29"
+  resolved "https://registry.yarnpkg.com/projen/-/projen-0.76.29.tgz#13810ceb6d63f26b6ded63d4a49c4a21c523f727"
+  integrity sha512-m0bKElBV/aRtXqRD0KMVjTRXnFabNXfEDUeAefrXQWtlmHcdPCzVEJKGgpH334B2eceT9rzJlV+iI/PXUxmTWg==
   dependencies:
     "@iarna/toml" "^2.2.5"
     case "^1.6.3"
