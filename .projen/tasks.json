@@ -360,7 +360,7 @@
           "exec": "yarn install --check-files"
         },
         {
-          "exec": "yarn upgrade decamelize fast-json-patch yaml aws-cdk-lib constructs"
+          "exec": "yarn upgrade decamelize fast-json-patch yaml"
         },
         {
           "exec": "npx projen"
