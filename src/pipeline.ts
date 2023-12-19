@@ -564,7 +564,7 @@ export class GitHubWorkflow extends PipelineBase {
       return EnvironmentPlaceholders.replace(s, {
         accountId: account,
         region: region,
-        partition: 'aws',
+        partition: 'aws-cn',
       });
     };
 
@@ -573,7 +573,8 @@ export class GitHubWorkflow extends PipelineBase {
       if (this.assetHashMap[hash] === undefined) {
         throw new Error(`Template asset hash ${hash} not found.`);
       }
-      return template.replace(hash, `\${{ needs.${this.assetHashMap[hash]}.outputs.${ASSET_HASH_NAME} }}`);
+      return template.replace(hash, `\${{ needs.${this.assetHashMap[hash]}.outputs.${ASSET_HASH_NAME} }}`)
+        .replace('.amazonaws.com', '.amazonaws.com.cn');
     };
 
     const params: Record<string, any> = {
