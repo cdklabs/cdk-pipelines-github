@@ -41,6 +41,8 @@ const project = new CdklabsConstructLibrary({
     dotNetNamespace: 'Cdklabs.CdkPipelinesGitHub',
     packageId: 'Cdklabs.CdkPipelinesGitHub',
   },
+
+  workflowNodeVersion: '18.x',
 });
 
 // JSII sets this to `false` so we need to be compatible
