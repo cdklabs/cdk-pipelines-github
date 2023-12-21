@@ -5163,7 +5163,7 @@ new GitHubActionStep(id: string, props: GitHubActionStepProps)
 
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
-| <code><a href="#cdk-pipelines-github.GitHubActionStep.Initializer.parameter.id">id</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#cdk-pipelines-github.GitHubActionStep.Initializer.parameter.id">id</a></code> | <code>string</code> | Identifier for this step. |
 | <code><a href="#cdk-pipelines-github.GitHubActionStep.Initializer.parameter.props">props</a></code> | <code><a href="#cdk-pipelines-github.GitHubActionStepProps">GitHubActionStepProps</a></code> | *No description.* |
 
 ---
@@ -5171,6 +5171,8 @@ new GitHubActionStep(id: string, props: GitHubActionStepProps)
 ##### `id`<sup>Required</sup> <a name="id" id="cdk-pipelines-github.GitHubActionStep.Initializer.parameter.id"></a>
 
 - *Type:* string
+
+Identifier for this step.
 
 ---
 
@@ -5539,9 +5541,9 @@ Operations can be created using the factory methods `JsonPatch.add()`,
 `JsonPatch.remove()`, etc.
 
 const output = JsonPatch.apply(input,
-   JsonPatch.replace('/world/hi/there', 'goodbye'),
-   JsonPatch.add('/world/foo/', 'boom'),
-   JsonPatch.remove('/hello'),
+  JsonPatch.replace('/world/hi/there', 'goodbye'),
+  JsonPatch.add('/world/foo/', 'boom'),
+  JsonPatch.remove('/hello'),
 );
 
 
@@ -5921,10 +5923,10 @@ For example, with the following yaml file
 ```yaml
 name: deploy
 on:
-   push:
-     branches:
-       - main
-   workflow_dispatch: {}
+  push:
+    branches:
+      - main
+  workflow_dispatch: {}
 ...
 ```
 
@@ -5941,10 +5943,10 @@ would result in the following yaml file:
 ```yaml
 name: deploy
 on:
-   push:
-     branches:
-       - main
-   workflow_call: {}
+  push:
+    branches:
+      - main
+  workflow_call: {}
 ...
 ```
 
