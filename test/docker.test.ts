@@ -6,7 +6,7 @@ import * as codebuild from 'aws-cdk-lib/aws-codebuild';
 import { ShellStep } from 'aws-cdk-lib/pipelines';
 import * as YAML from 'yaml';
 import { TestApp } from './testutil';
-import { DockerCredential, GitHubWorkflow } from '../src';
+import { DockerAssetJobSettings, DockerCredential, GitHubWorkflow, JobPermission } from '../src';
 
 const dockers = join(__dirname, 'demo-image');
 
@@ -106,9 +106,43 @@ describe('correct format for docker credentials:', () => {
       },
     });
   });
+
+  test('with setup job steps', () => {
+    const github = createDockerGithubWorkflow(app, [DockerCredential.dockerHub()], {
+      setupSteps: [
+        {
+          name: 'Setup Docker buildx',
+          uses: 'docker/setup-buildx-action@v3',
+        },
+      ],
+    });
+    const file = fs.readFileSync(github.workflowPath, 'utf-8');
+    const workflow = YAML.parse(file);
+    const steps = findStepByJobAndUses(workflow, 'Assets-DockerAsset1', 'docker/setup-buildx-action@v3');
+    expect(steps.length).toEqual(1);
+    expect(steps[0]).toEqual({
+      name: 'Setup Docker buildx',
+      uses: 'docker/setup-buildx-action@v3',
+    });
+  });
+
+  test('with permissions', () => {
+    const github = createDockerGithubWorkflow(app, [DockerCredential.dockerHub()], {
+      permissions: {
+        packages: JobPermission.READ,
+      },
+    });
+    const file = fs.readFileSync(github.workflowPath, 'utf-8');
+    const workflow = YAML.parse(file);
+
+    const permissions = workflow.jobs['Assets-DockerAsset1'].permissions;
+    expect(permissions).toMatchObject({
+      packages: 'read',
+    });
+  });
 });
 
-function createDockerGithubWorkflow(app: App, dockerCredentials: DockerCredential[]) {
+function createDockerGithubWorkflow(app: App, dockerCredentials: DockerCredential[], dockerAssetJobSettings?: DockerAssetJobSettings) {
   const github = new GitHubWorkflow(app, 'Pipeline', {
     workflowPath: `${mkoutdir()}/.github/workflows/deploy.yml`,
     synth: new ShellStep('Build', {
@@ -116,6 +150,7 @@ function createDockerGithubWorkflow(app: App, dockerCredentials: DockerCredentia
       commands: ['yarn build'],
     }),
     dockerCredentials,
+    dockerAssetJobSettings,
   });
 
   github.addStage(new MyDockerStage(app, 'MyStage', {
