@@ -213,6 +213,30 @@ new MyGitHubActionRole(app, 'MyGitHubActionRole');
 app.synth();
 ```
 
+Specifying a `repos` array grants GitHub full access to the specified repositories.
+To restrict access to specific git branch, tag, or other
+[GitHub OIDC subject claim](https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect#example-subject-claims),
+specify a `subjectClaims` array instead of a `repos` array.
+
+```ts
+class MyGitHubActionRole extends Stack {
+  constructor(scope: Construct, id: string, props?: StackProps) {
+    super(scope, id, props);
+
+    const provider = new GitHubActionRole(this, 'github-action-role', {
+      subjectClaims: [
+        'repo:owner/repo1:ref:refs/heads/main',
+        'repo:owner/repo1:environment:prod',
+      ],
+    });
+  }
+}
+
+const app = new App();
+new MyGitHubActionRole(app, 'MyGitHubActionRole');
+app.synth();
+```
+
 Note: If you have previously created the GitHub identity provider with url
 `https://token.actions.githubusercontent.com`, the above example will fail
 because you can only have one such provider defined per account. In this
