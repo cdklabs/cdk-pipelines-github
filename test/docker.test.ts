@@ -136,8 +136,10 @@ describe('correct format for docker credentials:', () => {
     const workflow = YAML.parse(file);
 
     const permissions = workflow.jobs['Assets-DockerAsset1'].permissions;
-    expect(permissions).toMatchObject({
-      packages: 'read',
+    expect(permissions).toEqual({
+      'contents': 'read',
+      'id-token': 'none',
+      'packages': 'read',
     });
   });
 });

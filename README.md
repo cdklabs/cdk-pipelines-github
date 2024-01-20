@@ -607,7 +607,7 @@ configuration additional `setupSteps`, in this case setup steps to configure
 docker `buildx` and `QEMU` to enable building images for arm64 architecture.
 
 ```ts
-import { ShellStep, JobPermission } from 'aws-cdk-lib/pipelines';
+import { ShellStep } from 'aws-cdk-lib/pipelines';
 
 const app = new App();
 

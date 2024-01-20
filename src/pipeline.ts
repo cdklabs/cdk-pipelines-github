@@ -521,7 +521,7 @@ export class GitHubWorkflow extends PipelineBase {
     const jobId = node.uniqueId;
     const assetId = assets[0].assetId;
     const preBuildSteps: github.JobStep[] = [];
-    const permissions: github.JobPermissions = {
+    let permissions: github.JobPermissions = {
       contents: github.JobPermission.READ,
       idToken: this.awsCredentials.jobPermission(),
     };
@@ -537,9 +537,11 @@ export class GitHubWorkflow extends PipelineBase {
       if (this.dockerAssetJobSettings?.setupSteps) {
         preBuildSteps.push(...this.dockerAssetJobSettings.setupSteps);
       }
-      for (const [permission, value] of Object.entries(this.dockerAssetJobSettings?.permissions ?? {})) {
-        permissions[permission] = value;
-      }
+
+      permissions = {
+        ...permissions,
+        ...this.dockerAssetJobSettings?.permissions,
+      };
     }
 
     // create one file and make one step
