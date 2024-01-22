@@ -19,6 +19,25 @@ const CDKOUT_ARTIFACT = 'cdk.out';
 const ASSET_HASH_NAME = 'asset-hash';
 
 /**
+ * Job level settings applied to all docker asset publishing jobs in the workflow.
+ */
+export interface DockerAssetJobSettings {
+  /**
+   * GitHub workflow steps to execute before building and publishing the image.
+   *
+   * @default []
+   */
+  readonly setupSteps?: github.JobStep[];
+
+  /**
+   * Additional permissions to grant to the docker image publishing job.
+   *
+   * @default - no additional permissions
+   */
+  readonly permissions?: github.JobPermissions;
+}
+
+/**
  * Job level settings applied to all jobs in the workflow.
  */
 export interface JobSettings {
@@ -155,6 +174,13 @@ export interface GitHubWorkflowProps extends PipelineBaseProps {
    * @see https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#example-only-run-job-for-specific-repository
    */
   readonly jobSettings?: JobSettings;
+
+  /**
+   * Job level settings applied to all docker asset publishing jobs in the workflow.
+   *
+   * @default - no additional settings
+   */
+  readonly dockerAssetJobSettings?: DockerAssetJobSettings;
 }
 
 /**
@@ -186,6 +212,7 @@ export class GitHubWorkflow extends PipelineBase {
   }
   > = {};
   private readonly jobSettings?: JobSettings;
+  private readonly dockerAssetJobSettings?: DockerAssetJobSettings;
   // in order to keep track of if this pipeline has been built so we can
   // catch later calls to addWave() or addStage()
   private builtGH = false;
@@ -199,6 +226,7 @@ export class GitHubWorkflow extends PipelineBase {
     this.preBuildSteps = props.preBuildSteps ?? [];
     this.postBuildSteps = props.postBuildSteps ?? [];
     this.jobSettings = props.jobSettings;
+    this.dockerAssetJobSettings = props.dockerAssetJobSettings;
 
     this.awsCredentials = this.getAwsCredentials(props);
 
@@ -492,13 +520,28 @@ export class GitHubWorkflow extends PipelineBase {
     const cdkoutDir = options.assemblyDir;
     const jobId = node.uniqueId;
     const assetId = assets[0].assetId;
+    const preBuildSteps: github.JobStep[] = [];
+    let permissions: github.JobPermissions = {
+      contents: github.JobPermission.READ,
+      idToken: this.awsCredentials.jobPermission(),
+    };
 
     // check if asset is docker asset and if we have docker credentials
     const dockerLoginSteps: github.JobStep[] = [];
-    if (node.uniqueId.includes('DockerAsset') && this.dockerCredentials.length > 0) {
-      for (const creds of this.dockerCredentials) {
-        dockerLoginSteps.push(...this.stepsToConfigureDocker(creds));
+    if (node.uniqueId.includes('DockerAsset')) {
+      if (this.dockerCredentials.length > 0) {
+        for (const creds of this.dockerCredentials) {
+          dockerLoginSteps.push(...this.stepsToConfigureDocker(creds));
+        }
       }
+      if (this.dockerAssetJobSettings?.setupSteps) {
+        preBuildSteps.push(...this.dockerAssetJobSettings.setupSteps);
+      }
+
+      permissions = {
+        ...permissions,
+        ...this.dockerAssetJobSettings?.permissions,
+      };
     }
 
     // create one file and make one step
@@ -527,10 +570,7 @@ export class GitHubWorkflow extends PipelineBase {
         name: `Publish Assets ${jobId}`,
         ...this.renderJobSettingParameters(),
         needs: this.renderDependencies(node),
-        permissions: {
-          contents: github.JobPermission.READ,
-          idToken: this.awsCredentials.jobPermission(),
-        },
+        permissions,
         runsOn: this.runner.runsOn,
         outputs: {
           [ASSET_HASH_NAME]: `\${{ steps.Publish.outputs.${ASSET_HASH_NAME} }}`,
@@ -543,6 +583,7 @@ export class GitHubWorkflow extends PipelineBase {
           },
           ...this.stepsToConfigureAws(this.publishAssetsAuthRegion),
           ...dockerLoginSteps,
+          ...preBuildSteps,
           publishStep,
         ],
       },

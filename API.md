@@ -43,6 +43,7 @@ Workflows.
       - [Waves for Parallel Builds](#waves-for-parallel-builds)
       - [Manual Approval Step](#manual-approval-step)
     - [Pipeline YAML Comments](#pipeline-yaml-comments)
+    - [Common Configuration for Docker Asset Publishing Steps](#common-configuration-for-docker-asset-publishing)
   - [Tutorial](#tutorial)
   - [Not supported yet](#not-supported-yet)
   - [Contributing](#contributing)
@@ -590,6 +591,54 @@ on:
   push:
     branches:
 < the rest of the pipeline YAML contents>
+```
+
+### Common Configuration for Docker Asset Publishing Steps
+
+You can provide common job configuration for all of the docker asset publishing
+jobs using the `dockerAssetJobSettings` property. You can use this to:
+
+- Set additional `permissions` at the job level
+- Run additional steps prior to the docker build/push step
+
+Below is an example of example of configuration an additional `permission` which
+allows the job to authenticate against GitHub packages. It also shows
+configuration additional `setupSteps`, in this case setup steps to configure
+docker `buildx` and `QEMU` to enable building images for arm64 architecture.
+
+```ts
+import { ShellStep } from 'aws-cdk-lib/pipelines';
+
+const app = new App();
+
+const pipeline = new GitHubWorkflow(app, 'Pipeline', {
+  synth: new ShellStep('Build', {
+    commands: [
+      'yarn install',
+      'yarn build',
+    ],
+  }),
+  dockerAssetJobSettings: {
+    permissions: {
+      packages: JobPermission.READ,
+    },
+    setupSteps: [
+      {
+        name: 'Setup Docker QEMU',
+        uses: 'docker/setup-qemu-action@v3',
+      },
+      {
+        name: 'Setup Docker buildx',
+        uses: 'docker/setup-buildx-action@v3',
+      },
+    ],
+  },
+  awsCreds: AwsCredentials.fromOpenIdConnect({
+    gitHubActionRoleArn: 'arn:aws:iam::<account-id>:role/GitHubActionRole',
+  }),
+});
+
+app.synth();
 ```
 
 ## Tutorial
@@ -1859,6 +1908,53 @@ const deploymentStatusOptions: DeploymentStatusOptions = { ... }
 ```
 
 
+### DockerAssetJobSettings <a name="DockerAssetJobSettings" id="cdk-pipelines-github.DockerAssetJobSettings"></a>
+
+Job level settings applied to all docker asset publishing jobs in the workflow.
+
+#### Initializer <a name="Initializer" id="cdk-pipelines-github.DockerAssetJobSettings.Initializer"></a>
+
+```typescript
+import { DockerAssetJobSettings } from 'cdk-pipelines-github'
+
+const dockerAssetJobSettings: DockerAssetJobSettings = { ... }
+```
+
+#### Properties <a name="Properties" id="Properties"></a>
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#cdk-pipelines-github.DockerAssetJobSettings.property.permissions">permissions</a></code> | <code><a href="#cdk-pipelines-github.JobPermissions">JobPermissions</a></code> | Additional permissions to grant to the docker image publishing job. |
+| <code><a href="#cdk-pipelines-github.DockerAssetJobSettings.property.setupSteps">setupSteps</a></code> | <code><a href="#cdk-pipelines-github.JobStep">JobStep</a>[]</code> | GitHub workflow steps to execute before building and publishing the image. |
+
+---
+
+##### `permissions`<sup>Optional</sup> <a name="permissions" id="cdk-pipelines-github.DockerAssetJobSettings.property.permissions"></a>
+
+```typescript
+public readonly permissions: JobPermissions;
+```
+
+- *Type:* <a href="#cdk-pipelines-github.JobPermissions">JobPermissions</a>
+- *Default:* no additional permissions
+
+Additional permissions to grant to the docker image publishing job.
+
+---
+
+##### `setupSteps`<sup>Optional</sup> <a name="setupSteps" id="cdk-pipelines-github.DockerAssetJobSettings.property.setupSteps"></a>
+
+```typescript
+public readonly setupSteps: JobStep[];
+```
+
+- *Type:* <a href="#cdk-pipelines-github.JobStep">JobStep</a>[]
+- *Default:* []
+
+GitHub workflow steps to execute before building and publishing the image.
+
+---
+
 ### DockerHubCredentialSecrets <a name="DockerHubCredentialSecrets" id="cdk-pipelines-github.DockerHubCredentialSecrets"></a>
 
 Locations of GitHub Secrets used to authenticate to DockerHub.
@@ -2451,6 +2547,7 @@ const gitHubWorkflowProps: GitHubWorkflowProps = { ... }
 | <code><a href="#cdk-pipelines-github.GitHubWorkflowProps.property.awsCreds">awsCreds</a></code> | <code><a href="#cdk-pipelines-github.AwsCredentialsProvider">AwsCredentialsProvider</a></code> | Configure provider for AWS credentials used for deployment. |
 | <code><a href="#cdk-pipelines-github.GitHubWorkflowProps.property.buildContainer">buildContainer</a></code> | <code><a href="#cdk-pipelines-github.ContainerOptions">ContainerOptions</a></code> | Build container options. |
 | <code><a href="#cdk-pipelines-github.GitHubWorkflowProps.property.cdkCliVersion">cdkCliVersion</a></code> | <code>string</code> | Version of the CDK CLI to use. |
+| <code><a href="#cdk-pipelines-github.GitHubWorkflowProps.property.dockerAssetJobSettings">dockerAssetJobSettings</a></code> | <code><a href="#cdk-pipelines-github.DockerAssetJobSettings">DockerAssetJobSettings</a></code> | Job level settings applied to all docker asset publishing jobs in the workflow. |
 | <code><a href="#cdk-pipelines-github.GitHubWorkflowProps.property.dockerCredentials">dockerCredentials</a></code> | <code><a href="#cdk-pipelines-github.DockerCredential">DockerCredential</a>[]</code> | The Docker Credentials to use to login. |
 | <code><a href="#cdk-pipelines-github.GitHubWorkflowProps.property.gitHubActionRoleArn">gitHubActionRoleArn</a></code> | <code>string</code> | A role that utilizes the GitHub OIDC Identity Provider in your AWS account. |
 | <code><a href="#cdk-pipelines-github.GitHubWorkflowProps.property.jobSettings">jobSettings</a></code> | <code><a href="#cdk-pipelines-github.JobSettings">JobSettings</a></code> | Job level settings that will be applied to all jobs in the workflow, including synth and asset deploy jobs. |
@@ -2534,6 +2631,19 @@ public readonly cdkCliVersion: string;
 - *Default:* automatic
 
 Version of the CDK CLI to use.
+
+---
+
+##### `dockerAssetJobSettings`<sup>Optional</sup> <a name="dockerAssetJobSettings" id="cdk-pipelines-github.GitHubWorkflowProps.property.dockerAssetJobSettings"></a>
+
+```typescript
+public readonly dockerAssetJobSettings: DockerAssetJobSettings;
+```
+
+- *Type:* <a href="#cdk-pipelines-github.DockerAssetJobSettings">DockerAssetJobSettings</a>
+- *Default:* no additional settings
+
+Job level settings applied to all docker asset publishing jobs in the workflow.
 
 ---
 

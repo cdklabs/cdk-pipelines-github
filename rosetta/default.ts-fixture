@@ -15,6 +15,7 @@ import {
   JsonPatch,
   Runner,
   DockerCredential,
+  JobPermission,
 } from 'cdk-pipelines-github';
 
 const BETA_ENV = {
