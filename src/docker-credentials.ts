@@ -15,11 +15,13 @@ export class DockerCredential {
    * found in your GitHub Secrets under these default keys.
    */
   public static dockerHub(creds: DockerHubCredentialSecrets = {}): DockerCredential {
+    const username = creds.usernameKey ?? 'DOCKERHUB_USERNAME';
+    const password = creds.personalAccessTokenKey ?? 'DOCKERHUB_TOKEN';
     return new DockerCredential(
       'docker',
       undefined,
-      creds.usernameKey ?? 'DOCKERHUB_USERNAME',
-      creds.personalAccessTokenKey ?? 'DOCKERHUB_TOKEN',
+      `\${{ secrets.${username} }}`,
+      `\${{ secrets.${password} }}`,
     );
   }
 
@@ -39,6 +41,21 @@ export class DockerCredential {
   }
 
   /**
+   * Create a credential for the GitHub Container Registry (GHCR).
+   *
+   * For more information on authenticating to GHCR,
+   * @see https://docs.github.com/en/packages/managing-github-packages-using-github-actions-workflows/publishing-and-installing-a-package-with-github-actions
+   */
+  public static ghcr(): DockerCredential {
+    return new DockerCredential(
+      'ghcr',
+      'ghcr.io',
+      '\${{ github.actor }}',
+      '\${{ secrets.GITHUB_TOKEN }}',
+    );
+  }
+
+  /**
    * Create a credential for a custom registry. This method assumes that you will have long-lived
    * GitHub Secrets stored under the usernameKey and passwordKey that will authenticate to the
    * registry you provide.
@@ -46,14 +63,19 @@ export class DockerCredential {
    * @see https://github.com/marketplace/actions/docker-login
    */
   public static customRegistry(registry: string, creds: ExternalDockerCredentialSecrets): DockerCredential {
-    return new DockerCredential('custom', registry, creds.usernameKey, creds.passwordKey);
+    return new DockerCredential(
+      'custom',
+      registry,
+      `\${{ secrets.${creds.usernameKey} }}`,
+      `\${{ secrets.${creds.passwordKey} }}`,
+    );
   }
 
   private constructor(
     readonly name: string,
     readonly registry?: string,
-    readonly usernameKey?: string,
-    readonly passwordKey?: string,
+    readonly username?: string,
+    readonly password?: string,
   ) {}
 }
 
