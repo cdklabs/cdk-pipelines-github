@@ -3,9 +3,29 @@ import { JobSettings } from './pipeline';
 import { StackCapabilities } from './stage-options';
 
 /**
+ * Github environment with name and url.
+ *
+ * @see https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idenvironment
+ */
+export interface GitHubEnvironment {
+  /**
+   * Name of the environment
+   *
+   * @see https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#example-using-environment-name-and-url
+   */
+  readonly name: string;
+
+  /**
+   * The url for the environment.
+   *
+   * @see https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#example-using-environment-name-and-url
+   */
+  readonly url?: string;
+}
+
+/**
  * Common properties to extend both StageProps and AddStageOpts
  */
-
 export interface GitHubCommonProps {
   /**
    * Run the stage in a specific GitHub Environment. If specified,
@@ -20,7 +40,7 @@ export interface GitHubCommonProps {
    *
    * @default - no GitHub environment
    */
-  readonly gitHubEnvironment?: string;
+  readonly gitHubEnvironment?: GitHubEnvironment;
 
   /**
    * In some cases, you must explicitly acknowledge that your CloudFormation

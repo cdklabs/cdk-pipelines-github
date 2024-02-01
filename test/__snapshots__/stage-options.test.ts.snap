@@ -52,7 +52,7 @@ jobs:
       - name: Install
         run: npm install --no-save cdk-assets
       - name: Authenticate Via GitHub Secrets
-        uses: aws-actions/configure-aws-credentials@v1-node16
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: us-west-2
           role-duration-seconds: 1800
@@ -91,7 +91,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Authenticate Via GitHub Secrets
-        uses: aws-actions/configure-aws-credentials@v1-node16
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: us-east-1
           role-duration-seconds: 1800
@@ -101,7 +101,7 @@ jobs:
           role-to-assume: arn:aws:iam::111111111111:role/cdk-hnb659fds-deploy-role-111111111111-us-east-1
           role-external-id: Pipeline
       - id: Deploy
-        uses: aws-actions/aws-cloudformation-github-deploy@v1.1.0
+        uses: aws-actions/aws-cloudformation-github-deploy@v1.2.0
         with:
           name: MyPrePostStack-MyStack
           template: https://cdk-hnb659fds-assets-111111111111-us-east-1.s3.us-east-1.amazonaws.com/\${{
@@ -179,7 +179,7 @@ jobs:
       - name: Install
         run: npm install --no-save cdk-assets
       - name: Authenticate Via GitHub Secrets
-        uses: aws-actions/configure-aws-credentials@v1-node16
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: us-west-2
           role-duration-seconds: 1800
@@ -200,7 +200,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Authenticate Via GitHub Secrets
-        uses: aws-actions/configure-aws-credentials@v1-node16
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: us-east-1
           role-duration-seconds: 1800
@@ -210,7 +210,7 @@ jobs:
           role-to-assume: arn:aws:iam::111111111111:role/cdk-hnb659fds-deploy-role-111111111111-us-east-1
           role-external-id: Pipeline
       - id: Deploy
-        uses: aws-actions/aws-cloudformation-github-deploy@v1.1.0
+        uses: aws-actions/aws-cloudformation-github-deploy@v1.2.0
         with:
           name: MyStack-MyStack
           template: https://cdk-hnb659fds-assets-111111111111-us-east-1.s3.us-east-1.amazonaws.com/\${{
@@ -271,7 +271,7 @@ jobs:
       - name: Install
         run: npm install --no-save cdk-assets
       - name: Authenticate Via GitHub Secrets
-        uses: aws-actions/configure-aws-credentials@v1-node16
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: us-west-2
           role-duration-seconds: 1800
@@ -292,7 +292,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Authenticate Via GitHub Secrets
-        uses: aws-actions/configure-aws-credentials@v1-node16
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: us-east-1
           role-duration-seconds: 1800
@@ -302,7 +302,7 @@ jobs:
           role-to-assume: arn:aws:iam::111111111111:role/cdk-hnb659fds-deploy-role-111111111111-us-east-1
           role-external-id: Pipeline
       - id: Deploy
-        uses: aws-actions/aws-cloudformation-github-deploy@v1.1.0
+        uses: aws-actions/aws-cloudformation-github-deploy@v1.2.0
         with:
           name: MyStack-MyStack
           template: https://cdk-hnb659fds-assets-111111111111-us-east-1.s3.us-east-1.amazonaws.com/\${{
@@ -363,7 +363,7 @@ jobs:
       - name: Install
         run: npm install --no-save cdk-assets
       - name: Authenticate Via GitHub Secrets
-        uses: aws-actions/configure-aws-credentials@v1-node16
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: us-west-2
           role-duration-seconds: 1800
@@ -385,7 +385,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Authenticate Via GitHub Secrets
-        uses: aws-actions/configure-aws-credentials@v1-node16
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: us-east-1
           role-duration-seconds: 1800
@@ -395,7 +395,7 @@ jobs:
           role-to-assume: arn:aws:iam::111111111111:role/cdk-hnb659fds-deploy-role-111111111111-us-east-1
           role-external-id: Pipeline
       - id: Deploy
-        uses: aws-actions/aws-cloudformation-github-deploy@v1.1.0
+        uses: aws-actions/aws-cloudformation-github-deploy@v1.2.0
         with:
           name: MyStage1-MyStack
           template: https://cdk-hnb659fds-assets-111111111111-us-east-1.s3.us-east-1.amazonaws.com/\${{
@@ -415,7 +415,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Authenticate Via GitHub Secrets
-        uses: aws-actions/configure-aws-credentials@v1-node16
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: us-west-2
           role-duration-seconds: 1800
@@ -425,7 +425,7 @@ jobs:
           role-to-assume: arn:aws:iam::222222222222:role/cdk-hnb659fds-deploy-role-222222222222-us-west-2
           role-external-id: Pipeline
       - id: Deploy
-        uses: aws-actions/aws-cloudformation-github-deploy@v1.1.0
+        uses: aws-actions/aws-cloudformation-github-deploy@v1.2.0
         with:
           name: MyStage2-MyStack
           template: https://cdk-hnb659fds-assets-222222222222-us-west-2.s3.us-west-2.amazonaws.com/\${{
@@ -489,7 +489,7 @@ jobs:
       - name: Install
         run: npm install --no-save cdk-assets
       - name: Authenticate Via GitHub Secrets
-        uses: aws-actions/configure-aws-credentials@v1-node16
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: us-west-2
           role-duration-seconds: 1800
@@ -528,7 +528,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Authenticate Via GitHub Secrets
-        uses: aws-actions/configure-aws-credentials@v1-node16
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: us-east-1
           role-duration-seconds: 1800
@@ -538,7 +538,7 @@ jobs:
           role-to-assume: arn:aws:iam::111111111111:role/cdk-hnb659fds-deploy-role-111111111111-us-east-1
           role-external-id: Pipeline
       - id: Deploy
-        uses: aws-actions/aws-cloudformation-github-deploy@v1.1.0
+        uses: aws-actions/aws-cloudformation-github-deploy@v1.2.0
         with:
           name: MyStageA-MyStackA
           template: https://cdk-hnb659fds-assets-111111111111-us-east-1.s3.us-east-1.amazonaws.com/\${{
@@ -558,7 +558,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Authenticate Via GitHub Secrets
-        uses: aws-actions/configure-aws-credentials@v1-node16
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: us-east-1
           role-duration-seconds: 1800
@@ -568,7 +568,7 @@ jobs:
           role-to-assume: arn:aws:iam::12345678901:role/cdk-hnb659fds-deploy-role-12345678901-us-east-1
           role-external-id: Pipeline
       - id: Deploy
-        uses: aws-actions/aws-cloudformation-github-deploy@v1.1.0
+        uses: aws-actions/aws-cloudformation-github-deploy@v1.2.0
         with:
           name: MyStageB-MyStackB
           template: https://cdk-hnb659fds-assets-12345678901-us-east-1.s3.us-east-1.amazonaws.com/\${{
@@ -648,7 +648,7 @@ jobs:
       - name: Install
         run: npm install --no-save cdk-assets
       - name: Authenticate Via GitHub Secrets
-        uses: aws-actions/configure-aws-credentials@v1-node16
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: us-west-2
           role-duration-seconds: 1800
@@ -670,7 +670,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Authenticate Via GitHub Secrets
-        uses: aws-actions/configure-aws-credentials@v1-node16
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: us-east-1
           role-duration-seconds: 1800
@@ -680,7 +680,7 @@ jobs:
           role-to-assume: arn:aws:iam::111111111111:role/cdk-hnb659fds-deploy-role-111111111111-us-east-1
           role-external-id: Pipeline
       - id: Deploy
-        uses: aws-actions/aws-cloudformation-github-deploy@v1.1.0
+        uses: aws-actions/aws-cloudformation-github-deploy@v1.2.0
         with:
           name: MyStack-MyStack
           template: https://cdk-hnb659fds-assets-111111111111-us-east-1.s3.us-east-1.amazonaws.com/\${{
@@ -740,7 +740,7 @@ jobs:
       - name: Install
         run: npm install --no-save cdk-assets
       - name: Authenticate Via GitHub Secrets
-        uses: aws-actions/configure-aws-credentials@v1-node16
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: us-west-2
           role-duration-seconds: 1800
@@ -762,7 +762,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Authenticate Via GitHub Secrets
-        uses: aws-actions/configure-aws-credentials@v1-node16
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: us-east-1
           role-duration-seconds: 1800
@@ -772,7 +772,7 @@ jobs:
           role-to-assume: arn:aws:iam::111111111111:role/cdk-hnb659fds-deploy-role-111111111111-us-east-1
           role-external-id: Pipeline
       - id: Deploy
-        uses: aws-actions/aws-cloudformation-github-deploy@v1.1.0
+        uses: aws-actions/aws-cloudformation-github-deploy@v1.2.0
         with:
           name: MyStageA-MyStackA
           template: https://cdk-hnb659fds-assets-111111111111-us-east-1.s3.us-east-1.amazonaws.com/\${{
@@ -791,7 +791,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Authenticate Via GitHub Secrets
-        uses: aws-actions/configure-aws-credentials@v1-node16
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: us-east-1
           role-duration-seconds: 1800
@@ -801,7 +801,7 @@ jobs:
           role-to-assume: arn:aws:iam::12345678901:role/cdk-hnb659fds-deploy-role-12345678901-us-east-1
           role-external-id: Pipeline
       - id: Deploy
-        uses: aws-actions/aws-cloudformation-github-deploy@v1.1.0
+        uses: aws-actions/aws-cloudformation-github-deploy@v1.2.0
         with:
           name: MyStageB-MyStackB
           template: https://cdk-hnb659fds-assets-12345678901-us-east-1.s3.us-east-1.amazonaws.com/\${{
@@ -861,7 +861,7 @@ jobs:
       - name: Install
         run: npm install --no-save cdk-assets
       - name: Authenticate Via GitHub Secrets
-        uses: aws-actions/configure-aws-credentials@v1-node16
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: us-west-2
           role-duration-seconds: 1800
@@ -883,7 +883,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Authenticate Via GitHub Secrets
-        uses: aws-actions/configure-aws-credentials@v1-node16
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: us-east-1
           role-duration-seconds: 1800
@@ -893,7 +893,7 @@ jobs:
           role-to-assume: arn:aws:iam::111111111111:role/cdk-hnb659fds-deploy-role-111111111111-us-east-1
           role-external-id: Pipeline
       - id: Deploy
-        uses: aws-actions/aws-cloudformation-github-deploy@v1.1.0
+        uses: aws-actions/aws-cloudformation-github-deploy@v1.2.0
         with:
           name: MyStageA-MyStackA
           template: https://cdk-hnb659fds-assets-111111111111-us-east-1.s3.us-east-1.amazonaws.com/\${{
@@ -913,7 +913,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Authenticate Via GitHub Secrets
-        uses: aws-actions/configure-aws-credentials@v1-node16
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: us-east-1
           role-duration-seconds: 1800
@@ -923,7 +923,7 @@ jobs:
           role-to-assume: arn:aws:iam::12345678901:role/cdk-hnb659fds-deploy-role-12345678901-us-east-1
           role-external-id: Pipeline
       - id: Deploy
-        uses: aws-actions/aws-cloudformation-github-deploy@v1.1.0
+        uses: aws-actions/aws-cloudformation-github-deploy@v1.2.0
         with:
           name: MyStageB-MyStackB
           template: https://cdk-hnb659fds-assets-12345678901-us-east-1.s3.us-east-1.amazonaws.com/\${{

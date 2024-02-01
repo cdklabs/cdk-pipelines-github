@@ -7,7 +7,7 @@ import {
   Stage,
   StageProps,
 } from 'aws-cdk-lib';
-import { 
+import {
   AwsCredentials,
   GitHubWorkflow,
   GitHubActionStep,
@@ -15,7 +15,8 @@ import {
   JsonPatch,
   Runner,
   DockerCredential,
-} from './src';
+  JobPermission,
+} from 'cdk-pipelines-github';
 
 const BETA_ENV = {
   account: '000000000000',

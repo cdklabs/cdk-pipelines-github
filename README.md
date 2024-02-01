@@ -43,6 +43,7 @@ Workflows.
       - [Waves for Parallel Builds](#waves-for-parallel-builds)
       - [Manual Approval Step](#manual-approval-step)
     - [Pipeline YAML Comments](#pipeline-yaml-comments)
+    - [Common Configuration for Docker Asset Publishing Steps](#common-configuration-for-docker-asset-publishing)
   - [Tutorial](#tutorial)
   - [Not supported yet](#not-supported-yet)
   - [Contributing](#contributing)
@@ -204,6 +205,30 @@ class MyGitHubActionRole extends Stack {
 
     const provider = new GitHubActionRole(this, 'github-action-role', {
       repos: ['myUser/myRepo'],
+    });
+  }
+}
+
+const app = new App();
+new MyGitHubActionRole(app, 'MyGitHubActionRole');
+app.synth();
+```
+
+Specifying a `repos` array grants GitHub full access to the specified repositories.
+To restrict access to specific git branch, tag, or other
+[GitHub OIDC subject claim](https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect#example-subject-claims),
+specify a `subjectClaims` array instead of a `repos` array.
+
+```ts
+class MyGitHubActionRole extends Stack {
+  constructor(scope: Construct, id: string, props?: StackProps) {
+    super(scope, id, props);
+
+    const provider = new GitHubActionRole(this, 'github-action-role', {
+      subjectClaims: [
+        'repo:owner/repo1:ref:refs/heads/main',
+        'repo:owner/repo1:environment:prod',
+      ],
     });
   }
 }
@@ -485,12 +510,12 @@ const pipeline = new GitHubWorkflow(app, 'Pipeline', {
 pipeline.addStageWithGitHubOptions(new Stage(this, 'Beta', {
   env: BETA_ENV,
 }), {
-  gitHubEnvironment: 'beta',
+  gitHubEnvironment: { name: 'beta' },
 });
 pipeline.addStageWithGitHubOptions(new MyStage(this, 'Prod', {
   env: PROD_ENV,
 }), {
-  gitHubEnvironment: 'prod',
+  gitHubEnvironment: { name: 'prod' },
 });
 
 app.synth();
@@ -566,6 +591,54 @@ on:
   push:
     branches:
 < the rest of the pipeline YAML contents>
+```
+
+### Common Configuration for Docker Asset Publishing Steps
+
+You can provide common job configuration for all of the docker asset publishing
+jobs using the `dockerAssetJobSettings` property. You can use this to:
+
+- Set additional `permissions` at the job level
+- Run additional steps prior to the docker build/push step
+
+Below is an example of example of configuration an additional `permission` which
+allows the job to authenticate against GitHub packages. It also shows
+configuration additional `setupSteps`, in this case setup steps to configure
+docker `buildx` and `QEMU` to enable building images for arm64 architecture.
+
+```ts
+import { ShellStep } from 'aws-cdk-lib/pipelines';
+
+const app = new App();
+
+const pipeline = new GitHubWorkflow(app, 'Pipeline', {
+  synth: new ShellStep('Build', {
+    commands: [
+      'yarn install',
+      'yarn build',
+    ],
+  }),
+  dockerAssetJobSettings: {
+    permissions: {
+      packages: JobPermission.READ,
+    },
+    setupSteps: [
+      {
+        name: 'Setup Docker QEMU',
+        uses: 'docker/setup-qemu-action@v3',
+      },
+      {
+        name: 'Setup Docker buildx',
+        uses: 'docker/setup-buildx-action@v3',
+      },
+    ],
+  },
+  awsCreds: AwsCredentials.fromOpenIdConnect({
+    gitHubActionRoleArn: 'arn:aws:iam::<account-id>:role/GitHubActionRole',
+  }),
+});
+
+app.synth();
 ```
 
 ## Tutorial

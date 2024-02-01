@@ -3,6 +3,16 @@ import * as iam from 'aws-cdk-lib/aws-iam';
 import { Construct } from 'constructs';
 
 /**
+ * GitHub OIDC thumbprints updated 2023-07-27
+ *
+ * https://github.blog/changelog/2023-06-27-github-actions-update-on-oidc-integration-with-aws/
+ */
+const GITHUB_OIDC_THUMBPRINTS = [
+  '6938fd4d98bab03faadb97b34396831e3780aea1',
+  '1c58a3a8518e8759bf075b76b750d4f2df264fcd',
+];
+
+/**
  * Properties for the GitHubActionRole construct.
  */
 export interface GitHubActionRoleProps {
@@ -10,10 +20,21 @@ export interface GitHubActionRoleProps {
    * A list of GitHub repositories you want to be able to access the IAM role.
    * Each entry should be your GitHub username and repository passed in as a
    * single string.
+   * An entry `owner/repo` is equivalent to the subjectClaim `repo:owner/repo:*`.
    *
    * For example, `['owner/repo1', 'owner/repo2'].
    */
-  readonly repos: string[];
+  readonly repos?: string[];
+
+  /**
+   * A list of subject claims allowed to access the IAM role.
+   * See https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect
+   * A subject claim can include `*` and `?` wildcards according to the `StringLike`
+   * condition operator.
+   *
+   * For example, `['repo:owner/repo1:ref:refs/heads/branch1', 'repo:owner/repo1:environment:prod']`
+   */
+  readonly subjectClaims?: string[];
 
   /**
    * The name of the Oidc role.
@@ -33,6 +54,18 @@ export interface GitHubActionRoleProps {
    * @default - a provider is created for you.
    */
   readonly provider?: iam.IOpenIdConnectProvider;
+
+  /**
+   * Thumbprints of GitHub's certificates
+   *
+   * Every time GitHub rotates their certificates, this value will need to be updated.
+   *
+   * Default value is up-to-date to June 27, 2023 as per
+   * https://github.blog/changelog/2023-06-27-github-actions-update-on-oidc-integration-with-aws/
+   *
+   * @default - Use built-in keys
+   */
+  readonly thumbprints?: string[];
 }
 
 /**
@@ -80,6 +113,7 @@ export class GitHubActionRole extends Construct {
     const provider = props.provider ?? new iam.OpenIdConnectProvider(this, 'github-provider', {
       url: providerUrl,
       clientIds: ['sts.amazonaws.com'],
+      thumbprints: props.thumbprints ?? GITHUB_OIDC_THUMBPRINTS,
     });
 
     // create a role that references the provider as a trusted entity
@@ -87,7 +121,7 @@ export class GitHubActionRole extends Construct {
       provider.openIdConnectProviderArn,
       {
         StringLike: {
-          [`${rawEndpoint}:sub`]: formatRepos(props.repos),
+          [`${rawEndpoint}:sub`]: formatRepos(props.repos ?? []).concat(props.subjectClaims ?? []),
         },
       },
       'sts:AssumeRoleWithWebIdentity',

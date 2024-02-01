@@ -88,7 +88,7 @@ export function awsCredentialStep(stepName: string, props: AwsCredentialsStepPro
 
   return {
     name: stepName,
-    uses: 'aws-actions/configure-aws-credentials@v1-node16',
+    uses: 'aws-actions/configure-aws-credentials@v4',
     with: params,
   };
 }
