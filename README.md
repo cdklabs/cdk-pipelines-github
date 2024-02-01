@@ -340,6 +340,9 @@ const pipeline = new GitHubWorkflow(app, 'Pipeline', {
     // Authenticate to ECR
     DockerCredential.ecr('<account-id>.dkr.ecr.<aws-region>.amazonaws.com'),
 
+    // Authenticate to GHCR
+    DockerCredential.ghcr(),
+
     // Authenticate to DockerHub
     DockerCredential.dockerHub({
       // These properties are defaults; feel free to omit

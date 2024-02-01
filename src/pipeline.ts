@@ -212,7 +212,7 @@ export class GitHubWorkflow extends PipelineBase {
   }
   > = {};
   private readonly jobSettings?: JobSettings;
-  private readonly dockerAssetJobSettings?: DockerAssetJobSettings;
+  private dockerAssetJobSettings?: DockerAssetJobSettings;
   // in order to keep track of if this pipeline has been built so we can
   // catch later calls to addWave() or addStage()
   private builtGH = false;
@@ -826,8 +826,8 @@ export class GitHubWorkflow extends PipelineBase {
 
     if (dockerCredential.name === 'docker') {
       params = {
-        username: `\${{ secrets.${dockerCredential.usernameKey} }}`,
-        password: `\${{ secrets.${dockerCredential.passwordKey} }}`,
+        username: dockerCredential.username,
+        password: dockerCredential.password,
       };
     } else if (dockerCredential.name === 'ecr') {
       params = {
@@ -836,8 +836,17 @@ export class GitHubWorkflow extends PipelineBase {
     } else {
       params = {
         registry: dockerCredential.registry,
-        username: `\${{ secrets.${dockerCredential.usernameKey} }}`,
-        password: `\${{ secrets.${dockerCredential.passwordKey} }}`,
+        username: dockerCredential.username,
+        password: dockerCredential.password,
+      };
+    }
+    if (dockerCredential.name === 'ghcr') {
+      this.dockerAssetJobSettings = {
+        ...this.dockerAssetJobSettings,
+        permissions: {
+          ...this.dockerAssetJobSettings?.permissions,
+          packages: github.JobPermission.READ,
+        },
       };
     }
 
