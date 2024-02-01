@@ -340,6 +340,9 @@ const pipeline = new GitHubWorkflow(app, 'Pipeline', {
     // Authenticate to ECR
     DockerCredential.ecr('<account-id>.dkr.ecr.<aws-region>.amazonaws.com'),
 
+    // Authenticate to GHCR
+    DockerCredential.ghcr(),
+
     // Authenticate to DockerHub
     DockerCredential.dockerHub({
       // These properties are defaults; feel free to omit
@@ -5126,6 +5129,7 @@ Uses the official Docker Login GitHub Action to authenticate.
 | <code><a href="#cdk-pipelines-github.DockerCredential.customRegistry">customRegistry</a></code> | Create a credential for a custom registry. |
 | <code><a href="#cdk-pipelines-github.DockerCredential.dockerHub">dockerHub</a></code> | Reference credential secrets to authenticate to DockerHub. |
 | <code><a href="#cdk-pipelines-github.DockerCredential.ecr">ecr</a></code> | Create a credential for ECR. |
+| <code><a href="#cdk-pipelines-github.DockerCredential.ghcr">ghcr</a></code> | Create a credential for the GitHub Container Registry (GHCR). |
 
 ---
 
@@ -5207,14 +5211,28 @@ result in failures when using these credentials in the pipeline.
 
 ---
 
+##### `ghcr` <a name="ghcr" id="cdk-pipelines-github.DockerCredential.ghcr"></a>
+
+```typescript
+import { DockerCredential } from 'cdk-pipelines-github'
+
+DockerCredential.ghcr()
+```
+
+Create a credential for the GitHub Container Registry (GHCR).
+
+For more information on authenticating to GHCR,
+
+> [https://docs.github.com/en/packages/managing-github-packages-using-github-actions-workflows/publishing-and-installing-a-package-with-github-actions](https://docs.github.com/en/packages/managing-github-packages-using-github-actions-workflows/publishing-and-installing-a-package-with-github-actions)
+
 #### Properties <a name="Properties" id="Properties"></a>
 
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
 | <code><a href="#cdk-pipelines-github.DockerCredential.property.name">name</a></code> | <code>string</code> | *No description.* |
-| <code><a href="#cdk-pipelines-github.DockerCredential.property.passwordKey">passwordKey</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#cdk-pipelines-github.DockerCredential.property.password">password</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#cdk-pipelines-github.DockerCredential.property.registry">registry</a></code> | <code>string</code> | *No description.* |
-| <code><a href="#cdk-pipelines-github.DockerCredential.property.usernameKey">usernameKey</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#cdk-pipelines-github.DockerCredential.property.username">username</a></code> | <code>string</code> | *No description.* |
 
 ---
 
@@ -5228,10 +5246,10 @@ public readonly name: string;
 
 ---
 
-##### `passwordKey`<sup>Optional</sup> <a name="passwordKey" id="cdk-pipelines-github.DockerCredential.property.passwordKey"></a>
+##### `password`<sup>Optional</sup> <a name="password" id="cdk-pipelines-github.DockerCredential.property.password"></a>
 
 ```typescript
-public readonly passwordKey: string;
+public readonly password: string;
 ```
 
 - *Type:* string
@@ -5248,10 +5266,10 @@ public readonly registry: string;
 
 ---
 
-##### `usernameKey`<sup>Optional</sup> <a name="usernameKey" id="cdk-pipelines-github.DockerCredential.property.usernameKey"></a>
+##### `username`<sup>Optional</sup> <a name="username" id="cdk-pipelines-github.DockerCredential.property.username"></a>
 
 ```typescript
-public readonly usernameKey: string;
+public readonly username: string;
 ```
 
 - *Type:* string

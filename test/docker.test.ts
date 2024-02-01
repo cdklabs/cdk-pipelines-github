@@ -134,6 +134,28 @@ describe('correct format for docker credentials:', () => {
     });
     const file = fs.readFileSync(github.workflowPath, 'utf-8');
     const workflow = YAML.parse(file);
+    const permissions = workflow.jobs['Assets-DockerAsset1'].permissions;
+    expect(permissions).toEqual({
+      'contents': 'read',
+      'id-token': 'none',
+      'packages': 'read',
+    });
+  });
+
+  test('ghcr registry', () => {
+    const github = createDockerGithubWorkflow(app, [DockerCredential.ghcr()]);
+    const file = fs.readFileSync(github.workflowPath, 'utf-8');
+    const workflow = YAML.parse(file);
+    const steps = findStepByJobAndUses(workflow, 'Assets-DockerAsset1', 'docker/login-action@v2');
+
+    expect(steps[0]).toEqual({
+      uses: 'docker/login-action@v2',
+      with: {
+        registry: 'ghcr.io',
+        username: '${{ github.actor }}',
+        password: '${{ secrets.GITHUB_TOKEN }}',
+      },
+    });
 
     const permissions = workflow.jobs['Assets-DockerAsset1'].permissions;
     expect(permissions).toEqual({
