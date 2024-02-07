@@ -1021,6 +1021,7 @@ on a nested stage, returns its parent.
 | <code><a href="#cdk-pipelines-github.GitHubStage.property.artifactId">artifactId</a></code> | <code>string</code> | Artifact ID of the assembly if it is a nested stage. The root stage (app) will return an empty string. |
 | <code><a href="#cdk-pipelines-github.GitHubStage.property.assetOutdir">assetOutdir</a></code> | <code>string</code> | The cloud assembly asset output directory. |
 | <code><a href="#cdk-pipelines-github.GitHubStage.property.outdir">outdir</a></code> | <code>string</code> | The cloud assembly output directory. |
+| <code><a href="#cdk-pipelines-github.GitHubStage.property.policyValidationBeta1">policyValidationBeta1</a></code> | <code>aws-cdk-lib.IPolicyValidationPluginBeta1[]</code> | Validation plugins to run during synthesis. |
 | <code><a href="#cdk-pipelines-github.GitHubStage.property.stageName">stageName</a></code> | <code>string</code> | The name of the stage. |
 | <code><a href="#cdk-pipelines-github.GitHubStage.property.account">account</a></code> | <code>string</code> | The default account for all resources defined within this stage. |
 | <code><a href="#cdk-pipelines-github.GitHubStage.property.parentStage">parentStage</a></code> | <code>aws-cdk-lib.Stage</code> | The parent stage or `undefined` if this is the app. |
@@ -1076,6 +1077,22 @@ public readonly outdir: string;
 - *Type:* string
 
 The cloud assembly output directory.
+
+---
+
+##### `policyValidationBeta1`<sup>Required</sup> <a name="policyValidationBeta1" id="cdk-pipelines-github.GitHubStage.property.policyValidationBeta1"></a>
+
+```typescript
+public readonly policyValidationBeta1: IPolicyValidationPluginBeta1[];
+```
+
+- *Type:* aws-cdk-lib.IPolicyValidationPluginBeta1[]
+- *Default:* no validation plugins are used
+
+Validation plugins to run during synthesis.
+
+If any plugin reports any violation,
+synthesis will be interrupted and the report displayed to the user.
 
 ---
 
@@ -1314,6 +1331,7 @@ All Stacks in the stage will be deployed in an order automatically determined by
 | **Name** | **Description** |
 | --- | --- |
 | <code><a href="#cdk-pipelines-github.GitHubWorkflow.isConstruct">isConstruct</a></code> | Checks if `x` is a construct. |
+| <code><a href="#cdk-pipelines-github.GitHubWorkflow.isPipeline">isPipeline</a></code> | Return whether the given object extends `PipelineBase`. |
 
 ---
 
@@ -1332,6 +1350,24 @@ Checks if `x` is a construct.
 - *Type:* any
 
 Any object.
+
+---
+
+##### `isPipeline` <a name="isPipeline" id="cdk-pipelines-github.GitHubWorkflow.isPipeline"></a>
+
+```typescript
+import { GitHubWorkflow } from 'cdk-pipelines-github'
+
+GitHubWorkflow.isPipeline(x: any)
+```
+
+Return whether the given object extends `PipelineBase`.
+
+We do attribute detection since we can't reliably use 'instanceof'.
+
+###### `x`<sup>Required</sup> <a name="x" id="cdk-pipelines-github.GitHubWorkflow.isPipeline.parameter.x"></a>
+
+- *Type:* any
 
 ---
 
@@ -2411,6 +2447,9 @@ const gitHubStageProps: GitHubStageProps = { ... }
 | --- | --- | --- |
 | <code><a href="#cdk-pipelines-github.GitHubStageProps.property.env">env</a></code> | <code>aws-cdk-lib.Environment</code> | Default AWS environment (account/region) for `Stack`s in this `Stage`. |
 | <code><a href="#cdk-pipelines-github.GitHubStageProps.property.outdir">outdir</a></code> | <code>string</code> | The output directory into which to emit synthesized artifacts. |
+| <code><a href="#cdk-pipelines-github.GitHubStageProps.property.permissionsBoundary">permissionsBoundary</a></code> | <code>aws-cdk-lib.PermissionsBoundary</code> | Options for applying a permissions boundary to all IAM Roles and Users created within this Stage. |
+| <code><a href="#cdk-pipelines-github.GitHubStageProps.property.policyValidationBeta1">policyValidationBeta1</a></code> | <code>aws-cdk-lib.IPolicyValidationPluginBeta1[]</code> | Validation plugins to run during synthesis. |
+| <code><a href="#cdk-pipelines-github.GitHubStageProps.property.stageName">stageName</a></code> | <code>string</code> | Name of this stage. |
 | <code><a href="#cdk-pipelines-github.GitHubStageProps.property.gitHubEnvironment">gitHubEnvironment</a></code> | <code><a href="#cdk-pipelines-github.GitHubEnvironment">GitHubEnvironment</a></code> | Run the stage in a specific GitHub Environment. |
 | <code><a href="#cdk-pipelines-github.GitHubStageProps.property.jobSettings">jobSettings</a></code> | <code><a href="#cdk-pipelines-github.JobSettings">JobSettings</a></code> | Job level settings that will be applied to all jobs in the stage. |
 | <code><a href="#cdk-pipelines-github.GitHubStageProps.property.stackCapabilities">stackCapabilities</a></code> | <code><a href="#cdk-pipelines-github.StackCapabilities">StackCapabilities</a>[]</code> | In some cases, you must explicitly acknowledge that your CloudFormation stack template contains certain capabilities in order for CloudFormation to create the stack. |
@@ -2472,6 +2511,48 @@ The output directory into which to emit synthesized artifacts.
 Can only be specified if this stage is the root stage (the app). If this is
 specified and this stage is nested within another stage, an error will be
 thrown.
+
+---
+
+##### `permissionsBoundary`<sup>Optional</sup> <a name="permissionsBoundary" id="cdk-pipelines-github.GitHubStageProps.property.permissionsBoundary"></a>
+
+```typescript
+public readonly permissionsBoundary: PermissionsBoundary;
+```
+
+- *Type:* aws-cdk-lib.PermissionsBoundary
+- *Default:* no permissions boundary is applied
+
+Options for applying a permissions boundary to all IAM Roles and Users created within this Stage.
+
+---
+
+##### `policyValidationBeta1`<sup>Optional</sup> <a name="policyValidationBeta1" id="cdk-pipelines-github.GitHubStageProps.property.policyValidationBeta1"></a>
+
+```typescript
+public readonly policyValidationBeta1: IPolicyValidationPluginBeta1[];
+```
+
+- *Type:* aws-cdk-lib.IPolicyValidationPluginBeta1[]
+- *Default:* no validation plugins are used
+
+Validation plugins to run during synthesis.
+
+If any plugin reports any violation,
+synthesis will be interrupted and the report displayed to the user.
+
+---
+
+##### `stageName`<sup>Optional</sup> <a name="stageName" id="cdk-pipelines-github.GitHubStageProps.property.stageName"></a>
+
+```typescript
+public readonly stageName: string;
+```
+
+- *Type:* string
+- *Default:* Derived from the id.
+
+Name of this stage.
 
 ---
 
@@ -5359,6 +5440,10 @@ GitHubActionStep.sequence(steps: Step[])
 
 Define a sequence of steps to be executed in order.
 
+If you need more fine-grained step ordering, use the `addStepDependency()`
+API. For example, if you want `secondStep` to occur after `firstStep`, call
+`secondStep.addStepDependency(firstStep)`.
+
 ###### `steps`<sup>Required</sup> <a name="steps" id="cdk-pipelines-github.GitHubActionStep.sequence.parameter.steps"></a>
 
 - *Type:* aws-cdk-lib.pipelines.Step[]
@@ -5369,6 +5454,7 @@ Define a sequence of steps to be executed in order.
 
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
+| <code><a href="#cdk-pipelines-github.GitHubActionStep.property.consumedStackOutputs">consumedStackOutputs</a></code> | <code>aws-cdk-lib.pipelines.StackOutputReference[]</code> | StackOutputReferences this step consumes. |
 | <code><a href="#cdk-pipelines-github.GitHubActionStep.property.dependencies">dependencies</a></code> | <code>aws-cdk-lib.pipelines.Step[]</code> | Return the steps this step depends on, based on the FileSets it requires. |
 | <code><a href="#cdk-pipelines-github.GitHubActionStep.property.dependencyFileSets">dependencyFileSets</a></code> | <code>aws-cdk-lib.pipelines.FileSet[]</code> | The list of FileSets consumed by this Step. |
 | <code><a href="#cdk-pipelines-github.GitHubActionStep.property.id">id</a></code> | <code>string</code> | Identifier for this step. |
@@ -5376,6 +5462,18 @@ Define a sequence of steps to be executed in order.
 | <code><a href="#cdk-pipelines-github.GitHubActionStep.property.primaryOutput">primaryOutput</a></code> | <code>aws-cdk-lib.pipelines.FileSet</code> | The primary FileSet produced by this Step. |
 | <code><a href="#cdk-pipelines-github.GitHubActionStep.property.env">env</a></code> | <code>{[ key: string ]: string}</code> | *No description.* |
 | <code><a href="#cdk-pipelines-github.GitHubActionStep.property.jobSteps">jobSteps</a></code> | <code><a href="#cdk-pipelines-github.JobStep">JobStep</a>[]</code> | *No description.* |
+
+---
+
+##### `consumedStackOutputs`<sup>Required</sup> <a name="consumedStackOutputs" id="cdk-pipelines-github.GitHubActionStep.property.consumedStackOutputs"></a>
+
+```typescript
+public readonly consumedStackOutputs: StackOutputReference[];
+```
+
+- *Type:* aws-cdk-lib.pipelines.StackOutputReference[]
+
+StackOutputReferences this step consumes.
 
 ---
 
