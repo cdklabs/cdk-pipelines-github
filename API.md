@@ -743,7 +743,7 @@ You can do this manually in the console, or create a separate stack that uses th
 You must `cdk deploy` once (with your normal AWS credentials) to have this role created for you.
 
 You can then make note of the role arn in the stack output and send it into the Github Workflow app via
-the `gitHubActionRoleArn` property. The role arn will be `arn:aws:iam::<accountId>:role/GithubActionRole`.
+the `gitHubActionRoleArn` property. The role arn will be `arn:<partition>:iam::<accountId>:role/GithubActionRole`.
 
 > [https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-amazon-web-services](https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-amazon-web-services)
 
