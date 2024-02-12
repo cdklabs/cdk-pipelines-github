@@ -51,7 +51,7 @@ jobs:
         run: npm install --no-save cdk-assets
       - id: Publish
         name: Publish Assets-FileAsset1
-        run: /bin/bash ./cdk.out/publish-Assets-FileAsset1-step.sh
+        run: /bin/bash ./cdk.out/assembly-MyStack/publish-Assets-FileAsset1-step.sh
   MyStack-MyStack-Deploy:
     name: Deploy MyStack098574E7
     permissions:

@@ -519,7 +519,7 @@ export class GitHubWorkflow extends PipelineBase {
     const installSuffix = this.cdkCliVersion ? `@${this.cdkCliVersion}` : '';
     const cdkoutDir = options.assemblyDir;
     const jobId = node.uniqueId;
-    const assetId = assets[0].assetId;
+    const { assetId, assetManifestPath } = assets[0];
     const preBuildSteps: github.JobStep[] = [];
     let permissions: github.JobPermissions = {
       contents: github.JobPermission.READ,
@@ -554,7 +554,7 @@ export class GitHubWorkflow extends PipelineBase {
     this.assetHashMap[assetId] = jobId;
     fileContents.push(`echo '${ASSET_HASH_NAME}=${assetId}' >> $GITHUB_OUTPUT`);
 
-    const publishStepFile = path.join(cdkoutDir, `publish-${jobId}-step.sh`);
+    const publishStepFile = path.join(path.dirname(relativeToAssembly(assetManifestPath)), `publish-${jobId}-step.sh`);
     mkdirSync(path.dirname(publishStepFile), { recursive: true });
     writeFileSync(publishStepFile, fileContents.join('\n'), { encoding: 'utf-8' });
 

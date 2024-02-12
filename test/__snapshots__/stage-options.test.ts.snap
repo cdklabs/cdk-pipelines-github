@@ -61,7 +61,8 @@ jobs:
           aws-secret-access-key: \${{ secrets.AWS_SECRET_ACCESS_KEY }}
       - id: Publish
         name: Publish Assets-FileAsset1
-        run: /bin/bash ./cdk.out/publish-Assets-FileAsset1-step.sh
+        run: /bin/bash
+          ./cdk.out/assembly-MyPrePostStack/publish-Assets-FileAsset1-step.sh
   MyPrePostStack-PreDeployAction:
     name: PreDeployAction
     if: contains(fromJson('[\\"push\\", \\"pull_request\\"]'), github.event_name)
@@ -187,7 +188,7 @@ jobs:
           aws-secret-access-key: \${{ secrets.AWS_SECRET_ACCESS_KEY }}
       - id: Publish
         name: Publish Assets-FileAsset1
-        run: /bin/bash ./cdk.out/publish-Assets-FileAsset1-step.sh
+        run: /bin/bash ./cdk.out/assembly-MyStack/publish-Assets-FileAsset1-step.sh
   MyStack-MyStack-Deploy:
     name: Deploy MyStack098574E7
     permissions:
@@ -279,7 +280,7 @@ jobs:
           aws-secret-access-key: \${{ secrets.AWS_SECRET_ACCESS_KEY }}
       - id: Publish
         name: Publish Assets-FileAsset1
-        run: /bin/bash ./cdk.out/publish-Assets-FileAsset1-step.sh
+        run: /bin/bash ./cdk.out/assembly-MyStack/publish-Assets-FileAsset1-step.sh
   MyStack-MyStack-Deploy:
     name: Deploy MyStack098574E7
     permissions:
@@ -371,7 +372,7 @@ jobs:
           aws-secret-access-key: \${{ secrets.AWS_SECRET_ACCESS_KEY }}
       - id: Publish
         name: Publish Assets-FileAsset1
-        run: /bin/bash ./cdk.out/publish-Assets-FileAsset1-step.sh
+        run: /bin/bash ./cdk.out/assembly-MyStage1/publish-Assets-FileAsset1-step.sh
   MyStage1-MyStack-Deploy:
     name: Deploy MyStage1MyStack61AF4CC5
     permissions:
@@ -497,7 +498,7 @@ jobs:
           aws-secret-access-key: \${{ secrets.AWS_SECRET_ACCESS_KEY }}
       - id: Publish
         name: Publish Assets-FileAsset1
-        run: /bin/bash ./cdk.out/publish-Assets-FileAsset1-step.sh
+        run: /bin/bash ./cdk.out/assembly-MyStageA/publish-Assets-FileAsset1-step.sh
   MyWave-PreWaveAction:
     name: PreWaveAction
     if: contains(github.event.issue.labels.*.name, 'deployToA') ||
@@ -656,7 +657,7 @@ jobs:
           aws-secret-access-key: \${{ secrets.AWS_SECRET_ACCESS_KEY }}
       - id: Publish
         name: Publish Assets-FileAsset1
-        run: /bin/bash ./cdk.out/publish-Assets-FileAsset1-step.sh
+        run: /bin/bash ./cdk.out/assembly-MyStack/publish-Assets-FileAsset1-step.sh
   MyStack-MyStack-Deploy:
     name: Deploy MyStack098574E7
     if: github.repository == 'github/repo'
@@ -748,7 +749,7 @@ jobs:
           aws-secret-access-key: \${{ secrets.AWS_SECRET_ACCESS_KEY }}
       - id: Publish
         name: Publish Assets-FileAsset1
-        run: /bin/bash ./cdk.out/publish-Assets-FileAsset1-step.sh
+        run: /bin/bash ./cdk.out/assembly-MyStageA/publish-Assets-FileAsset1-step.sh
   MyWave-MyStageA-MyStackA-Deploy:
     name: Deploy MyStageAMyStackA0F0BE321
     if: success() && contains(github.event.issue.labels.*.name, 'deployToA')
@@ -869,7 +870,7 @@ jobs:
           aws-secret-access-key: \${{ secrets.AWS_SECRET_ACCESS_KEY }}
       - id: Publish
         name: Publish Assets-FileAsset1
-        run: /bin/bash ./cdk.out/publish-Assets-FileAsset1-step.sh
+        run: /bin/bash ./cdk.out/assembly-MyStageA/publish-Assets-FileAsset1-step.sh
   MyStageA-MyStackA-Deploy:
     name: Deploy MyStageAMyStackA0F0BE321
     if: success() && contains(github.event.issue.labels.*.name, 'deployToA')

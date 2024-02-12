@@ -223,6 +223,38 @@ test('pipeline with publish asset region override', () => {
   });
 });
 
+test('pipeline publish asset scripts are in stage assembly directory', () => {
+  withTemporaryDirectory((dir) => {
+    const pipeline = new GitHubWorkflow(app, 'Pipeline', {
+      workflowPath: `${dir}/.github/workflows/deploy.yml`,
+      synth: new ShellStep('Build', {
+        commands: [],
+      }),
+      publishAssetsAuthRegion: 'ap-southeast-2',
+    });
+
+    const stage = new Stage(app, 'MyStage', {
+      env: { account: '111111111111', region: 'us-east-1' },
+    });
+
+    const stack = new Stack(stage, 'MyStack');
+
+    new lambda.Function(stack, 'Function', {
+      code: lambda.Code.fromAsset(fixtures),
+      handler: 'index.handler',
+      runtime: lambda.Runtime.NODEJS_14_X,
+    });
+
+    pipeline.addStage(stage);
+
+    app.synth();
+
+    const file = readFileSync(pipeline.workflowPath, 'utf-8');
+    expect(file).toContain('./cdk.out/assembly-MyStage/publish-Assets');
+    expect(file).toMatchSnapshot();
+  });
+});
+
 test('pipeline with job settings', () => {
   withTemporaryDirectory((dir) => {
     const pipeline = new GitHubWorkflow(app, 'Pipeline', {
