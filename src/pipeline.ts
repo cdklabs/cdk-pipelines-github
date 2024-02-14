@@ -554,7 +554,7 @@ export class GitHubWorkflow extends PipelineBase {
     this.assetHashMap[assetId] = jobId;
     fileContents.push(`echo '${ASSET_HASH_NAME}=${assetId}' >> $GITHUB_OUTPUT`);
 
-    const publishStepFile = path.join(path.dirname(relativeToAssembly(assetManifestPath)), `publish-${jobId}-step.sh`);
+    const publishStepFile = path.posix.join(path.dirname(relativeToAssembly(assetManifestPath)), `publish-${jobId}-step.sh`);
     mkdirSync(path.dirname(publishStepFile), { recursive: true });
     writeFileSync(publishStepFile, fileContents.join('\n'), { encoding: 'utf-8' });
 
