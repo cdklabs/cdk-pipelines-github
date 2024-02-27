@@ -650,7 +650,7 @@ export class GitHubWorkflow extends PipelineBase {
           ...this.stepsToConfigureAws(region, assumeRoleArn),
           {
             id: 'Deploy',
-            uses: 'aws-actions/aws-cloudformation-github-deploy@v1.2.0',
+            uses: 'aws-actions/aws-cloudformation-github-deploy@v1',
             with: params,
           },
         ],
@@ -753,7 +753,7 @@ export class GitHubWorkflow extends PipelineBase {
 
     for (const input of step.inputs) {
       downloadInputs.push({
-        uses: 'actions/download-artifact@v3',
+        uses: 'actions/download-artifact@v4',
         with: {
           name: input.fileSet.id,
           path: input.directory,
@@ -763,7 +763,7 @@ export class GitHubWorkflow extends PipelineBase {
 
     for (const output of step.outputs) {
       uploadOutputs.push({
-        uses: 'actions/upload-artifact@v3',
+        uses: 'actions/upload-artifact@v4',
         with: {
           name: output.fileSet.id,
           path: output.directory,
@@ -865,7 +865,7 @@ export class GitHubWorkflow extends PipelineBase {
 
     return [{
       name: `Download ${CDKOUT_ARTIFACT}`,
-      uses: 'actions/download-artifact@v3',
+      uses: 'actions/download-artifact@v4',
       with: {
         name: CDKOUT_ARTIFACT,
         path: targetDir,
@@ -877,7 +877,7 @@ export class GitHubWorkflow extends PipelineBase {
     return [
       {
         name: 'Checkout',
-        uses: 'actions/checkout@v3',
+        uses: 'actions/checkout@v4',
       },
     ];
   }
@@ -889,7 +889,7 @@ export class GitHubWorkflow extends PipelineBase {
 
     return [{
       name: `Upload ${CDKOUT_ARTIFACT}`,
-      uses: 'actions/upload-artifact@v3',
+      uses: 'actions/upload-artifact@v4',
       with: {
         name: CDKOUT_ARTIFACT,
         path: dir,

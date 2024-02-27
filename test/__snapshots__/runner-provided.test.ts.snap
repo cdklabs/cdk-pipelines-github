@@ -21,13 +21,13 @@ jobs:
     env: {}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Install
         run: yarn
       - name: Build
         run: yarn build
       - name: Upload cdk.out
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: cdk.out
           path: cdk.out
@@ -43,7 +43,7 @@ jobs:
       asset-hash: \${{ steps.Publish.outputs.asset-hash }}
     steps:
       - name: Download cdk.out
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: cdk.out
           path: runner-provided.out
@@ -63,7 +63,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - id: Deploy
-        uses: aws-actions/aws-cloudformation-github-deploy@v1.2.0
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
           name: MyStack-MyStack
           template: https://cdk-hnb659fds-assets-111111111111-us-east-1.s3.us-east-1.amazonaws.com/\${{

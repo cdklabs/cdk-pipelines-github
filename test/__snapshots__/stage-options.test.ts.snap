@@ -22,13 +22,13 @@ jobs:
     env: {}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Install
         run: yarn
       - name: Build
         run: yarn build
       - name: Upload cdk.out
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: cdk.out
           path: cdk.out
@@ -45,7 +45,7 @@ jobs:
       asset-hash: \${{ steps.Publish.outputs.asset-hash }}
     steps:
       - name: Download cdk.out
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: cdk.out
           path: stage.out
@@ -101,7 +101,7 @@ jobs:
           role-to-assume: arn:aws:iam::111111111111:role/cdk-hnb659fds-deploy-role-111111111111-us-east-1
           role-external-id: Pipeline
       - id: Deploy
-        uses: aws-actions/aws-cloudformation-github-deploy@v1.2.0
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
           name: MyPrePostStack-MyStack
           template: https://cdk-hnb659fds-assets-111111111111-us-east-1.s3.us-east-1.amazonaws.com/\${{
@@ -120,7 +120,7 @@ jobs:
     env: {}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: post deploy action
         uses: my-post-deploy-action@1.0.0
         with:
@@ -150,13 +150,13 @@ jobs:
     env: {}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Install
         run: yarn
       - name: Build
         run: yarn build
       - name: Upload cdk.out
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: cdk.out
           path: cdk.out
@@ -172,7 +172,7 @@ jobs:
       asset-hash: \${{ steps.Publish.outputs.asset-hash }}
     steps:
       - name: Download cdk.out
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: cdk.out
           path: stage.out
@@ -210,7 +210,7 @@ jobs:
           role-to-assume: arn:aws:iam::111111111111:role/cdk-hnb659fds-deploy-role-111111111111-us-east-1
           role-external-id: Pipeline
       - id: Deploy
-        uses: aws-actions/aws-cloudformation-github-deploy@v1.2.0
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
           name: MyStack-MyStack
           template: https://cdk-hnb659fds-assets-111111111111-us-east-1.s3.us-east-1.amazonaws.com/\${{
@@ -242,13 +242,13 @@ jobs:
     env: {}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Install
         run: yarn
       - name: Build
         run: yarn build
       - name: Upload cdk.out
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: cdk.out
           path: cdk.out
@@ -264,7 +264,7 @@ jobs:
       asset-hash: \${{ steps.Publish.outputs.asset-hash }}
     steps:
       - name: Download cdk.out
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: cdk.out
           path: stage.out
@@ -302,7 +302,7 @@ jobs:
           role-to-assume: arn:aws:iam::111111111111:role/cdk-hnb659fds-deploy-role-111111111111-us-east-1
           role-external-id: Pipeline
       - id: Deploy
-        uses: aws-actions/aws-cloudformation-github-deploy@v1.2.0
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
           name: MyStack-MyStack
           template: https://cdk-hnb659fds-assets-111111111111-us-east-1.s3.us-east-1.amazonaws.com/\${{
@@ -334,13 +334,13 @@ jobs:
     env: {}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Install
         run: yarn
       - name: Build
         run: yarn build
       - name: Upload cdk.out
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: cdk.out
           path: cdk.out
@@ -356,7 +356,7 @@ jobs:
       asset-hash: \${{ steps.Publish.outputs.asset-hash }}
     steps:
       - name: Download cdk.out
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: cdk.out
           path: stage.out
@@ -395,7 +395,7 @@ jobs:
           role-to-assume: arn:aws:iam::111111111111:role/cdk-hnb659fds-deploy-role-111111111111-us-east-1
           role-external-id: Pipeline
       - id: Deploy
-        uses: aws-actions/aws-cloudformation-github-deploy@v1.2.0
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
           name: MyStage1-MyStack
           template: https://cdk-hnb659fds-assets-111111111111-us-east-1.s3.us-east-1.amazonaws.com/\${{
@@ -425,7 +425,7 @@ jobs:
           role-to-assume: arn:aws:iam::222222222222:role/cdk-hnb659fds-deploy-role-222222222222-us-west-2
           role-external-id: Pipeline
       - id: Deploy
-        uses: aws-actions/aws-cloudformation-github-deploy@v1.2.0
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
           name: MyStage2-MyStack
           template: https://cdk-hnb659fds-assets-222222222222-us-west-2.s3.us-west-2.amazonaws.com/\${{
@@ -458,13 +458,13 @@ jobs:
     env: {}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Install
         run: yarn
       - name: Build
         run: yarn build
       - name: Upload cdk.out
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: cdk.out
           path: cdk.out
@@ -482,7 +482,7 @@ jobs:
       asset-hash: \${{ steps.Publish.outputs.asset-hash }}
     steps:
       - name: Download cdk.out
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: cdk.out
           path: stage.out
@@ -538,7 +538,7 @@ jobs:
           role-to-assume: arn:aws:iam::111111111111:role/cdk-hnb659fds-deploy-role-111111111111-us-east-1
           role-external-id: Pipeline
       - id: Deploy
-        uses: aws-actions/aws-cloudformation-github-deploy@v1.2.0
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
           name: MyStageA-MyStackA
           template: https://cdk-hnb659fds-assets-111111111111-us-east-1.s3.us-east-1.amazonaws.com/\${{
@@ -568,7 +568,7 @@ jobs:
           role-to-assume: arn:aws:iam::12345678901:role/cdk-hnb659fds-deploy-role-12345678901-us-east-1
           role-external-id: Pipeline
       - id: Deploy
-        uses: aws-actions/aws-cloudformation-github-deploy@v1.2.0
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
           name: MyStageB-MyStackB
           template: https://cdk-hnb659fds-assets-12345678901-us-east-1.s3.us-east-1.amazonaws.com/\${{
@@ -589,7 +589,7 @@ jobs:
     env: {}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: post wave action
         uses: my-post-wave-action@1.0.0
         with:
@@ -619,13 +619,13 @@ jobs:
     env: {}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Install
         run: yarn
       - name: Build
         run: yarn build
       - name: Upload cdk.out
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: cdk.out
           path: cdk.out
@@ -641,7 +641,7 @@ jobs:
       asset-hash: \${{ steps.Publish.outputs.asset-hash }}
     steps:
       - name: Download cdk.out
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: cdk.out
           path: stage.out
@@ -680,7 +680,7 @@ jobs:
           role-to-assume: arn:aws:iam::111111111111:role/cdk-hnb659fds-deploy-role-111111111111-us-east-1
           role-external-id: Pipeline
       - id: Deploy
-        uses: aws-actions/aws-cloudformation-github-deploy@v1.2.0
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
           name: MyStack-MyStack
           template: https://cdk-hnb659fds-assets-111111111111-us-east-1.s3.us-east-1.amazonaws.com/\${{
@@ -711,13 +711,13 @@ jobs:
     env: {}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Install
         run: yarn
       - name: Build
         run: yarn build
       - name: Upload cdk.out
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: cdk.out
           path: cdk.out
@@ -733,7 +733,7 @@ jobs:
       asset-hash: \${{ steps.Publish.outputs.asset-hash }}
     steps:
       - name: Download cdk.out
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: cdk.out
           path: stage.out
@@ -772,7 +772,7 @@ jobs:
           role-to-assume: arn:aws:iam::111111111111:role/cdk-hnb659fds-deploy-role-111111111111-us-east-1
           role-external-id: Pipeline
       - id: Deploy
-        uses: aws-actions/aws-cloudformation-github-deploy@v1.2.0
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
           name: MyStageA-MyStackA
           template: https://cdk-hnb659fds-assets-111111111111-us-east-1.s3.us-east-1.amazonaws.com/\${{
@@ -801,7 +801,7 @@ jobs:
           role-to-assume: arn:aws:iam::12345678901:role/cdk-hnb659fds-deploy-role-12345678901-us-east-1
           role-external-id: Pipeline
       - id: Deploy
-        uses: aws-actions/aws-cloudformation-github-deploy@v1.2.0
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
           name: MyStageB-MyStackB
           template: https://cdk-hnb659fds-assets-12345678901-us-east-1.s3.us-east-1.amazonaws.com/\${{
@@ -832,13 +832,13 @@ jobs:
     env: {}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Install
         run: yarn
       - name: Build
         run: yarn build
       - name: Upload cdk.out
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: cdk.out
           path: cdk.out
@@ -854,7 +854,7 @@ jobs:
       asset-hash: \${{ steps.Publish.outputs.asset-hash }}
     steps:
       - name: Download cdk.out
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: cdk.out
           path: stage.out
@@ -893,7 +893,7 @@ jobs:
           role-to-assume: arn:aws:iam::111111111111:role/cdk-hnb659fds-deploy-role-111111111111-us-east-1
           role-external-id: Pipeline
       - id: Deploy
-        uses: aws-actions/aws-cloudformation-github-deploy@v1.2.0
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
           name: MyStageA-MyStackA
           template: https://cdk-hnb659fds-assets-111111111111-us-east-1.s3.us-east-1.amazonaws.com/\${{
@@ -923,7 +923,7 @@ jobs:
           role-to-assume: arn:aws:iam::12345678901:role/cdk-hnb659fds-deploy-role-12345678901-us-east-1
           role-external-id: Pipeline
       - id: Deploy
-        uses: aws-actions/aws-cloudformation-github-deploy@v1.2.0
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
           name: MyStageB-MyStackB
           template: https://cdk-hnb659fds-assets-12345678901-us-east-1.s3.us-east-1.amazonaws.com/\${{
