@@ -360,6 +360,25 @@ test('example app', () => {
   });
 });
 
+test('pipeline with concurrency', () => {
+  withTemporaryDirectory((dir) => {
+    const github = new GitHubWorkflow(app, 'Pipeline', {
+      workflowPath: `${dir}/.github/workflows/deploy.yml`,
+      synth: new ShellStep('Build', {
+        installCommands: ['yarn'],
+        commands: ['yarn build'],
+      }),
+      concurrency: {
+        group: '${{ github.workflow }}-${{ github.ref }}',
+      },
+    });
+
+    app.synth();
+
+    expect(readFileSync(github.workflowPath, 'utf-8')).toMatchSnapshot();
+  });
+});
+
 describe('workflow path', () => {
   test('invalid workflow path fails', () => {
     expect(() => {
