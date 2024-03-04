@@ -73,7 +73,7 @@ const wave = pipeline.addWave('MyWave', {
       jobSteps: [
         {
           name: 'Checkout',
-          uses: 'actions/checkout@v3',
+          uses: 'actions/checkout@v4',
         },
         {
           name: 'post wave action',
@@ -99,7 +99,7 @@ wave.addPost([
     jobSteps: [
       {
         name: 'Checkout',
-        uses: 'actions/checkout@v3',
+        uses: 'actions/checkout@v4',
       },
       {
         name: 'post wave action',
