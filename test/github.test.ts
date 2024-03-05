@@ -5,7 +5,7 @@ import * as lambda from 'aws-cdk-lib/aws-lambda';
 import { ShellStep } from 'aws-cdk-lib/pipelines';
 import { GitHubExampleApp } from './example-app';
 import { withTemporaryDirectory, TestApp } from './testutil';
-import { GitHubWorkflow, JsonPatch, Runner, AwsCredentials } from '../src';
+import { GitHubWorkflow, JsonPatch, Runner, AwsCredentials, GitHubActionStep } from '../src';
 
 const fixtures = join(__dirname, 'fixtures');
 
@@ -496,6 +496,40 @@ test('can escape hatch into workflow file', () => {
     expect(file).toContain('workflow_call: {}\n');
     expect(file).not.toContain('workflow_dispatch: {}\n');
     expect(file).toContain('runs-on: macos-latest\n');
+  });
+});
+
+test('post stage steps have access to id-token', () => {
+  withTemporaryDirectory((dir) => {
+    const pipeline = new GitHubWorkflow(app, 'Pipeline', {
+      workflowPath: `${dir}/.github/workflows/deploy.yml`,
+      synth: new ShellStep('Build', {
+        installCommands: ['yarn'],
+        commands: ['yarn build'],
+      }),
+    });
+
+    const stage = new Stage(app, 'MyStack', {
+      env: { account: '111111111111', region: 'eu-west-1' },
+    });
+
+    new Stack(stage, 'MyStack');
+
+    pipeline.addStageWithGitHubOptions(stage, {
+      post: [
+        new GitHubActionStep('Post', {
+          useGitHubActionRole: true,
+          jobSteps: [{
+            name: 'Checkout',
+            uses: 'actions/checkout@v4',
+          }],
+        }),
+      ],
+    });
+
+    app.synth();
+
+    expect(readFileSync(pipeline.workflowPath, 'utf-8')).toMatchSnapshot();
   });
 });
 

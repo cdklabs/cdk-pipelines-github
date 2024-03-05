@@ -808,6 +808,8 @@ export class GitHubWorkflow extends PipelineBase {
         ...this.renderJobSettingParameters(),
         permissions: {
           contents: github.JobPermission.WRITE,
+          // User might want to use the GitHub Action Role in the GitHub Action step
+          ...(step.useGitHubActionRole ? { idToken: github.JobPermission.READ } : {}),
         },
         runsOn: this.runner.runsOn,
         needs: this.renderDependencies(node),
