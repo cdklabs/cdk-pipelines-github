@@ -43,7 +43,7 @@ Workflows.
       - [Waves for Parallel Builds](#waves-for-parallel-builds)
       - [Manual Approval Step](#manual-approval-step)
     - [Pipeline YAML Comments](#pipeline-yaml-comments)
-    - [Common Configuration for Docker Asset Publishing Steps](#common-configuration-for-docker-asset-publishing)
+    - [Common Configuration for Docker Asset Publishing Steps](#common-configuration-for-docker-asset-publishing-steps)
   - [AWS China partition support](#aws-china-partition-support)
   - [Tutorial](#tutorial)
   - [Not supported yet](#not-supported-yet)
