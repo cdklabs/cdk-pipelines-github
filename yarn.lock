@@ -724,6 +724,11 @@
   resolved "https://registry.yarnpkg.com/@oozcitak/util/-/util-8.3.8.tgz#10f65fe1891fd8cde4957360835e78fd1936bfdd"
   integrity sha512-T8TbSnGsxo6TDBJx/Sgv/BlVJL3tshxZP7Aq5R1mSnM5OcHY2dQaxLMu2+E8u3gN0MLOzdjurqN4ZRVuzQycOQ==
 
+"@schemastore/github-workflow@^0.0.13":
+  version "0.0.13"
+  resolved "https://registry.yarnpkg.com/@schemastore/github-workflow/-/github-workflow-0.0.13.tgz#2b885486c0dce7e7ceda768110f8a34e1959918c"
+  integrity sha512-hz5n713wACD9LxuFMiGe6QwCnZtldxAWnuGBUW8FGFU2/6aZoR0waVL14/nu9mO8twHA40blbZpbzc34mKjoww==
+
 "@sinonjs/commons@^1.7.0":
   version "1.8.6"
   resolved "https://registry.yarnpkg.com/@sinonjs/commons/-/commons-1.8.6.tgz#80c516a4dc264c2a69115e7578d62581ff455ed9"

@@ -1,6 +1,6 @@
 import { AddStageOpts } from 'aws-cdk-lib/pipelines';
-import { JobSettings } from './pipeline';
 import { StackCapabilities } from './stage-options';
+import { JobSettings } from './workflows-model';
 
 /**
  * Github environment with name and url.
@@ -56,7 +56,6 @@ export interface GitHubCommonProps {
 
   /**
    * Job level settings that will be applied to all jobs in the stage.
-   * Currently the only valid setting is 'if'.
    */
   readonly jobSettings?: JobSettings;
 }

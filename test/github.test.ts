@@ -264,6 +264,10 @@ test('pipeline with job settings', () => {
       }),
       jobSettings: {
         if: 'github.repository == \'account/repo\'',
+        concurrency: {
+          group: 'test-workflow',
+          "cancel-in-progress": false,
+        }
       },
     });
 

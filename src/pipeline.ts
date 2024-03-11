@@ -13,6 +13,7 @@ import { GitHubStage } from './stage';
 import { GitHubActionStep } from './steps/github-action-step';
 import { GitHubWave } from './wave';
 import * as github from './workflows-model';
+import { JobSettings } from './workflows-model';
 import { YamlFile } from './yaml-file';
 
 const CDKOUT_ARTIFACT = 'cdk.out';
@@ -35,18 +36,6 @@ export interface DockerAssetJobSettings {
    * @default - no additional permissions
    */
   readonly permissions?: github.JobPermissions;
-}
-
-/**
- * Job level settings applied to all jobs in the workflow.
- */
-export interface JobSettings {
-  /**
-   * jobs.<job_id>.if.
-   *
-   * @see https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idif
-   */
-  readonly if?: string;
 }
 
 /**
@@ -168,10 +157,9 @@ export interface GitHubWorkflowProps extends PipelineBaseProps {
 
   /**
    * Job level settings that will be applied to all jobs in the workflow,
-   * including synth and asset deploy jobs. Currently the only valid setting
-   * is 'if'. You can use this to run jobs only in specific repositories.
+   * including synth and asset deploy jobs.
    *
-   * @see https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#example-only-run-job-for-specific-repository
+   * @see https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions
    */
   readonly jobSettings?: JobSettings;
 

@@ -1,3 +1,4 @@
+import { Concurrency } from '@schemastore/github-workflow';
 // @see https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
 
 /**
@@ -68,7 +69,7 @@ export interface Job {
    *
    * @experimental
    */
-  readonly concurrency?: unknown;
+  readonly concurrency?: Concurrency;
 
   /**
    * A map of outputs for a job. Job outputs are available to all downstream
@@ -131,8 +132,13 @@ export interface Job {
    * cycle of the service containers.
    */
   readonly services?: Record<string, ContainerOptions>;
-
 }
+
+/**
+ * Export a type where all job settings are set to optional.
+ * This enables additional job settings to be passed, without breaking existing functionality
+ */
+export type JobSettings = Partial<Job>;
 
 /**
  * The available scopes and access values for workflow permissions. If you

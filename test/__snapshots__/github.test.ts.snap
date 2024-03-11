@@ -541,6 +541,9 @@ jobs:
   Build-Build:
     name: Synthesize
     if: github.repository == 'account/repo'
+    concurrency:
+      group: test-workflow
+      cancel-in-progress: false
     permissions:
       contents: read
       id-token: none
@@ -560,6 +563,9 @@ jobs:
   Assets-FileAsset1:
     name: Publish Assets Assets-FileAsset1
     if: github.repository == 'account/repo'
+    concurrency:
+      group: test-workflow
+      cancel-in-progress: false
     needs:
       - Build-Build
     permissions:
@@ -590,6 +596,9 @@ jobs:
   Assets-FileAsset2:
     name: Publish Assets Assets-FileAsset2
     if: github.repository == 'account/repo'
+    concurrency:
+      group: test-workflow
+      cancel-in-progress: false
     needs:
       - Build-Build
     permissions:
@@ -620,6 +629,9 @@ jobs:
   MyStack-MyStack-Deploy:
     name: Deploy MyStack098574E7
     if: github.repository == 'account/repo'
+    concurrency:
+      group: test-workflow
+      cancel-in-progress: false
     permissions:
       contents: read
       id-token: none
