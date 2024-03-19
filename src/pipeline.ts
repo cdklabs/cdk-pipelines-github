@@ -602,10 +602,11 @@ export class GitHubWorkflow extends PipelineBase {
     }
 
     const resolve = (s: string): string => {
+      const partition = process.env.CDK_AWS_PARTITION ?? 'aws';
       return EnvironmentPlaceholders.replace(s, {
         accountId: account,
         region: region,
-        partition: 'aws',
+        partition: partition,
       });
     };
 
@@ -614,7 +615,10 @@ export class GitHubWorkflow extends PipelineBase {
       if (this.assetHashMap[hash] === undefined) {
         throw new Error(`Template asset hash ${hash} not found.`);
       }
-      return template.replace(hash, `\${{ needs.${this.assetHashMap[hash]}.outputs.${ASSET_HASH_NAME} }}`);
+      const updated_template = template.replace(hash, `\${{ needs.${this.assetHashMap[hash]}.outputs.${ASSET_HASH_NAME} }}`);
+      return process.env.CDK_AWS_PARTITION == 'aws-cn'
+        ? updated_template.replace('.amazonaws.com', '.amazonaws.com.cn')
+        : updated_template;
     };
 
     const params: Record<string, any> = {
