@@ -5,13 +5,16 @@ import * as lambda from 'aws-cdk-lib/aws-lambda';
 import { ShellStep } from 'aws-cdk-lib/pipelines';
 import { GitHubExampleApp } from './example-app';
 import { withTemporaryDirectory, TestApp } from './testutil';
-import { GitHubWorkflow, JsonPatch, Runner, AwsCredentials, GitHubActionStep } from '../src';
+import { GitHubWorkflow, JsonPatch, Runner, AwsCredentials } from '../src';
 
 const fixtures = join(__dirname, 'fixtures');
 
+beforeAll(() => { process.env.CDK_AWS_PARTITION = 'aws-cn'; });
+afterAll(() => { process.env.CDK_AWS_PARTITION = undefined; });
+
 let app: TestApp;
 beforeEach(() => {
-  const tempOutDir = 'github.out';
+  const tempOutDir = 'github.cn.out';
   app = new TestApp({
     outdir: tempOutDir,
   });
@@ -53,7 +56,7 @@ test('pipeline with aws credentials', () => {
     });
 
     const stage = new Stage(app, 'MyStack', {
-      env: { account: '111111111111', region: 'us-east-1' },
+      env: { account: '111111111111', region: 'cn-north-1' },
     });
 
     new Stack(stage, 'MyStack');
@@ -81,7 +84,7 @@ test('pipeline with aws credentials using awsCreds', () => {
     });
 
     const stage = new Stage(app, 'MyStack', {
-      env: { account: '111111111111', region: 'us-east-1' },
+      env: { account: '111111111111', region: 'cn-north-1' },
     });
 
     new Stack(stage, 'MyStack');
@@ -112,7 +115,7 @@ test('pipeline with aws credentials using OIDC and role-session-name', () => {
     });
 
     const stage = new Stage(app, 'MyStack', {
-      env: { account: '111111111111', region: 'us-east-1' },
+      env: { account: '111111111111', region: 'cn-north-1' },
     });
 
     new Stack(stage, 'MyStack');
@@ -143,7 +146,7 @@ test('pipeline with aws credentials in custom secrets', () => {
     });
 
     const stage = new Stage(app, 'MyStack', {
-      env: { account: '111111111111', region: 'us-east-1' },
+      env: { account: '111111111111', region: 'cn-north-1' },
     });
 
     new Stack(stage, 'MyStack');
@@ -204,7 +207,7 @@ test('pipeline with publish asset region override', () => {
     });
 
     const stage = new Stage(app, 'MyStack', {
-      env: { account: '111111111111', region: 'us-east-1' },
+      env: { account: '111111111111', region: 'cn-north-1' },
     });
 
     const stack = new Stack(stage, 'MyStack');
@@ -234,7 +237,7 @@ test('pipeline publish asset scripts are in stage assembly directory', () => {
     });
 
     const stage = new Stage(app, 'MyStage', {
-      env: { account: '111111111111', region: 'us-east-1' },
+      env: { account: '111111111111', region: 'cn-north-1' },
     });
 
     const stack = new Stack(stage, 'MyStack');
@@ -268,7 +271,7 @@ test('pipeline with job settings', () => {
     });
 
     const stage = new Stage(app, 'MyStack', {
-      env: { account: '111111111111', region: 'us-east-1' },
+      env: { account: '111111111111', region: 'cn-north-1' },
     });
 
     const stack = new Stack(stage, 'MyStack');
@@ -297,7 +300,7 @@ test('single wave/stage/stack', () => {
     });
 
     const stage = new Stage(app, 'MyStack', {
-      env: { account: '111111111111', region: 'us-east-1' },
+      env: { account: '111111111111', region: 'cn-north-1' },
     });
 
     const stack = new Stack(stage, 'MyStack');
@@ -328,7 +331,7 @@ test('pipeline with oidc authentication', () => {
     });
 
     const stage = new Stage(app, 'MyStack', {
-      env: { account: '111111111111', region: 'us-east-1' },
+      env: { account: '111111111111', region: 'cn-north-1' },
     });
 
     const stack = new Stack(stage, 'MyStack');
@@ -352,30 +355,11 @@ test('example app', () => {
     const repoDir = dir;
     const githubApp = new GitHubExampleApp({
       repoDir: repoDir,
-      envA: 'aws://111111111111/us-east-1',
-      envB: 'aws://222222222222/eu-west-2',
+      envA: 'aws://111111111111/cn-north-1',
+      envB: 'aws://222222222222/cn-northwest-1',
     });
     githubApp.synth();
     expect(readFileSync(join(repoDir, '.github/workflows/deploy.yml'), 'utf-8')).toMatchSnapshot();
-  });
-});
-
-test('pipeline with concurrency', () => {
-  withTemporaryDirectory((dir) => {
-    const github = new GitHubWorkflow(app, 'Pipeline', {
-      workflowPath: `${dir}/.github/workflows/deploy.yml`,
-      synth: new ShellStep('Build', {
-        installCommands: ['yarn'],
-        commands: ['yarn build'],
-      }),
-      concurrency: {
-        group: '${{ github.workflow }}-${{ github.ref }}',
-      },
-    });
-
-    app.synth();
-
-    expect(readFileSync(github.workflowPath, 'utf-8')).toMatchSnapshot();
   });
 });
 
@@ -410,8 +394,8 @@ describe('diff protection when GITHUB_WORKFLOW set', () => {
       const repoDir = dir;
       const githubApp = new GitHubExampleApp({
         repoDir: repoDir,
-        envA: 'aws://111111111111/us-east-1',
-        envB: 'aws://222222222222/eu-west-2',
+        envA: 'aws://111111111111/cn-north-1',
+        envB: 'aws://222222222222/cn-northwest-1',
       });
       expect(() => githubApp.synth()).toThrowError(/Please commit the updated workflow file/);
     }));
@@ -422,8 +406,8 @@ describe('diff protection when GITHUB_WORKFLOW set', () => {
       const repoDir = dir;
       const githubApp = new GitHubExampleApp({
         repoDir: repoDir,
-        envA: 'aws://111111111111/us-east-1',
-        envB: 'aws://222222222222/eu-west-2',
+        envA: 'aws://111111111111/cn-north-1',
+        envB: 'aws://222222222222/cn-northwest-1',
       });
 
       // synth to write the deploy.yml the first time
@@ -439,8 +423,8 @@ describe('diff protection when GITHUB_WORKFLOW set', () => {
       const repoDir = dir;
       const githubApp = new GitHubExampleApp({
         repoDir: repoDir,
-        envA: 'aws://111111111111/us-east-1',
-        envB: 'aws://222222222222/eu-west-2',
+        envA: 'aws://111111111111/cn-north-1',
+        envB: 'aws://222222222222/cn-northwest-1',
       });
 
       githubApp.workflowFile.patch(JsonPatch.replace('/jobs/Build-Build/runs-on', 'macos-latest'));
@@ -495,7 +479,7 @@ test('can escape hatch into workflow file', () => {
     });
 
     const stage = new Stage(app, 'MyStack', {
-      env: { account: '111111111111', region: 'us-east-1' },
+      env: { account: '111111111111', region: 'cn-north-1' },
     });
 
     new Stack(stage, 'MyStack');
@@ -515,40 +499,6 @@ test('can escape hatch into workflow file', () => {
     expect(file).toContain('workflow_call: {}\n');
     expect(file).not.toContain('workflow_dispatch: {}\n');
     expect(file).toContain('runs-on: macos-latest\n');
-  });
-});
-
-test('post stage steps have access to id-token', () => {
-  withTemporaryDirectory((dir) => {
-    const pipeline = new GitHubWorkflow(app, 'Pipeline', {
-      workflowPath: `${dir}/.github/workflows/deploy.yml`,
-      synth: new ShellStep('Build', {
-        installCommands: ['yarn'],
-        commands: ['yarn build'],
-      }),
-    });
-
-    const stage = new Stage(app, 'MyStack', {
-      env: { account: '111111111111', region: 'eu-west-1' },
-    });
-
-    new Stack(stage, 'MyStack');
-
-    pipeline.addStageWithGitHubOptions(stage, {
-      post: [
-        new GitHubActionStep('Post', {
-          useGitHubActionRole: true,
-          jobSteps: [{
-            name: 'Checkout',
-            uses: 'actions/checkout@v4',
-          }],
-        }),
-      ],
-    });
-
-    app.synth();
-
-    expect(readFileSync(pipeline.workflowPath, 'utf-8')).toMatchSnapshot();
   });
 });
 
