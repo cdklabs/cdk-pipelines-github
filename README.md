@@ -44,6 +44,7 @@ Workflows.
       - [Manual Approval Step](#manual-approval-step)
     - [Pipeline YAML Comments](#pipeline-yaml-comments)
     - [Common Configuration for Docker Asset Publishing Steps](#common-configuration-for-docker-asset-publishing-steps)
+    - [Workflow Concurrency](#workflow-concurrency)
   - [AWS China partition support](#aws-china-partition-support)
   - [Tutorial](#tutorial)
   - [Not supported yet](#not-supported-yet)
@@ -643,6 +644,34 @@ const pipeline = new GitHubWorkflow(app, 'Pipeline', {
 });
 
 app.synth();
+```
+
+### Workflow Concurrency
+
+If you want to prevent your workflow from running in parallel you can specify the concurrency at workflow level. 
+Below is an example of a workflow that will not run in parallel and where a running workflow will be cancelled in favor of the more recent one.
+The [GitHub docs](https://docs.github.com/en/actions/using-jobs/using-concurrency) provide further details on this.
+
+```ts
+import { ShellStep } from 'aws-cdk-lib/pipelines';
+
+const app = new App();
+
+const pipeline = new GitHubWorkflow(app, 'SequentialPipeline', {
+  concurrency: {
+    group: '${{ github.workflow }}-group',
+    cancelInProgress: true,
+  },
+  synth: new ShellStep('Build', {
+    commands: [
+      'yarn install',
+      'yarn build',
+    ],
+  }),
+  awsCreds: AwsCredentials.fromOpenIdConnect({
+    gitHubActionRoleArn: 'arn:aws:iam::<account-id>:role/GitHubActionRole',
+  }),
+});
 ```
 
 ## AWS China partition support

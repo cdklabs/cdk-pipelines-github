@@ -956,3 +956,22 @@ export interface PublicOptions { }
  */
 export interface StatusOptions { }
 //#endregion
+
+/**
+ * Concurrency options at workflow level
+ *
+ * @see https://docs.github.com/en/actions/using-jobs/using-concurrency
+ */
+export interface ConcurrencyOptions {
+  /**
+   * The concurrency group to use for the job.
+   */
+  readonly group: string;
+
+  /**
+   * Conditionally cancel currently running jobs or workflows in the same concurrency group.
+   *
+   * @default false
+   */
+  readonly cancelInProgress?: boolean;
+}

@@ -44,6 +44,7 @@ Workflows.
       - [Manual Approval Step](#manual-approval-step)
     - [Pipeline YAML Comments](#pipeline-yaml-comments)
     - [Common Configuration for Docker Asset Publishing Steps](#common-configuration-for-docker-asset-publishing-steps)
+    - [Workflow Concurrency](#workflow-concurrency)
   - [AWS China partition support](#aws-china-partition-support)
   - [Tutorial](#tutorial)
   - [Not supported yet](#not-supported-yet)
@@ -643,6 +644,34 @@ const pipeline = new GitHubWorkflow(app, 'Pipeline', {
 });
 
 app.synth();
+```
+
+### Workflow Concurrency
+
+If you want to prevent your workflow from running in parallel you can specify the concurrency at workflow level.
+Below is an example of a workflow that will not run in parallel and where a running workflow will be cancelled in favor of the more recent one.
+The [GitHub docs](https://docs.github.com/en/actions/using-jobs/using-concurrency) provide further details on this.
+
+```ts
+import { ShellStep } from 'aws-cdk-lib/pipelines';
+
+const app = new App();
+
+const pipeline = new GitHubWorkflow(app, 'SequentialPipeline', {
+  concurrency: {
+    group: '${{ github.workflow }}-group',
+    cancelInProgress: true,
+  },
+  synth: new ShellStep('Build', {
+    commands: [
+      'yarn install',
+      'yarn build',
+    ],
+  }),
+  awsCreds: AwsCredentials.fromOpenIdConnect({
+    gitHubActionRoleArn: 'arn:aws:iam::<account-id>:role/GitHubActionRole',
+  }),
+});
 ```
 
 ## AWS China partition support
@@ -1720,6 +1749,54 @@ Which activity types to trigger on.
 
 ---
 
+### ConcurrencyOptions <a name="ConcurrencyOptions" id="cdk-pipelines-github.ConcurrencyOptions"></a>
+
+Concurrency options at workflow level.
+
+> [https://docs.github.com/en/actions/using-jobs/using-concurrency](https://docs.github.com/en/actions/using-jobs/using-concurrency)
+
+#### Initializer <a name="Initializer" id="cdk-pipelines-github.ConcurrencyOptions.Initializer"></a>
+
+```typescript
+import { ConcurrencyOptions } from 'cdk-pipelines-github'
+
+const concurrencyOptions: ConcurrencyOptions = { ... }
+```
+
+#### Properties <a name="Properties" id="Properties"></a>
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#cdk-pipelines-github.ConcurrencyOptions.property.group">group</a></code> | <code>string</code> | The concurrency group to use for the job. |
+| <code><a href="#cdk-pipelines-github.ConcurrencyOptions.property.cancelInProgress">cancelInProgress</a></code> | <code>boolean</code> | Conditionally cancel currently running jobs or workflows in the same concurrency group. |
+
+---
+
+##### `group`<sup>Required</sup> <a name="group" id="cdk-pipelines-github.ConcurrencyOptions.property.group"></a>
+
+```typescript
+public readonly group: string;
+```
+
+- *Type:* string
+
+The concurrency group to use for the job.
+
+---
+
+##### `cancelInProgress`<sup>Optional</sup> <a name="cancelInProgress" id="cdk-pipelines-github.ConcurrencyOptions.property.cancelInProgress"></a>
+
+```typescript
+public readonly cancelInProgress: boolean;
+```
+
+- *Type:* boolean
+- *Default:* false
+
+Conditionally cancel currently running jobs or workflows in the same concurrency group.
+
+---
+
 ### ContainerCredentials <a name="ContainerCredentials" id="cdk-pipelines-github.ContainerCredentials"></a>
 
 Credentials to use to authenticate to Docker registries.
@@ -2646,6 +2723,7 @@ const gitHubWorkflowProps: GitHubWorkflowProps = { ... }
 | <code><a href="#cdk-pipelines-github.GitHubWorkflowProps.property.awsCreds">awsCreds</a></code> | <code><a href="#cdk-pipelines-github.AwsCredentialsProvider">AwsCredentialsProvider</a></code> | Configure provider for AWS credentials used for deployment. |
 | <code><a href="#cdk-pipelines-github.GitHubWorkflowProps.property.buildContainer">buildContainer</a></code> | <code><a href="#cdk-pipelines-github.ContainerOptions">ContainerOptions</a></code> | Build container options. |
 | <code><a href="#cdk-pipelines-github.GitHubWorkflowProps.property.cdkCliVersion">cdkCliVersion</a></code> | <code>string</code> | Version of the CDK CLI to use. |
+| <code><a href="#cdk-pipelines-github.GitHubWorkflowProps.property.concurrency">concurrency</a></code> | <code><a href="#cdk-pipelines-github.ConcurrencyOptions">ConcurrencyOptions</a></code> | GitHub workflow concurrency. |
 | <code><a href="#cdk-pipelines-github.GitHubWorkflowProps.property.dockerAssetJobSettings">dockerAssetJobSettings</a></code> | <code><a href="#cdk-pipelines-github.DockerAssetJobSettings">DockerAssetJobSettings</a></code> | Job level settings applied to all docker asset publishing jobs in the workflow. |
 | <code><a href="#cdk-pipelines-github.GitHubWorkflowProps.property.dockerCredentials">dockerCredentials</a></code> | <code><a href="#cdk-pipelines-github.DockerCredential">DockerCredential</a>[]</code> | The Docker Credentials to use to login. |
 | <code><a href="#cdk-pipelines-github.GitHubWorkflowProps.property.gitHubActionRoleArn">gitHubActionRoleArn</a></code> | <code>string</code> | A role that utilizes the GitHub OIDC Identity Provider in your AWS account. |
@@ -2730,6 +2808,19 @@ public readonly cdkCliVersion: string;
 - *Default:* automatic
 
 Version of the CDK CLI to use.
+
+---
+
+##### `concurrency`<sup>Optional</sup> <a name="concurrency" id="cdk-pipelines-github.GitHubWorkflowProps.property.concurrency"></a>
+
+```typescript
+public readonly concurrency: ConcurrencyOptions;
+```
+
+- *Type:* <a href="#cdk-pipelines-github.ConcurrencyOptions">ConcurrencyOptions</a>
+- *Default:* no concurrency settings
+
+GitHub workflow concurrency.
 
 ---
 

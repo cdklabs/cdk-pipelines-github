@@ -76,6 +76,13 @@ export interface GitHubWorkflowProps extends PipelineBaseProps {
   readonly workflowTriggers?: github.WorkflowTriggers;
 
   /**
+   * GitHub workflow concurrency
+   *
+   * @default - no concurrency settings
+   */
+  readonly concurrency?: github.ConcurrencyOptions;
+
+  /**
    * Version of the CDK CLI to use.
    * @default - automatic
    */
@@ -192,6 +199,7 @@ export class GitHubWorkflow extends PipelineBase {
   public readonly workflowFile: YamlFile;
 
   private readonly workflowTriggers: github.WorkflowTriggers;
+  private readonly concurrency?: github.ConcurrencyOptions;
   private readonly preSynthed: boolean;
   private readonly awsCredentials: AwsCredentialsProvider;
   private readonly dockerCredentials: DockerCredential[];
@@ -246,6 +254,13 @@ export class GitHubWorkflow extends PipelineBase {
       push: { branches: ['main'] },
       workflowDispatch: {},
     };
+
+    if (props.concurrency) {
+      this.concurrency = {
+        group: props.concurrency.group,
+        cancelInProgress: props.concurrency.cancelInProgress ?? false,
+      };
+    }
 
     this.runner = props.runner ?? github.Runner.UBUNTU_LATEST;
     this.publishAssetsAuthRegion = props.publishAssetsAuthRegion ?? 'us-west-2';
@@ -428,6 +443,12 @@ export class GitHubWorkflow extends PipelineBase {
     const workflow = {
       name: this.workflowName,
       on: snakeCaseKeys(this.workflowTriggers, '_'),
+      ...(this.concurrency ? {
+        concurrency: {
+          'group': this.concurrency.group,
+          'cancel-in-progress': this.concurrency.cancelInProgress,
+        },
+      } : {}),
       jobs: jobmap,
     };
 
