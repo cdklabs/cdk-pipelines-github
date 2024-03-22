@@ -648,7 +648,9 @@ app.synth();
 
 ### Workflow Concurrency
 
-If you want to prevent your workflow from running in parallel you can specify the concurrenct at workflow level. Below is an example of a workflow that will not run in parallel and where a running workflow will be cancelled in favor of the more recent one. The [GitHub docs](https://docs.github.com/en/actions/using-jobs/using-concurrency) provide further details on this.
+If you want to prevent your workflow from running in parallel you can specify the concurrency at workflow level. 
+Below is an example of a workflow that will not run in parallel and where a running workflow will be cancelled in favor of the more recent one.
+The [GitHub docs](https://docs.github.com/en/actions/using-jobs/using-concurrency) provide further details on this.
 
 ```ts
 import { ShellStep } from 'aws-cdk-lib/pipelines';

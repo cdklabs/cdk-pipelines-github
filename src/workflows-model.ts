@@ -967,8 +967,11 @@ export interface ConcurrencyOptions {
    * The concurrency group to use for the job.
    */
   readonly group: string;
+
   /**
-   * Conditionally cancel currently running jobs or workflows in the same concurrency group. Default: false
+   * Conditionally cancel currently running jobs or workflows in the same concurrency group.
+   *
+   * @default false
    */
   readonly cancelInProgress?: boolean;
 }
