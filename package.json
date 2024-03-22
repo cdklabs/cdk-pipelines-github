@@ -52,7 +52,7 @@
     "@typescript-eslint/eslint-plugin": "^6",
     "@typescript-eslint/parser": "^6",
     "aws-cdk-lib": "2.80.0",
-    "cdklabs-projen-project-types": "^0.1.189",
+    "cdklabs-projen-project-types": "^0.1.190",
     "constructs": "10.0.46",
     "eslint": "^8",
     "eslint-import-resolver-typescript": "^2.7.1",
@@ -60,11 +60,11 @@
     "jest": "^27",
     "jest-junit": "^15",
     "jsii": "~5.2",
-    "jsii-diff": "^1.94.0",
+    "jsii-diff": "^1.95.0",
     "jsii-docgen": "^7.2.9",
-    "jsii-pacmak": "^1.94.0",
-    "jsii-rosetta": "^5.3.24",
-    "projen": "^0.80.7",
+    "jsii-pacmak": "^1.95.0",
+    "jsii-rosetta": "^5.3.29",
+    "projen": "^0.80.12",
     "standard-version": "^9",
     "ts-jest": "^27",
     "ts-node": "^10.9.2",
@@ -77,7 +77,7 @@
   "dependencies": {
     "decamelize": "^5.0.1",
     "fast-json-patch": "^3.1.1",
-    "yaml": "^2.4.0"
+    "yaml": "^2.4.1"
   },
   "bundledDependencies": [
     "decamelize",
