@@ -441,7 +441,9 @@ If you want to call a GitHub Action in a step, you can utilize the `GitHubAction
 
 The `jobSteps` array is placed into the pipeline job at the relevant `jobs.<job_id>.steps` as [documented here](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idsteps).
 
-In this example,
+You can use the `useGitHubActionRole` property if you need read access to the id-token, like you need when interacting with AWS.
+
+In this example, 
 
 ```ts
 import { ShellStep } from 'aws-cdk-lib/pipelines';
