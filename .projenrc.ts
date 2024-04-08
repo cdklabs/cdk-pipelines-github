@@ -22,6 +22,12 @@ const project = new CdklabsConstructLibrary({
   ],
   peerDeps: ['aws-cdk-lib'],
   jestOptions: {
+    jestConfig: {
+      testMatch: [
+        '<rootDir>/test/**/*(*.)@(spec|test).ts?(x)',
+        '<rootDir>/src/**/*(*.)@(spec|test).ts?(x)',
+      ],
+    },
     updateSnapshot: UpdateSnapshot.NEVER,
   },
 

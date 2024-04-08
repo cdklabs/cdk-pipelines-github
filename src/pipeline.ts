@@ -9,6 +9,7 @@ import * as decamelize from 'decamelize';
 import { AwsCredentials, AwsCredentialsProvider } from './aws-credentials';
 import { DockerCredential } from './docker-credentials';
 import { AddGitHubStageOptions, GitHubEnvironment } from './github-common';
+import { posixPath } from './private/posix-utils';
 import { GitHubStage } from './stage';
 import { GitHubActionStep } from './steps/github-action-step';
 import { GitHubWave } from './wave';
@@ -240,7 +241,7 @@ export class GitHubWorkflow extends PipelineBase {
 
     this.dockerCredentials = props.dockerCredentials ?? [];
 
-    this.workflowPath = props.workflowPath ?? '.github/workflows/deploy.yml';
+    this.workflowPath = props.workflowPath ? posixPath(props.workflowPath) : '.github/workflows/deploy.yml';
     if (!this.workflowPath.endsWith('.yml') &&!this.workflowPath.endsWith('.yaml')) {
       throw new Error('workflow file is expected to be a yaml file');
     }
@@ -566,7 +567,7 @@ export class GitHubWorkflow extends PipelineBase {
     }
 
     // create one file and make one step
-    const relativeToAssembly = (p: string) => path.posix.join(cdkoutDir, path.relative(path.resolve(cdkoutDir), p));
+    const relativeToAssembly = (p: string) => posixPath(path.join(cdkoutDir, path.relative(path.resolve(cdkoutDir), p)));
     const fileContents: string[] = ['set -ex'].concat(assets.map((asset) => {
       return `npx cdk-assets --path "${relativeToAssembly(asset.assetManifestPath)}" --verbose publish "${asset.assetSelector}"`;
     }));
@@ -575,14 +576,14 @@ export class GitHubWorkflow extends PipelineBase {
     this.assetHashMap[assetId] = jobId;
     fileContents.push(`echo '${ASSET_HASH_NAME}=${assetId}' >> $GITHUB_OUTPUT`);
 
-    const publishStepFile = path.posix.join(path.dirname(relativeToAssembly(assetManifestPath)), `publish-${jobId}-step.sh`);
+    const publishStepFile = posixPath(path.join(path.dirname(relativeToAssembly(assetManifestPath)), `publish-${jobId}-step.sh`));
     mkdirSync(path.dirname(publishStepFile), { recursive: true });
     writeFileSync(publishStepFile, fileContents.join('\n'), { encoding: 'utf-8' });
 
     const publishStep: github.JobStep = {
       id: 'Publish',
       name: `Publish ${jobId}`,
-      run: `/bin/bash ./cdk.out/${path.relative(cdkoutDir, publishStepFile)}`,
+      run: `/bin/bash ./cdk.out/${posixPath(path.relative(cdkoutDir, publishStepFile))}`,
     };
 
     return {
