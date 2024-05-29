@@ -53,7 +53,7 @@ jobs:
           role-skip-session-tagging: true
           aws-access-key-id: \${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: \${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      - uses: docker/login-action@v2
+      - uses: docker/login-action@v3
         with:
           registry: 000000000000.dkr.ecr.us-east-1.amazonaws.com
       - id: Publish
