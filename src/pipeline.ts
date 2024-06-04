@@ -878,7 +878,7 @@ export class GitHubWorkflow extends PipelineBase {
 
     return [
       {
-        uses: 'docker/login-action@v2',
+        uses: 'docker/login-action@v3',
         with: params,
       },
     ];

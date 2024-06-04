@@ -28,11 +28,11 @@ describe('correct format for docker credentials:', () => {
     const file = fs.readFileSync(github.workflowPath, 'utf-8');
     const workflow = YAML.parse(file);
 
-    const steps = findStepByJobAndUses(workflow, 'Assets-DockerAsset1', 'docker/login-action@v2');
+    const steps = findStepByJobAndUses(workflow, 'Assets-DockerAsset1', 'docker/login-action@v3');
 
     expect(steps.length).toEqual(1);
     expect(steps[0]).toEqual({
-      uses: 'docker/login-action@v2',
+      uses: 'docker/login-action@v3',
       with: {
         registry: '000000000000.dkr.ecr.us-east-1.amazonaws.com',
       },
@@ -44,11 +44,11 @@ describe('correct format for docker credentials:', () => {
     const file = fs.readFileSync(github.workflowPath, 'utf-8');
     const workflow = YAML.parse(file);
 
-    const steps = findStepByJobAndUses(workflow, 'Assets-DockerAsset1', 'docker/login-action@v2');
+    const steps = findStepByJobAndUses(workflow, 'Assets-DockerAsset1', 'docker/login-action@v3');
 
     expect(steps.length).toEqual(1);
     expect(steps[0]).toEqual({
-      uses: 'docker/login-action@v2',
+      uses: 'docker/login-action@v3',
       with: {
         username: '${{ secrets.DOCKERHUB_USERNAME }}',
         password: '${{ secrets.DOCKERHUB_TOKEN }}',
@@ -67,11 +67,11 @@ describe('correct format for docker credentials:', () => {
     const file = fs.readFileSync(github.workflowPath, 'utf-8');
     const workflow = YAML.parse(file);
 
-    const steps = findStepByJobAndUses(workflow, 'Assets-DockerAsset1', 'docker/login-action@v2');
+    const steps = findStepByJobAndUses(workflow, 'Assets-DockerAsset1', 'docker/login-action@v3');
 
     expect(steps.length).toEqual(1);
     expect(steps[0]).toEqual({
-      uses: 'docker/login-action@v2',
+      uses: 'docker/login-action@v3',
       with: {
         username: '${{ secrets.CUSTOM_USERNAME }}',
         password: '${{ secrets.CUSTOM_PASSWORD }}',
@@ -89,18 +89,18 @@ describe('correct format for docker credentials:', () => {
     const file = fs.readFileSync(github.workflowPath, 'utf-8');
     const workflow = YAML.parse(file);
 
-    const steps = findStepByJobAndUses(workflow, 'Assets-DockerAsset1', 'docker/login-action@v2');
+    const steps = findStepByJobAndUses(workflow, 'Assets-DockerAsset1', 'docker/login-action@v3');
 
     expect(steps.length).toEqual(2);
     expect(steps[0]).toEqual({
-      uses: 'docker/login-action@v2',
+      uses: 'docker/login-action@v3',
       with: {
         username: '${{ secrets.DOCKERHUB_USERNAME }}',
         password: '${{ secrets.DOCKERHUB_TOKEN }}',
       },
     });
     expect(steps[1]).toEqual({
-      uses: 'docker/login-action@v2',
+      uses: 'docker/login-action@v3',
       with: {
         registry: '000000000000.dkr.ecr.us-east-1.amazonaws.com',
       },
@@ -146,10 +146,10 @@ describe('correct format for docker credentials:', () => {
     const github = createDockerGithubWorkflow(app, [DockerCredential.ghcr()]);
     const file = fs.readFileSync(github.workflowPath, 'utf-8');
     const workflow = YAML.parse(file);
-    const steps = findStepByJobAndUses(workflow, 'Assets-DockerAsset1', 'docker/login-action@v2');
+    const steps = findStepByJobAndUses(workflow, 'Assets-DockerAsset1', 'docker/login-action@v3');
 
     expect(steps[0]).toEqual({
-      uses: 'docker/login-action@v2',
+      uses: 'docker/login-action@v3',
       with: {
         registry: 'ghcr.io',
         username: '${{ github.actor }}',
