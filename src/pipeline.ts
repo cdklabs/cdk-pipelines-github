@@ -832,7 +832,7 @@ export class GitHubWorkflow extends PipelineBase {
       definition: {
         name: step.id,
         ...this.renderJobSettingParameters(),
-        permissions: {
+        permissions: step.permissions ?? {
           contents: github.JobPermission.WRITE,
         },
         runsOn: this.runner.runsOn,

@@ -1,5 +1,5 @@
 import { Step } from 'aws-cdk-lib/pipelines';
-import { JobStep } from '../workflows-model';
+import { JobStep, JobPermissions } from '../workflows-model';
 
 export interface GitHubActionStepProps {
   /**
@@ -11,6 +11,11 @@ export interface GitHubActionStepProps {
    * Environment variables to set.
    */
   readonly env?: Record<string, string>;
+
+  /**
+   * Permissions for the GitHub Action step.
+   */
+  readonly permissions?: JobPermissions;
 }
 
 /**
@@ -19,10 +24,12 @@ export interface GitHubActionStepProps {
 export class GitHubActionStep extends Step {
   public readonly env: Record<string, string>;
   public readonly jobSteps: JobStep[];
+  public readonly permissions?: JobPermissions;
 
   constructor(id: string, props: GitHubActionStepProps) {
     super(id);
     this.jobSteps = props.jobSteps;
     this.env = props.env ?? {};
+    this.permissions = props.permissions;
   }
 }
