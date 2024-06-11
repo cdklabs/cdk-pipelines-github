@@ -4,8 +4,8 @@ import { Stack, Stage } from 'aws-cdk-lib';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import { ShellStep } from 'aws-cdk-lib/pipelines';
 import { GitHubExampleApp } from './example-app';
-import { withTemporaryDirectory, TestApp } from './testutil';
-import { GitHubWorkflow, JsonPatch, Runner, AwsCredentials } from '../src';
+import { TestApp, withTemporaryDirectory } from './testutil';
+import { AwsCredentials, GitHubActionStep, GitHubStage, GitHubWorkflow, JobPermission, JsonPatch, Runner } from '../src';
 
 const fixtures = join(__dirname, 'fixtures');
 
@@ -280,6 +280,47 @@ test('pipeline with job settings', () => {
     });
 
     pipeline.addStage(stage);
+
+    app.synth();
+
+    expect(readFileSync(pipeline.workflowPath, 'utf-8')).toMatchSnapshot();
+  });
+});
+
+test('pipeline with GitHubSteps customizing permissions', () => {
+  withTemporaryDirectory((dir) => {
+    const pipeline = new GitHubWorkflow(app, 'Pipeline', {
+      workflowPath: `${dir}/.github/workflows/deploy.yml`,
+      synth: new ShellStep('Build', {
+        commands: [],
+      }),
+    });
+
+    const wave = pipeline.addGitHubWave('Test-Wave');
+    const stage = new GitHubStage(app, 'MyStage', {
+      env: { account: '111111111111', region: 'us-east-1' },
+    });
+
+    const stack = new Stack(stage, 'MyStack');
+
+    new lambda.Function(stack, 'Function', {
+      code: lambda.Code.fromAsset(fixtures),
+      handler: 'index.handler',
+      runtime: lambda.Runtime.NODEJS_14_X,
+    });
+
+    wave.addStageWithGitHubOptions(stage, {
+      pre: [new GitHubActionStep('Test-Step', {
+        permissions: {
+          idToken: JobPermission.WRITE,
+          contents: JobPermission.WRITE,
+        },
+        jobSteps: [{
+          name: 'Hello World',
+          run: 'echo hello',
+        }],
+      })],
+    });
 
     app.synth();
 
