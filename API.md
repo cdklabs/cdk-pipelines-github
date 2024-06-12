@@ -441,6 +441,8 @@ If you want to call a GitHub Action in a step, you can utilize the `GitHubAction
 
 The `jobSteps` array is placed into the pipeline job at the relevant `jobs.<job_id>.steps` as [documented here](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idsteps).
 
+GitHub Actions Job permissions can be modified by passing the `permissions` object to `GitHubActionStep`. The default set of permissions is simply `content: write`.
+
 In this example,
 
 ```ts
@@ -461,6 +463,10 @@ const pipeline = new GitHubWorkflow(app, 'Pipeline', {
 const stage = new MyStage(app, 'Beta', { env: BETA_ENV });
 pipeline.addStage(stage, {
   pre: [new GitHubActionStep('PreBetaDeployAction', {
+    permissions: {
+      idToken: JobPermission.WRITE,
+      contents: JobPermission.WRITE,
+    },
     jobSteps: [
       {
         name: 'Checkout',
@@ -2314,6 +2320,7 @@ const gitHubActionStepProps: GitHubActionStepProps = { ... }
 | --- | --- | --- |
 | <code><a href="#cdk-pipelines-github.GitHubActionStepProps.property.jobSteps">jobSteps</a></code> | <code><a href="#cdk-pipelines-github.JobStep">JobStep</a>[]</code> | The Job steps. |
 | <code><a href="#cdk-pipelines-github.GitHubActionStepProps.property.env">env</a></code> | <code>{[ key: string ]: string}</code> | Environment variables to set. |
+| <code><a href="#cdk-pipelines-github.GitHubActionStepProps.property.permissions">permissions</a></code> | <code><a href="#cdk-pipelines-github.JobPermissions">JobPermissions</a></code> | Permissions for the GitHub Action step. |
 
 ---
 
@@ -2338,6 +2345,19 @@ public readonly env: {[ key: string ]: string};
 - *Type:* {[ key: string ]: string}
 
 Environment variables to set.
+
+---
+
+##### `permissions`<sup>Optional</sup> <a name="permissions" id="cdk-pipelines-github.GitHubActionStepProps.property.permissions"></a>
+
+```typescript
+public readonly permissions: JobPermissions;
+```
+
+- *Type:* <a href="#cdk-pipelines-github.JobPermissions">JobPermissions</a>
+- *Default:* The job receives 'contents: write' permissions. If you set additional permissions and require 'contents: write', it must be provided in your configuration.
+
+Permissions for the GitHub Action step.
 
 ---
 
@@ -5568,6 +5588,7 @@ API. For example, if you want `secondStep` to occur after `firstStep`, call
 | <code><a href="#cdk-pipelines-github.GitHubActionStep.property.primaryOutput">primaryOutput</a></code> | <code>aws-cdk-lib.pipelines.FileSet</code> | The primary FileSet produced by this Step. |
 | <code><a href="#cdk-pipelines-github.GitHubActionStep.property.env">env</a></code> | <code>{[ key: string ]: string}</code> | *No description.* |
 | <code><a href="#cdk-pipelines-github.GitHubActionStep.property.jobSteps">jobSteps</a></code> | <code><a href="#cdk-pipelines-github.JobStep">JobStep</a>[]</code> | *No description.* |
+| <code><a href="#cdk-pipelines-github.GitHubActionStep.property.permissions">permissions</a></code> | <code><a href="#cdk-pipelines-github.JobPermissions">JobPermissions</a></code> | *No description.* |
 
 ---
 
@@ -5665,6 +5686,16 @@ public readonly jobSteps: JobStep[];
 ```
 
 - *Type:* <a href="#cdk-pipelines-github.JobStep">JobStep</a>[]
+
+---
+
+##### `permissions`<sup>Optional</sup> <a name="permissions" id="cdk-pipelines-github.GitHubActionStep.property.permissions"></a>
+
+```typescript
+public readonly permissions: JobPermissions;
+```
+
+- *Type:* <a href="#cdk-pipelines-github.JobPermissions">JobPermissions</a>
 
 ---
 

@@ -14,6 +14,7 @@ export interface GitHubActionStepProps {
 
   /**
    * Permissions for the GitHub Action step.
+   * @default The job receives 'contents: write' permissions. If you set additional permissions and require 'contents: write', it must be provided in your configuration.
    */
   readonly permissions?: JobPermissions;
 }
