@@ -441,6 +441,9 @@ If you want to call a GitHub Action in a step, you can utilize the `GitHubAction
 
 The `jobSteps` array is placed into the pipeline job at the relevant `jobs.<job_id>.steps` as [documented here](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idsteps).
 
+GitHub Actions Job permissions can be modified by passing the `permissions` object to `GitHubActionStep`.
+The default set of permissions is simply `contents: write`.
+
 In this example,
 
 ```ts
@@ -461,6 +464,10 @@ const pipeline = new GitHubWorkflow(app, 'Pipeline', {
 const stage = new MyStage(app, 'Beta', { env: BETA_ENV });
 pipeline.addStage(stage, {
   pre: [new GitHubActionStep('PreBetaDeployAction', {
+    permissions: {
+      idToken: JobPermission.WRITE,
+      contents: JobPermission.WRITE,
+    },
     jobSteps: [
       {
         name: 'Checkout',
