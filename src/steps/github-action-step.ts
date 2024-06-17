@@ -17,6 +17,13 @@ export interface GitHubActionStepProps {
    * @default The job receives 'contents: write' permissions. If you set additional permissions and require 'contents: write', it must be provided in your configuration.
    */
   readonly permissions?: JobPermissions;
+
+  /**
+   * The GitHub Environment for the GitHub Action step. To set shell-level environment variables, use `env`.
+   * @see https://docs.github.com/en/actions/deployment/targeting-different-environments/using-environments-for-deployment
+   * @default No GitHub Environment is selected.
+   */
+  readonly environment?: string;
 }
 
 /**
@@ -31,6 +38,7 @@ export class GitHubActionStep extends Step {
     super(id);
     this.jobSteps = props.jobSteps;
     this.env = props.env ?? {};
+    this.environment = props.environment;
     this.permissions = props.permissions;
   }
 }
