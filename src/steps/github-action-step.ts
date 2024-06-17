@@ -24,7 +24,7 @@ export interface GitHubActionStepProps {
    * @see https://docs.github.com/en/actions/deployment/targeting-different-environments/using-environments-for-deployment
    * @default No GitHub Environment is selected.
    */
-  readonly environment?: string;
+  readonly githubEnvironment?: string;
 }
 
 /**
@@ -40,7 +40,7 @@ export class GitHubActionStep extends Step {
     super(id);
     this.jobSteps = props.jobSteps;
     this.env = props.env ?? {};
-    this.environment = props.environment;
+    this.environment = props.githubEnvironment;
     this.permissions = props.permissions;
   }
 }

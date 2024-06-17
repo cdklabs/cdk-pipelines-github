@@ -359,7 +359,7 @@ test('pipeline with GitHubSteps customizing environment', () => {
 
     wave.addStageWithGitHubOptions(stage, {
       pre: [new GitHubActionStep('Test-Step', {
-        environment: 'production',
+        githubEnvironment: 'production',
         jobSteps: [{
           name: 'Hello World',
           run: 'echo hello',
