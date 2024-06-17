@@ -5607,7 +5607,7 @@ API. For example, if you want `secondStep` to occur after `firstStep`, call
 | <code><a href="#cdk-pipelines-github.GitHubActionStep.property.primaryOutput">primaryOutput</a></code> | <code>aws-cdk-lib.pipelines.FileSet</code> | The primary FileSet produced by this Step. |
 | <code><a href="#cdk-pipelines-github.GitHubActionStep.property.env">env</a></code> | <code>{[ key: string ]: string}</code> | *No description.* |
 | <code><a href="#cdk-pipelines-github.GitHubActionStep.property.jobSteps">jobSteps</a></code> | <code><a href="#cdk-pipelines-github.JobStep">JobStep</a>[]</code> | *No description.* |
-| <code><a href="#cdk-pipelines-github.GitHubActionStep.property.environment">environment</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#cdk-pipelines-github.GitHubActionStep.property.githubEnvironment">githubEnvironment</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#cdk-pipelines-github.GitHubActionStep.property.permissions">permissions</a></code> | <code><a href="#cdk-pipelines-github.JobPermissions">JobPermissions</a></code> | *No description.* |
 
 ---
@@ -5709,10 +5709,10 @@ public readonly jobSteps: JobStep[];
 
 ---
 
-##### `environment`<sup>Optional</sup> <a name="environment" id="cdk-pipelines-github.GitHubActionStep.property.environment"></a>
+##### `githubEnvironment`<sup>Optional</sup> <a name="githubEnvironment" id="cdk-pipelines-github.GitHubActionStep.property.githubEnvironment"></a>
 
 ```typescript
-public readonly environment: string;
+public readonly githubEnvironment: string;
 ```
 
 - *Type:* string

@@ -33,14 +33,14 @@ export interface GitHubActionStepProps {
 export class GitHubActionStep extends Step {
   public readonly env: Record<string, string>;
   public readonly jobSteps: JobStep[];
-  public readonly environment?: string;
+  public readonly githubEnvironment?: string;
   public readonly permissions?: JobPermissions;
 
   constructor(id: string, props: GitHubActionStepProps) {
     super(id);
     this.jobSteps = props.jobSteps;
     this.env = props.env ?? {};
-    this.environment = props.githubEnvironment;
+    this.githubEnvironment = props.githubEnvironment;
     this.permissions = props.permissions;
   }
 }
