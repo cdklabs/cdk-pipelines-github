@@ -335,6 +335,55 @@ test('pipeline with GitHubSteps customizing permissions', () => {
   });
 });
 
+test('pipeline with GitHubSteps customizing environment', () => {
+  withTemporaryDirectory((dir) => {
+    const pipeline = new GitHubWorkflow(app, 'Pipeline', {
+      workflowPath: `${dir}/.github/workflows/deploy.yml`,
+      synth: new ShellStep('Build', {
+        commands: [],
+      }),
+    });
+
+    const wave = pipeline.addGitHubWave('Test-Wave');
+    const stage = new GitHubStage(app, 'MyStage', {
+      env: { account: '111111111111', region: 'us-east-1' },
+    });
+
+    const stack = new Stack(stage, 'MyStack');
+
+    new lambda.Function(stack, 'Function', {
+      code: lambda.Code.fromAsset(fixtures),
+      handler: 'index.handler',
+      runtime: lambda.Runtime.NODEJS_14_X,
+    });
+
+    wave.addStageWithGitHubOptions(stage, {
+      pre: [new GitHubActionStep('Test-Step', {
+        environment: 'production',
+        jobSteps: [{
+          name: 'Hello World',
+          run: 'echo hello',
+        }],
+      })],
+    });
+
+    app.synth();
+
+    const file = readFileSync(pipeline.workflowPath, 'utf-8');
+
+    expect(file).toMatchSnapshot();
+    expect(file).toContain(`MyStage-Test-Step:
+    name: Test-Step
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    needs:
+      - Build-Build
+    env: {}
+    environment: production`);
+  });
+});
+
 test('pipeline with GitHubSteps default permissions', () => {
   withTemporaryDirectory((dir) => {
     const pipeline = new GitHubWorkflow(app, 'Pipeline', {
