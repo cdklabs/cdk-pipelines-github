@@ -2321,6 +2321,7 @@ const gitHubActionStepProps: GitHubActionStepProps = { ... }
 | --- | --- | --- |
 | <code><a href="#cdk-pipelines-github.GitHubActionStepProps.property.jobSteps">jobSteps</a></code> | <code><a href="#cdk-pipelines-github.JobStep">JobStep</a>[]</code> | The Job steps. |
 | <code><a href="#cdk-pipelines-github.GitHubActionStepProps.property.env">env</a></code> | <code>{[ key: string ]: string}</code> | Environment variables to set. |
+| <code><a href="#cdk-pipelines-github.GitHubActionStepProps.property.githubEnvironment">githubEnvironment</a></code> | <code>string</code> | The GitHub Environment for the GitHub Action step. |
 | <code><a href="#cdk-pipelines-github.GitHubActionStepProps.property.permissions">permissions</a></code> | <code><a href="#cdk-pipelines-github.JobPermissions">JobPermissions</a></code> | Permissions for the GitHub Action step. |
 
 ---
@@ -2346,6 +2347,23 @@ public readonly env: {[ key: string ]: string};
 - *Type:* {[ key: string ]: string}
 
 Environment variables to set.
+
+---
+
+##### `githubEnvironment`<sup>Optional</sup> <a name="githubEnvironment" id="cdk-pipelines-github.GitHubActionStepProps.property.githubEnvironment"></a>
+
+```typescript
+public readonly githubEnvironment: string;
+```
+
+- *Type:* string
+- *Default:* No GitHub Environment is selected.
+
+The GitHub Environment for the GitHub Action step.
+
+To set shell-level environment variables, use `env`.
+
+> [https://docs.github.com/en/actions/deployment/targeting-different-environments/using-environments-for-deployment](https://docs.github.com/en/actions/deployment/targeting-different-environments/using-environments-for-deployment)
 
 ---
 
@@ -5589,6 +5607,7 @@ API. For example, if you want `secondStep` to occur after `firstStep`, call
 | <code><a href="#cdk-pipelines-github.GitHubActionStep.property.primaryOutput">primaryOutput</a></code> | <code>aws-cdk-lib.pipelines.FileSet</code> | The primary FileSet produced by this Step. |
 | <code><a href="#cdk-pipelines-github.GitHubActionStep.property.env">env</a></code> | <code>{[ key: string ]: string}</code> | *No description.* |
 | <code><a href="#cdk-pipelines-github.GitHubActionStep.property.jobSteps">jobSteps</a></code> | <code><a href="#cdk-pipelines-github.JobStep">JobStep</a>[]</code> | *No description.* |
+| <code><a href="#cdk-pipelines-github.GitHubActionStep.property.githubEnvironment">githubEnvironment</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#cdk-pipelines-github.GitHubActionStep.property.permissions">permissions</a></code> | <code><a href="#cdk-pipelines-github.JobPermissions">JobPermissions</a></code> | *No description.* |
 
 ---
@@ -5687,6 +5706,16 @@ public readonly jobSteps: JobStep[];
 ```
 
 - *Type:* <a href="#cdk-pipelines-github.JobStep">JobStep</a>[]
+
+---
+
+##### `githubEnvironment`<sup>Optional</sup> <a name="githubEnvironment" id="cdk-pipelines-github.GitHubActionStep.property.githubEnvironment"></a>
+
+```typescript
+public readonly githubEnvironment: string;
+```
+
+- *Type:* string
 
 ---
 
