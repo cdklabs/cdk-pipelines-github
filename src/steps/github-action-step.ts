@@ -19,7 +19,8 @@ export interface GitHubActionStepProps {
   readonly permissions?: JobPermissions;
 
   /**
-   * The GitHub Environment for the GitHub Action step. To set shell-level environment variables, use `env`.
+   * The GitHub Environment for the GitHub Action step.
+   * To set shell-level environment variables, use `env`.
    * @see https://docs.github.com/en/actions/deployment/targeting-different-environments/using-environments-for-deployment
    * @default No GitHub Environment is selected.
    */
@@ -32,6 +33,7 @@ export interface GitHubActionStepProps {
 export class GitHubActionStep extends Step {
   public readonly env: Record<string, string>;
   public readonly jobSteps: JobStep[];
+  public readonly environment?: string;
   public readonly permissions?: JobPermissions;
 
   constructor(id: string, props: GitHubActionStepProps) {
