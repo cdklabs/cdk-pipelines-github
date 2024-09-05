@@ -793,6 +793,7 @@ export class GitHubWorkflow extends PipelineBase {
         with: {
           name: output.fileSet.id,
           path: output.directory,
+          ['include-hidden-files']: true,
         },
       });
     }
@@ -920,6 +921,7 @@ export class GitHubWorkflow extends PipelineBase {
       with: {
         name: CDKOUT_ARTIFACT,
         path: dir,
+        ['include-hidden-files']: true,
       },
     }];
   }

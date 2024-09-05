@@ -403,6 +403,7 @@ jobs:
         with:
           name: cdk.out
           path: cdk.out
+          include-hidden-files: true
   Assets-FileAsset1:
     name: Publish Assets Assets-FileAsset1
     needs:
@@ -524,6 +525,7 @@ jobs:
         with:
           name: cdk.out
           path: cdk.out
+          include-hidden-files: true
 "
 `;
 
@@ -557,6 +559,7 @@ jobs:
         with:
           name: cdk.out
           path: cdk.out
+          include-hidden-files: true
   Assets-FileAsset1:
     name: Publish Assets Assets-FileAsset1
     if: github.repository == 'account/repo'
@@ -681,6 +684,7 @@ jobs:
         with:
           name: cdk.out
           path: cdk.out
+          include-hidden-files: true
   Assets-FileAsset1:
     name: Publish Assets Assets-FileAsset1
     needs:
@@ -808,6 +812,7 @@ jobs:
         with:
           name: cdk.out
           path: cdk.out
+          include-hidden-files: true
 "
 `;
 
@@ -840,6 +845,7 @@ jobs:
         with:
           name: cdk.out
           path: cdk.out
+          include-hidden-files: true
   Assets-FileAsset1:
     name: Publish Assets Assets-FileAsset1
     needs:
@@ -964,6 +970,7 @@ jobs:
         with:
           name: cdk.out
           path: cdk.out
+          include-hidden-files: true
 "
 `;
 
@@ -996,6 +1003,7 @@ jobs:
         with:
           name: cdk.out
           path: cdk.out
+          include-hidden-files: true
   Assets-FileAsset1:
     name: Publish Assets Assets-FileAsset1
     needs:
