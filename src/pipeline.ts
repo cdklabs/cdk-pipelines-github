@@ -793,7 +793,6 @@ export class GitHubWorkflow extends PipelineBase {
         with: {
           name: output.fileSet.id,
           path: output.directory,
-          ['include-hidden-files']: true,
         },
       });
     }
