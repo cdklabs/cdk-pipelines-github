@@ -920,6 +920,7 @@ export class GitHubWorkflow extends PipelineBase {
       with: {
         name: CDKOUT_ARTIFACT,
         path: dir,
+        ['include-hidden-files']: true,
       },
     }];
   }
