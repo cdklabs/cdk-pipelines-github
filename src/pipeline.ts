@@ -213,12 +213,12 @@ export class GitHubWorkflow extends PipelineBase {
   private readonly runner: github.Runner;
   private readonly publishAssetsAuthRegion: string;
   private readonly stackProperties: Record<
-  string,
-  {
-    environment: AddGitHubStageOptions['gitHubEnvironment'];
-    capabilities: AddGitHubStageOptions['stackCapabilities'];
-    settings: AddGitHubStageOptions['jobSettings'];
-  }
+    string,
+    {
+      environment: AddGitHubStageOptions['gitHubEnvironment'];
+      capabilities: AddGitHubStageOptions['stackCapabilities'];
+      settings: AddGitHubStageOptions['jobSettings'];
+    }
   > = {};
   private readonly jobSettings?: JobSettings;
   private dockerAssetJobSettings?: DockerAssetJobSettings;
