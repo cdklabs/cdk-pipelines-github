@@ -2511,9 +2511,9 @@ eventsource-parser@^3.0.1:
   integrity sha512-VARTJ9CYeuQYb0pZEPbzi740OWFgpHe7AYJ2WFZVnUDUQp5Dk2yJUgF36YsZ81cOyxT0QxmXD2EQpapAouzWVA==
 
 eventsource@^3.0.2:
-  version "3.0.6"
-  resolved "https://registry.yarnpkg.com/eventsource/-/eventsource-3.0.6.tgz#5c4b24cd70c0323eed2651a5ee07bd4bc391e656"
-  integrity sha512-l19WpE2m9hSuyP06+FbuUUf1G+R0SFLrtQfbRb9PRr+oimOfxQhgGCbVaXg5IvZyyTThJsxh6L/srkMiCeBPDA==
+  version "3.0.7"
+  resolved "https://registry.yarnpkg.com/eventsource/-/eventsource-3.0.7.tgz#1157622e2f5377bb6aef2114372728ba0c156989"
+  integrity sha512-CRT1WTyuQoD771GW56XEZFQ/ZoSfWid1alKGDYMmkt2yl8UXrVR4pspqWNEcqKvVIzg6PAltWjxcSSPrboA4iA==
   dependencies:
     eventsource-parser "^3.0.1"
 
@@ -5891,9 +5891,9 @@ typescript@^4.9.5:
   integrity sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==
 
 typescript@next:
-  version "5.9.0-dev.20250508"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.9.0-dev.20250508.tgz#eafb385ae4da47a02b92a20a3d92605907a3c3ab"
-  integrity sha512-vTtyza+uNzjJO/NgvQxsZkopsalnGdtipQo/lz2rdJ4i+wOdWQuOZxGgaUa2Fi8vj/4Xp6chlfpisgOI3mxvOQ==
+  version "5.9.0-dev.20250509"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.9.0-dev.20250509.tgz#63d6c42aa003551d6e93f4816b2ecbc089d6c38d"
+  integrity sha512-PPOIOmDBfpOZKdHB4y3BGEQutgH9iWrwepGl9eWnQnccMzkgplMYSChOWM2i3ViRr2dZu86zSQF8lwuHkXy+sQ==
 
 typescript@~5.2:
   version "5.2.2"
