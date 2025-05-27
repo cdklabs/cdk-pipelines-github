@@ -22,9 +22,9 @@
     lru-cache "^10.4.3"
 
 "@aws-cdk/asset-awscli-v1@^2.2.177":
-  version "2.2.237"
-  resolved "https://registry.yarnpkg.com/@aws-cdk/asset-awscli-v1/-/asset-awscli-v1-2.2.237.tgz#d3356aaf3f73e34982ae289b7e4441e20d58497a"
-  integrity sha512-OlXylbXI52lboFVJBFLae+WB99qWmI121x/wXQHEMj2RaVNVbWE+OAHcDk2Um1BitUQCaTf9ki57B0Fuqx0Rvw==
+  version "2.2.238"
+  resolved "https://registry.yarnpkg.com/@aws-cdk/asset-awscli-v1/-/asset-awscli-v1-2.2.238.tgz#5fc34aa163af548db56c0f55016f1654c2f32f16"
+  integrity sha512-7SoOO1NSI5z8SfQ7q3KHyIpBTx1okG1QcmcBNxxofHu/F1SdfOXZCSOwnAkVqTSrJr6xvCahpqnL6cVGXY27WA==
 
 "@aws-cdk/asset-kubectl-v20@^2.1.1":
   version "2.1.4"
@@ -2085,9 +2085,9 @@ dunder-proto@^1.0.0, dunder-proto@^1.0.1:
     gopd "^1.2.0"
 
 electron-to-chromium@^1.5.149:
-  version "1.5.157"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.5.157.tgz#553b122522ac7bba6f1a0dd7d50b14f297736f75"
-  integrity sha512-/0ybgsQd1muo8QlnuTpKwtl0oX5YMlUGbm8xyqgDU00motRkKFFbUJySAQBWcY79rVqNLWIWa87BGVGClwAB2w==
+  version "1.5.158"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.5.158.tgz#e5f01fc7fdf810d9d223e30593e0839c306276d4"
+  integrity sha512-9vcp2xHhkvraY6AHw2WMi+GDSLPX42qe2xjYaVoZqFRJiOcilVQFq9mZmpuHEQpzlgGDelKlV7ZiGcmMsc8WxQ==
 
 emittery@^0.8.1:
   version "0.8.1"
@@ -3903,9 +3903,9 @@ jsii@~5.2:
     yargs "^17.7.2"
 
 jsii@~5.8.0:
-  version "5.8.9"
-  resolved "https://registry.yarnpkg.com/jsii/-/jsii-5.8.9.tgz#be9d59d7e8193b60291d3cd8a0913668fd11b0e1"
-  integrity sha512-TxdbK33FUEatwVQh2Kls7i+v2QAlPZPopdePMZ89xePFLIwmUKhEPuPQSPHnFwdMe43cBOqa1Oh68yDQHvKNug==
+  version "5.8.10"
+  resolved "https://registry.yarnpkg.com/jsii/-/jsii-5.8.10.tgz#95d1d8574a2c542c7558b3ef649c2fe293e3b477"
+  integrity sha512-6rpXNvtUa+NUfI3efkPkJ1HXnNAlPzLu30jIckLdZLTXj91h4XZbXmGxnyCckhKYSuDHDUV932Ag/r16yQD51g==
   dependencies:
     "@jsii/check-node" "1.112.0"
     "@jsii/spec" "^1.112.0"
