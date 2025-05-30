@@ -40,7 +40,7 @@ const project = new CdklabsConstructLibrary({
     javaPackage: 'io.github.cdklabs.cdkpipelines.github',
     mavenGroupId: 'io.github.cdklabs',
     mavenArtifactId: 'cdk-pipelines-github',
-    mavenEndpoint: 'https://s01.oss.sonatype.org',
+    mavenServerId: 'central-ossrh',
   },
 
   publishToNuget: {
