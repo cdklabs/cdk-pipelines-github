@@ -38,7 +38,6 @@ junit.xml
 /dist/changelog.md
 /dist/version.txt
 !/.github/workflows/release.yml
-!/.mergify.yml
 !/.github/pull_request_template.md
 !/test/
 !/tsconfig.dev.json
@@ -51,6 +50,7 @@ tsconfig.json
 !/API.md
 .jsii.tabl.json
 !/rosetta/default.ts-fixture
+!/.github/workflows/auto-queue.yml
 !/.github/workflows/upgrade-cdklabs-projen-project-types-main.yml
 !/.github/workflows/upgrade-main.yml
 !/.github/workflows/upgrade-dev-deps-main.yml

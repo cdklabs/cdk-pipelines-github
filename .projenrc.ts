@@ -13,6 +13,7 @@ const project = new CdklabsConstructLibrary({
   constructsVersion: '10.0.46',
   defaultReleaseBranch: 'main',
   repositoryUrl: 'https://github.com/cdklabs/cdk-pipelines-github.git',
+  enablePRAutoMerge: true,
   bundledDeps: ['decamelize', 'yaml', 'fast-json-patch'],
   devDeps: [
     'cdklabs-projen-project-types',
