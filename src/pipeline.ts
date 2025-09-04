@@ -84,10 +84,10 @@ export interface GitHubWorkflowProps extends PipelineBaseProps {
   readonly concurrency?: github.ConcurrencyOptions;
 
   /**
-   * Version of the CDK CLI to use.
+   * Version of the [cdk-assets package](https://www.npmjs.com/package/cdk-assets) to use.
    * @default - automatic
    */
-  readonly cdkCliVersion?: string;
+  readonly cdkAssetsVersion?: string;
 
   /**
    * Indicates if the repository already contains a synthesized `cdk.out` directory, in which
@@ -204,7 +204,7 @@ export class GitHubWorkflow extends PipelineBase {
   private readonly preSynthed: boolean;
   private readonly awsCredentials: AwsCredentialsProvider;
   private readonly dockerCredentials: DockerCredential[];
-  private readonly cdkCliVersion?: string;
+  private readonly cdkAssetsVersion?: string;
   private readonly buildContainer?: github.ContainerOptions;
   private readonly preBuildSteps: github.JobStep[];
   private readonly postBuildSteps: github.JobStep[];
@@ -229,7 +229,7 @@ export class GitHubWorkflow extends PipelineBase {
   constructor(scope: Construct, id: string, props: GitHubWorkflowProps) {
     super(scope, id, props);
 
-    this.cdkCliVersion = props.cdkCliVersion;
+    this.cdkAssetsVersion = props.cdkAssetsVersion;
     this.preSynthed = props.preSynthed ?? false;
     this.buildContainer = props.buildContainer;
     this.preBuildSteps = props.preBuildSteps ?? [];
@@ -538,7 +538,7 @@ export class GitHubWorkflow extends PipelineBase {
       throw new Error('Asset Publish step must have at least 1 asset');
     }
 
-    const installSuffix = this.cdkCliVersion ? `@${this.cdkCliVersion}` : '';
+    const installSuffix = this.cdkAssetsVersion ? `@${this.cdkAssetsVersion}` : '';
     const cdkoutDir = options.assemblyDir;
     const jobId = node.uniqueId;
     const { assetId, assetManifestPath } = assets[0];
