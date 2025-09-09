@@ -673,3 +673,29 @@ function wrapEnv(variable: string, value: string, cb: () => void) {
     process.env[variable] = original;
   }
 }
+
+test('pipeline with cdkAssetVersion override', () => {
+  withTemporaryDirectory((dir) => {
+    const github = new GitHubWorkflow(app, 'Pipeline', {
+      workflowPath: `${dir}/.github/workflows/deploy.yml`,
+      synth: new ShellStep('Build', {
+        installCommands: ['yarn'],
+        commands: ['yarn build'],
+      }),
+      runner: Runner.WINDOWS_LATEST,
+      cdkAssetsVersion: '4.2.0',
+    });
+
+    const stage = new Stage(app, 'MyStack', {
+      env: { account: '111111111111', region: 'us-east-1' },
+    });
+
+    new Stack(stage, 'MyStack');
+
+    github.addStage(stage);
+
+    app.synth();
+
+    expect(readFileSync(github.workflowPath, 'utf-8')).toMatchSnapshot();
+  });
+});

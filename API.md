@@ -1980,7 +1980,7 @@ const gitHubWorkflowProps: GitHubWorkflowProps = { ... }
 | <code><a href="#cdk-pipelines-github.GitHubWorkflowProps.property.awsCredentials">awsCredentials</a></code> | <code><a href="#cdk-pipelines-github.AwsCredentialsSecrets">AwsCredentialsSecrets</a></code> | Names of GitHub repository secrets that include AWS credentials for deployment. |
 | <code><a href="#cdk-pipelines-github.GitHubWorkflowProps.property.awsCreds">awsCreds</a></code> | <code><a href="#cdk-pipelines-github.AwsCredentialsProvider">AwsCredentialsProvider</a></code> | Configure provider for AWS credentials used for deployment. |
 | <code><a href="#cdk-pipelines-github.GitHubWorkflowProps.property.buildContainer">buildContainer</a></code> | <code><a href="#cdk-pipelines-github.ContainerOptions">ContainerOptions</a></code> | Build container options. |
-| <code><a href="#cdk-pipelines-github.GitHubWorkflowProps.property.cdkCliVersion">cdkCliVersion</a></code> | <code>string</code> | Version of the CDK CLI to use. |
+| <code><a href="#cdk-pipelines-github.GitHubWorkflowProps.property.cdkAssetsVersion">cdkAssetsVersion</a></code> | <code>string</code> | Version of the [cdk-assets package](https://www.npmjs.com/package/cdk-assets) to use. |
 | <code><a href="#cdk-pipelines-github.GitHubWorkflowProps.property.concurrency">concurrency</a></code> | <code><a href="#cdk-pipelines-github.ConcurrencyOptions">ConcurrencyOptions</a></code> | GitHub workflow concurrency. |
 | <code><a href="#cdk-pipelines-github.GitHubWorkflowProps.property.dockerAssetJobSettings">dockerAssetJobSettings</a></code> | <code><a href="#cdk-pipelines-github.DockerAssetJobSettings">DockerAssetJobSettings</a></code> | Job level settings applied to all docker asset publishing jobs in the workflow. |
 | <code><a href="#cdk-pipelines-github.GitHubWorkflowProps.property.dockerCredentials">dockerCredentials</a></code> | <code><a href="#cdk-pipelines-github.DockerCredential">DockerCredential</a>[]</code> | The Docker Credentials to use to login. |
@@ -2056,16 +2056,16 @@ Build container options.
 
 ---
 
-##### `cdkCliVersion`<sup>Optional</sup> <a name="cdkCliVersion" id="cdk-pipelines-github.GitHubWorkflowProps.property.cdkCliVersion"></a>
+##### `cdkAssetsVersion`<sup>Optional</sup> <a name="cdkAssetsVersion" id="cdk-pipelines-github.GitHubWorkflowProps.property.cdkAssetsVersion"></a>
 
 ```typescript
-public readonly cdkCliVersion: string;
+public readonly cdkAssetsVersion: string;
 ```
 
 - *Type:* string
 - *Default:* automatic
 
-Version of the CDK CLI to use.
+Version of the [cdk-assets package](https://www.npmjs.com/package/cdk-assets) to use.
 
 ---
 
