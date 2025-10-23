@@ -53,7 +53,7 @@
     "@typescript-eslint/eslint-plugin": "^8",
     "@typescript-eslint/parser": "^8",
     "aws-cdk-lib": "2.80.0",
-    "cdklabs-projen-project-types": "^0.3.1",
+    "cdklabs-projen-project-types": "^0.3.7",
     "commit-and-tag-version": "^12",
     "constructs": "10.0.46",
     "eslint": "^9",
@@ -66,7 +66,7 @@
     "jsii-docgen": "^10.5.0",
     "jsii-pacmak": "^1.117.0",
     "jsii-rosetta": "^5.9.11",
-    "projen": "^0.95.2",
+    "projen": "^0.98.4",
     "ts-jest": "^27",
     "ts-node": "^10.9.2",
     "typescript": "^4.9.5"
