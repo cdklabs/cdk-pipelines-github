@@ -23,7 +23,7 @@ jobs:
       image: alpine
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - uses: actions/setup-node@v3
         with:
           node-version: \\"16\\"
@@ -42,7 +42,7 @@ jobs:
       asset-hash: \${{ steps.Publish.outputs.asset-hash }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Install
         run: npm install --no-save cdk-assets
       - name: Authenticate Via GitHub Secrets
@@ -71,7 +71,7 @@ jobs:
       asset-hash: \${{ steps.Publish.outputs.asset-hash }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Install
         run: npm install --no-save cdk-assets
       - name: Authenticate Via GitHub Secrets
@@ -97,7 +97,7 @@ jobs:
       asset-hash: \${{ steps.Publish.outputs.asset-hash }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Install
         run: npm install --no-save cdk-assets
       - name: Authenticate Via GitHub Secrets
@@ -123,7 +123,7 @@ jobs:
       asset-hash: \${{ steps.Publish.outputs.asset-hash }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Install
         run: npm install --no-save cdk-assets
       - name: Authenticate Via GitHub Secrets
@@ -149,7 +149,7 @@ jobs:
       asset-hash: \${{ steps.Publish.outputs.asset-hash }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Install
         run: npm install --no-save cdk-assets
       - name: Authenticate Via GitHub Secrets
@@ -175,7 +175,7 @@ jobs:
       asset-hash: \${{ steps.Publish.outputs.asset-hash }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Install
         run: npm install --no-save cdk-assets
       - name: Authenticate Via GitHub Secrets
@@ -201,7 +201,7 @@ jobs:
       asset-hash: \${{ steps.Publish.outputs.asset-hash }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Install
         run: npm install --no-save cdk-assets
       - name: Authenticate Via GitHub Secrets
@@ -395,11 +395,11 @@ jobs:
     env: {}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Build
         run: \\"\\"
       - name: Upload cdk.out
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: cdk.out
           path: cdk.out
@@ -416,7 +416,7 @@ jobs:
       asset-hash: \${{ steps.Publish.outputs.asset-hash }}
     steps:
       - name: Download cdk.out
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: cdk.out
           path: github.cn.out
@@ -445,7 +445,7 @@ jobs:
       asset-hash: \${{ steps.Publish.outputs.asset-hash }}
     steps:
       - name: Download cdk.out
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: cdk.out
           path: github.cn.out
@@ -515,13 +515,13 @@ jobs:
     env: {}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Install
         run: yarn
       - name: Build
         run: yarn build
       - name: Upload cdk.out
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: cdk.out
           path: cdk.out
@@ -551,11 +551,11 @@ jobs:
     env: {}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Build
         run: \\"\\"
       - name: Upload cdk.out
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: cdk.out
           path: cdk.out
@@ -573,7 +573,7 @@ jobs:
       asset-hash: \${{ steps.Publish.outputs.asset-hash }}
     steps:
       - name: Download cdk.out
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: cdk.out
           path: github.cn.out
@@ -603,7 +603,7 @@ jobs:
       asset-hash: \${{ steps.Publish.outputs.asset-hash }}
     steps:
       - name: Download cdk.out
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: cdk.out
           path: github.cn.out
@@ -674,13 +674,13 @@ jobs:
     env: {}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Install
         run: yarn
       - name: Build
         run: yarn build
       - name: Upload cdk.out
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: cdk.out
           path: cdk.out
@@ -697,7 +697,7 @@ jobs:
       asset-hash: \${{ steps.Publish.outputs.asset-hash }}
     steps:
       - name: Download cdk.out
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: cdk.out
           path: github.cn.out
@@ -725,7 +725,7 @@ jobs:
       asset-hash: \${{ steps.Publish.outputs.asset-hash }}
     steps:
       - name: Download cdk.out
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: cdk.out
           path: github.cn.out
@@ -802,13 +802,13 @@ jobs:
     env: {}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Install
         run: yarn
       - name: Build
         run: yarn build
       - name: Upload cdk.out
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: cdk.out
           path: cdk.out
@@ -837,11 +837,11 @@ jobs:
     env: {}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Build
         run: \\"\\"
       - name: Upload cdk.out
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: cdk.out
           path: cdk.out
@@ -858,7 +858,7 @@ jobs:
       asset-hash: \${{ steps.Publish.outputs.asset-hash }}
     steps:
       - name: Download cdk.out
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: cdk.out
           path: github.cn.out
@@ -887,7 +887,7 @@ jobs:
       asset-hash: \${{ steps.Publish.outputs.asset-hash }}
     steps:
       - name: Download cdk.out
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: cdk.out
           path: github.cn.out
@@ -960,13 +960,13 @@ jobs:
     env: {}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Install
         run: yarn
       - name: Build
         run: yarn build
       - name: Upload cdk.out
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: cdk.out
           path: cdk.out
@@ -995,11 +995,11 @@ jobs:
     env: {}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Build
         run: \\"\\"
       - name: Upload cdk.out
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: cdk.out
           path: cdk.out
@@ -1016,7 +1016,7 @@ jobs:
       asset-hash: \${{ steps.Publish.outputs.asset-hash }}
     steps:
       - name: Download cdk.out
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: cdk.out
           path: github.cn.out
@@ -1045,7 +1045,7 @@ jobs:
       asset-hash: \${{ steps.Publish.outputs.asset-hash }}
     steps:
       - name: Download cdk.out
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: cdk.out
           path: github.cn.out
