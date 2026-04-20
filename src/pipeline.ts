@@ -676,7 +676,7 @@ export class GitHubWorkflow extends PipelineBase {
           ...this.stepsToConfigureAws(region, assumeRoleArn),
           {
             id: 'Deploy',
-            uses: 'aws-actions/aws-cloudformation-github-deploy@v1',
+            uses: 'aws-actions/aws-cloudformation-github-deploy@v2',
             with: params,
           },
         ],

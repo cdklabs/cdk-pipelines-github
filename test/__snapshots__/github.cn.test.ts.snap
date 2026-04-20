@@ -248,7 +248,7 @@ jobs:
           role-to-assume: arn:aws-cn:iam::111111111111:role/cdk-hnb659fds-deploy-role-111111111111-cn-north-1
           role-external-id: Pipeline
       - id: Deploy
-        uses: aws-actions/aws-cloudformation-github-deploy@v1
+        uses: aws-actions/aws-cloudformation-github-deploy@v2
         with:
           name: StageA-BucketStack
           template: https://cdk-hnb659fds-assets-111111111111-cn-north-1.s3.cn-north-1.amazonaws.com.cn/\${{
@@ -280,7 +280,7 @@ jobs:
           role-to-assume: arn:aws-cn:iam::111111111111:role/cdk-hnb659fds-deploy-role-111111111111-cn-north-1
           role-external-id: Pipeline
       - id: Deploy
-        uses: aws-actions/aws-cloudformation-github-deploy@v1
+        uses: aws-actions/aws-cloudformation-github-deploy@v2
         with:
           name: StageA-FunctionStack
           template: https://cdk-hnb659fds-assets-111111111111-cn-north-1.s3.cn-north-1.amazonaws.com.cn/\${{
@@ -329,7 +329,7 @@ jobs:
           role-to-assume: arn:aws-cn:iam::222222222222:role/cdk-hnb659fds-deploy-role-222222222222-cn-northwest-1
           role-external-id: Pipeline
       - id: Deploy
-        uses: aws-actions/aws-cloudformation-github-deploy@v1
+        uses: aws-actions/aws-cloudformation-github-deploy@v2
         with:
           name: StageB-BucketStack
           template: https://cdk-hnb659fds-assets-222222222222-cn-northwest-1.s3.cn-northwest-1.amazonaws.com.cn/\${{
@@ -364,7 +364,7 @@ jobs:
           role-to-assume: arn:aws-cn:iam::222222222222:role/cdk-hnb659fds-deploy-role-222222222222-cn-northwest-1
           role-external-id: Pipeline
       - id: Deploy
-        uses: aws-actions/aws-cloudformation-github-deploy@v1
+        uses: aws-actions/aws-cloudformation-github-deploy@v2
         with:
           name: StageB-FunctionStack
           template: https://cdk-hnb659fds-assets-222222222222-cn-northwest-1.s3.cn-northwest-1.amazonaws.com.cn/\${{
@@ -484,7 +484,7 @@ jobs:
           role-to-assume: arn:aws-cn:iam::111111111111:role/cdk-hnb659fds-deploy-role-111111111111-cn-north-1
           role-external-id: Pipeline
       - id: Deploy
-        uses: aws-actions/aws-cloudformation-github-deploy@v1
+        uses: aws-actions/aws-cloudformation-github-deploy@v2
         with:
           name: MyStage-MyStack
           template: https://cdk-hnb659fds-assets-111111111111-cn-north-1.s3.cn-north-1.amazonaws.com.cn/\${{
@@ -643,7 +643,7 @@ jobs:
           role-to-assume: arn:aws-cn:iam::111111111111:role/cdk-hnb659fds-deploy-role-111111111111-cn-north-1
           role-external-id: Pipeline
       - id: Deploy
-        uses: aws-actions/aws-cloudformation-github-deploy@v1
+        uses: aws-actions/aws-cloudformation-github-deploy@v2
         with:
           name: MyStack-MyStack
           template: https://cdk-hnb659fds-assets-111111111111-cn-north-1.s3.cn-north-1.amazonaws.com.cn/\${{
@@ -771,7 +771,7 @@ jobs:
           role-to-assume: arn:aws-cn:iam::111111111111:role/cdk-hnb659fds-deploy-role-111111111111-cn-north-1
           role-external-id: Pipeline
       - id: Deploy
-        uses: aws-actions/aws-cloudformation-github-deploy@v1
+        uses: aws-actions/aws-cloudformation-github-deploy@v2
         with:
           name: MyStack-MyStack
           template: https://cdk-hnb659fds-assets-111111111111-cn-north-1.s3.cn-north-1.amazonaws.com.cn/\${{
@@ -926,7 +926,7 @@ jobs:
           role-to-assume: arn:aws-cn:iam::111111111111:role/cdk-hnb659fds-deploy-role-111111111111-cn-north-1
           role-external-id: Pipeline
       - id: Deploy
-        uses: aws-actions/aws-cloudformation-github-deploy@v1
+        uses: aws-actions/aws-cloudformation-github-deploy@v2
         with:
           name: MyStack-MyStack
           template: https://cdk-hnb659fds-assets-111111111111-cn-north-1.s3.cn-north-1.amazonaws.com.cn/\${{
@@ -1084,7 +1084,7 @@ jobs:
           role-to-assume: arn:aws-cn:iam::111111111111:role/cdk-hnb659fds-deploy-role-111111111111-cn-north-1
           role-external-id: Pipeline
       - id: Deploy
-        uses: aws-actions/aws-cloudformation-github-deploy@v1
+        uses: aws-actions/aws-cloudformation-github-deploy@v2
         with:
           name: MyStack-MyStack
           template: https://cdk-hnb659fds-assets-111111111111-cn-north-1.s3.cn-north-1.amazonaws.com.cn/\${{

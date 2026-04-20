@@ -64,7 +64,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - id: Deploy
-        uses: aws-actions/aws-cloudformation-github-deploy@v1
+        uses: aws-actions/aws-cloudformation-github-deploy@v2
         with:
           name: MyStack-MyStack
           template: https://cdk-hnb659fds-assets-111111111111-cn-north-1.s3.cn-north-1.amazonaws.com.cn/\${{
