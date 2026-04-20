@@ -285,7 +285,7 @@ test('can set pre/post github action job step', () => {
           jobSteps: [
             {
               name: 'Checkout',
-              uses: 'actions/checkout@v4',
+              uses: 'actions/checkout@v6',
             },
             {
               name: 'post deploy action',
@@ -306,7 +306,7 @@ test('can set pre/post github action job step', () => {
     expect(workflowFileContents).toMatchSnapshot();
     expect(workflowFileContents).toContain('my-pre-deploy-action@1.0.0');
     expect(workflowFileContents).toContain('my-post-deploy-action@1.0.0');
-    expect(workflowFileContents).toContain('actions/checkout@v4');
+    expect(workflowFileContents).toContain('actions/checkout@v6');
     expect(workflowFileContents).toContain(
       'contains(fromJson(\'["push", "pull_request"]\'), github.event_name)',
     );
@@ -431,7 +431,7 @@ test('github stages in waves works', () => {
           jobSteps: [
             {
               name: 'Checkout',
-              uses: 'actions/checkout@v4',
+              uses: 'actions/checkout@v6',
             },
             {
               name: 'post wave action',
@@ -509,7 +509,7 @@ test('stages in pipeline works with `if`', () => {
 
     const workflowFileContents = readFileSync(pipeline.workflowPath, 'utf-8');
     expect(workflowFileContents).toMatchSnapshot();
-    expect(workflowFileContents).toContain('actions/checkout@v4');
+    expect(workflowFileContents).toContain('actions/checkout@v6');
 
     const yaml = YAML.parse(workflowFileContents);
     expect(yaml).toMatchObject({
