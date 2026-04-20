@@ -24,7 +24,7 @@ jobs:
           node-version: lts/*
           package-manager-cache: false
       - name: Install dependencies
-        run: yarn install --check-files --frozen-lockfile
+        run: npm ci
       - name: Upgrade dependencies
         run: npx projen upgrade
       - name: Find mutations
