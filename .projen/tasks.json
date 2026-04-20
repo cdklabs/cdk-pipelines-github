@@ -160,7 +160,7 @@
       "description": "Run integration snapshot tests",
       "steps": [
         {
-          "exec": "yarn integ-runner --language typescript",
+          "exec": "integ-runner --language typescript",
           "receiveArgs": true
         }
       ]
@@ -170,7 +170,7 @@
       "description": "Run and update integration snapshot tests",
       "steps": [
         {
-          "exec": "yarn integ-runner --language typescript --update-on-failed",
+          "exec": "integ-runner --language typescript --update-on-failed",
           "receiveArgs": true
         }
       ]
@@ -304,7 +304,7 @@
       "description": "Test rosetta extract",
       "steps": [
         {
-          "exec": "yarn --silent jsii-rosetta extract --strict"
+          "exec": "jsii-rosetta extract --strict"
         }
       ]
     },
@@ -369,7 +369,7 @@
       },
       "steps": [
         {
-          "exec": "npx npm-check-updates@16 --upgrade --target=minor --peer --no-deprecated --dep=prod --filter=decamelize,fast-json-patch,yaml"
+          "exec": "npx npm-check-updates@20 --upgrade --target=minor --peer --no-deprecated --dep=prod --filter=decamelize,fast-json-patch,yaml"
         },
         {
           "exec": "yarn install --check-files"
@@ -393,7 +393,7 @@
       },
       "steps": [
         {
-          "exec": "npx npm-check-updates@16 --upgrade --target=latest --peer --no-deprecated --dep=dev,peer,prod,optional --filter=cdklabs-projen-project-types,projen"
+          "exec": "npx npm-check-updates@20 --upgrade --target=latest --peer --no-deprecated --dep=dev,peer,prod,optional --filter=cdklabs-projen-project-types,projen"
         },
         {
           "exec": "yarn install --check-files"
@@ -417,7 +417,7 @@
       },
       "steps": [
         {
-          "exec": "npx npm-check-updates@16 --upgrade --target=minor --peer --no-deprecated --dep=dev --filter=@aws-cdk/integ-tests-alpha,@types/jest,aws-cdk-lib,eslint-import-resolver-typescript,eslint-plugin-import,jest,jsii-diff,jsii-pacmak,jsii-rosetta,ts-jest,ts-node,typescript"
+          "exec": "npx npm-check-updates@20 --upgrade --target=minor --peer --no-deprecated --dep=dev --filter=@aws-cdk/integ-tests-alpha,@types/jest,aws-cdk-lib,eslint-import-resolver-typescript,eslint-plugin-import,jest,jsii-diff,jsii-pacmak,jsii-rosetta,ts-jest,ts-node,typescript"
         },
         {
           "exec": "yarn install --check-files"
