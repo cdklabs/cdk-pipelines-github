@@ -46,8 +46,8 @@ const project = new CdklabsConstructLibrary({
   },
 });
 
-// integ-tests-alpha must be the same version 
-project.deps.removeDependency(`@aws-cdk/integ-tests-alpha`);
+// integ-tests-alpha must be the same version
+project.deps.removeDependency('@aws-cdk/integ-tests-alpha');
 project.deps.addDependency(`@aws-cdk/integ-tests-alpha@${project.cdkVersion.substring(1)}-alpha.0`, DependencyType.TEST);
 
 // JSII sets this to `false` so we need to be compatible
