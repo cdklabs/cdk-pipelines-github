@@ -646,7 +646,7 @@ export class GitHubWorkflow extends PipelineBase {
     const params: Record<string, any> = {
       'name': stack.stackName,
       'template': replaceAssetHash(resolve(stack.templateUrl)),
-      'no-fail-on-empty-changeset': '1',
+      'fail-on-empty-changeset': false,
     };
 
     const capabilities = this.stackProperties[stack.stackArtifactId]?.capabilities;

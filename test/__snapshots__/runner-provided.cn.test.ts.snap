@@ -69,7 +69,7 @@ jobs:
           name: MyStack-MyStack
           template: https://cdk-hnb659fds-assets-111111111111-cn-north-1.s3.cn-north-1.amazonaws.com.cn/\${{
             needs.Assets-FileAsset1.outputs.asset-hash }}.json
-          no-fail-on-empty-changeset: \\"1\\"
+          fail-on-empty-changeset: false
           role-arn: arn:aws-cn:iam::111111111111:role/cdk-hnb659fds-cfn-exec-role-111111111111-cn-north-1
 "
 `;
