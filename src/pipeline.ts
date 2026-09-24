@@ -659,6 +659,14 @@ export class GitHubWorkflow extends PipelineBase {
     }
     const assumeRoleArn = stack.assumeRoleArn ? resolve(stack.assumeRoleArn) : undefined;
 
+    if (stack.tags && Object.keys(stack.tags).length > 0) {
+      const tags: Array<{ Key: string; Value: string }> = [];
+      for (const [key, value] of Object.entries(stack.tags)) {
+        tags.push({ Key: key, Value: value });
+      }
+      params.tags = JSON.stringify(tags);
+    }
+
     return {
       id: node.uniqueId,
       definition: {
