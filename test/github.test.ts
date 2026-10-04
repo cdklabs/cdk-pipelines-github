@@ -1,6 +1,6 @@
 import { readFileSync } from 'fs';
 import { join } from 'path';
-import { Stack, Stage } from 'aws-cdk-lib';
+import { Stack, Stage, Tags } from 'aws-cdk-lib';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import { ShellStep } from 'aws-cdk-lib/pipelines';
 import { GitHubExampleApp } from './example-app';
@@ -697,5 +697,36 @@ test('pipeline with cdkAssetVersion override', () => {
     app.synth();
 
     expect(readFileSync(github.workflowPath, 'utf-8')).toMatchSnapshot();
+  });
+});
+
+test('pipeline with tags applied to stack', () => {
+  withTemporaryDirectory((dir) => {
+    const github = new GitHubWorkflow(app, 'Pipeline', {
+      workflowPath: `${dir}/.github/workflows/deploy.yml`,
+      synth: new ShellStep('Build', {
+        installCommands: ['yarn'],
+        commands: ['yarn build'],
+      }),
+    });
+
+    const stage = new Stage(app, 'MyStack', {
+      env: { account: '111111111111', region: 'us-east-1' },
+    });
+
+    const stack = new Stack(stage, 'MyStack');
+    Tags.of(stack).add('Environment', 'Production');
+    Tags.of(stack).add('Project', 'MyProject');
+
+    github.addStage(stage);
+
+    app.synth();
+
+    const file = readFileSync(github.workflowPath, 'utf-8');
+    expect(file).toContain('tags:');
+    expect(file).toContain('"Key":"Environment"');
+    expect(file).toContain('"Value":"Production"');
+    expect(file).toContain('"Key":"Project"');
+    expect(file).toContain('"Value":"MyProject"');
   });
 });
