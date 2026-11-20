@@ -4,6 +4,8 @@
 
 ### GitHubActionRole <a name="GitHubActionRole" id="cdk-pipelines-github.GitHubActionRole"></a>
 
+- *Implements:* constructs.IConstruct, constructs.IDependable
+
 Creates or references a GitHub OIDC provider and accompanying role that trusts the provider.
 
 This role can be used to authenticate against AWS instead of using long-lived AWS user credentials
@@ -56,6 +58,7 @@ new GitHubActionRole(scope: Construct, id: string, props: GitHubActionRoleProps)
 | **Name** | **Description** |
 | --- | --- |
 | <code><a href="#cdk-pipelines-github.GitHubActionRole.toString">toString</a></code> | Returns a string representation of this construct. |
+| <code><a href="#cdk-pipelines-github.GitHubActionRole.with">with</a></code> | Applies one or more mixins to this construct. |
 
 ---
 
@@ -66,6 +69,27 @@ public toString(): string
 ```
 
 Returns a string representation of this construct.
+
+##### `with` <a name="with" id="cdk-pipelines-github.GitHubActionRole.with"></a>
+
+```typescript
+public with(mixins: ...IMixin[]): IConstruct
+```
+
+Applies one or more mixins to this construct.
+
+Mixins are applied in order. The list of constructs is captured at the
+start of the call, so constructs added by a mixin will not be visited.
+Use multiple `with()` calls if subsequent mixins should apply to added
+constructs.
+
+###### `mixins`<sup>Required</sup> <a name="mixins" id="cdk-pipelines-github.GitHubActionRole.with.parameter.mixins"></a>
+
+- *Type:* ...constructs.IMixin[]
+
+The mixins to apply.
+
+---
 
 #### Static Functions <a name="Static Functions" id="Static Functions"></a>
 
@@ -166,6 +190,8 @@ property in your GitHub Workflow app.
 
 ### GitHubStage <a name="GitHubStage" id="cdk-pipelines-github.GitHubStage"></a>
 
+- *Implements:* constructs.IConstruct, constructs.IDependable
+
 #### Initializers <a name="Initializers" id="cdk-pipelines-github.GitHubStage.Initializer"></a>
 
 ```typescript
@@ -205,6 +231,7 @@ new GitHubStage(scope: Construct, id: string, props?: GitHubStageProps)
 | **Name** | **Description** |
 | --- | --- |
 | <code><a href="#cdk-pipelines-github.GitHubStage.toString">toString</a></code> | Returns a string representation of this construct. |
+| <code><a href="#cdk-pipelines-github.GitHubStage.with">with</a></code> | Applies one or more mixins to this construct. |
 | <code><a href="#cdk-pipelines-github.GitHubStage.synth">synth</a></code> | Synthesize this stage into a cloud assembly. |
 
 ---
@@ -216,6 +243,27 @@ public toString(): string
 ```
 
 Returns a string representation of this construct.
+
+##### `with` <a name="with" id="cdk-pipelines-github.GitHubStage.with"></a>
+
+```typescript
+public with(mixins: ...IMixin[]): IConstruct
+```
+
+Applies one or more mixins to this construct.
+
+Mixins are applied in order. The list of constructs is captured at the
+start of the call, so constructs added by a mixin will not be visited.
+Use multiple `with()` calls if subsequent mixins should apply to added
+constructs.
+
+###### `mixins`<sup>Required</sup> <a name="mixins" id="cdk-pipelines-github.GitHubStage.with.parameter.mixins"></a>
+
+- *Type:* ...constructs.IMixin[]
+
+The mixins to apply.
+
+---
 
 ##### `synth` <a name="synth" id="cdk-pipelines-github.GitHubStage.synth"></a>
 
@@ -460,6 +508,8 @@ public readonly props: GitHubStageProps;
 
 ### GitHubWorkflow <a name="GitHubWorkflow" id="cdk-pipelines-github.GitHubWorkflow"></a>
 
+- *Implements:* constructs.IConstruct, constructs.IDependable
+
 CDK Pipelines for GitHub workflows.
 
 #### Initializers <a name="Initializers" id="cdk-pipelines-github.GitHubWorkflow.Initializer"></a>
@@ -501,6 +551,7 @@ new GitHubWorkflow(scope: Construct, id: string, props: GitHubWorkflowProps)
 | **Name** | **Description** |
 | --- | --- |
 | <code><a href="#cdk-pipelines-github.GitHubWorkflow.toString">toString</a></code> | Returns a string representation of this construct. |
+| <code><a href="#cdk-pipelines-github.GitHubWorkflow.with">with</a></code> | Applies one or more mixins to this construct. |
 | <code><a href="#cdk-pipelines-github.GitHubWorkflow.addStage">addStage</a></code> | Deploy a single Stage by itself. |
 | <code><a href="#cdk-pipelines-github.GitHubWorkflow.addWave">addWave</a></code> | Add a Wave to the pipeline, for deploying multiple Stages in parallel. |
 | <code><a href="#cdk-pipelines-github.GitHubWorkflow.buildPipeline">buildPipeline</a></code> | Send the current pipeline definition to the engine, and construct the pipeline. |
@@ -516,6 +567,27 @@ public toString(): string
 ```
 
 Returns a string representation of this construct.
+
+##### `with` <a name="with" id="cdk-pipelines-github.GitHubWorkflow.with"></a>
+
+```typescript
+public with(mixins: ...IMixin[]): IConstruct
+```
+
+Applies one or more mixins to this construct.
+
+Mixins are applied in order. The list of constructs is captured at the
+start of the call, so constructs added by a mixin will not be visited.
+Use multiple `with()` calls if subsequent mixins should apply to added
+constructs.
+
+###### `mixins`<sup>Required</sup> <a name="mixins" id="cdk-pipelines-github.GitHubWorkflow.with.parameter.mixins"></a>
+
+- *Type:* ...constructs.IMixin[]
+
+The mixins to apply.
+
+---
 
 ##### `addStage` <a name="addStage" id="cdk-pipelines-github.GitHubWorkflow.addStage"></a>
 
@@ -4765,6 +4837,8 @@ public readonly username: string;
 
 
 ### GitHubActionStep <a name="GitHubActionStep" id="cdk-pipelines-github.GitHubActionStep"></a>
+
+- *Implements:* aws-cdk-lib.pipelines.IFileSetProducer
 
 Specifies a GitHub Action as a step in the pipeline.
 
