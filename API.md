@@ -4,6 +4,8 @@
 
 ### GitHubActionRole <a name="GitHubActionRole" id="cdk-pipelines-github.GitHubActionRole"></a>
 
+- *Implements:* constructs.IConstruct, constructs.IDependable
+
 Creates or references a GitHub OIDC provider and accompanying role that trusts the provider.
 
 This role can be used to authenticate against AWS instead of using long-lived AWS user credentials
@@ -187,6 +189,8 @@ property in your GitHub Workflow app.
 
 
 ### GitHubStage <a name="GitHubStage" id="cdk-pipelines-github.GitHubStage"></a>
+
+- *Implements:* constructs.IConstruct, constructs.IDependable
 
 #### Initializers <a name="Initializers" id="cdk-pipelines-github.GitHubStage.Initializer"></a>
 
@@ -503,6 +507,8 @@ public readonly props: GitHubStageProps;
 
 
 ### GitHubWorkflow <a name="GitHubWorkflow" id="cdk-pipelines-github.GitHubWorkflow"></a>
+
+- *Implements:* constructs.IConstruct, constructs.IDependable
 
 CDK Pipelines for GitHub workflows.
 
@@ -4831,6 +4837,8 @@ public readonly username: string;
 
 
 ### GitHubActionStep <a name="GitHubActionStep" id="cdk-pipelines-github.GitHubActionStep"></a>
+
+- *Implements:* aws-cdk-lib.pipelines.IFileSetProducer
 
 Specifies a GitHub Action as a step in the pipeline.
 
