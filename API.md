@@ -950,8 +950,6 @@ public readonly jobSettings: JobSettings;
 
 Job level settings that will be applied to all jobs in the stage.
 
-Currently the only valid setting is 'if'.
-
 ---
 
 ##### `stackCapabilities`<sup>Optional</sup> <a name="stackCapabilities" id="cdk-pipelines-github.AddGitHubStageOptions.property.stackCapabilities"></a>
@@ -1769,8 +1767,6 @@ public readonly jobSettings: JobSettings;
 
 Job level settings that will be applied to all jobs in the stage.
 
-Currently the only valid setting is 'if'.
-
 ---
 
 ##### `stackCapabilities`<sup>Optional</sup> <a name="stackCapabilities" id="cdk-pipelines-github.GitHubCommonProps.property.stackCapabilities"></a>
@@ -2054,8 +2050,6 @@ public readonly jobSettings: JobSettings;
 
 Job level settings that will be applied to all jobs in the stage.
 
-Currently the only valid setting is 'if'.
-
 ---
 
 ##### `stackCapabilities`<sup>Optional</sup> <a name="stackCapabilities" id="cdk-pipelines-github.GitHubStageProps.property.stackCapabilities"></a>
@@ -2255,8 +2249,8 @@ public readonly jobSettings: JobSettings;
 
 Job level settings that will be applied to all jobs in the workflow, including synth and asset deploy jobs.
 
-Currently the only valid setting
-is 'if'. You can use this to run jobs only in specific repositories.
+You can use this to run jobs only
+in specific repositories, or in a GitHub Environment.
 
 > [https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#example-only-run-job-for-specific-repository](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#example-only-run-job-for-specific-repository)
 
@@ -3022,7 +3016,28 @@ const jobSettings: JobSettings = { ... }
 
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
+| <code><a href="#cdk-pipelines-github.JobSettings.property.environment">environment</a></code> | <code>string</code> | jobs.<job_id>.environment. |
 | <code><a href="#cdk-pipelines-github.JobSettings.property.if">if</a></code> | <code>string</code> | jobs.<job_id>.if. |
+
+---
+
+##### `environment`<sup>Optional</sup> <a name="environment" id="cdk-pipelines-github.JobSettings.property.environment"></a>
+
+```typescript
+public readonly environment: string;
+```
+
+- *Type:* string
+- *Default:* no GitHub Environment
+
+jobs.<job_id>.environment.
+
+The GitHub Environment of the jobs these settings apply to. Set on
+`GitHubWorkflow`, that is every job, including the synth and asset
+publishing jobs. A stage's `gitHubEnvironment` and a `GitHubActionStep`'s
+`githubEnvironment` take precedence for their jobs.
+
+> [https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idenvironment](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idenvironment)
 
 ---
 

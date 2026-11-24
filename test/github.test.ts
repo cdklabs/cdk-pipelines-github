@@ -3,6 +3,7 @@ import { join } from 'path';
 import { Stack, Stage } from 'aws-cdk-lib';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import { ShellStep } from 'aws-cdk-lib/pipelines';
+import * as YAML from 'yaml';
 import { GitHubExampleApp } from './example-app';
 import { TestApp, withTemporaryDirectory } from './testutil';
 import { AwsCredentials, GitHubActionStep, GitHubStage, GitHubWorkflow, JobPermission, JsonPatch, Runner } from '../src';
@@ -381,6 +382,65 @@ test('pipeline with GitHubSteps customizing environment', () => {
       - Build-Build
     env: {}
     environment: production`);
+  });
+});
+
+test('pipeline with a default environment in job settings', () => {
+  withTemporaryDirectory((dir) => {
+    const pipeline = new GitHubWorkflow(app, 'Pipeline', {
+      workflowPath: `${dir}/.github/workflows/deploy.yml`,
+      synth: new ShellStep('Build', {
+        commands: [],
+      }),
+      jobSettings: {
+        environment: 'default',
+      },
+    });
+
+    const betaStage = new Stage(app, 'Beta', {
+      env: { account: '111111111111', region: 'us-east-1' },
+    });
+    new lambda.Function(new Stack(betaStage, 'MyStack'), 'Function', {
+      code: lambda.Code.fromAsset(fixtures),
+      handler: 'index.handler',
+      runtime: lambda.Runtime.NODEJS_14_X,
+    });
+    pipeline.addStageWithGitHubOptions(betaStage, {
+      pre: [
+        new GitHubActionStep('Plain-Step', {
+          jobSteps: [{ run: 'echo plain' }],
+        }),
+        new GitHubActionStep('Own-Environment-Step', {
+          githubEnvironment: 'step',
+          jobSteps: [{ run: 'echo own' }],
+        }),
+      ],
+    });
+
+    const prodStage = new Stage(app, 'Prod', {
+      env: { account: '222222222222', region: 'us-east-1' },
+    });
+    new Stack(prodStage, 'MyStack');
+    pipeline.addStageWithGitHubOptions(prodStage, {
+      gitHubEnvironment: { name: 'prod' },
+    });
+
+    app.synth();
+
+    const jobs = YAML.parse(readFileSync(pipeline.workflowPath, 'utf-8')).jobs;
+    const environments = Object.fromEntries(
+      Object.entries(jobs).map(([id, job]: [string, any]) => [id, job.environment]),
+    );
+    expect(environments).toEqual({
+      'Build-Build': 'default',
+      'Assets-FileAsset1': 'default',
+      'Assets-FileAsset2': 'default',
+      'Assets-FileAsset3': 'default',
+      'Beta-Plain-Step': 'default',
+      'Beta-Own-Environment-Step': 'step',
+      'Beta-MyStack-Deploy': 'default',
+      'Prod-MyStack-Deploy': 'prod',
+    });
   });
 });
 

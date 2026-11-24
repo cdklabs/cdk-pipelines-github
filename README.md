@@ -533,6 +533,12 @@ pipeline.addStageWithGitHubOptions(new MyStage(this, 'Prod', {
 app.synth();
 ```
 
+`gitHubEnvironment` only applies to the deploy jobs of a stage. To run every job,
+including the synth and asset publishing jobs, in a GitHub Environment, set
+`jobSettings.environment` on the `GitHubWorkflow`. This is needed when the trust
+policy of the GitHub Action Role checks the environment in the OIDC `sub` claim.
+A stage's `gitHubEnvironment` still takes precedence for its deploy jobs.
+
 #### Waves for Parallel Builds
 
 You can add a Wave to a pipeline, where each stage of a wave will build in parallel.
