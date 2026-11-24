@@ -56,7 +56,6 @@ export interface GitHubCommonProps {
 
   /**
    * Job level settings that will be applied to all jobs in the stage.
-   * Currently the only valid setting is 'if'.
    */
   readonly jobSettings?: JobSettings;
 }

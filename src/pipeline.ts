@@ -48,6 +48,19 @@ export interface JobSettings {
    * @see https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idif
    */
   readonly if?: string;
+
+  /**
+   * jobs.<job_id>.environment.
+   *
+   * The GitHub Environment of the jobs these settings apply to. Set on
+   * `GitHubWorkflow`, that is every job, including the synth and asset
+   * publishing jobs. A stage's `gitHubEnvironment` and a `GitHubActionStep`'s
+   * `githubEnvironment` take precedence for their jobs.
+   *
+   * @see https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idenvironment
+   * @default - no GitHub Environment
+   */
+  readonly environment?: string;
 }
 
 /**
@@ -176,8 +189,8 @@ export interface GitHubWorkflowProps extends PipelineBaseProps {
 
   /**
    * Job level settings that will be applied to all jobs in the workflow,
-   * including synth and asset deploy jobs. Currently the only valid setting
-   * is 'if'. You can use this to run jobs only in specific repositories.
+   * including synth and asset deploy jobs. You can use this to run jobs only
+   * in specific repositories, or in a GitHub Environment.
    *
    * @see https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#example-only-run-job-for-specific-repository
    */
@@ -838,7 +851,7 @@ export class GitHubWorkflow extends PipelineBase {
         runsOn: this.runner.runsOn,
         needs: this.renderDependencies(node),
         env: step.env,
-        environment: step.githubEnvironment,
+        environment: step.githubEnvironment ?? this.jobSettings?.environment,
         steps: step.jobSteps,
       },
     };
